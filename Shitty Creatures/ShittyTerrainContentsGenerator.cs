@@ -1,157 +1,130 @@
 using System;
 using Engine;
+using Game;
 
 namespace Game
 {
 	/// <summary>
-	/// Generador de terreno modificado para incluir árboles frutales adicionales.
-	/// No reemplaza los árboles vanilla, solo añade árboles frutales.
+	/// Generador de terreno personalizado que añade árboles frutales (ShittyTreeType)
+	/// sin reemplazar la generación de árboles original.
 	/// </summary>
-	public class ShittyTerrainContentsGenerator : TerrainContentsGenerator24
+	public class ShittyTerrainContentsGenerator24 : TerrainContentsGenerator24
 	{
-		public ShittyTerrainContentsGenerator(SubsystemTerrain subsystemTerrain) : base(subsystemTerrain)
+		private Random m_fruitTreeRandom;
+
+		public ShittyTerrainContentsGenerator24(SubsystemTerrain subsystemTerrain)
+			: base(subsystemTerrain)
 		{
+			// Usamos la misma semilla del mundo para los árboles frutales
+			m_fruitTreeRandom = new Random(m_seed);
 		}
 
 		/// <summary>
-		/// Primero genera árboles vanilla, luego añade árboles frutales.
+		/// Genera primero los árboles originales y luego añade árboles frutales.
 		/// </summary>
 		public override void GenerateTrees(TerrainChunk chunk)
 		{
-			// 1. Árboles normales del juego
+			// 1. Generar árboles originales (robles, abedules, etc.)
 			base.GenerateTrees(chunk);
 
-			// 2. Árboles frutales adicionales
-			if (!TGExtras) return;
+			// 2. Generar árboles frutales adicionales
+			GenerateFruitTrees(chunk);
+		}
 
+		private void GenerateFruitTrees(TerrainChunk chunk)
+		{
 			Terrain terrain = m_subsystemTerrain.Terrain;
+			Point2 origin = chunk.Origin;
 			int chunkX = chunk.Coords.X;
 			int chunkZ = chunk.Coords.Y;
 
-			Random random = new Random(m_seed + chunkX + 3943 * chunkZ + 12345);
-			int humidity = CalculateHumidity(chunkX * 16, chunkZ * 16);
-			int baseTemperature = CalculateTemperature(chunkX * 16, chunkZ * 16);
-			float forestDensity = CalculateForestDensity(chunkX * 16, chunkZ * 16);
-
-			// Menos árboles frutales que en vanilla
-			int targetFruitTrees = (int)(2f * forestDensity);
-			int attempts = 0;
-			int planted = 0;
-			int maxAttempts = 36;
-
-			bool[,] occupied = new bool[16, 16];
-
-			while (attempts < maxAttempts && planted < targetFruitTrees)
+			// Solo generamos árboles en este mismo chunk (no en vecinos)
+			for (int i = chunkX; i <= chunkX; i++)
 			{
-				attempts++;
-				int localX = random.Int(2, 13);
-				int localZ = random.Int(2, 13);
-				int worldX = chunkX * 16 + localX;
-				int worldZ = chunkZ * 16 + localZ;
-				int y = terrain.CalculateTopmostCellHeight(worldX, worldZ);
-
-				if (y < 66) continue;
-				int ground = terrain.GetCellContentsFast(worldX, y, worldZ);
-				if (ground != 2 && ground != 8) continue;
-
-				y++; // posición de plantación
-
-				// Espacio inmediato libre
-				if (BlocksManager.Blocks[terrain.GetCellContentsFast(worldX + 1, y, worldZ)].IsCollidable ||
-					BlocksManager.Blocks[terrain.GetCellContentsFast(worldX - 1, y, worldZ)].IsCollidable ||
-					BlocksManager.Blocks[terrain.GetCellContentsFast(worldX, y, worldZ + 1)].IsCollidable ||
-					BlocksManager.Blocks[terrain.GetCellContentsFast(worldX, y, worldZ - 1)].IsCollidable)
-					continue;
-
-				// Evitar superposición con otros árboles frutales
-				if (occupied[localX, localZ]) continue;
-				bool tooClose = false;
-				for (int dx = -4; dx <= 4 && !tooClose; dx++)
+				for (int j = chunkZ; j <= chunkZ; j++)
 				{
-					for (int dz = -4; dz <= 4 && !tooClose; dz++)
+					// Semilla local para que sea reproducible
+					Random localRandom = new Random(m_seed + i + 3943 * j);
+
+					// Temperatura y humedad en el centro del chunk (para tener una idea del bioma)
+					int humidity = CalculateHumidity(i * 16 + 8, j * 16 + 8);
+					int temperature = CalculateTemperature(i * 16 + 8, j * 16 + 8);
+
+					// Densidad forestal (similar a la usada por árboles vanilla)
+					float forestDensity = CalculateForestDensity(i * 16 + 8, j * 16 + 8);
+
+					// Número de intentos por chunk (entre 0 y ~6 dependiendo de la densidad)
+					int attempts = (int)(6f * forestDensity) + localRandom.Int(0, 2);
+					int planted = 0;
+					int maxAttempts = attempts * 2; // Evitar bucles infinitos
+
+					for (int attempt = 0; attempt < maxAttempts && planted < attempts; attempt++)
 					{
-						int checkLocalX = localX + dx;
-						int checkLocalZ = localZ + dz;
-						if (checkLocalX >= 0 && checkLocalX < 16 && checkLocalZ >= 0 && checkLocalZ < 16)
+						// Posición aleatoria dentro del chunk (evitando bordes)
+						int x = i * 16 + localRandom.Int(2, 13);
+						int z = j * 16 + localRandom.Int(2, 13);
+						int y = terrain.CalculateTopmostCellHeight(x, z);
+
+						if (y < 66) continue; // Muy bajo, probablemente agua
+
+						int groundContents = terrain.GetCellContentsFast(x, y, z);
+						if (groundContents != 2 && groundContents != 8) continue; // No es césped ni tierra
+
+						// Verificar espacio libre alrededor
+						if (!IsSpaceForTree(terrain, x, y + 1, z)) continue;
+
+						// Temperatura y humedad reales en esa posición
+						int realTemp = terrain.GetTemperature(x, z) + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
+						int realHum = terrain.GetHumidity(x, z);
+
+						// Decidir si plantar un árbol frutal y de qué tipo
+						ShittyTreeType? treeType = ShittyPlantsManager.GenerateRandomTreeType(
+							localRandom, realTemp, realHum, y, 1.2f); // Un poco más de densidad que vanilla
+
+						if (treeType != null)
 						{
-							if (dx == 0 && dz == 0) continue;
-							if (occupied[checkLocalX, checkLocalZ])
-								tooClose = true;
+							// Obtener un pincel aleatorio del tipo de árbol
+							var brushes = ShittyPlantsManager.GetTreeBrushes(treeType.Value);
+							if (brushes.Count > 0)
+							{
+								TerrainBrush brush = brushes[localRandom.Int(0, brushes.Count - 1)];
+								// Pintar el árbol
+								brush.PaintFast(chunk, x, y + 1, z);
+								// Registrar para posibles actualizaciones futuras (opcional)
+								chunk.AddBrushPaint(x, y + 1, z, brush);
+
+								// Las frutas se colocarán automáticamente gracias a AttachFruitsToTree
+								// que ya se llama dentro de SubsystemFruitSaplingBlockBehavior.GrowTree
+								// (cuando el árbol crece a partir de un retoño). 
+								// Pero para generación directa en el mundo, también podemos llamarlo aquí:
+								ShittyPlantsManager.AttachFruitsToTree(
+									m_subsystemTerrain, x, y + 1, z, brush, treeType.Value, localRandom);
+
+								planted++;
+							}
 						}
 					}
 				}
-				if (tooClose) continue;
-
-				// Temperatura ajustada por altura (como hace el generador vanilla)
-				int adjustedTemp = baseTemperature + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
-
-				// Elegir tipo (puede fallar por clima o densidad)
-				ShittyTreeType? fruitTreeType = ShittyPlantsManager.GenerateRandomFruitTreeType(random, adjustedTemp, humidity, y);
-				if (fruitTreeType == null) continue;
-
-				var brushes = ShittyPlantsManager.GetTreeBrushes(fruitTreeType.Value);
-				if (brushes.Count == 0) continue;
-
-				TerrainBrush brush = brushes[random.Int(brushes.Count)];
-				brush.PaintFast(chunk, worldX, y, worldZ);
-				chunk.AddBrushPaint(worldX, y, worldZ, brush);
-
-				// Marcar zona ocupada
-				for (int dx = -1; dx <= 1; dx++)
-				{
-					for (int dz = -1; dz <= 1; dz++)
-					{
-						int markX = localX + dx;
-						int markZ = localZ + dz;
-						if (markX >= 0 && markX < 16 && markZ >= 0 && markZ < 16)
-							occupied[markX, markZ] = true;
-					}
-				}
-				planted++;
 			}
+		}
 
-			// 3. Arbustos de arándanos
-			int blueberryBushIndex = ShittyPlantsManager.GetBlueberryBushIndex();
-			if (blueberryBushIndex != 0)
+		private bool IsSpaceForTree(Terrain terrain, int x, int y, int z)
+		{
+			// Comprobación rápida de espacio aéreo y laterales
+			for (int dy = 0; dy < 8; dy++)
 			{
-				int targetBushes = (int)(4f * forestDensity); // Mayor densidad que árboles frutales
-				int bushPlanted = 0;
-				int bushAttempts = 0;
-				int maxBushAttempts = targetBushes * 3;
-
-				while (bushAttempts < maxBushAttempts && bushPlanted < targetBushes)
-				{
-					bushAttempts++;
-					int localX = random.Int(2, 13);
-					int localZ = random.Int(2, 13);
-					int worldX = chunkX * 16 + localX;
-					int worldZ = chunkZ * 16 + localZ;
-					int y = terrain.CalculateTopmostCellHeight(worldX, worldZ);
-
-					if (y < 66) continue;
-					int ground = terrain.GetCellContentsFast(worldX, y, worldZ);
-					// Solo sobre tierra o hierba (2 = dirt, 8 = grass)
-					if (ground != 2 && ground != 8) continue;
-
-					y++; // Posición del arbusto
-
-					// No colocar sobre otro arbusto o bloque ocupado
-					if (occupied[localX, localZ]) continue;
-					int existing = terrain.GetCellContentsFast(worldX, y, worldZ);
-					if (existing != 0) continue;
-
-					int adjustedTemp = baseTemperature + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
-					if (!ShittyPlantsManager.CanPlaceBlueberryBush(adjustedTemp, humidity, y))
-						continue;
-
-					// Colocar el arbusto
-					terrain.SetCellValueFast(worldX, y, worldZ, Terrain.MakeBlockValue(blueberryBushIndex));
-					chunk.ModificationCounter++;
-					// Marcar posición ocupada para evitar superposición cercana
-					occupied[localX, localZ] = true;
-					bushPlanted++;
-				}
+				if (terrain.GetCellContentsFast(x, y + dy, z) != 0)
+					return false;
+				if (terrain.GetCellContentsFast(x + 1, y + dy, z) != 0)
+					return false;
+				if (terrain.GetCellContentsFast(x - 1, y + dy, z) != 0)
+					return false;
+				if (terrain.GetCellContentsFast(x, y + dy, z + 1) != 0)
+					return false;
+				if (terrain.GetCellContentsFast(x, y + dy, z - 1) != 0)
+					return false;
 			}
+			return true;
 		}
 	}
 }
