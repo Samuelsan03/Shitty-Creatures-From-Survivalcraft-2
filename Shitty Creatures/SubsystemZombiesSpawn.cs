@@ -523,33 +523,54 @@ namespace Game
 				int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
 				int groundY = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
 
-				if (groundY <= 0 || groundY >= 255) continue;
+				if (groundY <= 0 || groundY >= 254) continue; // dejar espacio arriba
 
+				// Verificar que el bloque del suelo sea válido
 				int cellGround = m_subsystemTerrain.Terrain.GetCellValue(x, groundY, z);
 				int contentsGround = Terrain.ExtractContents(cellGround);
 				if (!m_allowedBlockIndices.Contains(contentsGround)) continue;
 
+				// Verificar que la celda donde se pondrá el cofre esté vacía
+				int cellAbove = m_subsystemTerrain.Terrain.GetCellValue(x, groundY + 1, z);
+				if (Terrain.ExtractContents(cellAbove) != 0) continue;
+
+				// Colocar el cofre
 				int data = GetChestFacingData(playerPos, new Vector3(x + 0.5f, groundY + 1, z + 0.5f));
 				int chestValue = Terrain.MakeBlockValue(ChestBlock.Index, 0, data);
 				m_subsystemTerrain.ChangeCell(x, groundY + 1, z, chestValue);
 
-				var blockEntities = Project.FindSubsystem<SubsystemBlockEntities>(true);
-				var blockEntity = blockEntities.GetBlockEntity(x, groundY + 1, z);
-				if (blockEntity != null)
+				// Programar la inserción del objeto con un pequeño retraso
+				System.Timers.Timer timer = new System.Timers.Timer(100); // 0.1 segundos
+				timer.Elapsed += (sender, e) =>
 				{
-					var chest = blockEntity.Entity.FindComponent<ComponentChest>();
-					if (chest != null)
+					timer.Stop();
+					timer.Dispose();
+					Dispatcher.Dispatch(() =>
 					{
-						int letterIndex = BlocksManager.GetBlockIndex<LetterWarBlock>(false, false);
-						if (letterIndex < 0) letterIndex = LetterWarBlock.Index;
-						int letterValue = Terrain.MakeBlockValue(letterIndex, 0, 0);
-						chest.AddSlotItems(0, letterValue, 1);
-						m_letterWarSpawned = true;
-						return;
-					}
-				}
+						// Buscar la entidad del cofre después del retraso
+						var blockEntities = Project.FindSubsystem<SubsystemBlockEntities>(true);
+						var blockEntity = blockEntities.GetBlockEntity(x, groundY + 1, z);
+						if (blockEntity != null)
+						{
+							var chest = blockEntity.Entity.FindComponent<ComponentChest>();
+							if (chest != null)
+							{
+								int letterIndex = BlocksManager.GetBlockIndex<LetterWarBlock>(false, false);
+								if (letterIndex < 0) letterIndex = LetterWarBlock.Index;
+								int letterValue = Terrain.MakeBlockValue(letterIndex, 0, 0);
+								chest.AddSlotItems(0, letterValue, 1);
+								m_letterWarSpawned = true;
+								return;
+							}
+						}
 
-				m_subsystemTerrain.ChangeCell(x, groundY + 1, z, 0);
+						// Si no se encontró, eliminar el cofre y registrar error
+						m_subsystemTerrain.ChangeCell(x, groundY + 1, z, 0);
+						Log.Error($"[SubsystemZombiesSpawn] No se pudo agregar la carta al cofre en ({x},{groundY + 1},{z})");
+					});
+				};
+				timer.Start();
+				return; // Éxito, se programó la inserción
 			}
 
 			Log.Error("[SubsystemZombiesSpawn] No se pudo colocar el cofre con la carta cerca del jugador.");
