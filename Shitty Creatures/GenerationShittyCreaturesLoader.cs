@@ -20,13 +20,23 @@ namespace Game
 		// ==================== CARGA DEL PROYECTO (reemplazar generador de terreno) ====================
 		public override void OnProjectLoaded(Project project)
 		{
-			// Inicializar los pinceles de árboles frutales (importante: después de que BlocksManager esté listo)
+			// Inicializar los pinceles de árboles frutales
 			ShittyPlantsManager.Initialize();
 
 			SubsystemTerrain terrainSubsystem = project.FindSubsystem<SubsystemTerrain>(true);
 			if (terrainSubsystem != null)
 			{
-				terrainSubsystem.TerrainContentsGenerator = new ShittyTerrainContentsGenerator24(terrainSubsystem);
+				// Obtener la configuración del mundo
+				SubsystemGameInfo gameInfo = project.FindSubsystem<SubsystemGameInfo>(true);
+				TerrainGenerationMode mode = gameInfo.WorldSettings.TerrainGenerationMode;
+
+				// Solo reemplazar el generador en modos que NO sean planos
+				if (mode != TerrainGenerationMode.FlatContinent && mode != TerrainGenerationMode.FlatIsland)
+				{
+					terrainSubsystem.TerrainContentsGenerator = new ShittyTerrainContentsGenerator24(terrainSubsystem);
+				}
+				// Para modos planos, el juego usará su generador original (Flat/FlatIsland)
+				// y no se añadirán árboles frutales, arbustos ni sandías.
 			}
 		}
 
