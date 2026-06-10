@@ -11,15 +11,22 @@ namespace Game
 	public class SubsystemFruitSaplingBlockBehavior : SubsystemBlockBehavior, IUpdateable
 	{
 		private static readonly string[] BlockNames = new string[]
-{
-	"AppleSaplingBlock",
-	"PearSaplingBlock",
-	"CherrySaplingBlock",
-	"OrangeSaplingBlock",
-	"BananaSaplingBlock"
-};
+		{
+			"AppleSaplingBlock",
+			"PearSaplingBlock",
+			"CherrySaplingBlock",
+			"OrangeSaplingBlock",
+			"BananaSaplingBlock"
+		};
 
 		private Dictionary<int, ShittyTreeType> m_blockToTreeType;
+		private int[] m_handledBlocks;
+		private SubsystemGameInfo m_subsystemGameInfo;
+		private SubsystemTimeOfDay m_subsystemTimeOfDay;
+		private Dictionary<Point3, SaplingData> m_saplings = new Dictionary<Point3, SaplingData>();
+		private Dictionary<Point3, SaplingData>.ValueCollection.Enumerator m_enumerator;
+		private Random m_random = new Random();
+		private StringBuilder m_stringBuilder = new StringBuilder();
 
 		public override int[] HandledBlocks
 		{
@@ -38,7 +45,6 @@ namespace Game
 				return m_handledBlocks;
 			}
 		}
-		private int[] m_handledBlocks;
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
@@ -124,13 +130,13 @@ namespace Game
 			int pearIdx = BlocksManager.GetBlockIndex("PearSaplingBlock", true);
 			int cherryIdx = BlocksManager.GetBlockIndex("CherrySaplingBlock", true);
 			int orangeIdx = BlocksManager.GetBlockIndex("OrangeSaplingBlock", true);
-			int bananaIdx = BlocksManager.GetBlockIndex("BananaSaplingBlock", true);  // ← agregado
+			int bananaIdx = BlocksManager.GetBlockIndex("BananaSaplingBlock", true);
 
 			m_blockToTreeType[appleIdx] = ShittyTreeType.Apple;
 			m_blockToTreeType[pearIdx] = ShittyTreeType.Pear;
 			m_blockToTreeType[cherryIdx] = ShittyTreeType.Cherry;
 			m_blockToTreeType[orangeIdx] = ShittyTreeType.Orange;
-			m_blockToTreeType[bananaIdx] = ShittyTreeType.Banana;  // ← agregado
+			m_blockToTreeType[bananaIdx] = ShittyTreeType.Banana;
 		}
 
 		private ShittyTreeType GetTreeTypeFromBlockValue(int value)
@@ -257,6 +263,13 @@ namespace Game
 				if (canPlace)
 				{
 					brush.Paint(base.SubsystemTerrain, x, y, z);
+
+					int temperature = base.SubsystemTerrain.Terrain.GetTemperature(x, z) + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
+					int humidity = base.SubsystemTerrain.Terrain.GetHumidity(x, z);
+					float fruitDensity = ShittyPlantsManager.CalculateFruitDensity(treeType, temperature, humidity, y);
+					fruitDensity = MathUtils.Clamp(fruitDensity * m_random.Float(0.8f, 1.2f), 0f, 1f);
+
+					ShittyPlantsManager.AttachFruitsToTree(base.SubsystemTerrain, x, y, z, brush, treeType, m_random, fruitDensity);
 					return true;
 				}
 			}
@@ -274,13 +287,6 @@ namespace Game
 			m_saplings.Remove(point);
 			m_enumerator = m_saplings.Values.GetEnumerator();
 		}
-
-		SubsystemGameInfo m_subsystemGameInfo;
-		SubsystemTimeOfDay m_subsystemTimeOfDay;
-		Dictionary<Point3, SaplingData> m_saplings = new Dictionary<Point3, SaplingData>();
-		Dictionary<Point3, SaplingData>.ValueCollection.Enumerator m_enumerator;
-		Random m_random = new Random();
-		StringBuilder m_stringBuilder = new StringBuilder();
 
 		public class SaplingData
 		{
