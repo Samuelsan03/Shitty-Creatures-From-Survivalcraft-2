@@ -9,6 +9,8 @@ namespace Game
 {
 	public class SubsystemAchievements : Subsystem
 	{
+		public static event Action<int> AchievementUnlocked;
+		private Dictionary<int, long> m_unlockTimes = new Dictionary<int, long>();
 		private Dictionary<int, string> m_achievements = new Dictionary<int, string>();
 		private HashSet<int> m_claimedRewards = new HashSet<int>();
 
@@ -48,6 +50,9 @@ namespace Game
 		{
 			if (m_achievements.ContainsKey(achievementNumber)) return;
 			m_achievements.Add(achievementNumber, achievementId);
+			// Registrar tiempo de desbloqueo (en ticks UTC)
+			m_unlockTimes[achievementNumber] = DateTime.UtcNow.Ticks;
+			AchievementUnlocked?.Invoke(achievementNumber);
 		}
 
 		public bool IsRewardClaimed(int achievementNumber) => m_claimedRewards.Contains(achievementNumber);
@@ -176,6 +181,16 @@ namespace Game
 			}
 		}
 
+		public long GetUnlockTime(int achievementNumber)
+		{
+			return m_unlockTimes.TryGetValue(achievementNumber, out long time) ? time : 0;
+		}
+
+		public void SetUnlockTime(int achievementNumber, long ticks)
+		{
+			m_unlockTimes[achievementNumber] = ticks;
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			// Logros desbloqueados
@@ -235,6 +250,16 @@ namespace Game
 				m_backgroundState = state;
 			else
 				m_backgroundState = 0;
+
+			if (valuesDictionary.TryGetValue("UnlockTimes", out object timesObj) && timesObj is string timesStr)
+			{
+				foreach (string pair in timesStr.Split(';', StringSplitOptions.RemoveEmptyEntries))
+				{
+					string[] parts = pair.Split(':');
+					if (parts.Length == 2 && int.TryParse(parts[0], out int num) && long.TryParse(parts[1], out long ticks))
+						m_unlockTimes[num] = ticks;
+				}
+			}
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
@@ -270,6 +295,14 @@ namespace Game
 			valuesDictionary.SetValue("AllAchievementsCelebrationTriggered", m_allAchievementsCelebrationTriggered);
 			valuesDictionary.SetValue("CelebrationEndTime", m_celebrationEndTime);
 			valuesDictionary.SetValue("BackgroundState", m_backgroundState);
+
+			if (m_unlockTimes.Count > 0)
+			{
+				List<string> pairs = new List<string>();
+				foreach (var kvp in m_unlockTimes)
+					pairs.Add($"{kvp.Key}:{kvp.Value}");
+				valuesDictionary.SetValue("UnlockTimes", string.Join(";", pairs));
+			}
 		}
 	}
 }
