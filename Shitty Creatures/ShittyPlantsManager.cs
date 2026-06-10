@@ -174,26 +174,33 @@ namespace Game
 
 		public static float CalculateTreeProbability(ShittyTreeType treeType, int temperature, int humidity, int y)
 		{
+			// Rangos ajustados para hacerlos más restrictivos
 			switch (treeType)
 			{
-				case ShittyTreeType.Apple: return RangeProb(temperature, 4, 8, 12, 15) * RangeProb(humidity, 5, 8, 12, 15) * RangeProb(y, 0, 0, 80, 90);
-				case ShittyTreeType.Pear: return RangeProb(temperature, 5, 9, 13, 15) * RangeProb(humidity, 4, 7, 13, 15) * RangeProb(y, 0, 0, 80, 90);
-				case ShittyTreeType.Orange: return RangeProb(temperature, 6, 10, 14, 15) * RangeProb(humidity, 6, 9, 14, 15) * RangeProb(y, 0, 0, 75, 85);
-				case ShittyTreeType.Cherry: return RangeProb(temperature, 4, 7, 11, 14) * RangeProb(humidity, 5, 8, 12, 15) * RangeProb(y, 0, 0, 85, 92);
-				case ShittyTreeType.Banana: return RangeProb(temperature, 8, 12, 15, 15) * RangeProb(humidity, 8, 11, 15, 15) * RangeProb(y, 0, 0, 70, 80);
+				// Manzano: templado-frío, humedad media (rango estrecho)
+				case ShittyTreeType.Apple: return RangeProb(temperature, 6, 9, 12, 14) * RangeProb(humidity, 6, 9, 12, 14) * RangeProb(y, 0, 0, 80, 90);
+				// Peral: templado, humedad media (rango más estrecho)
+				case ShittyTreeType.Pear: return RangeProb(temperature, 7, 10, 13, 15) * RangeProb(humidity, 5, 8, 12, 14) * RangeProb(y, 0, 0, 80, 90);
+				// Naranjo: cálido-húmedo (más restrictivo)
+				case ShittyTreeType.Orange: return RangeProb(temperature, 8, 11, 14, 15) * RangeProb(humidity, 7, 10, 14, 15) * RangeProb(y, 0, 0, 75, 85);
+				// Cerezo: fresco, humedad media-alta
+				case ShittyTreeType.Cherry: return RangeProb(temperature, 5, 8, 11, 13) * RangeProb(humidity, 6, 9, 13, 15) * RangeProb(y, 0, 0, 85, 92);
+				// Banano: tropical, cálido y muy húmedo
+				case ShittyTreeType.Banana: return RangeProb(temperature, 9, 12, 15, 15) * RangeProb(humidity, 9, 12, 15, 15) * RangeProb(y, 0, 0, 70, 80);
 				default: return 0f;
 			}
 		}
 
 		public static float CalculateTreeDensity(ShittyTreeType treeType, int temperature, int humidity, int y)
 		{
+			// Densidad ahora usa temperatura Y humedad para todos los árboles
 			switch (treeType)
 			{
-				case ShittyTreeType.Apple: return RangeProb(humidity, 5, 9, 12, 15);
-				case ShittyTreeType.Pear: return RangeProb(humidity, 4, 8, 13, 15);
-				case ShittyTreeType.Orange: return RangeProb(humidity, 6, 10, 14, 15);
-				case ShittyTreeType.Cherry: return RangeProb(humidity, 5, 8, 12, 15);
-				case ShittyTreeType.Banana: return RangeProb(temperature, 8, 11, 15, 15) * RangeProb(humidity, 8, 11, 15, 15);
+				case ShittyTreeType.Apple: return RangeProb(temperature, 6, 9, 12, 14) * RangeProb(humidity, 6, 9, 12, 14);
+				case ShittyTreeType.Pear: return RangeProb(temperature, 7, 10, 13, 15) * RangeProb(humidity, 5, 8, 12, 14);
+				case ShittyTreeType.Orange: return RangeProb(temperature, 8, 11, 14, 15) * RangeProb(humidity, 7, 10, 14, 15);
+				case ShittyTreeType.Cherry: return RangeProb(temperature, 5, 8, 11, 13) * RangeProb(humidity, 6, 9, 13, 15);
+				case ShittyTreeType.Banana: return RangeProb(temperature, 9, 12, 15, 15) * RangeProb(humidity, 9, 12, 15, 15);
 				default: return 0f;
 			}
 		}
