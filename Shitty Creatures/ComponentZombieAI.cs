@@ -169,7 +169,42 @@ namespace Game
 			Add(typeof(GrozaBlock), typeof(NuevaBala3), "Audio/Armas/Groza fuego", 0.12, 290f, 2, new Vector3(0.009f, 0.009f, 0.04f), 30, automatic: true);
 		}
 
-		public override float ImportanceLevel => 100f;
+		public override float ImportanceLevel
+		{
+			get
+			{
+				// Verificar si las condiciones de combate se cumplen
+				bool conditionsMet = m_canUseInventory && m_chaseBehavior != null && m_inventory != null &&
+									 m_componentMiner != null && m_componentCreature.ComponentHealth.Health > 0f &&
+									 !AchievementsManager.IsCelebrationActive &&
+									 m_chaseBehavior.m_target != null && m_chaseBehavior.m_target.ComponentHealth.Health > 0f;
+
+				// Si no hay condiciones válidas, limpiar estados inconsistentes y retornar 0
+				if (!conditionsMet)
+				{
+					// Limpiar estado de flanqueo si quedó activo
+					if (m_isFlanking)
+					{
+						m_isFlanking = false;
+						m_flankTimer = 0f;
+						m_flankDirection = Vector3.Zero;
+						if (m_chaseBehavior != null) m_chaseBehavior.Suppressed = false;
+						if (m_pathfinding != null) m_pathfinding.Stop();
+					}
+					// Limpiar estado de apuntado si quedó activo
+					if (m_isAiming)
+					{
+						m_isAiming = false;
+						m_aimTimer = 0f;
+						m_hasCompletedInitialAim = false;
+						ResetModelPose();
+					}
+					return 0f;
+				}
+
+				return 100f;
+			}
+		}
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
