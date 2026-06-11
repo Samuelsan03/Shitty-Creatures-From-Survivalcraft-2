@@ -1067,17 +1067,17 @@ namespace Game
 				});
 			}
 
-			// ORDEN CORREGIDO:
-			// 1. Primero: Logros EN PROGRESO (progreso > 0 y < 1) - ordenados de mayor a menor progreso
-			// 2. Segundo: Logros COMPLETADOS (progreso == 1) - ordenados por tiempo reciente
-			// 3. Tercero: Logros SIN PROGRESO (progreso <= 0) - orden base
 			m_sortData.Sort((a, b) =>
 			{
+				// Determinar prioridad basada SOLO en progreso, no en unlocked
 				int GetPriority(AchievementSortData x)
 				{
-					if (x.Progress > 0f && x.Progress < 1f) return 0; // EN PROGRESO - PRIORIDAD MÁXIMA
-					if (x.Progress >= 1f) return 1;                   // COMPLETADOS
-					return 2;                                          // SIN PROGRESO
+					// Logros NO completados CON progreso (0 < progress < 1) -> Prioridad 0 (más alta)
+					if (x.Progress > 0f && x.Progress < 1f) return 0;
+					// Logros completados (progress == 1) -> Prioridad 1
+					if (x.Progress >= 1f) return 1;
+					// Logros sin progreso (progress <= 0) -> Prioridad 2 (más baja)
+					return 2;
 				}
 
 				int priorityA = GetPriority(a);
