@@ -109,24 +109,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="9be7fc8f-ba92-4327-9da4-ed41834bc53a" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="6fd83120-2776-47f9-ac9c-673f0500bf73" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="6c93fb4e-f631-4076-971f-60aab0d13d68" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="2939c252-6e4d-4e4f-ad5e-94c989782148" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="0d1f2be8-9049-485b-92d2-dc846291d21d" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="2e663f4c-6d8a-46c9-a8eb-6cedacfaf90c" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="5b387f71-15f6-4bcf-95e2-8a4e10a8a4dd" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="a5398720-ce29-4c1c-896d-cab91e941b13" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="8bc4e7c0-fd18-4671-9d79-62bb5ea33dd1" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="9a6f2faf-86c9-4f11-a2f1-8ceca6418c64" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="6d2a7622-e738-47b9-8e53-e17b5b3e2ab4" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="4dcca829-556f-4ca9-899b-cd15c378efb8">
         <Parameter Name="Color" Guid="909373fa-f7f3-43f4-a47a-c489da9f0f29" Value="176,115,115" Type="Color"/>
@@ -245,24 +237,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="f8695310-dee4-4462-a5ec-f03f201671a6" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c8bc5231-d3a6-4a21-aa2c-6cdafc9ec441" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="041ca91e-64bd-4ef4-a611-4a9a5c710bf1" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="f943c7ea-7e82-4e41-82fb-dafae8355876" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="fe0eec95-3f88-4e9c-bb14-70444215532f" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="ec045ea0-e247-4588-96a6-ece17708745e" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="d92ac484-d2f3-4dd6-ac39-e6b7bc0ab5e0" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="af0d5d31-06c0-4025-b9bd-c62157ba4fcb" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="5e779753-b98d-440d-9fb4-07952e6f18b1" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="52ab5075-2772-4851-b821-dc000b9560dc" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="23102b17-2f3d-4118-a5d3-c7e6a6fe09a3" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="0a15bb69-f0cf-43d4-8903-2fe6d74c538f">
         <Parameter Name="Color" Guid="69060b7f-e051-4757-a343-f09edf4b6df3" Value="176,115,115" Type="Color"/>
@@ -339,7 +323,7 @@
             <MemberComponentTemplate Name="Inventory" Guid="c8177148-4404-4815-9070-e3f898d649df" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="380" Type="int"/> <!-- Tiene puesto su AK 47-->
+            <Parameter Name="Contents" Value="400" Type="int"/> <!-- Tiene puesto su AK 47-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -365,24 +349,16 @@
               <Parameter Name="TurnSpeed" Guid="9bd5720e-8cd2-4e56-99f9-58eecabab752" Value="8" Type="float" />
               <Parameter Name="AccelerationFactor" Guid="f243b2f3-1417-4af0-8266-c55dfe4cc34f" Value="1.5" Type="float" />
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="BanditChaseBehavior" Guid="86b67be7-1af9-404d-949a-e497536524bb" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="999" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="999" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+            <MemberComponentTemplate Name="BanditChaseBehavior" Guid="f13699b8-10e6-4281-9384-4699c097230c" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="ceea7d28-605e-4b99-a9be-74887b56d8ad" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="7b8e4dfe-e137-4da9-af04-17fecc16eb7f" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="a15a034c-1c41-4219-8419-0a61e4112c79" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="fdd1fdcf-6343-4a95-8588-2d2d33ab7d71" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="4083f798-48e4-411e-8e16-ec2bedfed394" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="75e2f5d2-7b9b-47a7-a6e9-9c12da6ed53f" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="5c6dd1f0-65e1-4ac9-9cf2-1e002ed2aad8" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="76f043dd-95d0-4f33-b3f9-eaf8b1d0b843" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="fc4bfa29-602e-473b-85b8-e21f231c4e3b" Value="true" Type="bool" />
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditHerdBehavior" Guid="39723cdd-a5b1-40a7-99c8-a520b3b38eed" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
@@ -508,24 +484,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c683d53c-fd68-4ac6-9321-a0c9a9e6ba07" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="999" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="999" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="de7076dd-dab8-4ddc-8a25-4439d1558700" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="57feebd5-f8c2-4673-a9ad-9e2938ec19f6" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="d5d849ef-9275-4426-b566-5a039c561100" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="84eae219-12fd-40e8-97d8-fda93795ef3f" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="f4fbb865-e4e2-4c79-9be5-32ebd5883e02" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="98ee72c3-21f9-4ea6-be83-d3df8f957281" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="baab4b12-0de4-472a-9aa8-0ba45680f0a4" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="6146de4a-31ec-421c-8d5e-36dcfaf3ba3a" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="4b1a9cfc-51b1-43f1-91cc-a5712abc4324" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="71d6675c-2424-4c36-84b7-409267d64760" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="242f9e82-e29d-42b7-8756-870b88d5d5b2">
         <Parameter Name="Color" Guid="1241efc3-364c-4392-8f0a-64bd594444a4" Value="176,115,115" Type="Color"/>
@@ -645,24 +613,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="466a8c9e-79a9-492c-ba77-6d555aaf49b4" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="999" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="999" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="6953509a-d4fe-4d13-b4c2-8fb1883d328f" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="f886c6ce-ba92-43bb-b90b-d5df335f2895" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="d3d8d5e6-eb3c-4a95-9cba-3c06c080e99c" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="599bae6a-ad91-4b9e-bf7b-6cf0b7c90aa5" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="c7463d39-0bf5-4719-8e3c-4538ea2fcd49" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="b16600b2-69de-4c9a-a87d-6e139235990b" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="544cfbb5-2730-43fc-bc14-410e97b1ea56" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="7c4692a6-6a79-43dd-9cd8-12f5903639c7" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="04356422-8479-4572-968b-98021fc56b0c" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="40a43409-e472-4aaa-968a-b7ad3197857e" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="8bf634c0-e337-43a3-912b-584b23036b3b">
         <Parameter Name="Color" Guid="ff77ecb2-4a2e-42cc-9c45-5287e5495cc6" Value="176,115,115" Type="Color"/>
@@ -782,24 +742,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="d280f968-4267-445b-b4b9-fba28a97d7af" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="999" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="999" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="2b5ffd19-bbf7-408a-b672-785df55e6154" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="5afd7076-8285-4463-979e-f6a3c5df5ee2" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="ad13c0b1-3478-427a-8e5f-15202436e0cd" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="b6ec417c-d7e4-4801-abf3-07da73dd5803" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="2e2b954d-95fa-46fe-80b5-a7cf354ddb6b" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="898c97fe-55ee-451d-b4ab-1150b9d5550c" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="68e60ff2-eced-4509-ae25-d6dae2dbba96" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="8a367c34-b414-4a6c-aea2-08e66822ac21" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="d83e790f-09bc-4a2e-a677-b61d6b2f7990" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="f15579ec-c073-4784-af73-7400125c7f60" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="bdeb8b14-d29c-4249-a48d-7de400ccd78b">
         <Parameter Name="Color" Guid="71c59716-6d04-48de-97e8-13716046dd71" Value="176,115,115" Type="Color"/>
@@ -1068,24 +1020,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="911efc0b-c0b6-48fd-b625-297f8135c265" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="a0510233-dd62-4b9e-b3df-9330c788d6c0" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="fff0daaf-f3c2-455f-8567-d0e154babc6d" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="5fb2fd06-2dae-4428-85e8-1fd73ece3ce9" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="4477d005-d75b-47a8-92bd-c043bd479688" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="0fa445fe-95e4-4f74-a120-bc5b1089f9eb" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="eb00375f-e5f7-438a-b70c-51fd1110d8a8" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="58c85283-1829-432c-ac67-f28955560553" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="775381ad-2364-4bba-bd84-9380527f1e3e" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="63298a66-51e2-48f1-b1a1-3470441b0d37" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="0c8fb94b-8ad7-41a5-a04d-27157387630a" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="d9fba799-c8bb-4225-8793-777d1a594c49">
         <Parameter Name="Color" Guid="eca696f8-9079-4c60-a661-b51023569b62" Value="176,115,115" Type="Color"/>
@@ -1205,24 +1149,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="2c3a4b9d-49dd-4f2d-8cec-c4a8d829cc9b" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="0caf4a95-4a81-48da-a035-2ac0a6502570" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="33c82030-ea85-4f2a-ab61-28cfa392b5ad" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="1f6db9b3-2304-49aa-b553-2a72b94dc488" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="28e1edb0-b223-4854-9d05-bc62f8ef29c2" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="4f60ea6d-6641-443c-9157-fcc1446a47d9" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="bceb447f-7005-4e07-aac0-4d029261b373" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="2c9fd8ea-bb7e-470a-b2a8-4ae0b69d4ed7" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="f283cf35-dde2-4c9d-b566-717a4329ddd5" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="82ef69aa-9d6a-45af-8705-1f8fbd6a75fa" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="7e74c0f7-97c2-4f08-af9d-38bfde114521" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="eb99ff63-1601-4cc4-8810-24545c926f45">
         <Parameter Name="Color" Guid="2dfa56cb-5d4d-40f1-b6e2-76cdb13605c3" Value="176,115,115" Type="Color"/>
@@ -1342,24 +1278,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c8010d13-597a-46cc-bc38-756bb4c2e702" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="ade82743-bca5-448e-b096-52fe254fa11b" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="ca1f0aba-9253-4aa4-9273-cc020b4bb9b8" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="3e26b5ab-67c7-42d9-a3c8-d23c2ea0cbf5" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="3563a2a9-8650-42cb-aa36-07b2e39159ae" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="d51656f4-2857-4896-9f2d-0ec311f4754f" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="83414a15-13e3-4806-9dfd-5e59edd15094" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="962b4f65-4c77-4bb6-a1b2-58d5f37e3336" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="a971d877-a662-4dc1-89f7-24958c1e4477" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="dc721e50-962b-4598-a18d-cf7c5cff64cf" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="5a81b92f-55d1-4cf9-959f-1175ac62f62c" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b1a095ab-0c14-4007-a66f-0715a211ffe1">
         <Parameter Name="Color" Guid="44c47408-2246-46b5-ab67-96181b03b786" Value="176,115,115" Type="Color"/>
@@ -1773,24 +1701,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="b2c6bdaa-6faa-4066-ad27-90641fa12d65" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="16ed9937-f56b-4a6a-8aec-f98e0b3ff5ad" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="17ff396e-2777-42b3-a5b3-516fa28b429e" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="bd00d447-ddad-45ca-ab67-465e28421969" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="99f48ba5-e9cd-4412-8a91-faa69bc9f7aa" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="6618f51d-ed93-4f35-8e19-84edf6d92db0" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="22dc0106-bb86-4e5a-9796-3645089fa4bb" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="ba56943d-6122-4fe7-ad53-ce5fce84a798" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="c168ce9a-911b-4ec6-b5c7-8b42fe4e18f9" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="8d8b294f-b394-43b7-b8d4-4e6fc0fc8cb2" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="48c49f27-12e2-4a2a-9603-8fc18b9ba374" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="0964edc6-a59a-4803-83e7-f5de7f20d416"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="43cb7c60-11f1-4312-a50b-e087466f1b2c" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -1910,24 +1830,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="7b9df3e5-acb0-48d5-b39b-22851a7d5b73" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="501496a1-ffe6-4222-97c5-a535dd02157a" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="69afc4d9-2d62-439a-85a3-da1cfe9edae4" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="502d9b1e-f47d-4589-ab76-8124a4cf71da" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="c59f566b-c02a-4c5c-b3e6-4acccaeeb27c" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="ff14ec86-cd04-4802-91d8-dfdfce080097" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="6b4e1092-b3f6-4393-8d76-43739a8a4d17" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="ddfd9922-2015-42d8-9f7e-0aa2e87203f6" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="36748460-a03a-4255-a5c8-87eb8c4630b3" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="6416c913-e238-462a-970c-77ecd9af501c" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="4f905656-394e-4fc9-b5e8-b68c1aed3679" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="476cc074-85ad-47ab-a0ae-9d5117eb7cf9"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ec0d6441-f58c-4eed-afbd-b3693dc1a0e7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2047,24 +1959,16 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c2d49d5d-db67-4bc1-a631-38436b1db8b2" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="5404ae8e-9e87-4433-9fef-4903b0295eb3" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="5eb93042-6881-46d6-a718-aa6aa7f72896" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="ce8892dd-e676-4302-bc60-f732439e96d3" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="587d970c-731f-4e48-9eb3-37d37db273ab" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="438967b2-00ae-4aa5-9798-07657813abe9" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="95e1956d-ad12-4c0d-985c-88bc9bad71d6" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="a0bb7c4b-5f02-42f8-81a5-8b458aa390ec" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="57e39983-67d4-46d7-a624-183abab6a486" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="785786e0-6756-4f53-8fe9-e6dafb02fd4b" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="d649cd73-a0be-4248-842c-1066b117f6e4" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="264a54d0-a57f-46ca-aadc-b4b0d40b932e"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="471cb201-bfdf-444a-91c1-ae2795ff09e4" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2264,24 +2168,16 @@
     <Parameter Name="HerdingRange" Value="100" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="BanditChaseBehavior" Guid="e5aaed6f-e651-4a75-80f4-13b267ceddad" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
-    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
+            <MemberComponentTemplate Name="BanditChaseBehavior" Guid="05ba2999-4379-460a-bea7-b9f0e8233193" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="ff5413fc-189c-491c-9897-908e48da54c0" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="cbd380ba-4dcb-4bde-977d-2578baefe079" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="5092f9a3-5307-47a2-9a61-c058a5756d0b" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="485e0931-4e23-4e1b-a7a8-fe86a86305cf" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="4191dc82-1729-48bb-8668-3a99de58506c" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="b04c1d18-2435-4301-9337-a6f4484eba72" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="f741a266-c639-4812-af53-115857692532" Value="0" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="7517ca0c-590d-4132-9b5d-025be4a8bad3" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="51a9461a-ff0f-44e0-91f8-74eeaeb4636b" Value="true" Type="bool" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Locomotion" Guid="a8c10747-e1a1-4941-860e-4f7cb6fecc6d">
               <Parameter Name="LadderSpeed" Guid="a36f279c-ba26-44d5-aae3-fcf139d97725" Value="1.0" Type="float"/>
