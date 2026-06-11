@@ -17,6 +17,14 @@
 </Folder>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="InfiniteChallenge" Guid="ac362fac-dca6-4e17-9c29-b0b5ef2d199a" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="d5aa296a-9fe2-4070-b417-1666015cb66c" Value="Game.ComponentInfiniteChallenge" Type="string" />
+  <Parameter Name="BossHealthMultiplier" Description="Multiplica la salud del jefe" Guid="800713e1-9982-4935-b43a-5d5bc0363983" Value="3" Type="float" />
+  <Parameter Name="BossDamageMultiplier" Description="Multiplica el daño del jefe" Guid="7a15894b-f10a-42e4-b314-433877d8bb70" Value="2.5" Type="float" />
+  <Parameter Name="BossSpeedMultiplier" Description="Multiplica la velocidad del jefe" Guid="0a58fee9-4ce9-4478-bbf5-47f2ca06b67a" Value="1.4" Type="float" />
+  <Parameter Name="VictoryHealthThreshold" Description="Umbral de salud para considerar victoria" Guid="b534053f-f0c1-45f1-83a0-9513d4829551" Value="0.1" Type="float" />
+</ComponentTemplate>
+
     <ComponentTemplate Name="ZombieRider" Description="Rider component for zombies - prevents player mounting on zombie mounts" Guid="ee35f217-d9a7-49b2-a493-43f8e499ffc6" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
           <Parameter Name="RiderOffset" Description="Offset from mount position when riding" Guid="c6082b96-4004-42bb-a6e5-aa4e7a39205c" Value="0,0,0" Type="Vector3" />
           <Parameter Name="Class" Guid="c14111e4-f34d-4526-8cd4-3e8c76c0d5a1" Value="Game.ComponentZombieRider" Type="string" />
@@ -419,25 +427,17 @@
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="912c89b2-caeb-4303-8abb-996c5b0c2b5f" Description="Si es true, llama a otros miembros de la manada cuando es atacado"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="ComponentBanditChase" Guid="c0b1cbec-0706-41cf-8bf4-9fd5647deca5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3" Description="Componente de persecución mejorado para bandidos con ataques a todas las criaturas">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string" Guid="69363cb9-5c35-4d52-bff8-180338945516" Description="Nombre de la clase C# que implementa el comportamiento de persecución para bandidos"/>
-    <Parameter Name="DayChaseRange" Value="20" Type="float" Guid="34636b20-3970-4ce6-8e35-53a4af1d0ebb" Description="Rango de persecución durante el día (en unidades del juego)"/>
-    <Parameter Name="NightChaseRange" Value="25" Type="float" Guid="76a02203-da67-4dea-a716-b2c5a50c599b" Description="Rango de persecución durante la noche (en unidades del juego)"/>
-    <Parameter Name="DayChaseTime" Value="60" Type="float" Guid="11843324-ef21-43cb-a228-e8d33bd97528" Description="Tiempo máximo de persecución durante el día (en segundos)"/>
-    <Parameter Name="NightChaseTime" Value="90" Type="float" Guid="08607584-29cc-4e5e-a10c-99a72e9ad0dd" Description="Tiempo máximo de persecución durante la noche (en segundos)"/>
-    <Parameter Name="AutoChaseMask" Value="31" Type="int" Guid="4d1be3c7-d575-480e-9495-badfbb67068c" Description="Máscara de categorías de criaturas a perseguir (31 = todas las categorías)"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float" Guid="3393f764-c0a5-4470-ae9a-f5a16586de4c" Description="Probabilidad de perseguir criaturas no jugador (1.0 = siempre)"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float" Guid="79b051bd-11bb-44c7-84e5-39d818a5e387" Description="Probabilidad de perseguir cuando es atacado (1.0 = siempre)"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float" Guid="c26518eb-905f-4342-a016-d6d7b9cecda1" Description="Probabilidad de perseguir al tocar (0.8 = 80% de probabilidad)"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool" Guid="8113c60a-4f70-47cc-b8f7-abd920701ac5" Description="Si es true, ataca a jugadores (si HerdName no es 'player')"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool" Guid="e1228f56-70f4-45d2-a51b-ed5a544fa99a" Description="Si es true, ataca a criaturas no jugador"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float" Guid="bb08577e-368c-43fd-a1f2-6c1a25422e9c" Description="Rango de persecución al tocar (en unidades del juego)"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float" Guid="ad947134-77b3-419b-ada9-23acb0060ea0" Description="Tiempo de persecución al tocar (en segundos)"/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float" Guid="b5792393-2171-45dd-a739-955d782fde3f" Description="Rango de persecución cuando es atacado (en unidades del juego)"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float" Guid="ec86c422-3757-4edf-a814-b0740228ed52" Description="Tiempo de persecución cuando es atacado (en segundos)"/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool" Guid="71622f8b-28dc-4d7d-9aa8-af3e3d97017f" Description="Si es true, la persecución cuando es atacado es persistente"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float" Guid="79a9991d-17fe-4622-ab39-e3844554e6a6" Description="Nivel de importancia para persecuciones persistentes"/>
-    <Parameter Name="IsDrugTraffickerMode" Value="false" Type="bool" Guid="00e79201-99d1-4286-aa5b-5531423fde7b" Description="Modo narcotraficante: si es true, prioriza atacar jugadores durante la invasión (se activa automáticamente al aceptar la guerra en la carta)"/>
+<ComponentTemplate Name="BanditChaseBehavior" Description="Makes the creature chase and attack targets" Guid="d07a37f7-7cef-4bb2-88e6-ac3c4b502264" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="ee171838-e507-459b-a6ae-2498f23f5c40" Value="Game.ComponentBanditChaseBehavior" Type="string" Description="The component class that handles chase behavior" />
+  <Parameter Name="ChaseWhenAttackedProbability" Description="Probability (0-1) that the creature will chase when attacked" Guid="a18388a6-9d28-4cd4-88b9-7e21978ae862" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Description="How many seconds the creature will chase at night" Guid="723a5982-358a-42e6-bf3a-b839805db5da" Value="10" Type="float" />
+  <Parameter Name="DayChaseRange" Description="How far the creature will chase during the day (in blocks)" Guid="cf4ecea0-49ce-49cc-89b8-1244212562fc" Value="1.5" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Description="Probability (0-1) that the creature will chase when touched" Guid="c0d9c460-0e4e-4a71-84bb-3fc19c4136fe" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Description="How many seconds the creature will chase during the day" Guid="2cc0f489-b7c1-4d5d-bc2a-b6890ff207fa" Value="10" Type="float" />
+  <Parameter Name="NightChaseRange" Description="How far the creature will chase at night (in blocks)" Guid="becc81ee-1060-4bbe-b43f-d747816ce1f6" Value="1.5" Type="float" />
+  <Parameter Name="AutoChaseMask" Description="Which creature categories this creature will automatically chase" Guid="d1dc03ff-aebe-4da4-a41a-59b403044e4a" Value="LandOther, Bird" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Description="Probability (0-1) that the creature will chase non-player creatures" Guid="7a075843-7905-46b1-af01-6b0fd2fa9646" Value="0" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Description="When enabled, the creature prioritizes attacking players over all other targets" Guid="c6c21e5c-ab5e-4646-93f2-cc77f8c08c8d" Value="false" Type="bool" />
 </ComponentTemplate>
 
 <ComponentTemplate Name="Gravity" Description="Makes creature fly away when hit" Guid="a773b42a-6f6d-4829-a453-49a2db96b132" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
