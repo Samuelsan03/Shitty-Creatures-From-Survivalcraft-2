@@ -85,6 +85,8 @@ namespace Game
 		private Vector3 m_flankDirection;
 		private bool m_isFlanking;
 
+		private float m_importanceLevel;
+
 		private List<int> m_throwableIndices = new List<int>();
 
 		private DifficultyMode m_currentDifficulty;
@@ -169,46 +171,12 @@ namespace Game
 			Add(typeof(GrozaBlock), typeof(NuevaBala3), "Audio/Armas/Groza fuego", 0.12, 290f, 2, new Vector3(0.009f, 0.009f, 0.04f), 30, automatic: true);
 		}
 
-		public override float ImportanceLevel
-		{
-			get
-			{
-				// Verificar si las condiciones de combate se cumplen
-				bool conditionsMet = m_canUseInventory && m_chaseBehavior != null && m_inventory != null &&
-									 m_componentMiner != null && m_componentCreature.ComponentHealth.Health > 0f &&
-									 !AchievementsManager.IsCelebrationActive &&
-									 m_chaseBehavior.m_target != null && m_chaseBehavior.m_target.ComponentHealth.Health > 0f;
-
-				// Si no hay condiciones válidas, limpiar estados inconsistentes y retornar 0
-				if (!conditionsMet)
-				{
-					// Limpiar estado de flanqueo si quedó activo
-					if (m_isFlanking)
-					{
-						m_isFlanking = false;
-						m_flankTimer = 0f;
-						m_flankDirection = Vector3.Zero;
-						if (m_chaseBehavior != null) m_chaseBehavior.Suppressed = false;
-						if (m_pathfinding != null) m_pathfinding.Stop();
-					}
-					// Limpiar estado de apuntado si quedó activo
-					if (m_isAiming)
-					{
-						m_isAiming = false;
-						m_aimTimer = 0f;
-						m_hasCompletedInitialAim = false;
-						ResetModelPose();
-					}
-					return 0f;
-				}
-
-				return 100f;
-			}
-		}
+		public override float ImportanceLevel => m_importanceLevel;
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
+			m_importanceLevel = 0f;
 			m_canUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
 			m_canEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing", false);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
@@ -419,15 +387,25 @@ namespace Game
 			}
 
 			ComponentCreature target = m_chaseBehavior.m_target;
-			if (target == null || target.ComponentHealth.Health <= 0f)
+			bool hasTarget = (target != null && target.ComponentHealth.Health > 0f);
+
+			// ========== ACTUALIZAR IMPORTANCIA DINÁMICA ==========
+			if (hasTarget)
 			{
+				// Hay objetivo vivo: la IA debe tomar el control (importancia alta)
+				m_importanceLevel = 100f;
+			}
+			else
+			{
+				// Sin objetivo: dejar que otros comportamientos (walkaround, recolectar, etc.) se ejecuten
+				m_importanceLevel = 0f;
+				// También nos aseguramos de detener cualquier apuntado o combate pendiente
 				StopAiming();
-				// NUEVO: También detener montura si está montado y no hay target
 				if (m_mountedCombatActive && m_componentRider?.Mount != null)
 				{
 					StopMountCompletely();
 				}
-				return;
+				return; // Salimos pronto para no interferir con la patrulla/recolección
 			}
 
 			int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
