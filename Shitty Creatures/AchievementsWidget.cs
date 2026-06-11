@@ -176,8 +176,6 @@ namespace Game
 				foreach (var container in orderedContainers)
 					m_achievementsStack.Children.Add(container);
 			}
-			// Luego llamar a ReorderAchievements para aplicar el orden dinámico inicial
-			ReorderAchievements();
 			if (subsystemAchievements != null)
 			{
 				m_backgroundState = subsystemAchievements.GetBackgroundState();
@@ -989,9 +987,9 @@ namespace Game
 			if (AchievementsManager.IsAchievementUnlocked(m_componentPlayer, number))
 				return 1f;
 
-			// Logros de día (9-14) no tienen progreso incremental, solo completado o no
+			// Logros de día (9-14) y otros condicionales: van al final (progreso -1)
 			if ((number >= 9 && number <= 14) || number == 52 || number == 8 || number == 37 || number == 41 || number == 42 || number == 43)
-				return 0f;
+				return -1f;
 
 			// Logros de contador: obtener current / target
 			int current = 0, target = 0;
@@ -1047,14 +1045,12 @@ namespace Game
 			return Math.Clamp((float)current / target, 0f, 0.999f);
 		}
 
-		// Método para reordenar los widgets según los datos actuales
 		private void ReorderAchievements()
 		{
 			if (m_achievementsStack == null || m_achievementItems.Count == 0) return;
 
 			var subsystem = m_componentPlayer?.Project?.FindSubsystem<SubsystemAchievements>(true);
 
-			// Recopilar datos de ordenamiento
 			m_sortData.Clear();
 			foreach (var item in m_achievementItems)
 			{
@@ -1071,39 +1067,35 @@ namespace Game
 				});
 			}
 
-			// Ordenar según reglas: completados por unlockTime descendente, luego no completados por progreso descendente,
-			// y como desempate usar el orden base (índice aleatorio inicial)
+			// ORDEN CORREGIDO:
+			// 1. Primero: Logros EN PROGRESO (progreso > 0 y < 1) - ordenados de mayor a menor progreso
+			// 2. Segundo: Logros COMPLETADOS (progreso == 1) - ordenados por tiempo reciente
+			// 3. Tercero: Logros SIN PROGRESO (progreso <= 0) - orden base
 			m_sortData.Sort((a, b) =>
 			{
-				if (a.Unlocked != b.Unlocked)
-					return a.Unlocked ? -1 : 1;
+				int GetPriority(AchievementSortData x)
+				{
+					if (x.Progress > 0f && x.Progress < 1f) return 0; // EN PROGRESO - PRIORIDAD MÁXIMA
+					if (x.Progress >= 1f) return 1;                   // COMPLETADOS
+					return 2;                                          // SIN PROGRESO
+				}
 
-				if (a.Unlocked)
-				{
-					int timeCompare = b.UnlockTime.CompareTo(a.UnlockTime);
-					if (timeCompare != 0)
-						return timeCompare;
-					// Mismo tiempo de desbloqueo: usar orden base
-					int baseA = subsystem?.GetBaseOrder(a.Number) ?? int.MaxValue;
-					int baseB = subsystem?.GetBaseOrder(b.Number) ?? int.MaxValue;
-					return baseA.CompareTo(baseB);
-				}
-				else
-				{
-					int progressCompare = b.Progress.CompareTo(a.Progress);
-					if (progressCompare != 0)
-						return progressCompare;
-					// Mismo progreso: usar orden base
-					int baseA = subsystem?.GetBaseOrder(a.Number) ?? int.MaxValue;
-					int baseB = subsystem?.GetBaseOrder(b.Number) ?? int.MaxValue;
-					return baseA.CompareTo(baseB);
-				}
+				int priorityA = GetPriority(a);
+				int priorityB = GetPriority(b);
+
+				if (priorityA != priorityB) return priorityA.CompareTo(priorityB);
+
+				if (priorityA == 0) // En progreso: mayor progreso primero
+					return b.Progress.CompareTo(a.Progress);
+
+				if (priorityA == 1) // Completados: más reciente primero
+					return b.UnlockTime.CompareTo(a.UnlockTime);
+
+				// Sin progreso: orden base
+				int baseA = subsystem?.GetBaseOrder(a.Number) ?? int.MaxValue;
+				int baseB = subsystem?.GetBaseOrder(b.Number) ?? int.MaxValue;
+				return baseA.CompareTo(baseB);
 			});
-
-			// Reconstruir la lista de hijos en el nuevo orden
-			var currentContainers = new List<Widget>();
-			foreach (var child in m_achievementsStack.Children)
-				currentContainers.Add(child);
 
 			var orderedContainers = new List<Widget>();
 			foreach (var sortData in m_sortData)
@@ -1112,23 +1104,10 @@ namespace Game
 					orderedContainers.Add(itemData.Container);
 			}
 
-			// Verificar si el orden cambió para evitar operaciones innecesarias
-			bool orderChanged = false;
-			for (int i = 0; i < currentContainers.Count; i++)
-			{
-				if (currentContainers[i] != orderedContainers[i])
-				{
-					orderChanged = true;
-					break;
-				}
-			}
-
-			if (orderChanged)
-			{
-				m_achievementsStack.Children.Clear();
-				foreach (var container in orderedContainers)
-					m_achievementsStack.Children.Add(container);
-			}
+			// Aplicar el nuevo orden
+			m_achievementsStack.Children.Clear();
+			foreach (var container in orderedContainers)
+				m_achievementsStack.Children.Add(container);
 		}
 
 		private void UnsubscribeEvents()
