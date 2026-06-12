@@ -76,13 +76,22 @@ namespace Game
 				{
 					banditChase.IsDrugTraffickerMode = enabled;
 					if (!enabled)
-					{
 						banditChase.StopAttack();
-					}
-					else
-					{
+					// Si enabled == true, no detenemos ataques (solo cambiamos el modo)
+				}
+			}
+		}
+
+		private void SyncBanditsDrugTraffickerMode()
+		{
+			foreach (var body in m_subsystemBodies.Bodies)
+			{
+				var banditChase = body.Entity.FindComponent<ComponentBanditChaseBehavior>();
+				if (banditChase != null)
+				{
+					banditChase.IsDrugTraffickerMode = m_invasionActive;
+					if (!m_invasionActive)
 						banditChase.StopAttack();
-					}
 				}
 			}
 		}
@@ -103,13 +112,20 @@ namespace Game
 			m_wasRejected = valuesDictionary.GetValue<bool>("WasRejected", false);
 			m_wasInvasionTime = IsInvasionTime();
 
-			// Si la invasión estaba activa al cargar (por guardado durante dusk/night), restaurar modo narcotraficante
+			// Restaurar estado activo si corresponde
 			if (m_acceptedWar && !m_invasionCompleted && m_wasInvasionTime)
 			{
 				m_invasionActive = true;
 				m_invasionStarted = true;
-				SetAllBanditsDrugTraffickerMode(true);
 			}
+			else
+			{
+				m_invasionActive = false;
+				m_invasionStarted = false;
+			}
+
+			// Sincronizar TODOS los bandidos existentes con el estado actual de invasión
+			SyncBanditsDrugTraffickerMode();
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
