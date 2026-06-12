@@ -20,6 +20,31 @@ namespace Game
 		public Random m_random = new Game.Random();
 		public static Random s_random = new Game.Random();
 
+		private static readonly HashSet<string> s_doorOpeners = new HashSet<string>
+{
+	"InfectedNormal1",
+	"InfectedNormal2",
+	"InfectedMuscle1",
+	"InfectedMuscle2",
+	"GhostNormal",
+	"GhostFast",
+	"Boomer1",
+	"Boomer2",
+	"Boomer3",
+	"GhostBoomer1",
+	"GhostBoomer2",
+	"GhostBoomer3",
+	"InfectedFast1",
+	"InfectedFast2",
+	"PoisonousInfected1",
+	"PoisonousInfected2",
+	"PoisonousGhost",
+	"PredatoryChameleon",
+	"InfectedFreezer",
+	"HumanoidSkeleton",
+	"InfectedWerewolf"
+};
+
 		public ComponentCreature ComponentCreature { get; set; }
 		public float AutoInteractRate { get; set; }
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -30,6 +55,21 @@ namespace Game
 			{
 				return;
 			}
+
+			// --- NUEVO: Verificar dificultad y tipo de criatura ---
+			SubsystemGreenNightSky greenNight = SubsystemGreenNightSky.Instance;
+			if (greenNight == null) return; // No hay sistema de noche verde, no se permite
+
+			DifficultyMode currentDifficulty = greenNight.DifficultyMode;
+			// Solo permitir en Medium, Hard o Extreme
+			if (currentDifficulty < DifficultyMode.Medium) return;
+
+			// Obtener nombre de la plantilla de esta criatura
+			string templateName = ComponentCreature.Entity.ValuesDictionary?.DatabaseObject?.Name;
+			if (string.IsNullOrEmpty(templateName)) return;
+			if (!s_doorOpeners.Contains(templateName)) return;
+			// ----------------------------------------------------
+
 			ComponentCreatureModel componentCreatureModel = ComponentCreature.ComponentCreatureModel;
 			Vector3 eyePosition = componentCreatureModel.EyePosition;
 			Vector3 forwardVector = componentCreatureModel.EyeRotation.GetForwardVector();
