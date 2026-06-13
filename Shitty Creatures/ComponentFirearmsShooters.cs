@@ -538,8 +538,13 @@ namespace Game
 			{
 				if (!m_isMelee)
 				{
-					// Intenta equipar un arma cuerpo a cuerpo; si no hay, seguirá disparando
+					// 1. Intentar equipar un arma cuerpo a cuerpo real
 					if (FindMeleeWeapon())
+					{
+						SwitchToMeleeMode();
+					}
+					// 2. Si no tiene arma pero es Bandit2/8, cambiar a slot vacío (mano vacía)
+					else if (IsUnarmedMeleeAllowed() && FindEmptySlot())
 					{
 						SwitchToMeleeMode();
 					}
@@ -549,7 +554,7 @@ namespace Game
 					UpdateMeleeMode(dt, target);
 					return;
 				}
-				// Si no tiene arma melee, continúa con el arma de fuego (cae al código siguiente)
+				// Si no tiene arma melee y no se le permite atacar a puño, continúa con el arma de fuego
 			}
 			else
 			{
@@ -1144,7 +1149,7 @@ namespace Game
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
 			}
-			FindMeleeWeapon();
+			// Eliminar la llamada a FindMeleeWeapon() que estaba aquí
 		}
 
 		private void SwitchToRangedMode()
@@ -1155,7 +1160,9 @@ namespace Game
 
 		private void UpdateMeleeMode(float dt, ComponentCreature target)
 		{
-			if (!HasMeleeWeaponEquipped())
+			// Solo intentar encontrar arma melee si actualmente no tenemos arma equipada
+			// pero no para los que atacan a puño (slot vacío)
+			if (!HasMeleeWeaponEquipped() && !IsUnarmedMeleeAllowed())
 			{
 				FindMeleeWeapon();
 			}
@@ -1243,6 +1250,29 @@ namespace Game
 			}
 			hitPoint = default(Vector3);
 			return null;
+		}
+
+		private bool IsUnarmedMeleeAllowed()
+		{
+			// Obtener el nombre de la plantilla de la entidad
+			var dbObject = base.Entity?.ValuesDictionary?.DatabaseObject;
+			if (dbObject == null) return false;
+			string templateName = dbObject.Name;
+			return templateName == "Bandit2" || templateName == "Bandit8";
+		}
+
+		private bool FindEmptySlot()
+		{
+			if (m_componentInventory == null) return false;
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				if (m_componentInventory.GetSlotValue(i) == 0)
+				{
+					m_componentInventory.ActiveSlotIndex = i;
+					return true;
+				}
+			}
+			return false;
 		}
 
 		private class FirearmConfig
