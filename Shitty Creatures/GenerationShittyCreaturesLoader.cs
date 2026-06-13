@@ -366,57 +366,64 @@ namespace Game
 				Terrain terrain = m_subsystemTerrain.Terrain;
 				int chunkX = chunk.Coords.X;
 				int chunkZ = chunk.Coords.Y;
+				Random globalRand = new Random(m_seed + chunkX * 1000 + chunkZ);
 
-				for (int i = chunkX; i <= chunkX; i++)
+				// Densidad global del bosque (factor multiplicador, igual que usabas antes)
+				float forestDensity = CalculateForestDensity(chunkX * 16 + 8, chunkZ * 16 + 8);
+
+				// Ejemplo: probamos cada bloque de superficie en el chunk (o puedes usar un stride)
+				// Para rendimiento, usamos un paso de 2 o 3, pero igual puedes probar todos.
+				for (int dx = 2; dx < 14; dx += 2)
 				{
-					for (int j = chunkZ; j <= chunkZ; j++)
+					for (int dz = 2; dz < 14; dz += 2)
 					{
-						Random localRandom = new Random(m_seed + i + 3943 * j);
+						int x = chunkX * 16 + dx;
+						int z = chunkZ * 16 + dz;
+						int y = terrain.CalculateTopmostCellHeight(x, z);
 
-						int humidity = CalculateHumidity(i * 16 + 8, j * 16 + 8);
-						int temperature = CalculateTemperature(i * 16 + 8, j * 16 + 8);
-						float forestDensity = CalculateForestDensity(i * 16 + 8, j * 16 + 8);
+						if (y < 66) continue;
 
-						int attempts = (int)(6f * forestDensity) + localRandom.Int(0, 2);
-						int planted = 0;
-						int maxAttempts = attempts * 2;
+						// Bloque suelo debe ser césped o tierra
+						int ground = terrain.GetCellContentsFast(x, y, z);
+						if (ground != 2 && ground != 8) continue;
 
-						for (int attempt = 0; attempt < maxAttempts && planted < attempts; attempt++)
+						// Espacio suficiente para el árbol?
+						if (!IsSpaceForTree(terrain, x, y + 1, z)) continue;
+
+						// Temperatura y humedad reales (con ajuste estacional)
+						int realTemp = terrain.GetTemperature(x, z) + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
+						int realHum = terrain.GetHumidity(x, z);
+
+						// Probabilidad base de que aparezca ALGÚN árbol frutal en esta celda
+						// Usamos la densidad máxima entre todos los tipos (o puedes usar un promedio)
+						float maxDensity = 0f;
+						foreach (ShittyTreeType type in Enum.GetValues(typeof(ShittyTreeType)))
 						{
-							int x = i * 16 + localRandom.Int(2, 13);
-							int z = j * 16 + localRandom.Int(2, 13);
-							int y = terrain.CalculateTopmostCellHeight(x, z);
-
-							if (y < 66) continue;
-
-							int groundContents = terrain.GetCellContentsFast(x, y, z);
-							if (groundContents != 2 && groundContents != 8) continue;
-
-							if (!IsSpaceForTree(terrain, x, y + 1, z)) continue;
-
-							int realTemp = terrain.GetTemperature(x, z) + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
-							int realHum = terrain.GetHumidity(x, z);
-
-							ShittyTreeType? treeType = ShittyPlantsManager.GenerateRandomTreeType(
-								localRandom, realTemp, realHum, y, 1.2f);
-
-							if (treeType != null)
-							{
-								var brushes = ShittyPlantsManager.GetTreeBrushes(treeType.Value);
-								if (brushes.Count > 0)
-								{
-									TerrainBrush brush = brushes[localRandom.Int(0, brushes.Count - 1)];
-									brush.PaintFast(chunk, x, y + 1, z);
-									chunk.AddBrushPaint(x, y + 1, z, brush);
-
-									// Dentro de GenerateFruitTrees, después de brush.PaintFast:
-									float fruitDensity = ShittyPlantsManager.CalculateFruitDensity(treeType.Value, realTemp, realHum, y);
-									ShittyPlantsManager.AttachFruitsToTreeFast(chunk, x, y + 1, z, brush, treeType.Value, localRandom, fruitDensity);
-
-									planted++;
-								}
-							}
+							float d = ShittyPlantsManager.CalculateTreeDensity(type, realTemp, realHum, y);
+							if (d > maxDensity) maxDensity = d;
 						}
+
+						// Aplicamos un factor global (forestDensity) y un pequeño random para variedad
+						float spawnProb = maxDensity * forestDensity * 0.5f; // Ajusta el 0.5f a gusto
+						if (globalRand.Float(0, 1) > spawnProb) continue;
+
+						// Ahora elegimos el tipo de árbol aleatoriamente (ya incluye su propia probabilidad)
+						Random localRand = new Random(m_seed + x + 3943 * z);
+						ShittyTreeType? treeType = ShittyPlantsManager.GenerateRandomTreeType(
+							localRand, realTemp, realHum, y, densityMultiplier: 1.2f);
+
+						if (treeType == null) continue;
+
+						var brushes = ShittyPlantsManager.GetTreeBrushes(treeType.Value);
+						if (brushes.Count == 0) continue;
+
+						TerrainBrush brush = brushes[localRand.Int(0, brushes.Count - 1)];
+						brush.PaintFast(chunk, x, y + 1, z);
+						chunk.AddBrushPaint(x, y + 1, z, brush);
+
+						// Colocar frutos usando la densidad calculada (como ya hacías)
+						float fruitDensity = ShittyPlantsManager.CalculateFruitDensity(treeType.Value, realTemp, realHum, y);
+						ShittyPlantsManager.AttachFruitsToTreeFast(chunk, x, y + 1, z, brush, treeType.Value, localRand, fruitDensity);
 					}
 				}
 			}
