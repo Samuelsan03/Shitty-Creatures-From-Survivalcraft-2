@@ -1019,42 +1019,24 @@ namespace Game
 					// ✅ Duelo activo → convertir interacción en ataque SOLO EN MÓVIL
 					if (challenge.IsDuelActive && player.ComponentInput.IsControlledByTouch)
 					{
-						if (result.HasValue && result.Value.ComponentBody != null)
+						// Usamos el mismo rango de ataque melee que el botón de golpe normal (2 bloques)
+						float meleeAttackRange = 2f;
+						var hitResult = player.ComponentMiner.Raycast<BodyRaycastResult>(
+							input.Interact.Value,
+							RaycastMode.Interaction,
+							true, true, true, meleeAttackRange);
+
+						if (hitResult.HasValue && hitResult.Value.ComponentBody != null)
 						{
-							ComponentBody hitBody = result.Value.ComponentBody;
-							Vector3 hitPoint = result.Value.HitPoint();
-							Vector3 hitDirection = player.ComponentInput.PlayerInput.Interact.Value.Direction;
+							ComponentBody hitBody = hitResult.Value.ComponentBody;
+							Vector3 hitPoint = hitResult.Value.HitPoint();
+							Vector3 hitDirection = input.Interact.Value.Direction;
 
-							// Obtener tiempo actual del juego
-							double currentGameTime = player.Project.FindSubsystem<SubsystemTime>(true).GameTime;
-							double hitInterval = player.ComponentMiner.HitInterval; // Intervalo entre golpes
-
-							// Verificar cooldown (usando m_lastHitGameTime del mod)
-							if (m_lastHitGameTime.TryGetValue(player, out double lastTime) && (currentGameTime - lastTime) < hitInterval)
-							{
-								playerOperated = true;
-								return; // Enfriamiento, no atacar
-							}
-
-							// Calcular si es golpe rápido (solo si la opción está activada)
-							bool isFastHit = false;
-							if (ShittyCreaturesSettingsManager.FastMeleeEnabled)
-							{
-								if (m_lastHitTarget.TryGetValue(player, out ComponentBody lastBody) &&
-									lastBody == hitBody &&
-									(currentGameTime - lastTime) < 0.3)
-								{
-									isFastHit = true;
-								}
-							}
-
-							// Actualizar registros para la detección de golpes rápidos
-							m_lastHitGameTime[player] = currentGameTime;
-							m_lastHitTarget[player] = hitBody;
-							m_fastHitMode[player] = isFastHit;
-
-							// Ejecutar el ataque
-							player.ComponentMiner.Hit(hitBody, hitPoint, hitDirection);
+							// Verificar que el objetivo sea el oponente del duelo (o cualquier enemigo, pero aquí solo interesa el oponente)
+							// Podemos comparar la entidad o simplemente procesar el golpe como siempre.
+							// ProcessHit ya contiene la lógica completa.
+							double dummyTimeInterval = 0.33;
+							ProcessHit(player, hitBody, hitPoint, hitDirection, ref dummyTimeInterval);
 						}
 						playerOperated = true;
 						return;
@@ -1343,17 +1325,13 @@ namespace Game
 	out bool flag)
 		{
 			flag = false;
-
-			if (playerOperated || skipVanilla || player == null)
-				return;
+			if (playerOperated || skipVanilla || player == null) return;
 
 			PlayerInput input = player.ComponentInput.PlayerInput;
-			if (input.Hit == null)
-				return;
+			if (input.Hit == null) return;
 
 			ComponentMiner miner = player.ComponentMiner;
-			if (miner == null)
-				return;
+			if (miner == null) return;
 
 			BodyRaycastResult? result = miner.Raycast<BodyRaycastResult>(
 				input.Hit.Value, RaycastMode.Interaction, true, true, true, meleeAttackRange);
@@ -1363,56 +1341,9 @@ namespace Game
 				ComponentBody hitBody = result.Value.ComponentBody;
 				if (hitBody != null && hitBody.Entity != player.Entity)
 				{
-					ComponentCreature targetCreature = hitBody.Entity.FindComponent<ComponentCreature>();
-					if (targetCreature != null && targetCreature.ComponentHealth.Health > 0f)
-					{
-						if (ShittyCreaturesSettingsManager.PunchCommandEnabled)
-						{
-							// Suscribir al evento Injured para que solo se ordene ataque cuando el golpe sea exitoso (cause daño)
-							Action<Injury> handler = null;
-							handler = (Injury injury) =>
-							{
-								if (injury.Attacker == player)
-								{
-									CommandAlliesToAttack(player, targetCreature);
-									targetCreature.ComponentHealth.Injured -= handler; // autodesuscripción
-								}
-							};
-							targetCreature.ComponentHealth.Injured += handler;
-						}
-
-						if (ShittyCreaturesSettingsManager.FastMeleeEnabled)
-						{
-							double currentGameTime = player.Project.FindSubsystem<SubsystemTime>(true).GameTime;
-							bool isFastHit = false;
-
-							if (m_lastHitGameTime.TryGetValue(player, out double lastTime) &&
-								m_lastHitTarget.TryGetValue(player, out ComponentBody lastBody))
-							{
-								if (lastBody == hitBody && (currentGameTime - lastTime) < 0.3)
-								{
-									isFastHit = true;
-								}
-							}
-
-							m_lastHitGameTime[player] = currentGameTime;
-							m_lastHitTarget[player] = hitBody;
-
-							if (isFastHit)
-							{
-								m_fastHitMode[player] = true;
-								timeIntervalHit = 0.1;
-							}
-							else
-							{
-								m_fastHitMode[player] = false;
-							}
-						}
-						else
-						{
-							m_fastHitMode[player] = false;
-						}
-					}
+					Vector3 hitPoint = result.Value.HitPoint();
+					Vector3 hitDirection = input.Hit.Value.Direction;
+					ProcessHit(player, hitBody, hitPoint, hitDirection, ref timeIntervalHit);
 				}
 			}
 		}
@@ -2708,6 +2639,63 @@ namespace Game
 				}
 			}
 			return bestMount;
+		}
+
+		private void ProcessHit(ComponentPlayer player, ComponentBody hitBody, Vector3 hitPoint, Vector3 hitDirection, ref double timeIntervalHit)
+		{
+			if (player == null || hitBody == null) return;
+
+			ComponentCreature targetCreature = hitBody.Entity.FindComponent<ComponentCreature>();
+			if (targetCreature == null || targetCreature.ComponentHealth.Health <= 0f) return;
+
+			// Lógica de "PunchCommandEnabled" (aliados atacan)
+			if (ShittyCreaturesSettingsManager.PunchCommandEnabled)
+			{
+				Action<Injury> handler = null;
+				handler = (Injury injury) =>
+				{
+					if (injury.Attacker == player)
+					{
+						CommandAlliesToAttack(player, targetCreature);
+						targetCreature.ComponentHealth.Injured -= handler;
+					}
+				};
+				targetCreature.ComponentHealth.Injured += handler;
+			}
+
+			// Lógica de golpes rápidos (FastMeleeEnabled)
+			if (ShittyCreaturesSettingsManager.FastMeleeEnabled)
+			{
+				double currentGameTime = player.Project.FindSubsystem<SubsystemTime>(true).GameTime;
+				bool isFastHit = false;
+
+				if (m_lastHitTarget.TryGetValue(player, out ComponentBody lastBody) &&
+					lastBody == hitBody &&
+					(currentGameTime - m_lastHitGameTime.GetValueOrDefault(player)) < 0.3)
+				{
+					isFastHit = true;
+				}
+
+				m_lastHitGameTime[player] = currentGameTime;
+				m_lastHitTarget[player] = hitBody;
+				m_fastHitMode[player] = isFastHit;
+
+				if (isFastHit)
+				{
+					timeIntervalHit = 0.1;
+				}
+				else
+				{
+					m_fastHitMode[player] = false;
+				}
+			}
+			else
+			{
+				m_fastHitMode[player] = false;
+			}
+
+			// Finalmente, ejecutar el golpe
+			player.ComponentMiner.Hit(hitBody, hitPoint, hitDirection);
 		}
 
 		// ---------------------------------------------------------------------------------
