@@ -1372,6 +1372,11 @@ namespace Game
 			if (player == null || target == null) return;
 			if (BossFightBlocker.IsAttackBlocked(target)) return;
 
+			// NUEVO: No ordenar atacar a Infinite durante el duelo
+			var infiniteChallenge = target.Entity.FindComponent<ComponentInfiniteChallenge>();
+			if (infiniteChallenge != null && infiniteChallenge.IsDuelActive)
+				return;
+
 			if (player == null || target == null)
 				return;
 
