@@ -726,6 +726,11 @@ namespace Game
 			if (creature == null) return false;
 			if (m_componentHireable != null && !m_componentHireable.IsHired) return false;
 
+			// NUEVO: No atacar a Infinite durante su duelo activo
+			var infiniteChallenge = creature.Entity.FindComponent<ComponentInfiniteChallenge>();
+			if (infiniteChallenge != null && infiniteChallenge.IsDuelActive)
+				return false;
+
 			if (m_componentHerd != null && !m_componentHerd.CanAttackCreature(creature))
 				return false;
 
@@ -1148,6 +1153,11 @@ namespace Game
 
 		private float ScoreTarget(ComponentCreature creature)
 		{
+			// NUEVO: No considerar a Infinite durante el duelo
+			var infiniteChallenge = creature.Entity.FindComponent<ComponentInfiniteChallenge>();
+			if (infiniteChallenge != null && infiniteChallenge.IsDuelActive)
+
+				return 0f;
 			if (m_componentHireable != null && !m_componentHireable.IsHired)
 				return 0f;
 
