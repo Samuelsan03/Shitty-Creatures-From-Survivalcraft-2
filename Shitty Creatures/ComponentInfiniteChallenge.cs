@@ -257,7 +257,6 @@ namespace Game
 
 			ApplyBossStats();
 			SetAllyAttackBlock(true);
-			DisableAlliesChase();
 
 			// Reproducir sonido de inicio del duelo
 			if (m_subsystemAudio != null)
