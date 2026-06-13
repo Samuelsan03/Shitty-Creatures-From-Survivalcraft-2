@@ -667,11 +667,35 @@ namespace Game
 
 			m_hasBeenDefeated = valuesDictionary.GetValue<bool>("HasBeenDefeated", false);
 
-			int savedState = valuesDictionary.GetValue<int>("ChallengeState", 0);
-			m_state = (ChallengeState)savedState;
+			// 🔥 CORRECCIÓN: Si no ha sido derrotado, resetear completamente el estado para permitir nuevo duelo
+			if (!m_hasBeenDefeated)
+			{
+				m_state = ChallengeState.Idle;
+				m_valuesSaved = false;
+
+				// Restaurar manada si estaba como "player"
+				if (m_herd != null && m_herd.HerdName == "player")
+					m_herd.HerdName = null;   // Valor por defecto (sin manada)
+
+				// Asegurar que los comportamientos de persecución no estén suprimidos
+				if (m_baseChase != null)
+					m_baseChase.Suppressed = false;
+				if (m_newChase != null)
+					m_newChase.Suppressed = false;
+
+				// Eliminar cualquier bloqueo de ataques aliados que hubiera quedado
+				SetAllyAttackBlock(false);
+			}
+			else
+			{
+				// Si ya fue derrotado, cargar el estado guardado (pero solo si no está en medio de un duelo)
+				int savedState = valuesDictionary.GetValue<int>("ChallengeState", 0);
+				m_state = (ChallengeState)savedState;
+			}
 
 			CacheComponents();
 
+			// Limpieza para estados de duelo activo (cuando la partida se guardó en medio del duelo)
 			if (m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress)
 			{
 				if (m_baseChase != null)
@@ -690,6 +714,7 @@ namespace Game
 				m_valuesSaved = false;
 			}
 
+			// Si el Infinite ya fue derrotado, asegurar que su manada sea "player" (amigable)
 			if (m_hasBeenDefeated)
 			{
 				if (m_herd != null)
