@@ -50,6 +50,14 @@ namespace Game
 		// ShittyModLoader (original)
 		static FieldInfo m_cachesField;
 
+		private static readonly HashSet<string> s_bossNames = new HashSet<string>
+{
+	"Tank1", "Tank2", "Tank3",
+	"TankGhost1", "TankGhost2", "TankGhost3",
+	"MachineGunInfected", "FlyingInfectedBoss",
+	"FrozenTank", "FrozenTankGhost"
+};
+
 		// MusicModLoader
 		private static readonly List<string> _menuSongs = new List<string>
 		{
@@ -1840,8 +1848,17 @@ namespace Game
 
 		public override void OnCreatureDied(ComponentHealth health, Injury injury, ref int experienceOrbDropCount, ref bool calculateInKill)
 		{
-			// Delegar la lógica de logros al manager
-			AchievementsManager.OnCreatureDied(health, injury);
+			// CORRECCIÓN: Cambiado 'componentHealth' por 'health'
+			if (health?.Entity?.ValuesDictionary?.DatabaseObject?.Name is string entityName &&
+			s_bossNames.Contains(entityName))
+			{
+				// Los jefes no sueltan experiencia para evitar explotar la diferencia
+				// de salud entre dificultades
+				experienceOrbDropCount = 0;
+
+				// Delegar la lógica de logros al manager
+				AchievementsManager.OnCreatureDied(health, injury);
+			}
 
 			// Mantener el sonido especial para piratas
 			Entity deadEntity = health.Entity;
