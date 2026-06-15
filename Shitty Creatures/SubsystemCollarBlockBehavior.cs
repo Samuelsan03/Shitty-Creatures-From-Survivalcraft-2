@@ -89,6 +89,7 @@ namespace Game
 				{"FrozenGhostBoomer", "FrozenGhostBoomerTamed" },
 				{"FrozenTank", "FrozenTankTamed"},
 				{"FrozenTankGhost", "FrozenTankGhostTamed"},
+				{"InfectedSpider", "InfectedSpiderTamed"},
 			};
 		}
 
@@ -122,7 +123,6 @@ namespace Game
 				return false;
 			string currentEntityName = entity.ValuesDictionary.DatabaseObject.Name;
 
-			// Obtener el ComponentPlayer fuera de los bloques para usarlo en ambos casos
 			ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 
 			if (m_tameableCreatures.ContainsKey(currentEntityName))
@@ -196,363 +196,172 @@ namespace Game
 				bool isTamedInfectedFreezer = entityTemplateName == "InfectedFreezerTamed";
 				bool isTamedFrozenTank = entityTemplateName == "FrozenTankTamed";
 				bool isTamedFrozenTankGhost = entityTemplateName == "FrozenTankGhostTamed";
+				bool isTamedInfectedSpider = entityTemplateName == "InfectedSpiderTamed";
 
 				if (componentPlayer != null)
 				{
-					try
+					string messageKey = "";
+					Color messageColor = Color.White;
+					string soundToPlay = "Audio/UI/Tada";
+
+					if (isTamedBoss)
 					{
-						string message;
-						Color messageColor;
-						string soundToPlay;
-						if (isTamedBoss)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedBossMessage");
-							if (!translationFound) message = "You have tamed the Flying Infected Boss, use it wisely for emergency cases";
-							messageColor = new Color(66, 0, 142);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
-						}
-						else if (isTamedBoomer)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedBoomerMessage");
-							if (!translationFound) message = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
-							messageColor = new Color(153, 0, 76);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
-						}
-						else if (isTamedGhostBoomer)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostBoomerMessage");
-							if (!translationFound) message = "You have tamed a Ghost Boomer!\nIts spectral explosions will haunt your enemies!\nA ghostly explosive guardian is now yours!";
-							messageColor = new Color(102, 0, 153);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
-						}
-						else if (isTamedFrozenGhostBoomer)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenGhostBoomerMessage");
-							if (!translationFound) message = "You have tamed a Frozen Ghost Boomer!\nIts icy explosions will freeze your enemies!";
-							messageColor = new Color(0, 191, 255);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
-						}
-						else if (isTamedBoomerFrozen)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedBoomerFrozenMessage");
-							if (!translationFound) message = "You have tamed a Frozen Boomer!\nIts chilling explosion will freeze nearby enemies solid!";
-							messageColor = new Color(0, 191, 255);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
-						}
-						else if (isTamedFrozenGhost)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenGhostMessage");
-							if (!translationFound) message = "You have tamed a Frozen Ghost!\nIts spectral icy touch will freeze your foes!";
-							messageColor = new Color(0, 191, 255);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedCharger)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedChargerMessage");
-							if (!translationFound) message = "You have tamed a Charger! Its brute force to push enemies strongly will now be your tool! Use it well and wisely!";
-							messageColor = new Color(44, 44, 110);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
-						}
-						else if (isTamedGhostCharger)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostChargerMessage");
-							if (!translationFound) message = "You have tamed a Ghost Charger!\nIts phantom force will push enemies from beyond!\nA spectral brute is now under your command!";
-							messageColor = new Color(75, 0, 130);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
-						}
-						else if (isTamedTank || isTamedMachineGun)
-						{
-							if (isTamedMachineGun)
-							{
-								bool translationFound;
-								message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedMachineGunMessage");
-								if (!translationFound) message = "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!";
-								messageColor = new Color(255, 140, 0);
-								soundToPlay = "Audio/UI/Tank Tamed Sound";
-							}
-							else
-							{
-								bool translationFound;
-								message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedTankMessage");
-								if (!translationFound) message = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
-								messageColor = new Color(153, 0, 0);
-								soundToPlay = "Audio/UI/Tank Tamed Sound";
-							}
-						}
-						else if (isTamedGhostTank)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostTankMessage");
-							if (!translationFound) message = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
-							messageColor = new Color(139, 0, 139);
-							soundToPlay = "Audio/UI/Tank Tamed Sound";
-						}
-						else if (isTamedFrozenTank)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenTankMessage");
-							if (!translationFound) message = "You have tamed a Frozen Tank!\nIts icy brute force will freeze and crush your enemies!\nA frozen guardian is now under your command!";
-							messageColor = new Color(0, 191, 255);
-							soundToPlay = "Audio/UI/Tank Tamed Sound";
-						}
-						else if (isTamedFrozenTankGhost)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenTankGhostMessage");
-							if (!translationFound) message = "You have tamed a Frozen Ghost Tank!\nA spectral icy terror now serves you from beyond!\nIts frozen phantom wrath will haunt your foes!";
-							messageColor = new Color(100, 200, 255);
-							soundToPlay = "Audio/UI/Tank Tamed Sound";
-						}
-						else if (isTamedGhost)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostMessage");
-							if (!translationFound) message = "You have tamed a Ghost!\nIts invisibility is now in your hands!";
-							messageColor = new Color(128, 0, 128);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedWolf)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedWolfMessage");
-							if (!translationFound) message = "You have tamed an infected wolf! It will now fight for you.";
-							messageColor = new Color(0, 255, 128);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedWerewolf)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedWerewolfMessage");
-							if (!translationFound) message = "You have tamed an infected werewolf! Its savage strength is now yours to command.";
-							messageColor = new Color(0, 255, 128);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedHyena)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedHyenaMessage");
-							if (!translationFound) message = "You have tamed an infected hyena! Its pack instincts will protect you.";
-							messageColor = new Color(255, 215, 0);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedBear)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedBearMessage");
-							if (!translationFound) message = "You have tamed an Infected Bear! Its brute strength will protect you.";
-							messageColor = new Color(131, 0, 0);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedHumanoidSkeleton)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedHumanoidSkeletonMessage");
-							if (!translationFound) message = "You have tamed a Humanoid Skeleton! Its bony bow will now fight for you!";
-							messageColor = new Color(200, 200, 200);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedPredatoryChameleon)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedPredatoryChameleonMessage");
-							if (!translationFound) message = "You have tamed a Predatory Chameleon! Its lethal hunting instincts are now yours to command!";
-							messageColor = new Color(50, 205, 50);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedInfectedBird)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedBirdMessage");
-							if (!translationFound) message = "You have tamed an Infected Bird! Your loyal flying guardian will watch the skies!";
-							messageColor = new Color(135, 206, 235);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedInfectedWildboar)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedWildboarMessage");
-							if (!translationFound) message = "You have tamed an Infected Wildboar! Its powerful shoves will push your enemies away!";
-							messageColor = new Color(139, 69, 19);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedInfectedFreezer)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedFreezerMessage");
-							if (!translationFound) message = "You have tamed a Freezing Infected! Its icy snowballs will slow and freeze your enemies!";
-							messageColor = new Color(0, 191, 255);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						else
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedMessage");
-							if (!translationFound) message = "You have tamed a hostile Infected!\nNow it will be your guardian!";
-							messageColor = new Color(0, 255, 128);
-							soundToPlay = "Audio/UI/Tada";
-						}
-						componentPlayer.ComponentGui.DisplaySmallMessage(message, messageColor, false, false);
-						if (this.m_subsystemAudio != null)
-						{
-							try
-							{
-								this.m_subsystemAudio.PlaySound(soundToPlay, 1f, 0f, 0f, 0.0001f);
-							}
-							catch
-							{
-								componentPlayer.ComponentGui.DisplaySmallMessage(message, messageColor, false, true);
-							}
-						}
+						messageKey = "CollarTamedBossMessage";
+						messageColor = new Color(66, 0, 142);
+						soundToPlay = "Audio/UI/Bosses FNAF 3";
 					}
-					catch
+					else if (isTamedBoomer)
 					{
-						string defaultMessage;
-						Color defaultColor;
-						if (isTamedBoss)
-						{
-							defaultMessage = "You have tamed the Flying Infected Boss, use it wisely for emergency cases";
-							defaultColor = new Color(66, 0, 142);
-						}
-						else if (isTamedBoomer || isTamedGhostBoomer)
-						{
-							if (isTamedGhostBoomer)
-							{
-								defaultMessage = "You have tamed a Ghost Boomer!\nIts spectral explosions will haunt your enemies!\nA ghostly explosive guardian is now yours!";
-								defaultColor = new Color(102, 0, 153);
-							}
-							else
-							{
-								defaultMessage = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
-								defaultColor = new Color(153, 0, 76);
-							}
-						}
-						else if (isTamedFrozenGhostBoomer)
-						{
-							defaultMessage = "You have tamed a Frozen Ghost Boomer!\nIts icy explosions will freeze your enemies!";
-							defaultColor = new Color(0, 191, 255);
-						}
-						else if (isTamedBoomerFrozen)
-						{
-							defaultMessage = "You have tamed a Frozen Boomer!\nIts chilling explosion will freeze nearby enemies solid!";
-							defaultColor = new Color(0, 191, 255);
-						}
-						else if (isTamedFrozenGhost)
-						{
-							defaultMessage = "You have tamed a Frozen Ghost!\nIts spectral icy touch will freeze your foes!";
-							defaultColor = new Color(0, 191, 255);
-						}
-						else if (isTamedCharger || isTamedGhostCharger)
-						{
-							if (isTamedGhostCharger)
-							{
-								defaultMessage = "You have tamed a Ghost Charger!\nIts phantom force will push enemies from beyond!\nA spectral brute is now under your command!";
-								defaultColor = new Color(75, 0, 130);
-							}
-							else
-							{
-								defaultMessage = "You have tamed a Charger! Its brute force to push enemies strongly will now be your tool! Use it well and wisely!";
-								defaultColor = new Color(44, 44, 110);
-							}
-						}
-						else if (isTamedTank || isTamedMachineGun)
-						{
-							if (isTamedMachineGun)
-							{
-								defaultMessage = "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!";
-								defaultColor = new Color(255, 140, 0);
-							}
-							else
-							{
-								defaultMessage = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
-								defaultColor = new Color(153, 0, 0);
-							}
-						}
-						else if (isTamedGhostTank)
-						{
-							defaultMessage = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
-							defaultColor = new Color(139, 0, 139);
-						}
-						else if (isTamedFrozenTank)
-						{
-							defaultMessage = "You have tamed a Frozen Tank!\nIts icy brute force will freeze and crush your enemies!\nA frozen guardian is now under your command!";
-							defaultColor = new Color(0, 191, 255);
-						}
-						else if (isTamedFrozenTankGhost)
-						{
-							defaultMessage = "You have tamed a Frozen Ghost Tank!\nA spectral icy terror now serves you from beyond!\nIts frozen phantom wrath will haunt your foes!";
-							defaultColor = new Color(100, 200, 255);
-						}
-						else if (isTamedGhost)
-						{
-							defaultMessage = "You have tamed a Ghost! Its spectral powers are now in your hands!";
-							defaultColor = new Color(128, 0, 128);
-						}
-						else if (isTamedWolf)
-						{
-							defaultMessage = "You have tamed an infected wolf! It will now fight for you.";
-							defaultColor = new Color(0, 255, 128);
-						}
-						else if (isTamedWerewolf)
-						{
-							defaultMessage = "You have tamed an infected werewolf! Its savage strength is now yours to command.";
-							defaultColor = new Color(0, 255, 128);
-						}
-						else if (isTamedHyena)
-						{
-							defaultMessage = "You have tamed an infected hyena! Its pack instincts will protect you.";
-							defaultColor = new Color(255, 215, 0);
-						}
-						else if (isTamedBear)
-						{
-							defaultMessage = "You have tamed an Infected Bear! Its brute strength will protect you.";
-							defaultColor = new Color(131, 0, 0);
-						}
-						else if (isTamedHumanoidSkeleton)
-						{
-							defaultMessage = "You have tamed a Humanoid Skeleton! Its bony bow will now fight for you!";
-							defaultColor = new Color(200, 200, 200);
-						}
-						else if (isTamedPredatoryChameleon)
-						{
-							defaultMessage = "You have tamed a Predatory Chameleon! Its lethal hunting instincts are now yours to command!";
-							defaultColor = new Color(50, 205, 50);
-						}
-						else if (isTamedInfectedBird)
-						{
-							defaultMessage = "You have tamed an Infected Bird! Your loyal flying guardian will watch the skies!";
-							defaultColor = new Color(135, 206, 235);
-						}
-						else if (isTamedInfectedWildboar)
-						{
-							defaultMessage = "You have tamed an Infected Wildboar! Its powerful shoves will push your enemies away!";
-							defaultColor = new Color(139, 69, 19);
-						}
-						else if (isTamedInfectedFreezer)
-						{
-							defaultMessage = "You have tamed a Infected Freezer! Its icy snowballs will slow and freeze your enemies!";
-							defaultColor = new Color(0, 191, 255);
-						}
-						else
-						{
-							defaultMessage = "You have tamed a hostile Infected! Now it will be your guardian!";
-							defaultColor = new Color(0, 255, 128);
-						}
-						componentPlayer.ComponentGui.DisplaySmallMessage(defaultMessage, defaultColor, false, true);
+						messageKey = "CollarTamedBoomerMessage";
+						messageColor = new Color(153, 0, 76);
+						soundToPlay = "Audio/UI/Bosses FNAF 3";
+					}
+					else if (isTamedGhostBoomer)
+					{
+						messageKey = "CollarTamedGhostBoomerMessage";
+						messageColor = new Color(102, 0, 153);
+						soundToPlay = "Audio/UI/Bosses FNAF 3";
+					}
+					else if (isTamedFrozenGhostBoomer)
+					{
+						messageKey = "CollarTamedFrozenGhostBoomerMessage";
+						messageColor = new Color(0, 191, 255);
+						soundToPlay = "Audio/UI/Bosses FNAF 3";
+					}
+					else if (isTamedBoomerFrozen)
+					{
+						messageKey = "CollarTamedBoomerFrozenMessage";
+						messageColor = new Color(0, 191, 255);
+						soundToPlay = "Audio/UI/Bosses FNAF 3";
+					}
+					else if (isTamedFrozenGhost)
+					{
+						messageKey = "CollarTamedFrozenGhostMessage";
+						messageColor = new Color(0, 191, 255);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedCharger)
+					{
+						messageKey = "CollarTamedChargerMessage";
+						messageColor = new Color(44, 44, 110);
+						soundToPlay = "Audio/UI/Bosses FNAF 3";
+					}
+					else if (isTamedGhostCharger)
+					{
+						messageKey = "CollarTamedGhostChargerMessage";
+						messageColor = new Color(75, 0, 130);
+						soundToPlay = "Audio/UI/Bosses FNAF 3";
+					}
+					else if (isTamedTank)
+					{
+						messageKey = "CollarTamedTankMessage";
+						messageColor = new Color(153, 0, 0);
+						soundToPlay = "Audio/UI/Tank Tamed Sound";
+					}
+					else if (isTamedMachineGun)
+					{
+						messageKey = "CollarTamedMachineGunMessage";
+						messageColor = new Color(255, 140, 0);
+						soundToPlay = "Audio/UI/Tank Tamed Sound";
+					}
+					else if (isTamedGhostTank)
+					{
+						messageKey = "CollarTamedGhostTankMessage";
+						messageColor = new Color(139, 0, 139);
+						soundToPlay = "Audio/UI/Tank Tamed Sound";
+					}
+					else if (isTamedFrozenTank)
+					{
+						messageKey = "CollarTamedFrozenTankMessage";
+						messageColor = new Color(0, 191, 255);
+						soundToPlay = "Audio/UI/Tank Tamed Sound";
+					}
+					else if (isTamedFrozenTankGhost)
+					{
+						messageKey = "CollarTamedFrozenTankGhostMessage";
+						messageColor = new Color(100, 200, 255);
+						soundToPlay = "Audio/UI/Tank Tamed Sound";
+					}
+					else if (isTamedGhost)
+					{
+						messageKey = "CollarTamedGhostMessage";
+						messageColor = new Color(128, 0, 128);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedWolf)
+					{
+						messageKey = "CollarTamedInfectedWolfMessage";
+						messageColor = new Color(0, 255, 128);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedWerewolf)
+					{
+						messageKey = "CollarTamedInfectedWerewolfMessage";
+						messageColor = new Color(0, 255, 128);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedHyena)
+					{
+						messageKey = "CollarTamedInfectedHyenaMessage";
+						messageColor = new Color(255, 215, 0);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedBear)
+					{
+						messageKey = "CollarTamedInfectedBearMessage";
+						messageColor = new Color(131, 0, 0);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedHumanoidSkeleton)
+					{
+						messageKey = "CollarTamedHumanoidSkeletonMessage";
+						messageColor = new Color(200, 200, 200);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedPredatoryChameleon)
+					{
+						messageKey = "CollarTamedPredatoryChameleonMessage";
+						messageColor = new Color(50, 205, 50);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedInfectedBird)
+					{
+						messageKey = "CollarTamedInfectedBirdMessage";
+						messageColor = new Color(135, 206, 235);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedInfectedWildboar)
+					{
+						messageKey = "CollarTamedInfectedWildboarMessage";
+						messageColor = new Color(139, 69, 19);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedInfectedFreezer)
+					{
+						messageKey = "CollarTamedInfectedFreezerMessage";
+						messageColor = new Color(0, 191, 255);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else if (isTamedInfectedSpider)
+					{
+						messageKey = "CollarTamedInfectedSpiderMessage";
+						messageColor = new Color(128, 0, 128);
+						soundToPlay = "Audio/UI/Tada";
+					}
+					else
+					{
+						messageKey = "CollarTamedMessage";
+						messageColor = new Color(0, 255, 128);
+						soundToPlay = "Audio/UI/Tada";
 					}
 
-					// ========== REGISTRAR LA DOMESTICACIÓN PARA LOGROS ==========
-					// Clasificación CORRECTA según lo solicitado:
-					// - Normales: Todo lo que NO es jefe Y NO es fantasma (Boomers, Chargers, Wolves, etc. incluidos)
-					// - Jefes: Tanks (normales y fantasmas), MachineGun, FlyingInfectedBoss, FrozenTank, FrozenTankGhost
-					// - Fantasmas: GhostNormal, GhostFast, PoisonousGhost, GhostCharger, GhostBoomer, FrozenGhost, FrozenGhostBoomer (EXCLUYENDO TankGhost y FrozenTankGhost que son jefes)
+					string message = LanguageControl.Get("Messages", messageKey);
+					componentPlayer.ComponentGui.DisplaySmallMessage(message, messageColor, false, false);
+
+					if (this.m_subsystemAudio != null)
+					{
+						this.m_subsystemAudio.PlaySound(soundToPlay, 1f, 0f, 0f, 0.0001f);
+					}
 
 					bool isBossTame = isTamedTank || isTamedGhostTank || isTamedMachineGun || isTamedBoss || isTamedFrozenTank || isTamedFrozenTankGhost;
 					bool isGhostTame = isTamedGhost || isTamedGhostCharger || isTamedGhostBoomer || isTamedFrozenGhost || isTamedFrozenGhostBoomer;
@@ -567,7 +376,6 @@ namespace Game
 					}
 					else
 					{
-						// Normal: Boomers, Chargers, Wolves, Werewolves, Hyenas, Bears, HumanoidSkeleton, PredatoryChameleon, InfectedBird, InfectedWildboar, InfectedFreezer, etc.
 						AchievementsManager.OnNormalTame(componentPlayer);
 					}
 				}
@@ -576,7 +384,6 @@ namespace Game
 			}
 			else
 			{
-				// Caso: collar usado en criatura NO tameable (NPC normal)
 				string entityTemplateName = CollarVariants[this.m_random.Next(CollarVariants.Length)];
 				Entity entity2 = DatabaseManager.CreateEntity(base.Project, entityTemplateName, false);
 				if (entity2 == null) return true;
