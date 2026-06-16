@@ -136,6 +136,7 @@
     <Entry template="PredatoryChameleon" count="3"/>
     <Entry template="InfectedWolf" count="4"/>
     <Entry template="InfectedWerewolf" count="2"/>
+    <Entry template="InfectedSpider" count="4"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
@@ -163,6 +164,7 @@
     <Entry template="PredatoryChameleon" count="4"/>
     <Entry template="InfectedWolf" count="4"/>
     <Entry template="InfectedWerewolf" count="2"/>
+    <Entry template="InfectedSpider" count="5"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
@@ -194,6 +196,7 @@
     <Entry template="PredatoryChameleon" count="4"/>
     <Entry template="InfectedWolf" count="5"/>
     <Entry template="InfectedWerewolf" count="2"/>
+    <Entry template="InfectedSpider" count="6"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
@@ -227,6 +230,7 @@
     <Entry template="PredatoryChameleon" count="5"/>
     <Entry template="InfectedWolf" count="6"/>
     <Entry template="InfectedWerewolf" count="2"/>
+    <Entry template="InfectedSpider" count="6"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
@@ -261,6 +265,7 @@
     <Entry template="PredatoryChameleon" count="5"/>
     <Entry template="InfectedWolf" count="6"/>
     <Entry template="InfectedWerewolf" count="3"/>
+    <Entry template="InfectedSpider" count="7"/>
     <Entry template="FlyingInfectedBoss" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -299,6 +304,7 @@
     <Entry template="PredatoryChameleon" count="7"/>
     <Entry template="InfectedWolf" count="8"/>
     <Entry template="InfectedWerewolf" count="4"/>
+    <Entry template="InfectedSpider" count="7"/>
     <Entry template="Tank1" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -337,6 +343,7 @@
     <Entry template="PredatoryChameleon" count="9"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="InfectedSpider" count="8"/>
     <Entry template="Tank2" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -375,6 +382,7 @@
     <Entry template="PredatoryChameleon" count="10"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="InfectedSpider" count="8"/>
     <Entry template="Tank3" count="1"/>
     <Entry template="InfectedFreezer" count="8"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -413,6 +421,7 @@
     <Entry template="PredatoryChameleon" count="10"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="InfectedSpider" count="8"/>
     <Entry template="FrozenTank" count="1"/>
     <Entry template="InfectedFreezer" count="8"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -451,6 +460,7 @@
     <Entry template="PredatoryChameleon" count="9"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="InfectedSpider" count="8"/>
     <Entry template="TankGhost1" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -489,6 +499,7 @@
     <Entry template="PredatoryChameleon" count="9"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="InfectedSpider" count="8"/>
     <Entry template="TankGhost2" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -527,6 +538,7 @@
     <Entry template="PredatoryChameleon" count="9"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="InfectedSpider" count="8"/>
     <Entry template="TankGhost3" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -565,6 +577,7 @@
     <Entry template="PredatoryChameleon" count="9"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="InfectedSpider" count="8"/>
     <Entry template="FrozenTankGhost" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -603,6 +616,7 @@
     <Entry template="PredatoryChameleon" count="9"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="InfectedSpider" count="8"/>
     <Entry template="MachineGunInfected" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
@@ -641,6 +655,7 @@
     <Entry template="PredatoryChameleon" count="3"/>
     <Entry template="InfectedWolf" count="3"/>
     <Entry template="InfectedWerewolf" count="2"/>
+    <Entry template="InfectedSpider" count="10"/>
     <Entry template="FlyingInfectedBoss" count="1"/>
     <Entry template="Tank1" count="1"/>
     <Entry template="Tank2" count="1"/>
