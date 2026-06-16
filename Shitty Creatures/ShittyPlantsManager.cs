@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Engine;
 using Game;
 
@@ -11,38 +12,92 @@ namespace Game
 		public static int[] m_treeTrunksByType;
 		public static int[] m_treeLeavesByType;
 		private static bool m_initialized = false;
+		private static readonly object m_lock = new object();
+
+		// Eliminamos el constructor estático para evitar inicialización temprana
+
+		public static void EnsureInitialized()
+		{
+			// Si no está inicializado o los índices son inválidos, reinicializar
+			if (!m_initialized || m_treeTrunksByType == null || m_treeTrunksByType.Any(i => i < 0) || m_treeLeavesByType == null || m_treeLeavesByType.Any(i => i < 0))
+			{
+				Initialize();
+			}
+		}
 
 		public static void Initialize()
 		{
-			if (m_initialized) return;
-
-			// Obtener índices de bloques de forma dinámica (ya están asignados)
-			m_treeTrunksByType = new int[]
-{
-	BlocksManager.GetBlockIndex(typeof(AppleWoodBlock), true, true),
-	BlocksManager.GetBlockIndex(typeof(PearWoodBlock), true, true),
-	BlocksManager.GetBlockIndex(typeof(OrangeWoodBlock), true, true),
-	BlocksManager.GetBlockIndex(typeof(CherryWoodBlock), true, true),
-	BlocksManager.GetBlockIndex(typeof(BananaWoodBlock), true, true)
-};
-
-			m_treeLeavesByType = new int[]
+			lock (m_lock)
 			{
-	BlocksManager.GetBlockIndex(typeof(AppleLeavesBlock), true, true),
-	BlocksManager.GetBlockIndex(typeof(PearLeavesBlock), true, true),
-	BlocksManager.GetBlockIndex(typeof(OrangeLeavesBlock), true, true),
-	BlocksManager.GetBlockIndex(typeof(CherryLeavesBlock), true, true),
-	BlocksManager.GetBlockIndex(typeof(BananaLeavesBlock), true, true)
-			};
+				try
+				{
+					// Obtener índices de bloques dinámicamente (siempre frescos)
+					m_treeTrunksByType = new int[]
+					{
+						BlocksManager.GetBlockIndex(typeof(AppleWoodBlock), false, false),
+						BlocksManager.GetBlockIndex(typeof(PearWoodBlock), false, false),
+						BlocksManager.GetBlockIndex(typeof(OrangeWoodBlock), false, false),
+						BlocksManager.GetBlockIndex(typeof(CherryWoodBlock), false, false),
+						BlocksManager.GetBlockIndex(typeof(BananaWoodBlock), false, false)
+					};
 
-			// Inicializar el array de brushes
-			int maxTreeType = EnumUtils.GetEnumValues<ShittyTreeType>().Max();
-			m_treeBrushesByType = new List<TerrainBrush>[maxTreeType + 1];
+					m_treeLeavesByType = new int[]
+					{
+						BlocksManager.GetBlockIndex(typeof(AppleLeavesBlock), false, false),
+						BlocksManager.GetBlockIndex(typeof(PearLeavesBlock), false, false),
+						BlocksManager.GetBlockIndex(typeof(OrangeLeavesBlock), false, false),
+						BlocksManager.GetBlockIndex(typeof(CherryLeavesBlock), false, false),
+						BlocksManager.GetBlockIndex(typeof(BananaLeavesBlock), false, false)
+					};
 
-			Random random = new Random(33);
+					// Fallback para bloques no encontrados
+					for (int i = 0; i < m_treeTrunksByType.Length; i++)
+					{
+						if (m_treeTrunksByType[i] < 0)
+						{
+							Log.Warning($"ShittyPlantsManager: Tree trunk block for {((ShittyTreeType)i)} not found! Using OakWood (9).");
+							m_treeTrunksByType[i] = 9; // OakWood
+						}
+						if (m_treeLeavesByType[i] < 0)
+						{
+							Log.Warning($"ShittyPlantsManager: Tree leaves block for {((ShittyTreeType)i)} not found! Using OakLeaves (12).");
+							m_treeLeavesByType[i] = 12; // OakLeaves
+						}
+					}
 
-			// ---- Apple ----
+					int maxTreeType = Enum.GetValues(typeof(ShittyTreeType)).Cast<int>().Max();
+					m_treeBrushesByType = new List<TerrainBrush>[maxTreeType + 1];
+
+					Random random = new Random(33);
+
+					CreateAppleBrushes(random);
+					CreatePearBrushes(random);
+					CreateOrangeBrushes(random);
+					CreateCherryBrushes(random);
+					CreateBananaBrushes(random);
+
+					m_initialized = true;
+					Log.Information("ShittyPlantsManager re-initialized successfully.");
+				}
+				catch (Exception e)
+				{
+					Log.Error($"ShittyPlantsManager initialization failed: {e}");
+					// Asegurar que no quede en un estado inconsistente
+					m_treeBrushesByType = new List<TerrainBrush>[Enum.GetValues(typeof(ShittyTreeType)).Cast<int>().Max() + 1];
+					for (int i = 0; i < m_treeBrushesByType.Length; i++)
+					{
+						m_treeBrushesByType[i] = new List<TerrainBrush>();
+					}
+					m_initialized = true; // Evita bucles infinitos
+				}
+			}
+		}
+
+		private static void CreateAppleBrushes(Random random)
+		{
 			m_treeBrushesByType[(int)ShittyTreeType.Apple] = new List<TerrainBrush>();
+			int trunk = m_treeTrunksByType[(int)ShittyTreeType.Apple];
+			int leaves = m_treeLeavesByType[(int)ShittyTreeType.Apple];
 			for (int i = 0; i < 16; i++)
 			{
 				int[] heights = { 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 13 };
@@ -50,8 +105,8 @@ namespace Game
 				int branches = (int)MathUtils.Lerp(8, 18, i / 16f);
 				var brush = PlantsManager.CreateTreeBrush(
 					random,
-					m_treeTrunksByType[(int)ShittyTreeType.Apple],
-					m_treeLeavesByType[(int)ShittyTreeType.Apple],
+					trunk,
+					leaves,
 					height, branches, 3,
 					(y, _) => {
 						float t = y / (float)height;
@@ -65,9 +120,13 @@ namespace Game
 					});
 				m_treeBrushesByType[(int)ShittyTreeType.Apple].Add(brush);
 			}
+		}
 
-			// ---- Pear ----
+		private static void CreatePearBrushes(Random random)
+		{
 			m_treeBrushesByType[(int)ShittyTreeType.Pear] = new List<TerrainBrush>();
+			int trunk = m_treeTrunksByType[(int)ShittyTreeType.Pear];
+			int leaves = m_treeLeavesByType[(int)ShittyTreeType.Pear];
 			for (int i = 0; i < 16; i++)
 			{
 				int[] heights = { 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13 };
@@ -75,8 +134,8 @@ namespace Game
 				int branches = (int)MathUtils.Lerp(6, 16, i / 16f);
 				var brush = PlantsManager.CreateTreeBrush(
 					random,
-					m_treeTrunksByType[(int)ShittyTreeType.Pear],
-					m_treeLeavesByType[(int)ShittyTreeType.Pear],
+					trunk,
+					leaves,
 					height, branches, 3,
 					(y, _) => {
 						float t = y / (float)height;
@@ -90,9 +149,13 @@ namespace Game
 					});
 				m_treeBrushesByType[(int)ShittyTreeType.Pear].Add(brush);
 			}
+		}
 
-			// ---- Orange ----
+		private static void CreateOrangeBrushes(Random random)
+		{
 			m_treeBrushesByType[(int)ShittyTreeType.Orange] = new List<TerrainBrush>();
+			int trunk = m_treeTrunksByType[(int)ShittyTreeType.Orange];
+			int leaves = m_treeLeavesByType[(int)ShittyTreeType.Orange];
 			for (int i = 0; i < 16; i++)
 			{
 				int[] heights = { 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 14 };
@@ -100,8 +163,8 @@ namespace Game
 				int branches = (int)MathUtils.Lerp(10, 20, i / 16f);
 				var brush = PlantsManager.CreateTreeBrush(
 					random,
-					m_treeTrunksByType[(int)ShittyTreeType.Orange],
-					m_treeLeavesByType[(int)ShittyTreeType.Orange],
+					trunk,
+					leaves,
 					height, branches, 3,
 					(y, _) => {
 						float t = y / (float)height;
@@ -115,9 +178,13 @@ namespace Game
 					});
 				m_treeBrushesByType[(int)ShittyTreeType.Orange].Add(brush);
 			}
+		}
 
-			// ---- Cherry ----
+		private static void CreateCherryBrushes(Random random)
+		{
 			m_treeBrushesByType[(int)ShittyTreeType.Cherry] = new List<TerrainBrush>();
+			int trunk = m_treeTrunksByType[(int)ShittyTreeType.Cherry];
+			int leaves = m_treeLeavesByType[(int)ShittyTreeType.Cherry];
 			for (int i = 0; i < 16; i++)
 			{
 				int[] heights = { 5, 5, 6, 6, 7, 7, 8, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
@@ -125,8 +192,8 @@ namespace Game
 				int branches = (int)MathUtils.Lerp(12, 22, i / 16f);
 				var brush = PlantsManager.CreateTreeBrush(
 					random,
-					m_treeTrunksByType[(int)ShittyTreeType.Cherry],
-					m_treeLeavesByType[(int)ShittyTreeType.Cherry],
+					trunk,
+					leaves,
 					height, branches, 3,
 					(y, _) => {
 						float t = y / (float)height;
@@ -140,9 +207,13 @@ namespace Game
 					});
 				m_treeBrushesByType[(int)ShittyTreeType.Cherry].Add(brush);
 			}
+		}
 
-			// ---- Banana ----
+		private static void CreateBananaBrushes(Random random)
+		{
 			m_treeBrushesByType[(int)ShittyTreeType.Banana] = new List<TerrainBrush>();
+			int trunk = m_treeTrunksByType[(int)ShittyTreeType.Banana];
+			int leaves = m_treeLeavesByType[(int)ShittyTreeType.Banana];
 			for (int i = 0; i < 16; i++)
 			{
 				int[] heights = { 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15 };
@@ -150,8 +221,8 @@ namespace Game
 				int branches = (int)MathUtils.Lerp(8, 16, i / 16f);
 				var brush = PlantsManager.CreateTreeBrush(
 					random,
-					m_treeTrunksByType[(int)ShittyTreeType.Banana],
-					m_treeLeavesByType[(int)ShittyTreeType.Banana],
+					trunk,
+					leaves,
 					height, branches, 2,
 					(y, _) => {
 						if (y < height * 0.6f) return 0f;
@@ -164,39 +235,44 @@ namespace Game
 					});
 				m_treeBrushesByType[(int)ShittyTreeType.Banana].Add(brush);
 			}
-
-			m_initialized = true;
 		}
 
-		public static int GetTreeTrunkValue(ShittyTreeType treeType) => m_treeTrunksByType[(int)treeType];
-		public static int GetTreeLeavesValue(ShittyTreeType treeType) => m_treeLeavesByType[(int)treeType];
-		public static ReadOnlyList<TerrainBrush> GetTreeBrushes(ShittyTreeType treeType) => new ReadOnlyList<TerrainBrush>(m_treeBrushesByType[(int)treeType]);
+		public static int GetTreeTrunkValue(ShittyTreeType treeType)
+		{
+			EnsureInitialized();
+			return m_treeTrunksByType[(int)treeType];
+		}
+
+		public static int GetTreeLeavesValue(ShittyTreeType treeType)
+		{
+			EnsureInitialized();
+			return m_treeLeavesByType[(int)treeType];
+		}
+
+		public static ReadOnlyList<TerrainBrush> GetTreeBrushes(ShittyTreeType treeType)
+		{
+			EnsureInitialized();
+			if (m_treeBrushesByType == null || m_treeBrushesByType.Length <= (int)treeType || m_treeBrushesByType[(int)treeType] == null)
+			{
+				return new ReadOnlyList<TerrainBrush>(new List<TerrainBrush>());
+			}
+			return new ReadOnlyList<TerrainBrush>(m_treeBrushesByType[(int)treeType]);
+		}
 
 		public static float CalculateTreeProbability(ShittyTreeType treeType, int temperature, int humidity, int y)
 		{
-			// Rangos ajustados según descripciones del JSON
 			switch (treeType)
 			{
-				// Manzano: templado, humedad moderada (6-14, 6-14)
 				case ShittyTreeType.Apple:
 					return RangeProb(temperature, 4, 6, 12, 14) * RangeProb(humidity, 4, 6, 12, 14) * RangeProb(y, 0, 0, 80, 90);
-
-				// Peral: templado, alta humedad (7-15, 8-15)
 				case ShittyTreeType.Pear:
 					return RangeProb(temperature, 5, 7, 13, 15) * RangeProb(humidity, 6, 8, 14, 15) * RangeProb(y, 0, 0, 80, 90);
-
-				// Naranjo: tropical cálido y húmedo (8-15, 10-15)
 				case ShittyTreeType.Orange:
 					return RangeProb(temperature, 6, 8, 14, 15) * RangeProb(humidity, 8, 10, 15, 15) * RangeProb(y, 0, 0, 70, 85);
-
-				// Cerezo: frío, baja humedad (5-13, 6-13)
 				case ShittyTreeType.Cherry:
 					return RangeProb(temperature, 3, 5, 11, 13) * RangeProb(humidity, 3, 6, 11, 13) * RangeProb(y, 0, 0, 85, 92);
-
-				// Banano: tropical, cálido y muy húmedo (9-15, 12-15)
 				case ShittyTreeType.Banana:
 					return RangeProb(temperature, 7, 9, 15, 15) * RangeProb(humidity, 10, 12, 15, 15) * RangeProb(y, 0, 0, 70, 80);
-
 				default: return 0f;
 			}
 		}
@@ -207,19 +283,14 @@ namespace Game
 			{
 				case ShittyTreeType.Apple:
 					return RangeProb(temperature, 4, 6, 12, 14) * RangeProb(humidity, 4, 6, 12, 14);
-
 				case ShittyTreeType.Pear:
 					return RangeProb(temperature, 5, 7, 13, 15) * RangeProb(humidity, 6, 8, 14, 15);
-
 				case ShittyTreeType.Orange:
 					return RangeProb(temperature, 6, 8, 14, 15) * RangeProb(humidity, 8, 10, 15, 15);
-
 				case ShittyTreeType.Cherry:
 					return RangeProb(temperature, 3, 5, 11, 13) * RangeProb(humidity, 3, 6, 11, 13);
-
 				case ShittyTreeType.Banana:
 					return RangeProb(temperature, 7, 9, 15, 15) * RangeProb(humidity, 10, 12, 15, 15);
-
 				default: return 0f;
 			}
 		}
@@ -249,6 +320,7 @@ namespace Game
 
 		public static bool IsLeafBlock(int blockContents)
 		{
+			EnsureInitialized();
 			foreach (int leaf in m_treeLeavesByType)
 				if (blockContents == leaf) return true;
 			return false;
@@ -261,18 +333,15 @@ namespace Game
 		{
 			int fruitIndex = GetFruitIndexFromType(treeType);
 			if (fruitIndex == 0) return;
-
 			foreach (TerrainBrush.Cell cell in brush.Cells)
 			{
 				int x = originX + (int)cell.X;
 				int y = originY + (int)cell.Y;
 				int z = originZ + (int)cell.Z;
-
 				int cellValue = subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
 				int contents = Terrain.ExtractContents(cellValue);
 				if (contents != GetTreeLeavesValue(treeType))
 					continue;
-
 				int belowValue = subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
 				int belowContents = Terrain.ExtractContents(belowValue);
 				if (belowContents == 0)
@@ -302,40 +371,33 @@ namespace Game
 		public static float CalculateFruitDensity(ShittyTreeType treeType, int temperature, int humidity, int y)
 		{
 			float prob = CalculateTreeProbability(treeType, temperature, humidity, y);
-
-			// Ajustes según características de cada fruta
 			switch (treeType)
 			{
-				case ShittyTreeType.Apple:  // Moderada
+				case ShittyTreeType.Apple:
 					if (prob < 0.2f) return 0.1f;
 					if (prob < 0.4f) return 0.3f;
 					if (prob < 0.7f) return 0.6f;
 					return 0.8f;
-
-				case ShittyTreeType.Pear:   // Moderada (similar a manzana)
+				case ShittyTreeType.Pear:
 					if (prob < 0.2f) return 0.1f;
 					if (prob < 0.4f) return 0.3f;
 					if (prob < 0.7f) return 0.5f;
 					return 0.7f;
-
-				case ShittyTreeType.Orange: // Alta producción
+				case ShittyTreeType.Orange:
 					if (prob < 0.2f) return 0.2f;
 					if (prob < 0.4f) return 0.4f;
 					if (prob < 0.7f) return 0.7f;
 					return 0.9f;
-
-				case ShittyTreeType.Cherry: // Baja producción (fruta pequeña)
+				case ShittyTreeType.Cherry:
 					if (prob < 0.2f) return 0.05f;
 					if (prob < 0.4f) return 0.15f;
 					if (prob < 0.7f) return 0.35f;
 					return 0.5f;
-
-				case ShittyTreeType.Banana: // Alta producción
+				case ShittyTreeType.Banana:
 					if (prob < 0.2f) return 0.2f;
 					if (prob < 0.4f) return 0.5f;
 					if (prob < 0.7f) return 0.8f;
 					return 0.95f;
-
 				default: return 0f;
 			}
 		}
@@ -344,7 +406,6 @@ namespace Game
 		{
 			int fruitIndex = GetFruitIndexFromType(treeType);
 			if (fruitIndex == 0) return;
-
 			List<Point3> leafPositions = new List<Point3>();
 			foreach (TerrainBrush.Cell cell in brush.Cells)
 			{
@@ -358,11 +419,8 @@ namespace Game
 					leafPositions.Add(new Point3(x, y, z));
 				}
 			}
-
 			int maxFruits = 0;
 			float perLeafProb = 0f;
-
-			// Ajustes según tipo de árbol
 			float baseMultiplier = 1f;
 			switch (treeType)
 			{
@@ -372,10 +430,8 @@ namespace Game
 				case ShittyTreeType.Cherry: baseMultiplier = 0.6f; break;
 				case ShittyTreeType.Banana: baseMultiplier = 1.3f; break;
 			}
-
 			float adjustedDensity = fruitDensity * baseMultiplier;
 			adjustedDensity = Math.Clamp(adjustedDensity, 0f, 0.95f);
-
 			if (adjustedDensity >= 0.8f)
 			{
 				maxFruits = int.MaxValue;
@@ -391,8 +447,6 @@ namespace Game
 				maxFruits = (int)(1 * baseMultiplier);
 				perLeafProb = 0.1f * Math.Min(1f, baseMultiplier);
 			}
-
-			// Mezclar posiciones para aleatoriedad
 			for (int i = 0; i < leafPositions.Count; i++)
 			{
 				int swap = random.Int(i, leafPositions.Count - 1);
@@ -400,7 +454,6 @@ namespace Game
 				leafPositions[i] = leafPositions[swap];
 				leafPositions[swap] = temp;
 			}
-
 			int fruitsPlaced = 0;
 			foreach (Point3 leaf in leafPositions)
 			{
@@ -422,7 +475,6 @@ namespace Game
 		{
 			int fruitIndex = GetFruitIndexFromType(treeType);
 			if (fruitIndex == 0) return;
-
 			List<Point3> leafPositions = new List<Point3>();
 			foreach (TerrainBrush.Cell cell in brush.Cells)
 			{
@@ -441,11 +493,8 @@ namespace Game
 					}
 				}
 			}
-
 			int maxFruits = 0;
 			float perLeafProb = 0f;
-
-			// Ajustes según tipo de árbol
 			float baseMultiplier = 1f;
 			switch (treeType)
 			{
@@ -455,10 +504,8 @@ namespace Game
 				case ShittyTreeType.Cherry: baseMultiplier = 0.6f; break;
 				case ShittyTreeType.Banana: baseMultiplier = 1.3f; break;
 			}
-
 			float adjustedDensity = fruitDensity * baseMultiplier;
 			adjustedDensity = Math.Clamp(adjustedDensity, 0f, 0.95f);
-
 			if (adjustedDensity >= 0.8f)
 			{
 				maxFruits = int.MaxValue;
@@ -474,7 +521,6 @@ namespace Game
 				maxFruits = (int)(1 * baseMultiplier);
 				perLeafProb = 0.1f * Math.Min(1f, baseMultiplier);
 			}
-
 			for (int i = 0; i < leafPositions.Count; i++)
 			{
 				int swap = random.Int(i, leafPositions.Count - 1);
@@ -482,7 +528,6 @@ namespace Game
 				leafPositions[i] = leafPositions[swap];
 				leafPositions[swap] = temp;
 			}
-
 			int fruitsPlaced = 0;
 			foreach (Point3 leaf in leafPositions)
 			{
