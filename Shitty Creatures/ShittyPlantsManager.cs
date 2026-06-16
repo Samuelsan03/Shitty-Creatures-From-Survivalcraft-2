@@ -18,21 +18,21 @@ namespace Game
 
 			// Obtener índices de bloques de forma dinámica (ya están asignados)
 			m_treeTrunksByType = new int[]
-			{
-				BlocksManager.GetBlockIndex("AppleWoodBlock", true),
-				BlocksManager.GetBlockIndex("PearWoodBlock", true),
-				BlocksManager.GetBlockIndex("OrangeWoodBlock", true),
-				BlocksManager.GetBlockIndex("CherryWoodBlock", true),
-				BlocksManager.GetBlockIndex("BananaWoodBlock", true)
-			};
+{
+	BlocksManager.GetBlockIndex(typeof(AppleWoodBlock), true, true),
+	BlocksManager.GetBlockIndex(typeof(PearWoodBlock), true, true),
+	BlocksManager.GetBlockIndex(typeof(OrangeWoodBlock), true, true),
+	BlocksManager.GetBlockIndex(typeof(CherryWoodBlock), true, true),
+	BlocksManager.GetBlockIndex(typeof(BananaWoodBlock), true, true)
+};
 
 			m_treeLeavesByType = new int[]
 			{
-				BlocksManager.GetBlockIndex("AppleLeavesBlock", true),
-				BlocksManager.GetBlockIndex("PearLeavesBlock", true),
-				BlocksManager.GetBlockIndex("OrangeLeavesBlock", true),
-				BlocksManager.GetBlockIndex("CherryLeavesBlock", true),
-				BlocksManager.GetBlockIndex("BananaLeavesBlock", true)
+	BlocksManager.GetBlockIndex(typeof(AppleLeavesBlock), true, true),
+	BlocksManager.GetBlockIndex(typeof(PearLeavesBlock), true, true),
+	BlocksManager.GetBlockIndex(typeof(OrangeLeavesBlock), true, true),
+	BlocksManager.GetBlockIndex(typeof(CherryLeavesBlock), true, true),
+	BlocksManager.GetBlockIndex(typeof(BananaLeavesBlock), true, true)
 			};
 
 			// Inicializar el array de brushes
@@ -174,33 +174,52 @@ namespace Game
 
 		public static float CalculateTreeProbability(ShittyTreeType treeType, int temperature, int humidity, int y)
 		{
-			// Rangos ajustados para hacerlos más restrictivos
+			// Rangos ajustados según descripciones del JSON
 			switch (treeType)
 			{
-				// Manzano: templado-frío, humedad media (rango estrecho)
-				case ShittyTreeType.Apple: return RangeProb(temperature, 6, 9, 12, 14) * RangeProb(humidity, 6, 9, 12, 14) * RangeProb(y, 0, 0, 80, 90);
-				// Peral: templado, humedad media (rango más estrecho)
-				case ShittyTreeType.Pear: return RangeProb(temperature, 7, 10, 13, 15) * RangeProb(humidity, 5, 8, 12, 14) * RangeProb(y, 0, 0, 80, 90);
-				// Naranjo: cálido-húmedo (más restrictivo)
-				case ShittyTreeType.Orange: return RangeProb(temperature, 8, 11, 14, 15) * RangeProb(humidity, 7, 10, 14, 15) * RangeProb(y, 0, 0, 75, 85);
-				// Cerezo: fresco, humedad media-alta
-				case ShittyTreeType.Cherry: return RangeProb(temperature, 5, 8, 11, 13) * RangeProb(humidity, 6, 9, 13, 15) * RangeProb(y, 0, 0, 85, 92);
-				// Banano: tropical, cálido y muy húmedo
-				case ShittyTreeType.Banana: return RangeProb(temperature, 9, 12, 15, 15) * RangeProb(humidity, 9, 12, 15, 15) * RangeProb(y, 0, 0, 70, 80);
+				// Manzano: templado, humedad moderada (6-14, 6-14)
+				case ShittyTreeType.Apple:
+					return RangeProb(temperature, 4, 6, 12, 14) * RangeProb(humidity, 4, 6, 12, 14) * RangeProb(y, 0, 0, 80, 90);
+
+				// Peral: templado, alta humedad (7-15, 8-15)
+				case ShittyTreeType.Pear:
+					return RangeProb(temperature, 5, 7, 13, 15) * RangeProb(humidity, 6, 8, 14, 15) * RangeProb(y, 0, 0, 80, 90);
+
+				// Naranjo: tropical cálido y húmedo (8-15, 10-15)
+				case ShittyTreeType.Orange:
+					return RangeProb(temperature, 6, 8, 14, 15) * RangeProb(humidity, 8, 10, 15, 15) * RangeProb(y, 0, 0, 70, 85);
+
+				// Cerezo: frío, baja humedad (5-13, 6-13)
+				case ShittyTreeType.Cherry:
+					return RangeProb(temperature, 3, 5, 11, 13) * RangeProb(humidity, 3, 6, 11, 13) * RangeProb(y, 0, 0, 85, 92);
+
+				// Banano: tropical, cálido y muy húmedo (9-15, 12-15)
+				case ShittyTreeType.Banana:
+					return RangeProb(temperature, 7, 9, 15, 15) * RangeProb(humidity, 10, 12, 15, 15) * RangeProb(y, 0, 0, 70, 80);
+
 				default: return 0f;
 			}
 		}
 
 		public static float CalculateTreeDensity(ShittyTreeType treeType, int temperature, int humidity, int y)
 		{
-			// Densidad ahora usa temperatura Y humedad para todos los árboles
 			switch (treeType)
 			{
-				case ShittyTreeType.Apple: return RangeProb(temperature, 6, 9, 12, 14) * RangeProb(humidity, 6, 9, 12, 14);
-				case ShittyTreeType.Pear: return RangeProb(temperature, 7, 10, 13, 15) * RangeProb(humidity, 5, 8, 12, 14);
-				case ShittyTreeType.Orange: return RangeProb(temperature, 8, 11, 14, 15) * RangeProb(humidity, 7, 10, 14, 15);
-				case ShittyTreeType.Cherry: return RangeProb(temperature, 5, 8, 11, 13) * RangeProb(humidity, 6, 9, 13, 15);
-				case ShittyTreeType.Banana: return RangeProb(temperature, 9, 12, 15, 15) * RangeProb(humidity, 9, 12, 15, 15);
+				case ShittyTreeType.Apple:
+					return RangeProb(temperature, 4, 6, 12, 14) * RangeProb(humidity, 4, 6, 12, 14);
+
+				case ShittyTreeType.Pear:
+					return RangeProb(temperature, 5, 7, 13, 15) * RangeProb(humidity, 6, 8, 14, 15);
+
+				case ShittyTreeType.Orange:
+					return RangeProb(temperature, 6, 8, 14, 15) * RangeProb(humidity, 8, 10, 15, 15);
+
+				case ShittyTreeType.Cherry:
+					return RangeProb(temperature, 3, 5, 11, 13) * RangeProb(humidity, 3, 6, 11, 13);
+
+				case ShittyTreeType.Banana:
+					return RangeProb(temperature, 7, 9, 15, 15) * RangeProb(humidity, 10, 12, 15, 15);
+
 				default: return 0f;
 			}
 		}
@@ -271,11 +290,11 @@ namespace Game
 		{
 			switch (type)
 			{
-				case ShittyTreeType.Apple: return BlocksManager.GetBlockIndex("AppleBlock", false);
-				case ShittyTreeType.Pear: return BlocksManager.GetBlockIndex("PearBlock", false);
-				case ShittyTreeType.Orange: return BlocksManager.GetBlockIndex("OrangeBlock", false);
-				case ShittyTreeType.Cherry: return BlocksManager.GetBlockIndex("CherryBlock", false);
-				case ShittyTreeType.Banana: return BlocksManager.GetBlockIndex("BananaBlock", false);
+				case ShittyTreeType.Apple: return BlocksManager.GetBlockIndex(typeof(AppleBlock), true, true);
+				case ShittyTreeType.Pear: return BlocksManager.GetBlockIndex(typeof(PearBlock), true, true);
+				case ShittyTreeType.Orange: return BlocksManager.GetBlockIndex(typeof(OrangeBlock), true, true);
+				case ShittyTreeType.Cherry: return BlocksManager.GetBlockIndex(typeof(CherryBlock), true, true);
+				case ShittyTreeType.Banana: return BlocksManager.GetBlockIndex(typeof(BananaBlock), true, true);
 				default: return 0;
 			}
 		}
@@ -283,10 +302,42 @@ namespace Game
 		public static float CalculateFruitDensity(ShittyTreeType treeType, int temperature, int humidity, int y)
 		{
 			float prob = CalculateTreeProbability(treeType, temperature, humidity, y);
-			if (prob < 0.2f) return 0.1f;      // muy baja -> casi sin frutos
-			if (prob < 0.4f) return 0.3f;      // baja -> pocos frutos
-			if (prob < 0.7f) return 0.6f;      // media -> algunos frutos
-			return 0.9f;                        // alta -> muchos frutos
+
+			// Ajustes según características de cada fruta
+			switch (treeType)
+			{
+				case ShittyTreeType.Apple:  // Moderada
+					if (prob < 0.2f) return 0.1f;
+					if (prob < 0.4f) return 0.3f;
+					if (prob < 0.7f) return 0.6f;
+					return 0.8f;
+
+				case ShittyTreeType.Pear:   // Moderada (similar a manzana)
+					if (prob < 0.2f) return 0.1f;
+					if (prob < 0.4f) return 0.3f;
+					if (prob < 0.7f) return 0.5f;
+					return 0.7f;
+
+				case ShittyTreeType.Orange: // Alta producción
+					if (prob < 0.2f) return 0.2f;
+					if (prob < 0.4f) return 0.4f;
+					if (prob < 0.7f) return 0.7f;
+					return 0.9f;
+
+				case ShittyTreeType.Cherry: // Baja producción (fruta pequeña)
+					if (prob < 0.2f) return 0.05f;
+					if (prob < 0.4f) return 0.15f;
+					if (prob < 0.7f) return 0.35f;
+					return 0.5f;
+
+				case ShittyTreeType.Banana: // Alta producción
+					if (prob < 0.2f) return 0.2f;
+					if (prob < 0.4f) return 0.5f;
+					if (prob < 0.7f) return 0.8f;
+					return 0.95f;
+
+				default: return 0f;
+			}
 		}
 
 		public static void AttachFruitsToTree(SubsystemTerrain subsystemTerrain, int originX, int originY, int originZ, TerrainBrush brush, ShittyTreeType treeType, Random random, float fruitDensity = 0.5f)
@@ -310,20 +361,35 @@ namespace Game
 
 			int maxFruits = 0;
 			float perLeafProb = 0f;
-			if (fruitDensity >= 0.8f)
+
+			// Ajustes según tipo de árbol
+			float baseMultiplier = 1f;
+			switch (treeType)
+			{
+				case ShittyTreeType.Apple: baseMultiplier = 1.0f; break;
+				case ShittyTreeType.Pear: baseMultiplier = 0.9f; break;
+				case ShittyTreeType.Orange: baseMultiplier = 1.2f; break;
+				case ShittyTreeType.Cherry: baseMultiplier = 0.6f; break;
+				case ShittyTreeType.Banana: baseMultiplier = 1.3f; break;
+			}
+
+			float adjustedDensity = fruitDensity * baseMultiplier;
+			adjustedDensity = Math.Clamp(adjustedDensity, 0f, 0.95f);
+
+			if (adjustedDensity >= 0.8f)
 			{
 				maxFruits = int.MaxValue;
-				perLeafProb = 0.6f;
+				perLeafProb = 0.6f * Math.Min(1f, baseMultiplier);
 			}
-			else if (fruitDensity >= 0.4f)
+			else if (adjustedDensity >= 0.4f)
 			{
-				maxFruits = 3;
-				perLeafProb = 0.3f;
+				maxFruits = (int)(3 * baseMultiplier);
+				perLeafProb = 0.3f * Math.Min(1f, baseMultiplier);
 			}
 			else
 			{
-				maxFruits = 1;
-				perLeafProb = 0.1f;
+				maxFruits = (int)(1 * baseMultiplier);
+				perLeafProb = 0.1f * Math.Min(1f, baseMultiplier);
 			}
 
 			// Mezclar posiciones para aleatoriedad
@@ -363,7 +429,6 @@ namespace Game
 				int x = originX + (int)cell.X;
 				int y = originY + (int)cell.Y;
 				int z = originZ + (int)cell.Z;
-				// Convertir a coordenadas locales del chunk
 				int lx = x - chunk.Origin.X;
 				int lz = z - chunk.Origin.Y;
 				if (lx >= 0 && lx < 16 && lz >= 0 && lz < 16)
@@ -379,23 +444,37 @@ namespace Game
 
 			int maxFruits = 0;
 			float perLeafProb = 0f;
-			if (fruitDensity >= 0.8f)
+
+			// Ajustes según tipo de árbol
+			float baseMultiplier = 1f;
+			switch (treeType)
+			{
+				case ShittyTreeType.Apple: baseMultiplier = 1.0f; break;
+				case ShittyTreeType.Pear: baseMultiplier = 0.9f; break;
+				case ShittyTreeType.Orange: baseMultiplier = 1.2f; break;
+				case ShittyTreeType.Cherry: baseMultiplier = 0.6f; break;
+				case ShittyTreeType.Banana: baseMultiplier = 1.3f; break;
+			}
+
+			float adjustedDensity = fruitDensity * baseMultiplier;
+			adjustedDensity = Math.Clamp(adjustedDensity, 0f, 0.95f);
+
+			if (adjustedDensity >= 0.8f)
 			{
 				maxFruits = int.MaxValue;
-				perLeafProb = 0.6f;
+				perLeafProb = 0.6f * Math.Min(1f, baseMultiplier);
 			}
-			else if (fruitDensity >= 0.4f)
+			else if (adjustedDensity >= 0.4f)
 			{
-				maxFruits = 3;
-				perLeafProb = 0.3f;
+				maxFruits = (int)(3 * baseMultiplier);
+				perLeafProb = 0.3f * Math.Min(1f, baseMultiplier);
 			}
 			else
 			{
-				maxFruits = 1;
-				perLeafProb = 0.1f;
+				maxFruits = (int)(1 * baseMultiplier);
+				perLeafProb = 0.1f * Math.Min(1f, baseMultiplier);
 			}
 
-			// Mezclar
 			for (int i = 0; i < leafPositions.Count; i++)
 			{
 				int swap = random.Int(i, leafPositions.Count - 1);
