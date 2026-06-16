@@ -6,8 +6,10 @@ namespace Game
 {
 	public class TeleportParticleSystem : ParticleSystem<TeleportParticleSystem.Particle>
 	{
-		public TeleportParticleSystem(SubsystemTerrain terrain, Vector3 position, float size, bool isAppearEffect, Color particleColor)
-			: base(60)
+		// Color fijo de teletransporte
+		private static readonly Color TeleportColor = new Color(180, 60, 255, 255);
+
+		public TeleportParticleSystem(SubsystemTerrain terrain, Vector3 position, float size, bool isAppearEffect) : base(60)
 		{
 			base.Texture = ContentManager.Get<Texture2D>("Textures/KillParticle");
 			int num = Terrain.ToCell(position.X);
@@ -21,7 +23,7 @@ namespace Game
 			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2, num3 + 1));
 			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2, num3 - 1));
 			base.TextureSlotsCount = 2;
-			Color color = particleColor;
+			Color color = TeleportColor;
 			float s = LightingManager.LightIntensityByLightValue[num4];
 			color *= s;
 			color.A = byte.MaxValue;
@@ -29,22 +31,20 @@ namespace Game
 			{
 				TeleportParticleSystem.Particle particle = base.Particles[i];
 				particle.IsActive = true;
-				particle.Position = position + 0.6f * size * new Vector3(m_random.Float(-1f, 1f), m_random.Float(-1f, 1f), m_random.Float(-1f, 1f));
+				particle.Position = position + 0.6f * size * new Vector3(this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f));
 				particle.Color = color;
-				particle.Size = new Vector2(0.3f * size * m_random.Float(0.8f, 1.2f));
-				particle.TimeToLive = m_random.Float(0.5f, 3.5f);
-
+				particle.Size = new Vector2(0.3f * size * this.m_random.Float(0.8f, 1.2f));
+				particle.TimeToLive = this.m_random.Float(0.5f, 3.5f);
 				if (isAppearEffect)
 				{
-					particle.Velocity = -1.2f * size * new Vector3(m_random.Float(-1f, 1f), m_random.Float(-1f, 1f), m_random.Float(-1f, 1f));
+					particle.Velocity = -1.2f * size * new Vector3(this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f));
 				}
 				else
 				{
-					particle.Velocity = 1.2f * size * new Vector3(m_random.Float(-1f, 1f), m_random.Float(-1f, 1f), m_random.Float(-1f, 1f));
+					particle.Velocity = 1.2f * size * new Vector3(this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f));
 				}
-
-				particle.FlipX = m_random.Bool();
-				particle.FlipY = m_random.Bool();
+				particle.FlipX = this.m_random.Bool();
+				particle.FlipY = this.m_random.Bool();
 			}
 		}
 
