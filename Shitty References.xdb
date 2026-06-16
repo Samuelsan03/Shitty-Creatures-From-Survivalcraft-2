@@ -17,6 +17,27 @@
 </Folder>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="CollectPickableBehavior" Description="Comportamiento para recolectar objetos por categoría con probabilidad" Guid="f71c13fd-9888-4e95-9ac2-72e48fe84397" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <ParameterSet Name="CollectFactors" Description="Factores de recolección por categoría (probabilidad 0-1)" Guid="31ae3f3f-0b90-4843-8c98-9ca301d66220">
+    <Parameter Name="Terrain" Description="Probabilidad de recolectar bloques de terreno" Guid="59c625e9-06cb-43b0-8a12-975ab16f02a0" Value="0" Type="float" />
+    <Parameter Name="Minerals" Description="Probabilidad de recolectar minerales" Guid="5941ae9f-4089-453b-ba74-6333acbd37bd" Value="0" Type="float" />
+    <Parameter Name="Plants" Description="Probabilidad de recolectar plantas" Guid="c135cf08-ab28-42b8-afc9-c852ea3e5f1f" Value="0" Type="float" />
+    <Parameter Name="Construction" Description="Probabilidad de recolectar bloques de construcción" Guid="b877c185-a2b1-4abf-ba22-d0e7ccf6b42b" Value="0" Type="float" />
+    <Parameter Name="Items" Description="Probabilidad de recolectar items" Guid="c7ef4346-e2ec-4200-934c-620c6b70fe1b" Value="0" Type="float" />
+    <Parameter Name="Tools" Description="Probabilidad de recolectar herramientas" Guid="82d7d369-5b99-4518-a66a-5f9ccb4b3c08" Value="0" Type="float" />
+    <Parameter Name="Weapons" Description="Probabilidad de recolectar armas" Guid="d5cdef49-cc31-4d01-97b8-abd5edd4a9c8" Value="0" Type="float" />
+    <Parameter Name="Clothes" Description="Probabilidad de recolectar ropa" Guid="6a887fa5-b103-47d1-bd96-8ff3cb4d15cf" Value="0" Type="float" />
+    <Parameter Name="Electrics" Description="Probabilidad de recolectar objetos eléctricos" Guid="c809f370-93d3-4b8b-84aa-6dea0be92b1e" Value="0" Type="float" />
+    <Parameter Name="Food" Description="Probabilidad de recolectar comida" Guid="e2dd5410-011a-410a-9f66-37e9d3fbcb17" Value="0" Type="float" />
+    <Parameter Name="Spawner Eggs" Description="Probabilidad de recolectar huevos de spawn" Guid="345e70f5-13dc-481f-85b6-16d6e866e1a6" Value="0" Type="float" />
+    <Parameter Name="Painted" Description="Probabilidad de recolectar objetos pintados" Guid="254bddf4-d109-4b27-987e-4984431a4a0b" Value="0" Type="float" />
+    <Parameter Name="Dyed" Description="Probabilidad de recolectar objetos teñidos" Guid="fa28cf40-d6a2-46b8-be50-c701a529bf03" Value="0" Type="float" />
+    <Parameter Name="Fireworks" Description="Probabilidad de recolectar fuegos artificiales" Guid="69a5177a-bd3e-42ba-9557-e18d60e75144" Value="0" Type="float" />
+  </ParameterSet>
+  <Parameter Name="BlockFactors" Description="Lista de bloques específicos a recoger con probabilidad. Formato: 'NombreBloque1:probabilidad, NombreBloque2:probabilidad'. Ejemplo: 'DirtBlock:0.5, StoneBlock:0.8, SandBlock:0.3'" Guid="5df99da9-5ae6-445c-9d6e-429c1b1d2bbb" Value="" Type="string" />
+  <Parameter Name="Class" Guid="07e3c41f-9dae-4ecb-96c2-cf3cea6d0821" Value="Game.ComponentCollectPickableBehavior" Type="string" />
+</ComponentTemplate>
+
 <ComponentTemplate Name="InfiniteChallenge" Guid="ac362fac-dca6-4e17-9c29-b0b5ef2d199a" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
   <Parameter Name="Class" Guid="d5aa296a-9fe2-4070-b417-1666015cb66c" Value="Game.ComponentInfiniteChallenge" Type="string" />
   <Parameter Name="BossHealthMultiplier" Description="Multiplica la salud del jefe" Guid="800713e1-9982-4935-b43a-5d5bc0363983" Value="3" Type="float" />
@@ -438,6 +459,7 @@
   <Parameter Name="AutoChaseMask" Description="Which creature categories this creature will automatically chase" Guid="d1dc03ff-aebe-4da4-a41a-59b403044e4a" Value="LandOther, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Description="Probability (0-1) that the creature will chase non-player creatures" Guid="7a075843-7905-46b1-af01-6b0fd2fa9646" Value="0" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Description="When enabled, the creature prioritizes attacking players over all other targets" Guid="c6c21e5c-ab5e-4646-93f2-cc77f8c08c8d" Value="false" Type="bool" />
+  <Parameter Name="AttackAllCreatures" Description="When enabled, the creature attacks every creature (except same bandit herd) regardless of category" Guid="1bd995b7-b47a-4f1d-9917-4a8b2dff47cf" Value="false" Type="bool" />
 </ComponentTemplate>
 
 <ComponentTemplate Name="Gravity" Description="Makes creature fly away when hit" Guid="a773b42a-6f6d-4829-a453-49a2db96b132" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -541,11 +563,6 @@
             <Parameter Name="Class" Guid="11b42020-d00c-4a7a-b1b8-9b334b724c35" Value="Game.ComponentCreatureCollect" Type="string"/>
             <Parameter Name="CanCollect" Description="Indica si la recolección está habilitada" Guid="51ed4d4b-c0f1-484c-b29e-f0ea1591c06d" Value="true" Type="bool"/>
     <Parameter Name="CollectableItems" Description="Lista de objetos a recolectar separados por comas (vacío para todos)" Guid="24d22da4-d7ed-449b-9e5d-a1c94690a82a" Value="" Type="string"/>
-</ComponentTemplate>
-
-        <ComponentTemplate Name="NewCreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="e3793c3b-587f-43dd-a1e6-d2a6b4a28520" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-   <Parameter Name="PickFactors" Description="Factores de preferencia para categorías de objetos" Guid="90ec8dae-4e1b-4f39-acac-d83d92f674da" Value="" Type="string"/>
-    <Parameter Name="Class" Guid="98d12f97-948b-4e12-afb3-0f427c41ef28" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </ComponentTemplate>
         
         <ComponentTemplate Name="InvShooterBehavior" Description="Comportamiento que hace a una criatura arrojar objetos, es requerido Inventory para funcionar." Guid="456e3558-0e7f-42c3-bc05-35eef7540900" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
