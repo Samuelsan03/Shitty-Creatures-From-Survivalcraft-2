@@ -132,7 +132,7 @@ namespace Game
 			ShittyCreaturesSettingsManager.Load();
 
 			// CreatureInventoryModLoader (prioridad 0)
-			ModsManager.RegisterHook("OnPlayerInputInteract", this, 0);
+			ModsManager.RegisterHook("OnPlayerInputInteract", this);
 
 			// GreenNightSkyModLoader
 			ModsManager.RegisterHook("ChangeSkyColor", this);
@@ -146,7 +146,7 @@ namespace Game
 			// NewPanoramaModLoader
 			if (!s_panoramaHookRegistered)
 			{
-				ModsManager.RegisterHook("OnWidgetConstruct", this, -100);
+				ModsManager.RegisterHook("OnWidgetConstruct", this);
 				s_panoramaHookRegistered = true;
 			}
 
@@ -155,12 +155,12 @@ namespace Game
 			ModsManager.RegisterHook("MatchRecipe", this);
 
 			// Hook para cuando el jugador golpea cuerpo a cuerpo (prioridad alta)
-			ModsManager.RegisterHook("OnPlayerInputHit", this, -100);
+			ModsManager.RegisterHook("OnPlayerInputHit", this);
 			// Hook para cuando el jugador recibe daño (se usa evento Injured, no hook directo)
 			// La suscripción se realiza en OnPlayerInputHit cuando el jugador está disponible
 
 			// Hook para detectar ataques al jugador incluso en modo Creativo
-			ModsManager.RegisterHook("OnMinerHit", this, -100);
+			ModsManager.RegisterHook("OnMinerHit", this);
 
 			ModsManager.RegisterHook("ManageCameras", this);
 
@@ -174,8 +174,8 @@ namespace Game
 			ModsManager.RegisterHook("OnProjectileRaycastBody", this);
 			ModsManager.RegisterHook("OnProjectileHitBody", this);
 			ModsManager.RegisterHook("SetHitInterval", this);
-			ModsManager.RegisterHook("OnChaseBehaviorAttacked", this, 100);  // Prioridad alta para cancelar
-			ModsManager.RegisterHook("OnMinerHit", this, 100);  // Para criaturas que usan ComponentMiner directamente
+			ModsManager.RegisterHook("OnChaseBehaviorAttacked", this);  // Prioridad alta para cancelar
+			ModsManager.RegisterHook("OnMinerHit", this);  // Para criaturas que usan ComponentMiner directamente
 			
 			// Bloquear montura zombi para jugadores
 			ModsManager.RegisterHook("ScoreMount", this);
@@ -766,20 +766,6 @@ namespace Game
 					float hue = (float)((Time.RealTime * 30.0) % 360.0);
 					Vector3 rgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
 					modCopyrightLabel.Color = new Color(rgb);
-				}
-			}
-
-			// ─── Efecto arcoíris en el botón de ajustes del mod ───
-			SettingsScreen settings = widget as SettingsScreen;
-			if (settings != null)
-			{
-				BevelledButtonWidget modSettingsButton = settings.Children.Find<BevelledButtonWidget>("ShittyCreaturesSettingsButton", true);
-				if (modSettingsButton != null)
-				{
-					// Desfasado 180° → color complementario
-					float hue = (float)((Time.RealTime * 60.0 + 180.0) % 360.0);
-					Vector3 rgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
-					modSettingsButton.Color = new Color(rgb);
 				}
 			}
 
