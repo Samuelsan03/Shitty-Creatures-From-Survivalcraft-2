@@ -32,54 +32,67 @@ namespace Game
 			int chunkX = chunk.Coords.X;
 			int chunkZ = chunk.Coords.Y;
 
-			for (int i = chunkX; i <= chunkX; i++)
+			Random chunkRandom = new Random(m_seed + chunkX * 3943 + chunkZ);
+
+			float forestDensity = CalculateForestDensity(chunkX * 16 + 8, chunkZ * 16 + 8);
+			int attempts = Math.Max(2, (int)(3f * forestDensity));
+			int planted = 0;
+
+			for (int attempt = 0; attempt < attempts * 8 && planted < attempts; attempt++)
 			{
-				for (int j = chunkZ; j <= chunkZ; j++)
+				int x = chunkX * 16 + chunkRandom.Int(2, 13);
+				int z = chunkZ * 16 + chunkRandom.Int(2, 13);
+				int y = terrain.CalculateTopmostCellHeight(x, z);
+
+				if (y < 66) continue;
+
+				int ground = terrain.GetCellContentsFast(x, y, z);
+				if (ground != 2 && ground != 8) continue; // solo césped o tierra
+
+				// Verificar espacio básico
+				bool hasSpace = true;
+				for (int dy = 0; dy < 8; dy++)
 				{
-					Random localRandom = new Random(m_seed + i + 3943 * j);
-					int humidity = CalculateHumidity(i * 16 + 8, j * 16 + 8);
-					int temperature = CalculateTemperature(i * 16 + 8, j * 16 + 8);
-					float forestDensity = CalculateForestDensity(i * 16 + 8, j * 16 + 8);
-
-					// Número reducido de intentos para evitar sobregeneración (1.5f en lugar de 3f)
-					int attempts = (int)(1.5f * forestDensity) + localRandom.Int(0, 1);
-					int planted = 0;
-					int maxAttempts = attempts * 3;
-
-					for (int attempt = 0; attempt < maxAttempts && planted < attempts; attempt++)
+					for (int dx = -2; dx <= 2; dx++)
 					{
-						int x = i * 16 + localRandom.Int(2, 13);
-						int z = j * 16 + localRandom.Int(2, 13);
-						int y = terrain.CalculateTopmostCellHeight(x, z);
-						if (y < 66) continue;
-
-						int groundContents = terrain.GetCellContentsFast(x, y, z);
-						if (groundContents != 2 && groundContents != 8) continue;
-						if (!IsSpaceForTree(terrain, x, y + 1, z)) continue;
-
-						int realTemp = terrain.GetTemperature(x, z) + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
-						int realHum = terrain.GetHumidity(x, z);
-
-						ShittyTreeType? treeType = ShittyPlantsManager.GenerateRandomTreeType(localRandom, realTemp, realHum, y, 0.6f);
-						if (treeType != null)
+						for (int dz = -2; dz <= 2; dz++)
 						{
-							float density = ShittyPlantsManager.CalculateTreeDensity(treeType.Value, realTemp, realHum, y);
-							// Factor reducido a 0.3f para menor probabilidad de plantación
-							if (localRandom.Bool(density * 0.3f))
+							int c = terrain.GetCellContentsFast(x + dx, y + 1 + dy, z + dz);
+							if (c != 0 && c != 18) // agua permitida, otros bloques no
 							{
-								var brushes = ShittyPlantsManager.GetTreeBrushes(treeType.Value);
-								if (brushes.Count > 0)
-								{
-									TerrainBrush brush = brushes[localRandom.Int(0, brushes.Count - 1)];
-									brush.PaintFast(chunk, x, y + 1, z);
-									chunk.AddBrushPaint(x, y + 1, z, brush);
-
-									float fruitDensity = ShittyPlantsManager.CalculateFruitDensity(treeType.Value, realTemp, realHum, y);
-									ShittyPlantsManager.AttachFruitsToTreeFast(chunk, x, y + 1, z, brush, treeType.Value, localRandom, fruitDensity);
-									planted++;
-								}
+								hasSpace = false;
+								break;
 							}
 						}
+						if (!hasSpace) break;
+					}
+					if (!hasSpace) break;
+				}
+				if (!hasSpace) continue;
+
+				int realTemp = terrain.GetTemperature(x, z);
+				int realHum = terrain.GetHumidity(x, z);
+
+				// Solo usar temperatura base, sin ajuste de altura complicado
+				ShittyTreeType? treeType = ShittyPlantsManager.GenerateRandomTreeType(
+					chunkRandom, realTemp, realHum, y, 0.5f);
+
+				if (treeType != null)
+				{
+					var brushes = ShittyPlantsManager.GetTreeBrushes(treeType.Value);
+					if (brushes.Count > 0)
+					{
+						TerrainBrush brush = brushes[chunkRandom.Int(0, brushes.Count - 1)];
+						brush.PaintFast(chunk, x, y + 1, z);
+						chunk.AddBrushPaint(x, y + 1, z, brush);
+
+						// --- AÑADIR FRUTOS ---
+						float fruitDensity = ShittyPlantsManager.CalculateFruitDensity(
+							treeType.Value, realTemp, realHum, y);
+						ShittyPlantsManager.AttachFruitsToTreeFast(
+							chunk, x, y + 1, z, brush, treeType.Value, chunkRandom, fruitDensity);
+
+						planted++;
 					}
 				}
 			}
@@ -95,116 +108,6 @@ namespace Game
 					terrain.GetCellContentsFast(x, y + dy, z - 1) != 0)
 					return false;
 			return true;
-		}
-
-		// ==================== PLANTAS ADICIONALES (ARÁNDANOS Y SANDÍAS) ====================
-		public override void GenerateGrassAndPlants(TerrainChunk chunk)
-		{
-			// Primero generamos la vegetación original (hierbas, flores, etc.)
-			base.GenerateGrassAndPlants(chunk);
-
-			// Luego generamos nuestros cultivos adicionales
-			GenerateBlueberries(chunk);
-			GenerateWatermelons(chunk);
-		}
-
-		private void GenerateBlueberries(TerrainChunk chunk)
-		{
-			// Obtener índice del arbusto de arándanos
-			int blueberryIndex = BlocksManager.GetBlockIndex("BlueberryBushBlock", false);
-			if (blueberryIndex == -1) return;
-
-			Terrain terrain = m_subsystemTerrain.Terrain;
-			Random random = new Random(m_seed + chunk.Coords.X + 888 * chunk.Coords.Y);
-
-			// Probabilidad de que el chunk tenga arándanos (~30%)
-			if (!random.Bool(0.3f)) return;
-
-			// Número máximo de arbustos en este chunk
-			int maxPlants = random.Int(0, 3);
-
-			for (int attempt = 0; attempt < 12 && maxPlants > 0; attempt++)
-			{
-				int x = chunk.Origin.X + random.Int(1, 14);
-				int z = chunk.Origin.Y + random.Int(1, 14);
-				int y = terrain.CalculateTopmostCellHeight(x, z);
-
-				// Condiciones de altura (evitar agua, montañas muy altas)
-				if (y < 65 || y > 100) continue;
-
-				int groundValue = terrain.GetCellValueFast(x, y, z);
-				int groundContents = Terrain.ExtractContents(groundValue);
-				// Debe crecer sobre césped o tierra
-				if (groundContents != 2 && groundContents != 8) continue;
-
-				int temperature = terrain.GetTemperature(x, z);
-				int humidity = terrain.GetHumidity(x, z);
-
-				// Condiciones climáticas: humedad media/alta, temperatura templada
-				if (humidity >= 7 && temperature >= 6 && temperature <= 14)
-				{
-					// Verificar espacio aéreo
-					if (terrain.GetCellContentsFast(x, y + 1, z) == 0)
-					{
-						int value = Terrain.MakeBlockValue(blueberryIndex);
-						chunk.SetCellValueFast(x - chunk.Origin.X, y + 1, z - chunk.Origin.Y, value);
-						maxPlants--;
-					}
-				}
-			}
-		}
-
-		private void GenerateWatermelons(TerrainChunk chunk)
-		{
-			// Obtener índices de sandía normal y podrida
-			int watermelonIndex = BlocksManager.GetBlockIndex("WatermelonBlock", false);
-			int rottenWatermelonIndex = BlocksManager.GetBlockIndex("RottenWatermelonBlock", false);
-			if (watermelonIndex == -1) return;
-
-			Terrain terrain = m_subsystemTerrain.Terrain;
-			Random random = new Random(m_seed + chunk.Coords.X + 999 * chunk.Coords.Y);
-
-			// Probabilidad baja (15% de que el chunk tenga sandías)
-			if (!random.Bool(0.15f)) return;
-
-			int maxWatermelons = random.Int(0, 2);
-
-			for (int attempt = 0; attempt < 8 && maxWatermelons > 0; attempt++)
-			{
-				int x = chunk.Origin.X + random.Int(1, 14);
-				int z = chunk.Origin.Y + random.Int(1, 14);
-				int y = terrain.CalculateTopmostCellHeight(x, z);
-
-				if (y < 65 || y > 85) continue;
-
-				int groundValue = terrain.GetCellValueFast(x, y, z);
-				int groundContents = Terrain.ExtractContents(groundValue);
-				// Las sandías crecen sobre césped o tierra (a veces en tierras volcánicas)
-				if (groundContents != 2 && groundContents != 8) continue;
-
-				int temperature = terrain.GetTemperature(x, z);
-				int humidity = terrain.GetHumidity(x, z);
-
-				// Condiciones: humedad alta, temperatura cálida
-				if (humidity >= 9 && temperature >= 7 && temperature <= 14)
-				{
-					// Espacio aéreo suficiente (al menos 2 bloques de alto)
-					if (terrain.GetCellContentsFast(x, y + 1, z) == 0 &&
-						terrain.GetCellContentsFast(x, y + 2, z) == 0)
-					{
-						int fruitIndex = watermelonIndex;
-						// Posibilidad de sandía podrida si temperatura es extremadamente alta o humedad baja
-						if (temperature > 13 || (humidity < 10 && random.Bool(0.2f)))
-							fruitIndex = rottenWatermelonIndex != -1 ? rottenWatermelonIndex : watermelonIndex;
-
-						// Crear sandía madura (tamaño 7)
-						int data = BaseWatermelonBlock.SetSize(BaseWatermelonBlock.SetIsDead(0, false), 7);
-						int value = Terrain.MakeBlockValue(fruitIndex, 0, data);
-						chunk.SetCellValueFast(x - chunk.Origin.X, y + 1, z - chunk.Origin.Y, value);
-						maxWatermelons--;
-					}
-				}
-			}
 		}
 	}
 }
