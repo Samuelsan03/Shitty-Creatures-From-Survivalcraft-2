@@ -48,9 +48,6 @@ namespace Game
 		// Temporizador para evaluar la probabilidad una vez por segundo (no cada frame)
 		private float m_checkTimer;
 
-		// Color elegido una vez por ciclo de teletransporte, compartido entre desaparecer y aparecer
-		private Color m_teleportColor;
-
 		// ===== PROPIEDADES PÚBLICAS =====
 		public ComponentCreature Target
 		{
@@ -234,11 +231,6 @@ namespace Game
 			if (IsMountedOrMounting())
 				return;
 
-			// Elegir el color UNA vez para todo el ciclo de teletransporte
-			m_teleportColor = m_random.Bool()
-				? new Color(180, 60, 255, 255)
-				: new Color(100, 20, 180, 200);
-
 			m_originalPosition = m_componentBody.Position;
 			m_originalBodyCollidable = m_componentBody.BodyCollidable;
 			m_originalIsRaycastTransparent = m_componentBody.IsRaycastTransparent;
@@ -335,7 +327,7 @@ namespace Game
 				return;
 
 			float size = Math.Max(0.8f, m_componentBody.BoxSize.Length() * 0.6f);
-			var particleSys = new TeleportParticleSystem(m_subsystemTerrain, position, size, isAppearEffect, m_teleportColor);
+			var particleSys = new TeleportParticleSystem(m_subsystemTerrain, position, size, isAppearEffect);
 			m_subsystemParticles.AddParticleSystem(particleSys, false);
 		}
 	}
