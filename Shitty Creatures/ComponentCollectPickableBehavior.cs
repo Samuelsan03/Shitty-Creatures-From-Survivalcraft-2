@@ -1021,5 +1021,70 @@ namespace Game
 				m_subsystemPickables.PickableRemoved -= OnPickableRemoved;
 			}
 		}
+
+		/// <summary>
+		/// Copia el inventario de la entidad fuente a esta entidad usando ComponentMiner.Inventory.
+		/// </summary>
+		/// <param name="sourceEntity">Entidad de la que se copia el inventario.</param>
+		public void CopyInventoryFrom(Entity sourceEntity)
+		{
+			if (sourceEntity == null) return;
+
+			// Obtener el inventario de la fuente
+			ComponentMiner sourceMiner = sourceEntity.FindComponent<ComponentMiner>();
+			if (sourceMiner == null) return;
+			IInventory sourceInventory = sourceMiner.Inventory;
+			if (sourceInventory == null) return;
+
+			// Obtener el inventario de esta entidad (la nueva)
+			if (m_componentMiner == null) return;
+			IInventory targetInventory = m_componentMiner.Inventory;
+			if (targetInventory == null) return;
+
+			// Copiar slot por slot
+			int slots = Math.Min(sourceInventory.SlotsCount, targetInventory.SlotsCount);
+			for (int i = 0; i < slots; i++)
+			{
+				int value = sourceInventory.GetSlotValue(i);
+				int count = sourceInventory.GetSlotCount(i);
+				if (value != 0 && count > 0)
+				{
+					// Intentar añadir al mismo slot si está vacío o tiene el mismo ítem
+					int existingValue = targetInventory.GetSlotValue(i);
+					int existingCount = targetInventory.GetSlotCount(i);
+					int capacity = targetInventory.GetSlotCapacity(i, value);
+
+					if (existingValue == value && existingCount + count <= capacity)
+					{
+						targetInventory.AddSlotItems(i, value, count);
+					}
+					else if (existingValue == 0 && capacity >= count)
+					{
+						targetInventory.AddSlotItems(i, value, count);
+					}
+					else
+					{
+						// Buscar otro slot disponible
+						for (int j = 0; j < targetInventory.SlotsCount; j++)
+						{
+							if (j == i) continue;
+							int slotValue = targetInventory.GetSlotValue(j);
+							int slotCount = targetInventory.GetSlotCount(j);
+							int slotCapacity = targetInventory.GetSlotCapacity(j, value);
+							if (slotValue == value && slotCount + count <= slotCapacity)
+							{
+								targetInventory.AddSlotItems(j, value, count);
+								break;
+							}
+							else if (slotValue == 0 && slotCapacity >= count)
+							{
+								targetInventory.AddSlotItems(j, value, count);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
