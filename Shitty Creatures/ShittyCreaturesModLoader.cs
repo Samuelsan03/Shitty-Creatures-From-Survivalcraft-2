@@ -2335,7 +2335,8 @@ namespace Game
 	"GhostCharger",
 	"InfectedHyena",
 	"InfectedWerewolf",
-	"InfectedWolf"
+	"InfectedWolf",
+	"InfectedSpider"
 };
 
 		// ===== NUEVOS CONJUNTOS SEPARADOS =====
