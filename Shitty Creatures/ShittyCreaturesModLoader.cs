@@ -639,6 +639,34 @@ namespace Game
 				leftBottomBar.Children.Insert(0, thanksButton); // Inserta al principio para que quede arriba del todo
 			}
 
+			// ===== NUEVO BOTÓN PERSONALIZADO (encima del Veemon) =====
+			BevelledButtonWidget newButton = new BevelledButtonWidget
+			{
+				Name = "CustomShittyButton",
+				Size = new Vector2(60f, 60f),
+				// El fondo se pintará con efecto arcoíris en BeforeWidgetUpdate
+				BevelColor = Color.White,
+				CenterColor = Color.White
+			};
+
+			RectangleWidget newIcon = new RectangleWidget
+			{
+				Size = new Vector2(28f, 28f),
+				TextureLinearFilter = true,
+				HorizontalAlignment = WidgetAlignment.Center,
+				VerticalAlignment = WidgetAlignment.Center,
+				Subtexture = ContentManager.Get<Subtexture>("Textures/Gui/veemon te pela la verga"),
+				OutlineColor = new Color(0, 0, 0, 0),
+				FillColor = Color.White,
+				IsVisible = true,
+				TextureAnisotropicFilter = true,
+				BlendState = BlendState.NonPremultiplied
+			};
+			newButton.Children.Add(newIcon);
+
+			// Insertar al PRINCIPIO de la barra (índice 0) para que quede encima del Veemon
+			rightBottomBar.Children.Insert(0, newButton);
+
 			// Botón Veemon en la barra inferior derecha (comportamiento original)
 			BevelledButtonWidget existing = rightBottomBar.Children.Find<BevelledButtonWidget>("ShittyButton", false);
 			if (existing == null)
@@ -685,6 +713,25 @@ namespace Game
 					if (ScreensManager.FindScreen<SpecialThanksScreen>("SpecialThanks") == null)
 						ScreensManager.AddScreen("SpecialThanks", new SpecialThanksScreen());
 					ScreensManager.SwitchScreen("SpecialThanks");
+				}
+				// ===== NUEVO BOTÓN PERSONALIZADO (efecto arcoíris en fondo) =====
+				BevelledButtonWidget customButton = mainMenu.Children.Find<BevelledButtonWidget>("CustomShittyButton", false);
+				if (customButton != null)
+				{
+					// Fondo arcoíris (sin desfase)
+					float hue = (float)((Time.RealTime * 60.0) % 360.0);
+					Vector3 rgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
+					customButton.BevelColor = new Color(rgb);
+					customButton.CenterColor = new Color(rgb);
+
+					// Acción al hacer clic (puedes cambiar a lo que quieras)
+					if (customButton.IsClicked)
+					{
+						// Ejemplo: abrir tu pantalla personalizada
+						if (ScreensManager.FindScreen<ShittyCreaturesSettingsScreen>("CustomScreen") == null)
+							ScreensManager.AddScreen("CustomScreen", new ShittyCreaturesSettingsScreen());
+						ScreensManager.SwitchScreen("CustomScreen");
+					}
 				}
 				// Botón Veemon (changelog)
 				BevelledButtonWidget shittyButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyButton", false);
@@ -924,29 +971,7 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		public override void OnSettingsScreenCreated(SettingsScreen settingsScreen, out Dictionary<ButtonWidget, Action> buttonsToAdd)
 		{
-			buttonsToAdd = new Dictionary<ButtonWidget, Action>();
-			try
-			{
-				var shittyButton = new BevelledButtonWidget
-				{
-					Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "SettingsButton" }),
-					Size = new Vector2(310f, 60f),
-					BevelColor = Color.DarkRed,
-					CenterColor = Color.DarkRed,
-					Name = "ShittyCreaturesSettingsButton"
-				};
-
-				buttonsToAdd.Add(shittyButton, () =>
-				{
-					if (ScreensManager.FindScreen<ShittyCreaturesSettingsScreen>("ShittyCreaturesSettings") == null)
-						ScreensManager.AddScreen("ShittyCreaturesSettings", new ShittyCreaturesSettingsScreen());
-					ScreensManager.SwitchScreen("ShittyCreaturesSettings");
-				});
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"[ChaseMusic] Error al añadir botón: {ex.Message}");
-			}
+			buttonsToAdd = null; // No agregamos ningún botón
 		}
 
 		// ---------------------------------------------------------------------------------
