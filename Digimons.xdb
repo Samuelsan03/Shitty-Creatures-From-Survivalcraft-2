@@ -66,9 +66,12 @@
               <Parameter Name="JumpStrength" Guid="1eb0c8de-bf44-49a1-adda-0e2591803e41" Value="1" Type="float"/>
             </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="7eec8f27-b4a4-4ce0-8598-6b644fe52f54" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-  <MemberComponentTemplate Name="NewCreatureCollect" Guid="287151d4-5842-4190-bcdf-cbb175b1b68a" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="b6ca187e-e75f-41f3-95e8-553d5ba6fd89" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+  <MemberComponentTemplate Name="CollectPickableBehavior" Guid="a350b342-5265-488f-a0ff-7e1a1be1fd44" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="a1396579-0888-43b0-80b4-28b4e9c4d61a">
+                <Parameter Name="Weapons" Guid="7f84459b-2e1a-461e-adb0-24539ea8cdfc" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="568a3e0f-7a74-4d70-8b58-22201f2899ff" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="f28a057f-793e-42d7-804c-83e8a8edaaeb" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="98fa9085-8f45-4997-a2e2-972098b79bb7" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="298de32d-a938-4188-9a60-8532f4509d2b" Value="true" Type="bool" />
@@ -256,9 +259,12 @@
               <Parameter Name="RiderOffset" Guid="dc34967e-be41-4907-912e-f0b0ea66fc99" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="4de976b5-e81a-45de-884c-e899e089a995" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-    <MemberComponentTemplate Name="NewCreatureCollect" Guid="ca9e4049-a1c4-4a46-bd38-072fe01725ad" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="6257e999-67f3-4a03-85c8-73b108b2f04b" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="CollectPickableBehavior" Guid="25dc5a5b-b845-49f0-969c-dfe5e5d839f7" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="5a6a915f-584e-476c-b579-4218d0f54d80">
+                <Parameter Name="Weapons" Guid="cbe83123-6dac-453f-bb5f-e48e6c5e404a" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="3744c73e-5bf7-4a73-844f-9e57aa8da7e5" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="e9b248fb-9490-4743-b6a5-78eef305b05b" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="8284e4f3-aeb9-46e3-bec8-19700280be04" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="3e2e550d-1120-4ead-82e8-8b8b8ee6cd12" Value="true" Type="bool" />
@@ -421,9 +427,12 @@
   </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="ce04c60f-7e9c-4c8c-8537-01374660f7ab" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewCreatureCollect" Guid="bffc51ad-a3f7-467e-9a32-4a2b1030e328" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="96f6b3bb-e884-48e8-9062-6523d67f24d0" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="CollectPickableBehavior" Guid="cb5e9a99-f623-4078-b497-511bf862bc07" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="6b45dc47-abc2-4a32-9fba-7cfecade6703">
+                <Parameter Name="Weapons" Guid="9a342be9-08ad-400e-82ec-cdcb9d67182f" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="97b29d8c-5b30-4cfb-8fef-8b9ee8cab2fa" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="ff88b3b9-0820-4d5a-89bf-0fa936372f97" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="34b1f9b2-ab4e-48bf-925f-2adcc33689d0" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="eb68ec1d-c8aa-4755-9b0b-27b7b9c9930d" Value="true" Type="bool" />
@@ -593,9 +602,12 @@
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="6e312e87-d60e-469a-9f57-014bc3811a82" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-    <MemberComponentTemplate Name="NewCreatureCollect" Guid="c5202702-1c07-4226-9dbb-b1efd4b075b8" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="518017df-bb3c-47b7-9c6f-5c06919b8355" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="CollectPickableBehavior" Guid="14dad3fb-14fe-469e-90de-40bb07c577aa" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="6c503245-885e-4f13-ac92-ae39ffffa1b2">
+                <Parameter Name="Weapons" Guid="58a16f50-43f5-4e9c-a45f-c93b7d1e9644" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="ca6c8639-f20d-4364-a450-c6ae57c58fd1" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="95c12065-d844-4c53-8628-1950e47de967" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="86d476a7-c81d-4a29-b092-2ecb9b5d4d0f" Value="true" Type="bool" />
   <Parameter Name="CanBeMounted" Guid="9ddb83f8-ea70-4e91-ad55-13dadd89b526" Value="true" Type="bool"/>
@@ -696,9 +708,12 @@
               <Parameter Name="RiderOffset" Guid="c703f579-0c3f-470f-a23b-6275db6fe75f" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="f8c266f5-6a80-470e-ac01-d81fc59f4d4d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-  <MemberComponentTemplate Name="NewCreatureCollect" Guid="1d82d891-2fd4-41a5-905b-318b0b562a55" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="a1fe7f57-768c-4182-8994-5e8a0e655d54" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+  <MemberComponentTemplate Name="CollectPickableBehavior" Guid="ee29359d-e013-4f3c-8905-36150ea2557f" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="4d97e3d1-8c27-4dd9-8898-0a809149aa60">
+                <Parameter Name="Weapons" Guid="88b5aff2-1da7-42a4-829a-7561abb81177" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="3d8a942c-be1b-426b-a47c-5c5e652cb443" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="733d5e97-8bea-4899-a244-a6b225c84f50" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="781dc0ac-117f-4d95-b55a-60f8fa5c2c6d" Value="1" Type="float"/>
   <Parameter Name="NightChaseTime" Guid="b322a287-afdd-494f-b2b4-1153d9627570" Value="90" Type="float"/>
@@ -891,9 +906,12 @@
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="42965f8a-911e-4b56-9eec-a19748601440" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-    <MemberComponentTemplate Name="NewCreatureCollect" Guid="3d4a3f79-0480-433e-b3f8-6b4d5eac4013" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="d52ae323-4515-45ff-bbb6-7bfe1c09b5e1" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="CollectPickableBehavior" Guid="97cc6e82-887a-4363-9add-82106c9b0947" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="41fe3a42-6634-4070-a2f8-6428545e078c">
+                <Parameter Name="Weapons" Guid="a86ccdc9-c71a-4a5c-846f-6bea14a77700" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="5592edcc-059f-4cdc-9605-ab48af5e82fb" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
   <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="b29165af-66fe-4ea3-8e2f-5e74abfc04e3" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="3348befd-e309-4b2b-8605-823243b3c163" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="2515ba6d-c779-4148-9310-17a2c3720dbd" Value="true" Type="bool" />
@@ -1018,9 +1036,12 @@
     <Parameter Name="CollectableItems" Guid="908bd9f4-dd72-4074-abbe-c200ce228ca6" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="2e4d6f83-73dc-4193-a775-6d8f94f6a96e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-  <MemberComponentTemplate Name="NewCreatureCollect" Guid="fa21cc56-1cb8-456f-90bc-f4cc86664488" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="b0fb09cc-fc9e-4186-b650-b32de37a373c" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+  <MemberComponentTemplate Name="CollectPickableBehavior" Guid="85518eb3-1139-495b-b165-f31bd2b5f82b" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="6f244925-db8e-4ff8-93bf-0044457585bb">
+                <Parameter Name="Weapons" Guid="7cd55ff6-6af4-4446-8986-25a99846fe3c" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="cdf214e0-b055-4327-8e17-87e12b1b0b0a" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="6dc07532-4aa3-4c24-a25a-282ef8b7625e" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="6c57d3d3-984d-4591-b9d7-142ffaaadcfb" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="fadf89ef-9c58-4c9b-a439-e801a7c78d7d" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
@@ -1183,9 +1204,12 @@
     <Parameter Name="CollectableItems" Guid="bbf5fc37-9fb5-4fc7-a144-2a1e1eee8620" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="6ee4626f-455d-404b-bafb-588de3e3b0c0" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-    <MemberComponentTemplate Name="NewCreatureCollect" Guid="1f4feb47-729c-4d98-b35b-ea37ceea189c" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="eff97335-6a03-4a8c-a6cd-029446502568" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="CollectPickableBehavior" Guid="5179279a-0952-467e-947c-40c9713795d1" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="be612cd5-9350-4c1e-b95a-92df761fc42d">
+                <Parameter Name="Weapons" Guid="42a1e5a1-9844-42fa-8a4d-5e1844ea59e5" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="dba73db4-4826-404a-9424-438172c643bc" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="65de7611-ece9-4af2-abd0-3485389f0cba" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
@@ -1410,9 +1434,12 @@
             </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="c0208376-9c67-4c0c-99a2-8ca617cc94dd" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewCreatureCollect" Guid="4603b09b-e0ec-4207-958b-ccc3c7b4b09d" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="a0b42cc3-a959-4d25-81b5-2308feed1ec0" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="CollectPickableBehavior" Guid="8fb1012e-9c8c-4728-bbc9-b545df7e5d82" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="f7fee413-f8da-4e1b-9087-192db0aabedc">
+                <Parameter Name="Weapons" Guid="ea2f07a8-3cd5-4f3d-a41b-0974f30104d1" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="302f0372-bda4-4945-953c-10b3ed8fac47" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="993a3dd8-6d84-470c-9f00-50e16c6411bd">
     <Parameter Name="AutoDespawn" Guid="4f8b9487-9534-48c7-8a8d-e7e6c13157a8" Value="False" Type="bool"/>
 </MemberComponentTemplate>
@@ -1561,9 +1588,12 @@
             </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="7f14531c-20c3-4dce-b217-aaaacf285262" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewCreatureCollect" Guid="6a6fd6d3-b78e-4036-9c21-9fa4345189dd" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="f700f258-bd46-4919-8fc9-a84010cbce51" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="CollectPickableBehavior" Guid="f6a9e792-9e45-427b-84a6-cd8b8603f0a7" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="66071788-3e78-46f4-af29-b380d3d4e8d2">
+                <Parameter Name="Weapons" Guid="f8f7d619-645a-4113-8c45-51ace2dca0c8" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="16a05be0-0d5e-4883-befb-ad7674c61c00" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="efc86f35-c872-4a93-91e4-fcdcf4baed2b">
     <Parameter Name="AutoDespawn" Guid="301b9c7d-4430-43b0-9f78-0f18a9bc0d98" Value="False" Type="bool"/>
 </MemberComponentTemplate>
