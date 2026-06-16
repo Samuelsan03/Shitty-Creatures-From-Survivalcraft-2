@@ -21,20 +21,19 @@ namespace Game
 		{
 			FruitIndices = new int[]
 			{
-				BlocksManager.GetBlockIndex("AppleBlock", true),
-				BlocksManager.GetBlockIndex("PearBlock", true),
-				BlocksManager.GetBlockIndex("OrangeBlock", true),
-				BlocksManager.GetBlockIndex("CherryBlock", true),
-				BlocksManager.GetBlockIndex("BananaBlock", true)
+				BlocksManager.GetBlockIndex("AppleBlock", false),
+				BlocksManager.GetBlockIndex("PearBlock", false),
+				BlocksManager.GetBlockIndex("OrangeBlock", false),
+				BlocksManager.GetBlockIndex("CherryBlock", false),
+				BlocksManager.GetBlockIndex("BananaBlock", false)
 			};
-
 			LeavesIndices = new int[]
 			{
-				BlocksManager.GetBlockIndex("AppleLeavesBlock", true),
-				BlocksManager.GetBlockIndex("PearLeavesBlock", true),
-				BlocksManager.GetBlockIndex("OrangeLeavesBlock", true),
-				BlocksManager.GetBlockIndex("CherryLeavesBlock", true),
-				BlocksManager.GetBlockIndex("BananaLeavesBlock", true)
+				BlocksManager.GetBlockIndex("AppleLeavesBlock", false),
+				BlocksManager.GetBlockIndex("PearLeavesBlock", false),
+				BlocksManager.GetBlockIndex("OrangeLeavesBlock", false),
+				BlocksManager.GetBlockIndex("CherryLeavesBlock", false),
+				BlocksManager.GetBlockIndex("BananaLeavesBlock", false)
 			};
 		}
 
@@ -43,8 +42,14 @@ namespace Game
 			get
 			{
 				var list = new List<int> { BlueberryBushBlock.Index };
-				list.AddRange(FruitIndices);
-				list.AddRange(LeavesIndices);
+				for (int i = 0; i < FruitIndices.Length; i++)
+				{
+					if (FruitIndices[i] > 0) list.Add(FruitIndices[i]);
+				}
+				for (int i = 0; i < LeavesIndices.Length; i++)
+				{
+					if (LeavesIndices[i] > 0) list.Add(LeavesIndices[i]);
+				}
 				return list.ToArray();
 			}
 		}
@@ -52,6 +57,7 @@ namespace Game
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
+			ShittyPlantsManager.EnsureInitialized();
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			m_lastOrphanCheckTime = m_subsystemTime.GameTime;
@@ -62,14 +68,12 @@ namespace Game
 		{
 			int cellValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y, z);
 			int contents = Terrain.ExtractContents(cellValue);
-
 			if (FruitIndices.Contains(contents))
 			{
 				if (neighborY == y + 1)
 				{
 					int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
 					int aboveContents = Terrain.ExtractContents(aboveValue);
-
 					if (aboveContents == 0 || aboveContents == 20 || !LeavesIndices.Contains(aboveContents))
 					{
 						base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
@@ -93,7 +97,6 @@ namespace Game
 				{
 					int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
 					Block belowBlock = BlocksManager.Blocks[Terrain.ExtractContents(belowValue)];
-
 					if (!belowBlock.IsSuitableForPlants(belowValue, cellValue))
 					{
 						base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
@@ -107,15 +110,11 @@ namespace Game
 			if (pollPass == 0 && m_subsystemTime != null)
 			{
 				double currentTime = m_subsystemTime.GameTime;
-
-				// Verificar frutos huérfanos cada 10 segundos
 				if (currentTime - m_lastOrphanCheckTime >= 10.0)
 				{
 					m_lastOrphanCheckTime = currentTime;
 					CheckOrphanFruits(x, y, z);
 				}
-
-				// Regenerar frutos cada 60 segundos
 				if (currentTime - m_lastRegenerationTime >= 60.0)
 				{
 					m_lastRegenerationTime = currentTime;
@@ -128,12 +127,10 @@ namespace Game
 		{
 			int cellValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y, z);
 			int contents = Terrain.ExtractContents(cellValue);
-
 			if (FruitIndices.Contains(contents))
 			{
 				int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
 				int aboveContents = Terrain.ExtractContents(aboveValue);
-
 				if (!LeavesIndices.Contains(aboveContents))
 				{
 					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
@@ -145,7 +142,6 @@ namespace Game
 		{
 			if (isLoaded) return;
 			int contents = Terrain.ExtractContents(value);
-
 			if (FruitIndices.Contains(contents))
 			{
 				int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
@@ -156,47 +152,31 @@ namespace Game
 			}
 		}
 
-		// ==================== REGENERACIÓN DE FRUTOS ====================
 		private void TryRegenerateFruit(int leafX, int leafY, int leafZ)
 		{
 			int leafValue = base.SubsystemTerrain.Terrain.GetCellValue(leafX, leafY, leafZ);
 			int leafContents = Terrain.ExtractContents(leafValue);
 			if (!LeavesIndices.Contains(leafContents))
 				return;
-
-			// Determinar el tipo de árbol por el bloque de hoja
 			ShittyTreeType? treeType = GetTreeTypeFromLeaf(leafContents);
 			if (!treeType.HasValue)
 				return;
-
-			// Obtener el índice de fruta correspondiente
 			int fruitIndex = GetFruitIndexFromType(treeType.Value);
 			if (fruitIndex == 0)
 				return;
-
-			// Buscar si ya hay fruto debajo de esta hoja
 			int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(leafX, leafY - 1, leafZ);
 			int belowContents = Terrain.ExtractContents(belowValue);
 			if (FruitIndices.Contains(belowContents))
-				return; // Ya hay fruto, no regenerar
-
-			// Obtener temperatura y humedad del Terrain
+				return;
 			int temperature = m_subsystemTerrain.Terrain.GetTemperature(leafX, leafZ);
 			int humidity = m_subsystemTerrain.Terrain.GetHumidity(leafX, leafZ);
-			int y = leafY - 1; // altura donde iría el fruto
-
-			// Ajustar por estación (opcional, usar SeasonalTemperature/Humidity)
+			int y = leafY - 1;
 			int seasonalTemperature = m_subsystemTerrain.Terrain.GetSeasonalTemperature(leafX, leafZ);
 			int seasonalHumidity = m_subsystemTerrain.Terrain.GetSeasonalHumidity(leafX, leafZ);
-
-			// Probabilidad base por minuto (2% por hoja)
 			float baseProbability = 0.02f;
-			float probability = baseProbability *
-				ShittyPlantsManager.CalculateFruitTreeProbability(treeType.Value, seasonalTemperature, seasonalHumidity, y);
-
+			float probability = baseProbability * ShittyPlantsManager.CalculateFruitTreeProbability(treeType.Value, seasonalTemperature, seasonalHumidity, y);
 			if (m_regenerationRandom.Float(0f, 1f) < probability)
 			{
-				// Colocar el fruto
 				int newFruitValue = Terrain.MakeBlockValue(fruitIndex);
 				base.SubsystemTerrain.ChangeCell(leafX, leafY - 1, leafZ, newFruitValue, true, null);
 			}
