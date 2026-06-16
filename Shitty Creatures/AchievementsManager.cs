@@ -274,7 +274,7 @@ namespace Game
 						 templateName == "InfectedFreezer" || templateName == "HumanoidSkeleton" ||
 						 templateName == "PredatoryChameleon" || templateName == "InfectedFly3" ||
 						 templateName == "InfectedBird" || templateName == "InfectedBear" ||
-						 templateName == "InfectedFly1" || templateName == "InfectedFly2" || templateName == "Charger1" || templateName == "Charger2");
+						 templateName == "InfectedFly1" || templateName == "InfectedFly2" || templateName == "Charger1" || templateName == "Charger2" || templateName == "InfectedSpider");
 			if (isNormalInfected)
 			{
 				UnlockAchievement(killer, 2, "KillInfected", LanguageControl.Get(AchievementsWidget.fName, 8));
