@@ -95,6 +95,27 @@ namespace Game
 		private DynamicArray<ComponentBody> m_tempBodiesArray = new DynamicArray<ComponentBody>();
 		// ===== FIN SISTEMA DE SPAWN DE ESQUELETOS =====
 
+		// ===== SISTEMA DE SPAWN DE INFECTED SPIDER (INDEPENDIENTE) =====
+		private const string InfectedSpiderTemplateName = "InfectedSpider";
+
+		// Spawn NORMAL - noche (independiente de SkeletonSpawnEnabled)
+		private const int SpiderNormalTotalLimit = 5;
+		private const int SpiderNormalAreaLimit = 1;
+		private const int SpiderNormalNewChunkAttempts = 2;
+		private const float SpiderNormalSuitability = 0.8f;
+
+		// Spawn CONSTANTE - noche
+		private const int SpiderConstantTotalLimitNormal = 2;
+		private const int SpiderConstantTotalLimitChallenging = 3;
+		private const int SpiderConstantAreaLimit = 1;
+		private const float SpiderConstantAreaRadius = 32f;
+		private const int SpiderConstantChunkAttempts = 1;
+		private const float SpiderConstantSuitability = 0.4f;
+
+		private float m_spiderConstantSpawnCooldown;
+		private const float SpiderConstantSpawnCooldownTime = 18f;
+		// ===== FIN SISTEMA DE SPAWN DE INFECTED SPIDER =====
+
 		// Estado de jefes
 		private bool m_bossBattleActive;
 		private Queue<string> m_bossQueue = new Queue<string>();
@@ -218,6 +239,7 @@ namespace Game
 			// ===== FIN CARGAR ESTADO DE LA BATALLA DE JEFES =====
 
 			m_constantSpawnCooldown = ConstantSpawnCooldownTime;
+			m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
 			Instance = this;
 
 			CreateCountdownLabel();
@@ -670,6 +692,35 @@ namespace Game
 					VerifyAndRestoreBossState();
 				}
 			}
+			// ===== FIN VERIFICACIÓN =====
+
+			// ===== SPAWN DE INFECTED SPIDER (SUPERFICIE - NOCHE, INDEPENDIENTE DE CONFIGURACIÓN) =====
+			if (m_skeletonNewSpawnChunks.Count > 0 && isNormalNight && !isGreenNightActive)
+			{
+				foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
+				{
+					SpawnNormalSpidersInChunk(chunk, SpiderNormalNewChunkAttempts);
+				}
+			}
+
+			if (!isNormalNight || isGreenNightActive)
+			{
+				m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
+			}
+			else
+			{
+				m_spiderConstantSpawnCooldown -= dt;
+			}
+
+			if (m_skeletonSpawnChunks.Count > 0 && isNormalNight && !isGreenNightActive && m_spiderConstantSpawnCooldown <= 0f)
+			{
+				foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
+				{
+					SpawnConstantSpidersInChunk(chunk, SpiderConstantChunkAttempts);
+				}
+				m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
+			}
+			// ===== FIN SPAWN DE INFECTED SPIDER (SUPERFICIE) =====
 			// ===== FIN VERIFICACIÓN =====
 
 			// ===== SPAWN DE ESQUELETOS NORMALES =====
@@ -1780,5 +1831,251 @@ namespace Game
 			rider.StartMounting(mountComp);
 			return true;
 		}
+
+		// ===== SPAWN NORMAL DE INFECTED SPIDER (SUPERFICIE) =====
+		private void SpawnNormalSpidersInChunk(SpawnChunk chunk, int maxAttempts)
+		{
+			int currentCount = CountSpiders(false);
+			if (currentCount >= SpiderNormalTotalLimit)
+				return;
+
+			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(16);
+			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(16);
+			int areaCount = CountSpidersInArea(c1, c2, false);
+
+			for (int i = 0; i < maxAttempts; i++)
+			{
+				if (currentCount >= SpiderNormalTotalLimit || areaCount >= SpiderNormalAreaLimit)
+					break;
+
+				Point3? spawnPoint = GetRandomChunkSpawnPoint(chunk);
+				if (!spawnPoint.HasValue)
+					continue;
+
+				Point3 point = spawnPoint.Value;
+
+				float suitability = CalculateNormalSpiderSuitability(point);
+				if (suitability <= 0f)
+					continue;
+
+				int spawned = SpawnSpidersAtPoint(point, false, 1);
+				currentCount += spawned;
+				areaCount += spawned;
+			}
+		}
+
+		private float CalculateNormalSpiderSuitability(Point3 point)
+		{
+			int x = point.X;
+			int y = point.Y;
+			int z = point.Z;
+
+			if (m_subsystemSky.SkyLightIntensity >= NightLightThreshold)
+				return 0f;
+
+			TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunk == null || chunk.State <= TerrainChunkState.InvalidPropagatedLight)
+				return 0f;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			bool belowSolid = (block.IsCollidable_(cellValueFast) || block is WaterBlock);
+			bool currentEmpty = (!block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock));
+			bool aboveEmpty = (!block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock));
+
+			if (!belowSolid || !currentEmpty || !aboveEmpty)
+				return 0f;
+
+			int belowContents = Terrain.ExtractContents(cellValueFast);
+
+			if (!m_allowedBlockIndices.Contains(belowContents))
+				return 0f;
+
+			int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+			if (y > topHeight + 2)
+				return 0f;
+
+			return SpiderNormalSuitability;
+		}
+		// ===== FIN SPAWN NORMAL INFECTED SPIDER =====
+
+		// ===== SPAWN CONSTANTE DE INFECTED SPIDER (SUPERFICIE) =====
+		private void SpawnConstantSpidersInChunk(SpawnChunk chunk, int maxAttempts)
+		{
+			int totalLimit = (m_subsystemGameInfo.WorldSettings.GameMode >= GameMode.Challenging)
+				? SpiderConstantTotalLimitChallenging
+				: SpiderConstantTotalLimitNormal;
+
+			int currentCount = CountSpiders(true);
+			if (currentCount >= totalLimit)
+				return;
+
+			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(SpiderConstantAreaRadius);
+			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(SpiderConstantAreaRadius);
+			int areaCount = CountSpidersInArea(c1, c2, true);
+
+			for (int i = 0; i < maxAttempts; i++)
+			{
+				if (currentCount >= totalLimit || areaCount >= SpiderConstantAreaLimit)
+					break;
+
+				Point3? spawnPoint = GetRandomChunkSpawnPoint(chunk);
+				if (!spawnPoint.HasValue)
+					continue;
+
+				Point3 point = spawnPoint.Value;
+
+				float suitability = CalculateConstantSpiderSuitability(point);
+				if (suitability <= 0f)
+					continue;
+
+				int spawned = SpawnSpidersAtPoint(point, true, 1);
+				currentCount += spawned;
+				areaCount += spawned;
+			}
+		}
+
+		private float CalculateConstantSpiderSuitability(Point3 point)
+		{
+			int x = point.X;
+			int y = point.Y;
+			int z = point.Z;
+
+			if (m_subsystemSky.SkyLightIntensity >= NightLightThreshold)
+				return 0f;
+
+			TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunk == null || chunk.State <= TerrainChunkState.InvalidPropagatedLight)
+				return 0f;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			bool belowSolid = (block.IsCollidable_(cellValueFast) || block is WaterBlock);
+			bool currentEmpty = (!block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock));
+			bool aboveEmpty = (!block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock));
+
+			if (!belowSolid || !currentEmpty || !aboveEmpty)
+				return 0f;
+
+			int belowContents = Terrain.ExtractContents(cellValueFast);
+
+			if (!m_allowedBlockIndices.Contains(belowContents))
+				return 0f;
+
+			int cellLightFast = m_subsystemTerrain.Terrain.GetCellLightFast(x, y + 1, z);
+			if (cellLightFast > 7)
+				return 0f;
+
+			int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+			if (y > topHeight + 2)
+				return 0f;
+
+			int currentCount = CountSpiders(true);
+			int totalLimit = (m_subsystemGameInfo.WorldSettings.GameMode >= GameMode.Challenging)
+				? SpiderConstantTotalLimitChallenging
+				: SpiderConstantTotalLimitNormal;
+
+			float limitFactor = 1f - ((float)currentCount / totalLimit * 0.7f);
+
+			return SpiderConstantSuitability * limitFactor;
+		}
+
+		private int SpawnSpidersAtPoint(Point3 point, bool constantSpawn, int count)
+		{
+			int spawned = 0;
+			int attempts = 0;
+
+			while (count > 0 && attempts < 50)
+			{
+				Point3 spawnPoint = point;
+				if (attempts > 0)
+				{
+					spawnPoint.X += m_random.Int(-8, 8);
+					spawnPoint.Y += m_random.Int(-4, 8);
+					spawnPoint.Z += m_random.Int(-8, 8);
+				}
+
+				Point3? processedPoint = ProcessSkeletonSpawnPoint(spawnPoint);
+				if (processedPoint.HasValue)
+				{
+					Vector3 position = new Vector3(
+						processedPoint.Value.X + m_random.Float(0.4f, 0.6f),
+						processedPoint.Value.Y + 1.1f,
+						processedPoint.Value.Z + m_random.Float(0.4f, 0.6f)
+					);
+
+					Entity entity = m_subsystemCreatureSpawn.SpawnCreature(
+						InfectedSpiderTemplateName,
+						position,
+						constantSpawn
+					);
+
+					if (entity != null)
+					{
+						spawned++;
+						count--;
+					}
+				}
+				attempts++;
+			}
+			return spawned;
+		}
+
+		private int CountSpiders(bool constantSpawn)
+		{
+			int count = 0;
+			foreach (ComponentBody body in m_subsystemBodies.Bodies)
+			{
+				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+				if (creature != null && creature.ConstantSpawn == constantSpawn)
+				{
+					if (body.Entity.ValuesDictionary.DatabaseObject?.Name == InfectedSpiderTemplateName)
+					{
+						count++;
+					}
+				}
+			}
+			return count;
+		}
+
+		private int CountSpidersInArea(Vector2 c1, Vector2 c2, bool constantSpawn)
+		{
+			int count = 0;
+			m_tempBodiesArray.Clear();
+			m_subsystemBodies.FindBodiesInArea(c1, c2, m_tempBodiesArray);
+
+			for (int i = 0; i < m_tempBodiesArray.Count; i++)
+			{
+				ComponentBody body = m_tempBodiesArray.Array[i];
+				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+
+				if (creature != null && creature.ConstantSpawn == constantSpawn)
+				{
+					if (body.Entity.ValuesDictionary.DatabaseObject?.Name == InfectedSpiderTemplateName)
+					{
+						Vector3 position = body.Position;
+						if (position.X >= c1.X && position.X <= c2.X &&
+							position.Z >= c1.Y && position.Z <= c2.Y)
+						{
+							count++;
+						}
+					}
+				}
+			}
+			return count;
+		}
+		// ===== FIN SPAWN CONSTANTE INFECTED SPIDER =====
 	}
 }
