@@ -28,6 +28,12 @@ namespace Game
 		private Random m_random = new Random();
 		private StringBuilder m_stringBuilder = new StringBuilder();
 
+		public SubsystemFruitSaplingBlockBehavior()
+		{
+			// Asegurar que la inicialización se haga lo antes posible
+			ShittyPlantsManager.EnsureInitialized();
+		}
+
 		public override int[] HandledBlocks
 		{
 			get
@@ -51,11 +57,9 @@ namespace Game
 		public override void OnBlockAdded(int value, int oldValue, int x, int y, int z)
 		{
 			InitMapping();
-
 			float growSeconds = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative)
 				? m_random.Float(8f, 12f)
 				: m_random.Float(480f, 600f);
-
 			ShittyTreeType treeType = GetTreeTypeFromBlockValue(value);
 			AddSapling(new SaplingData
 			{
@@ -82,11 +86,11 @@ namespace Game
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
+			ShittyPlantsManager.EnsureInitialized();
 			m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
 			m_subsystemTimeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 			m_enumerator = m_saplings.Values.GetEnumerator();
 			InitMapping();
-
 			ValuesDictionary saplingsDict = valuesDictionary.GetValue<ValuesDictionary>("FruitSaplings", null);
 			if (saplingsDict != null)
 			{
@@ -126,23 +130,24 @@ namespace Game
 		{
 			if (m_blockToTreeType != null) return;
 			m_blockToTreeType = new Dictionary<int, ShittyTreeType>();
-			int appleIdx = BlocksManager.GetBlockIndex("AppleSaplingBlock", true);
-			int pearIdx = BlocksManager.GetBlockIndex("PearSaplingBlock", true);
-			int cherryIdx = BlocksManager.GetBlockIndex("CherrySaplingBlock", true);
-			int orangeIdx = BlocksManager.GetBlockIndex("OrangeSaplingBlock", true);
-			int bananaIdx = BlocksManager.GetBlockIndex("BananaSaplingBlock", true);
-
-			m_blockToTreeType[appleIdx] = ShittyTreeType.Apple;
-			m_blockToTreeType[pearIdx] = ShittyTreeType.Pear;
-			m_blockToTreeType[cherryIdx] = ShittyTreeType.Cherry;
-			m_blockToTreeType[orangeIdx] = ShittyTreeType.Orange;
-			m_blockToTreeType[bananaIdx] = ShittyTreeType.Banana;
+			int appleIdx = BlocksManager.GetBlockIndex("AppleSaplingBlock", false);
+			int pearIdx = BlocksManager.GetBlockIndex("PearSaplingBlock", false);
+			int cherryIdx = BlocksManager.GetBlockIndex("CherrySaplingBlock", false);
+			int orangeIdx = BlocksManager.GetBlockIndex("OrangeSaplingBlock", false);
+			int bananaIdx = BlocksManager.GetBlockIndex("BananaSaplingBlock", false);
+			if (appleIdx >= 0) m_blockToTreeType[appleIdx] = ShittyTreeType.Apple;
+			if (pearIdx >= 0) m_blockToTreeType[pearIdx] = ShittyTreeType.Pear;
+			if (cherryIdx >= 0) m_blockToTreeType[cherryIdx] = ShittyTreeType.Cherry;
+			if (orangeIdx >= 0) m_blockToTreeType[orangeIdx] = ShittyTreeType.Orange;
+			if (bananaIdx >= 0) m_blockToTreeType[bananaIdx] = ShittyTreeType.Banana;
 		}
 
 		private ShittyTreeType GetTreeTypeFromBlockValue(int value)
 		{
 			int contents = Terrain.ExtractContents(value);
-			return m_blockToTreeType[contents];
+			if (m_blockToTreeType != null && m_blockToTreeType.TryGetValue(contents, out ShittyTreeType result))
+				return result;
+			return ShittyTreeType.Apple;
 		}
 
 		public SaplingData LoadSaplingData(string data)
@@ -150,7 +155,6 @@ namespace Game
 			string[] array = data.Split(new string[] { ";" }, StringSplitOptions.None);
 			if (array.Length != 3)
 				throw new InvalidOperationException("Invalid fruit sapling data string.");
-
 			return new SaplingData
 			{
 				Point = HumanReadableConverter.ConvertFromString<Point3>(array[0]),
@@ -174,16 +178,13 @@ namespace Game
 		{
 			if (m_subsystemGameInfo.TotalElapsedGameTime < saplingData.MatureTime)
 				return;
-
 			int x = saplingData.Point.X;
 			int y = saplingData.Point.Y;
 			int z = saplingData.Point.Z;
-
 			TerrainChunk chunk1 = base.SubsystemTerrain.Terrain.GetChunkAtCell(x - 6, z - 6);
 			TerrainChunk chunk2 = base.SubsystemTerrain.Terrain.GetChunkAtCell(x - 6, z + 6);
 			TerrainChunk chunk3 = base.SubsystemTerrain.Terrain.GetChunkAtCell(x + 6, z - 6);
 			TerrainChunk chunk4 = base.SubsystemTerrain.Terrain.GetChunkAtCell(x + 6, z + 6);
-
 			if (chunk1 == null || chunk1.State != TerrainChunkState.Valid ||
 				chunk2 == null || chunk2.State != TerrainChunkState.Valid ||
 				chunk3 == null || chunk3.State != TerrainChunkState.Valid ||
@@ -192,17 +193,14 @@ namespace Game
 				saplingData.MatureTime = m_subsystemGameInfo.TotalElapsedGameTime;
 				return;
 			}
-
 			int cellBelow = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
 			int cellHere = base.SubsystemTerrain.Terrain.GetCellValue(x, y, z);
 			int belowContents = Terrain.ExtractContents(cellBelow);
-
 			if (!BlocksManager.Blocks[belowContents].IsSuitableForPlants(cellBelow, cellHere))
 			{
 				base.SubsystemTerrain.ChangeCell(x, y, z, Terrain.MakeBlockValue(28, 0, 0), true, null);
 				return;
 			}
-
 			if (base.SubsystemTerrain.Terrain.GetCellLight(x, y + 1, z) >= 9)
 			{
 				float probability;
@@ -215,19 +213,15 @@ namespace Game
 					int temperature = base.SubsystemTerrain.Terrain.GetTemperature(x, z)
 						+ SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
 					int humidity = base.SubsystemTerrain.Terrain.GetHumidity(x, z);
-
 					probability = 2f * ShittyPlantsManager.CalculateFruitTreeProbability(
 						saplingData.TreeType, temperature, humidity, y);
 				}
-
 				if (!m_random.Bool(probability))
 				{
 					base.SubsystemTerrain.ChangeCell(x, y, z, Terrain.MakeBlockValue(28, 0, 0), true, null);
 					return;
 				}
-
 				base.SubsystemTerrain.ChangeCell(x, y, z, Terrain.MakeBlockValue(0, 0, 0), true, null);
-
 				if (!GrowTree(x, y, z, saplingData.TreeType))
 				{
 					base.SubsystemTerrain.ChangeCell(x, y, z, Terrain.MakeBlockValue(28, 0, 0), true, null);
@@ -242,7 +236,13 @@ namespace Game
 
 		public bool GrowTree(int x, int y, int z, ShittyTreeType treeType)
 		{
+			ShittyPlantsManager.EnsureInitialized();
 			ReadOnlyList<TerrainBrush> treeBrushes = ShittyPlantsManager.GetTreeBrushes(treeType);
+			if (treeBrushes.Count == 0)
+			{
+				Log.Warning($"No tree brushes available for {treeType}");
+				return false;
+			}
 			for (int i = 0; i < 20; i++)
 			{
 				TerrainBrush brush = treeBrushes[m_random.Int(0, treeBrushes.Count - 1)];
@@ -251,9 +251,11 @@ namespace Game
 				{
 					if (cell.Y >= 0 && (cell.X != 0 || cell.Y != 0 || cell.Z != 0))
 					{
-						int contents = base.SubsystemTerrain.Terrain.GetCellContents(
-							(int)cell.X + x, (int)cell.Y + y, (int)cell.Z + z);
-						if (contents != 0 && !(BlocksManager.Blocks[contents] is LeavesBlock))
+						int checkX = (int)cell.X + x;
+						int checkY = (int)cell.Y + y;
+						int checkZ = (int)cell.Z + z;
+						int contents = base.SubsystemTerrain.Terrain.GetCellContents(checkX, checkY, checkZ);
+						if (contents != 0 && !(BlocksManager.Blocks[contents] is LeavesBlock) && contents != 12 && contents != 13 && contents != 14 && contents != 225)
 						{
 							canPlace = false;
 							break;
@@ -263,12 +265,10 @@ namespace Game
 				if (canPlace)
 				{
 					brush.Paint(base.SubsystemTerrain, x, y, z);
-
 					int temperature = base.SubsystemTerrain.Terrain.GetTemperature(x, z) + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
 					int humidity = base.SubsystemTerrain.Terrain.GetHumidity(x, z);
 					float fruitDensity = ShittyPlantsManager.CalculateFruitDensity(treeType, temperature, humidity, y);
 					fruitDensity = MathUtils.Clamp(fruitDensity * m_random.Float(0.8f, 1.2f), 0f, 1f);
-
 					ShittyPlantsManager.AttachFruitsToTree(base.SubsystemTerrain, x, y, z, brush, treeType, m_random, fruitDensity);
 					return true;
 				}
