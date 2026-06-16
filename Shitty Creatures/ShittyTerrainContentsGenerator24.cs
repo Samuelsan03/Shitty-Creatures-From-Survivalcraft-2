@@ -155,6 +155,9 @@ namespace Game
 
 		private void GenerateFruitTrees(TerrainChunk chunk)
 		{
+			// Asegurar que ShittyPlantsManager esté inicializado
+			ShittyPlantsManager.EnsureInitialized();
+
 			Terrain terrain = m_subsystemTerrain.Terrain;
 			int chunkX = chunk.Coords.X;
 			int chunkZ = chunk.Coords.Y;
