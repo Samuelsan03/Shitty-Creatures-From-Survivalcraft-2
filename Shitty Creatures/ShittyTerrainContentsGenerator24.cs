@@ -63,48 +63,86 @@ namespace Game
 		{
 			if (!TGExtras) return;
 
-			// Obtenemos el índice del bloque de sandía por su nombre (evitamos números)
-			int watermelonBlockIndex = BlocksManager.GetBlockIndex("WatermelonBlock", throwIfNotFound: false);
-			if (watermelonBlockIndex < 0) return; // si no existe, salimos
-
-			// Valor de sandía madura (tamaño 7)
-			int watermelonValue = Terrain.MakeBlockValue(watermelonBlockIndex, 0,
-				BaseWatermelonBlock.SetSize(BaseWatermelonBlock.SetIsDead(0, false), 7));
+			// Obtener índices de bloques usando typeof()
+			int watermelonIndex = BlocksManager.GetBlockIndex(typeof(WatermelonBlock), throwIfNotFound: false, mustBeInSameType: true);
+			int rottenWatermelonIndex = BlocksManager.GetBlockIndex(typeof(RottenWatermelonBlock), throwIfNotFound: false, mustBeInSameType: true);
+			if (watermelonIndex < 0 && rottenWatermelonIndex < 0) return;
 
 			Random random = new Random(m_seed + chunk.Coords.X * 3943 + chunk.Coords.Y * 1495);
 
-			int attempts = random.Int(0, 2);
-			for (int attempt = 0; attempt < attempts; attempt++)
+			// Probabilidad global del 20% (igual que calabazas)
+			if (!random.Bool(0.2f)) return;
+
+			// Función auxiliar para intentar colocar una sandía de un tipo específico
+			void TryPlaceWatermelon(bool isRotten, int maxAttempts = 8)
 			{
-				int x = random.Int(2, 13);
-				int z = random.Int(2, 13);
-				int temperature = chunk.GetTemperatureFast(x, z);
-				int humidity = chunk.GetHumidityFast(x, z);
+				int blockIndex = isRotten ? rottenWatermelonIndex : watermelonIndex;
+				if (blockIndex < 0) return;
 
-				// Sandías prefieren climas cálidos y húmedos
-				if (temperature < 8 || temperature > 15 || humidity < 8) continue;
+				int data = BaseWatermelonBlock.SetSize(BaseWatermelonBlock.SetIsDead(0, false), 7);
+				int value = Terrain.MakeBlockValue(blockIndex, 0, data);
+				string tipo = isRotten ? "podrida" : "madura";
 
-				int y = chunk.CalculateTopmostCellHeight(x, z);
-				if (y < 66) continue;
+				for (int attempt = 0; attempt < maxAttempts; attempt++)
+				{
+					int x = random.Int(1, 14);
+					int z = random.Int(1, 14);
+					int temperature = chunk.GetTemperatureFast(x, z);
+					int humidity = chunk.GetHumidityFast(x, z);
 
-				int ground = chunk.GetCellContentsFast(x, y, z);
-				if (ground != 2 && ground != 8) continue;
+					if (humidity < 10 || temperature <= 6) continue;
 
-				// Espacio para la sandía (puede ser un bloque de ancho)
-				bool hasSpace = true;
-				for (int dx = -1; dx <= 1; dx++)
-					for (int dz = -1; dz <= 1; dz++)
+					for (int offset = 0; offset < 5; offset++)
 					{
-						if (chunk.GetCellContentsFast(x + dx, y + 1, z + dz) != 0)
-						{
-							hasSpace = false;
-							break;
-						}
-					}
-				if (!hasSpace) continue;
+						int x2 = Math.Clamp(x + random.Int(-1, 1), 0, 15);
+						int z2 = Math.Clamp(z + random.Int(-1, 1), 0, 15);
+						int y = chunk.CalculateTopmostCellHeight(x2, z2);
+						if (y < 66 || y >= 255) continue;
 
-				// Colocar la sandía
-				chunk.SetCellValueFast(x, y + 1, z, watermelonValue);
+						int ground = chunk.GetCellContentsFast(x2, y, z2);
+						if (ground != 2 && ground != 8) continue;
+
+						bool hasSpace = true;
+						for (int dx = -1; dx <= 1; dx++)
+						{
+							for (int dz = -1; dz <= 1; dz++)
+							{
+								int checkX = x2 + dx;
+								int checkZ = z2 + dz;
+								if (checkX < 0 || checkX > 15 || checkZ < 0 || checkZ > 15)
+								{
+									hasSpace = false;
+									break;
+								}
+								if (chunk.GetCellContentsFast(checkX, y + 1, checkZ) != 0)
+								{
+									hasSpace = false;
+									break;
+								}
+							}
+							if (!hasSpace) break;
+						}
+						if (!hasSpace) continue;
+
+						chunk.SetCellValueFast(x2, y + 1, z2, value);
+
+						int absX = chunk.Origin.X + x2;
+						int absZ = chunk.Origin.Y + z2;
+						int absY = y + 1;
+
+						return;
+					}
+				}
+			}
+
+			// Bucle ÚNICO: intentar colocar 4 sandías, cada una decide su tipo al azar
+			int totalSandias = 4; // Cambia este número para más o menos sandías
+			float probPodrida = 0.3f; // 30% de que sea podrida
+
+			for (int i = 0; i < totalSandias; i++)
+			{
+				bool isRotten = random.Bool(probPodrida);
+				TryPlaceWatermelon(isRotten);
 			}
 		}
 
@@ -185,18 +223,6 @@ namespace Game
 					}
 				}
 			}
-		}
-
-		private bool IsSpaceForTree(Terrain terrain, int x, int y, int z)
-		{
-			for (int dy = 0; dy < 8; dy++)
-				if (terrain.GetCellContentsFast(x, y + dy, z) != 0 ||
-					terrain.GetCellContentsFast(x + 1, y + dy, z) != 0 ||
-					terrain.GetCellContentsFast(x - 1, y + dy, z) != 0 ||
-					terrain.GetCellContentsFast(x, y + dy, z + 1) != 0 ||
-					terrain.GetCellContentsFast(x, y + dy, z - 1) != 0)
-					return false;
-			return true;
 		}
 	}
 }
