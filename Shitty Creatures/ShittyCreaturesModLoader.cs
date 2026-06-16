@@ -1848,16 +1848,14 @@ namespace Game
 
 		public override void OnCreatureDied(ComponentHealth health, Injury injury, ref int experienceOrbDropCount, ref bool calculateInKill)
 		{
-			// CORRECCIÓN: Cambiado 'componentHealth' por 'health'
-			if (health?.Entity?.ValuesDictionary?.DatabaseObject?.Name is string entityName &&
-			s_bossNames.Contains(entityName))
-			{
-				// Los jefes no sueltan experiencia para evitar explotar la diferencia
-				// de salud entre dificultades
-				experienceOrbDropCount = 0;
+			// Llamar siempre a la lógica de logros
+			AchievementsManager.OnCreatureDied(health, injury);
 
-				// Delegar la lógica de logros al manager
-				AchievementsManager.OnCreatureDied(health, injury);
+			// Lógica específica de experiencia para jefes (opcional)
+			if (health?.Entity?.ValuesDictionary?.DatabaseObject?.Name is string entityName &&
+				s_bossNames.Contains(entityName))
+			{
+				experienceOrbDropCount = 0; // Los jefes no sueltan experiencia
 			}
 
 			// Mantener el sonido especial para piratas
