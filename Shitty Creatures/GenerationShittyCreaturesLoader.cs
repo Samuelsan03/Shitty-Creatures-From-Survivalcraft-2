@@ -20,23 +20,19 @@ namespace Game
 		// ==================== CARGA DEL PROYECTO (reemplazar generador de terreno) ====================
 		public override void OnProjectLoaded(Project project)
 		{
-			// Inicializar los pinceles de árboles frutales
-			ShittyPlantsManager.Initialize();
+			// Inicializar los pinceles de árboles frutales (reinicializar siempre)
+			ShittyPlantsManager.Initialize(); // FORZAR reinicialización
 
 			SubsystemTerrain terrainSubsystem = project.FindSubsystem<SubsystemTerrain>(true);
 			if (terrainSubsystem != null)
 			{
-				// Obtener la configuración del mundo
 				SubsystemGameInfo gameInfo = project.FindSubsystem<SubsystemGameInfo>(true);
 				TerrainGenerationMode mode = gameInfo.WorldSettings.TerrainGenerationMode;
 
-				// Solo reemplazar el generador en modos que NO sean planos
 				if (mode != TerrainGenerationMode.FlatContinent && mode != TerrainGenerationMode.FlatIsland)
 				{
 					terrainSubsystem.TerrainContentsGenerator = new ShittyTerrainContentsGenerator24(terrainSubsystem);
 				}
-				// Para modos planos, el juego usará su generador original (Flat/FlatIsland)
-				// y no se añadirán árboles frutales, arbustos ni sandías.
 			}
 		}
 
@@ -336,110 +332,6 @@ namespace Game
 					return subsystemCreatureSpawn.SpawnCreatures(ct, "InfiniteTheJackal", correctedPoint, 1).Count;
 				}
 			});
-		}
-
-		// ==================== GENERADOR DE TERRENO PERSONALIZADO (con árboles frutales) ====================
-		/// <summary>
-		/// Generador de terreno que añade árboles frutales (ShittyTreeType) sin eliminar los árboles originales.
-		/// </summary>
-		private class ShittyTerrainContentsGenerator24 : TerrainContentsGenerator24
-		{
-			private Random m_fruitTreeRandom;
-
-			public ShittyTerrainContentsGenerator24(SubsystemTerrain subsystemTerrain)
-				: base(subsystemTerrain)
-			{
-				m_fruitTreeRandom = new Random(m_seed);
-			}
-
-			public override void GenerateTrees(TerrainChunk chunk)
-			{
-				// 1. Generar árboles originales (robles, abedules, etc.)
-				base.GenerateTrees(chunk);
-
-				// 2. Generar árboles frutales adicionales
-				GenerateFruitTrees(chunk);
-			}
-
-			private void GenerateFruitTrees(TerrainChunk chunk)
-			{
-				Terrain terrain = m_subsystemTerrain.Terrain;
-				int chunkX = chunk.Coords.X;
-				int chunkZ = chunk.Coords.Y;
-				Random globalRand = new Random(m_seed + chunkX * 1000 + chunkZ);
-
-				// Densidad global del bosque (factor multiplicador, igual que usabas antes)
-				float forestDensity = CalculateForestDensity(chunkX * 16 + 8, chunkZ * 16 + 8);
-
-				// Ejemplo: probamos cada bloque de superficie en el chunk (o puedes usar un stride)
-				// Para rendimiento, usamos un paso de 2 o 3, pero igual puedes probar todos.
-				for (int dx = 2; dx < 14; dx += 2)
-				{
-					for (int dz = 2; dz < 14; dz += 2)
-					{
-						int x = chunkX * 16 + dx;
-						int z = chunkZ * 16 + dz;
-						int y = terrain.CalculateTopmostCellHeight(x, z);
-
-						if (y < 66) continue;
-
-						// Bloque suelo debe ser césped o tierra
-						int ground = terrain.GetCellContentsFast(x, y, z);
-						if (ground != 2 && ground != 8) continue;
-
-						// Espacio suficiente para el árbol?
-						if (!IsSpaceForTree(terrain, x, y + 1, z)) continue;
-
-						// Temperatura y humedad reales (con ajuste estacional)
-						int realTemp = terrain.GetTemperature(x, z) + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
-						int realHum = terrain.GetHumidity(x, z);
-
-						// Probabilidad base de que aparezca ALGÚN árbol frutal en esta celda
-						// Usamos la densidad máxima entre todos los tipos (o puedes usar un promedio)
-						float maxDensity = 0f;
-						foreach (ShittyTreeType type in Enum.GetValues(typeof(ShittyTreeType)))
-						{
-							float d = ShittyPlantsManager.CalculateTreeDensity(type, realTemp, realHum, y);
-							if (d > maxDensity) maxDensity = d;
-						}
-
-						// Aplicamos un factor global (forestDensity) y un pequeño random para variedad
-						float spawnProb = maxDensity * forestDensity * 0.5f; // Ajusta el 0.5f a gusto
-						if (globalRand.Float(0, 1) > spawnProb) continue;
-
-						// Ahora elegimos el tipo de árbol aleatoriamente (ya incluye su propia probabilidad)
-						Random localRand = new Random(m_seed + x + 3943 * z);
-						ShittyTreeType? treeType = ShittyPlantsManager.GenerateRandomTreeType(
-							localRand, realTemp, realHum, y, densityMultiplier: 1.2f);
-
-						if (treeType == null) continue;
-
-						var brushes = ShittyPlantsManager.GetTreeBrushes(treeType.Value);
-						if (brushes.Count == 0) continue;
-
-						TerrainBrush brush = brushes[localRand.Int(0, brushes.Count - 1)];
-						brush.PaintFast(chunk, x, y + 1, z);
-						chunk.AddBrushPaint(x, y + 1, z, brush);
-
-						// Colocar frutos usando la densidad calculada (como ya hacías)
-						float fruitDensity = ShittyPlantsManager.CalculateFruitDensity(treeType.Value, realTemp, realHum, y);
-						ShittyPlantsManager.AttachFruitsToTreeFast(chunk, x, y + 1, z, brush, treeType.Value, localRand, fruitDensity);
-					}
-				}
-			}
-
-			private bool IsSpaceForTree(Terrain terrain, int x, int y, int z)
-			{
-				for (int dy = 0; dy < 8; dy++)
-				{
-					if (terrain.GetCellContentsFast(x, y + dy, z) != 0) return false;
-					if (terrain.GetCellContentsFast(x + 1, y + dy, z) != 0) return false;
-					if (terrain.GetCellContentsFast(x - 1, y + dy, z) != 0) return false;
-					if (terrain.GetCellContentsFast(x, y + dy, z + 1) != 0) return false;
-					if (terrain.GetCellContentsFast(x, y + dy, z - 1) != 0) return false;
-				}
-				return true;
-			}
 		}
 	}
 }
