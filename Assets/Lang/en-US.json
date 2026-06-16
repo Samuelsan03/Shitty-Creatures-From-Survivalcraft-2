@@ -359,6 +359,8 @@
   },
   "Database": {
     "DisplayName": {
+      "InfectedSpiderTamed": "Infected Spider Ally",
+      "InfectedSpider": "Infected Spider",
       "SonicTheHedgehog": "Sonic The Hedgehog",
       "MilesTailsPrower": "Miles \"Tails\" Prower",
       "KnucklesTheEchidna": "Knuckles The Echidna",
@@ -528,6 +530,7 @@
       "Richard": "Richard"
     },
     "Description": {
+      "InfectedSpider": "An infected spider that lurks in the depths and emerges during the night. It appears starting from wave 8, and can also be found in caves independently of the waves. Extremely aggressive, it attacks anything that moves regardless of the time of day. It possesses a highly potent venom capable of severely poisoning its prey. Its speed and jumping ability make it a formidable hunter. It can be tamed with a collar, transforming into a docile version that protects its owner. During the Green Night, its aggressiveness increases, prioritizing attacks on players. It is resistant to poison. Upon death, it drops rotten flesh.",
       "InfectedNormal1": "Appears from Wave 1. This infected is one of the most common threats of the plague, but it should never be underestimated. It constantly roams in search of prey and is capable of detecting, chasing, and attacking both survivors and other creatures. It can travel great distances to reach its target, cooperate with nearby infected, and respond to their calls for help when one of them enters combat. It can pick up weapons, tools, and clothing found along its path, using them to improve its chances of survival. If an obstacle blocks its way, it will attempt to destroy it and continue forward. Its distinctive glowing green eyes remain visible even in complete darkness. During the Green Night, its behavior becomes far more aggressive: it abandons any intention of retreating, focuses entirely on survivors, and pursues them with relentless determination. Even after being attacked, it can remember its aggressor and continue the chase for a long time. It can be tamed using a Collar, becoming a loyal guardian that will fight by your side. Upon death, there is a small chance that its corrupted spirit will remain in this world in a new form.",
       "InfiniteTheJackal": "Infinite the Jackal is a legendary mercenary jackal inspired by the warrior who first appeared in Sonic Forces (2017). Former leader of the feared Jackal Squad, he earned fame as the Supreme Mercenary thanks to his extraordinary strength and his obsession with overcoming any sign of weakness. In this world, he wanders the deserts during the darkest nights, far from civilization, seeking to perfect his skills and find worthy rivals. Although he is usually loyal and peaceful toward those who have earned his respect, he never refuses a combat challenge. His speed, endurance, and fighting abilities far surpass those of most creatures, making him a figure both feared and admired. Those who manage to defeat him in a fair duel will earn the recognition of a true legend. Tip: When the duel begins, do not give him time to regain the initiative. Fighters capable of chaining together rapid melee strikes and maintaining constant pressure can test even Infinite's remarkable endurance. However, defeating him is not the only way to earn his respect; demonstrating courage, honor, and unwavering determination throughout the battle may lead him to acknowledge your strength and accept becoming your ally.",
       "KnucklesTheEchidna": "Knuckles the Echidna is a powerful red warrior who first appeared in Sonic the Hedgehog 3 (1994). As the last known descendant of the Echidna clan and the guardian of the Master Emerald, he has devoted his life to protecting one of the most important treasures in his world. His immense strength, determination, and strong sense of duty have made him both a rival and an ally to Sonic throughout many adventures. In this world, he only appears during winter in the highest and most remote mountains, as if he were still watching over some ancient forgotten secret from above. He is rarely seen, but those who manage to find him encounter a formidable fighter whose strength is as legendary as his loyalty.",
@@ -1550,6 +1553,7 @@
   "Messages": {
     "TooCloseToAim": "Too close to aim.",
     "NeedAmmo": "Needs {0} to shoot.",
+    "CollarTamedInfectedSpiderMessage": "You have tamed an Infected Spider!\nIts venomous webs will trap and poison your enemies!",
     "CollarTamedBoomerFrozenMessage": "You have tamed a Frozen Boomer!\nIts chilling explosion will freeze nearby enemies solid!",
   "CollarTamedFrozenGhostMessage": "You have tamed a Frozen Ghost!\nIts spectral icy touch will freeze your foes!",
   "CollarTamedFrozenGhostBoomerMessage": "You have tamed a Frozen Ghost Boomer!\nIts icy explosions will freeze your enemies!",
