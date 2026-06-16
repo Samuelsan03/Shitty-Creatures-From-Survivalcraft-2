@@ -98,19 +98,31 @@ namespace Game
 		// ===== SISTEMA DE SPAWN DE INFECTED SPIDER (INDEPENDIENTE) =====
 		private const string InfectedSpiderTemplateName = "InfectedSpider";
 
-		// Spawn NORMAL - noche (independiente de SkeletonSpawnEnabled)
+		// Spawn NORMAL SUPERFICIE - noche (independiente de SkeletonSpawnEnabled)
 		private const int SpiderNormalTotalLimit = 5;
 		private const int SpiderNormalAreaLimit = 1;
 		private const int SpiderNormalNewChunkAttempts = 2;
 		private const float SpiderNormalSuitability = 0.8f;
 
-		// Spawn CONSTANTE - noche
+		// Spawn CONSTANTE SUPERFICIE - noche
 		private const int SpiderConstantTotalLimitNormal = 2;
 		private const int SpiderConstantTotalLimitChallenging = 3;
 		private const int SpiderConstantAreaLimit = 1;
 		private const float SpiderConstantAreaRadius = 32f;
 		private const int SpiderConstantChunkAttempts = 1;
 		private const float SpiderConstantSuitability = 0.4f;
+
+		// Spawn CUEVAS - siempre activo (independiente de todo)
+		private const int SpiderCaveTotalLimit = 6;
+		private const int SpiderCaveAreaLimit = 1;
+		private const int SpiderCaveNewChunkAttempts = 3;
+		private const float SpiderCaveSuitability = 0.75f;
+
+		// Spawn CONSTANTE CUEVAS - siempre activo
+		private const int SpiderCaveConstantTotalLimit = 3;
+		private const int SpiderCaveConstantAreaLimit = 1;
+		private const int SpiderCaveConstantChunkAttempts = 1;
+		private const float SpiderCaveConstantSuitability = 0.4f;
 
 		private float m_spiderConstantSpawnCooldown;
 		private const float SpiderConstantSpawnCooldownTime = 18f;
@@ -694,12 +706,22 @@ namespace Game
 			}
 			// ===== FIN VERIFICACIÓN =====
 
-			// ===== SPAWN DE INFECTED SPIDER (SUPERFICIE - NOCHE, INDEPENDIENTE DE CONFIGURACIÓN) =====
-			if (m_skeletonNewSpawnChunks.Count > 0 && isNormalNight && !isGreenNightActive)
+			// ===== SPAWN DE INFECTED SPIDER (INDEPENDIENTE DE CONFIGURACIÓN) =====
+			if (m_skeletonNewSpawnChunks.Count > 0)
 			{
+				// Spawn CUEVAS - siempre activo, no depende de hora ni configuración
 				foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
 				{
-					SpawnNormalSpidersInChunk(chunk, SpiderNormalNewChunkAttempts);
+					SpawnCaveSpidersInChunk(chunk, SpiderCaveNewChunkAttempts);
+				}
+
+				// Spawn SUPERFICIE - solo noche normal
+				if (isNormalNight && !isGreenNightActive)
+				{
+					foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
+					{
+						SpawnNormalSpidersInChunk(chunk, SpiderNormalNewChunkAttempts);
+					}
 				}
 			}
 
@@ -712,16 +734,25 @@ namespace Game
 				m_spiderConstantSpawnCooldown -= dt;
 			}
 
-			if (m_skeletonSpawnChunks.Count > 0 && isNormalNight && !isGreenNightActive && m_spiderConstantSpawnCooldown <= 0f)
+			if (m_skeletonSpawnChunks.Count > 0)
 			{
+				// Spawn CONSTANTE CUEVAS - siempre activo, no depende de hora ni configuración
 				foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
 				{
-					SpawnConstantSpidersInChunk(chunk, SpiderConstantChunkAttempts);
+					SpawnConstantCaveSpidersInChunk(chunk, SpiderCaveConstantChunkAttempts);
 				}
-				m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
+
+				// Spawn CONSTANTE SUPERFICIE - solo noche normal con cooldown
+				if (isNormalNight && !isGreenNightActive && m_spiderConstantSpawnCooldown <= 0f)
+				{
+					foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
+					{
+						SpawnConstantSpidersInChunk(chunk, SpiderConstantChunkAttempts);
+					}
+					m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
+				}
 			}
-			// ===== FIN SPAWN DE INFECTED SPIDER (SUPERFICIE) =====
-			// ===== FIN VERIFICACIÓN =====
+			// ===== FIN SPAWN DE INFECTED SPIDER =====
 
 			// ===== SPAWN DE ESQUELETOS NORMALES =====
 			if (ShittyCreaturesSettingsManager.SkeletonSpawnEnabled)
@@ -2075,6 +2106,161 @@ namespace Game
 				}
 			}
 			return count;
+		}
+
+		// ===== SPAWN DE INFECTED SPIDER EN CUEVAS =====
+		private void SpawnCaveSpidersInChunk(SpawnChunk chunk, int maxAttempts)
+		{
+			int currentCount = CountSpiders(false);
+			if (currentCount >= SpiderCaveTotalLimit)
+				return;
+
+			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(16);
+			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(16);
+			int areaCount = CountSpidersInArea(c1, c2, false);
+
+			for (int i = 0; i < maxAttempts; i++)
+			{
+				if (currentCount >= SpiderCaveTotalLimit || areaCount >= SpiderCaveAreaLimit)
+					break;
+
+				Point3? spawnPoint = GetRandomCaveSpawnPoint(chunk);
+				if (!spawnPoint.HasValue)
+					continue;
+
+				Point3 point = spawnPoint.Value;
+				int belowContents = Terrain.ExtractContents(m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+				if (belowContents != 3 && belowContents != 67 && belowContents != 4 && belowContents != 66 && belowContents != 2 && belowContents != 7)
+					continue;
+
+				int spawned = SpawnSpidersAtPoint(point, false, 1);
+				currentCount += spawned;
+				areaCount += spawned;
+			}
+		}
+
+		private void SpawnConstantCaveSpidersInChunk(SpawnChunk chunk, int maxAttempts)
+		{
+			int currentCount = CountSpiders(true);
+			if (currentCount >= SpiderCaveConstantTotalLimit)
+				return;
+
+			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(16);
+			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(16);
+			int areaCount = CountSpidersInArea(c1, c2, true);
+
+			for (int i = 0; i < maxAttempts; i++)
+			{
+				if (currentCount >= SpiderCaveConstantTotalLimit || areaCount >= SpiderCaveConstantAreaLimit)
+					break;
+
+				Point3? spawnPoint = GetRandomCaveSpawnPoint(chunk);
+				if (!spawnPoint.HasValue)
+					continue;
+
+				Point3 point = spawnPoint.Value;
+				int belowContents = Terrain.ExtractContents(m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+				if (belowContents != 3 && belowContents != 67 && belowContents != 4 && belowContents != 66 && belowContents != 2 && belowContents != 7)
+					continue;
+
+				int cellLightFast = m_subsystemTerrain.Terrain.GetCellLightFast(point.X, point.Y + 1, point.Z);
+				if (cellLightFast > 7)
+					continue;
+
+				float limitFactor = 1f - ((float)currentCount / SpiderCaveConstantTotalLimit * 0.7f);
+				if (m_random.Float(0f, 1f) > SpiderCaveConstantSuitability * limitFactor)
+					continue;
+
+				int spawned = SpawnSpidersAtPoint(point, true, 1);
+				currentCount += spawned;
+				areaCount += spawned;
+			}
+		}
+
+		private Point3? GetRandomCaveSpawnPoint(SpawnChunk chunk)
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				int x = 16 * chunk.Point.X + m_random.Int(0, 15);
+				int y = m_random.Int(5, 60);
+				int z = 16 * chunk.Point.Y + m_random.Int(0, 15);
+
+				Point3? result = ProcessCaveSpawnPoint(new Point3(x, y, z));
+				if (result.HasValue)
+				{
+					return result;
+				}
+			}
+			return null;
+		}
+
+		private Point3? ProcessCaveSpawnPoint(Point3 spawnPoint)
+		{
+			int x = spawnPoint.X;
+			int num = Math.Clamp(spawnPoint.Y, 5, 120);
+			int z = spawnPoint.Z;
+
+			TerrainChunk chunkAtCell = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunkAtCell == null || chunkAtCell.State <= TerrainChunkState.InvalidPropagatedLight)
+				return null;
+
+			for (int i = 0; i < 30; i++)
+			{
+				Point3 pointUp = new Point3(x, num + i, z);
+				Point3? cavePoint = TestCaveSpawnPoint(pointUp);
+				if (cavePoint.HasValue)
+				{
+					return cavePoint;
+				}
+
+				Point3 pointDown = new Point3(x, num - i, z);
+				if (num - i >= 5)
+				{
+					cavePoint = TestCaveSpawnPoint(pointDown);
+					if (cavePoint.HasValue)
+					{
+						return cavePoint;
+					}
+				}
+			}
+			return null;
+		}
+
+		private Point3? TestCaveSpawnPoint(Point3 spawnPoint)
+		{
+			int x = spawnPoint.X;
+			int y = spawnPoint.Y;
+			int z = spawnPoint.Z;
+
+			if (y <= 4 || y >= 119)
+				return null;
+
+			int cellBelow = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellCurrent = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellAbove = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block blockBelow = BlocksManager.Blocks[Terrain.ExtractContents(cellBelow)];
+			Block blockCurrent = BlocksManager.Blocks[Terrain.ExtractContents(cellCurrent)];
+			Block blockAbove = BlocksManager.Blocks[Terrain.ExtractContents(cellAbove)];
+
+			int belowContents = Terrain.ExtractContents(cellBelow);
+			if (belowContents != 3 && belowContents != 67 && belowContents != 4 && belowContents != 66 && belowContents != 2 && belowContents != 7)
+				return null;
+
+			if (!blockBelow.IsCollidable_(cellBelow))
+				return null;
+
+			if (blockCurrent.IsCollidable_(cellCurrent) || blockCurrent is WaterBlock)
+				return null;
+
+			if (blockAbove.IsCollidable_(cellAbove) || blockAbove is WaterBlock)
+				return null;
+
+			int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+			if (y >= topHeight - 2)
+				return null;
+
+			return spawnPoint;
 		}
 		// ===== FIN SPAWN CONSTANTE INFECTED SPIDER =====
 	}
