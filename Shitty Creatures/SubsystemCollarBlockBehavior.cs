@@ -150,7 +150,7 @@ namespace Game
 					boomerFrozenExplosion = entity.FindComponent<ComponentBoomerFrozenExplosion>();
 					if (boomerFrozenExplosion != null) boomerFrozenExplosion.PreventExplosion = true;
 				}
-				ComponentNewCreatureCollect originalCollectComponent = entity.FindComponent<ComponentNewCreatureCollect>();
+
 				string entityTemplateName = m_tameableCreatures[currentEntityName];
 				Entity entity2 = DatabaseManager.CreateEntity(base.Project, entityTemplateName, false);
 				if (entity2 == null)
@@ -161,18 +161,26 @@ namespace Game
 					if (boomerFrozenExplosion != null) boomerFrozenExplosion.PreventExplosion = false;
 					return true;
 				}
+
 				ComponentBody componentBody = entity2.FindComponent<ComponentBody>(true);
 				componentBody.Position = bodyRaycastResult.Value.ComponentBody.Position;
 				componentBody.Rotation = bodyRaycastResult.Value.ComponentBody.Rotation;
 				componentBody.Velocity = bodyRaycastResult.Value.ComponentBody.Velocity;
 				entity2.FindComponent<ComponentSpawn>(true).SpawnDuration = 0f;
-				ComponentNewCreatureCollect newCollectComponent = entity2.FindComponent<ComponentNewCreatureCollect>();
-				if (originalCollectComponent != null && newCollectComponent != null)
+
+				// ============================================================
+				// COPIA DEL INVENTARIO USANDO EXCLUSIVAMENTE COMPONENTCOLLECTPICKABLEBEHAVIOR
+				// ============================================================
+				ComponentCollectPickableBehavior collectBehavior = entity2.FindComponent<ComponentCollectPickableBehavior>();
+				if (collectBehavior != null)
 				{
-					newCollectComponent.CopyInventoryFrom(originalCollectComponent);
+					collectBehavior.CopyInventoryFrom(entity);
 				}
+				// ============================================================
+
 				base.Project.RemoveEntity(entity, true);
 				base.Project.AddEntity(entity2);
+
 				bool isTamedBoss = entityTemplateName == "FlyingInfectedBossTamed";
 				bool isTamedBoomer = entityTemplateName.StartsWith("BoomerTamed");
 				bool isTamedGhostBoomer = entityTemplateName.StartsWith("GhostBoomerTamed");
