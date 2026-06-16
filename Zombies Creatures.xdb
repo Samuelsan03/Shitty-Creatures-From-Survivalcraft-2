@@ -1695,9 +1695,12 @@
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="33ae4c21-f5b2-44b4-bab7-e2c6003197d7"/>
     <Parameter Name="DeathSpawnTemplates" Value="PoisonousGhost:0.01" Type="string" Guid="9ea7de38-96d6-458d-b640-9b5d1c49b484"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="50a41292-324c-4361-8d46-b5007a238fee" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="50a41292-324c-4361-8d46-b5007a238fee">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="d2bf99c6-1093-4196-bc53-01ca1cc1eb36" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="1328c240-1969-43c1-a7e8-20f4055e2fcd" Value="0,255,0" Type="Color"/>
@@ -1837,9 +1840,12 @@
         <MemberComponentTemplate Name="SummonBehavior" Guid="dc4179d1-f510-49ea-ada0-c9e9698cc7ea" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="fb97e6d8-559e-49f5-82dd-59864db139c4" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="6293d671-1ce9-41df-8e0d-7bf82eee59d5" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="6293d671-1ce9-41df-8e0d-7bf82eee59d5">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="34686ed8-373e-437e-9284-4eb585567309" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="75015294-b75b-4007-b2be-7fca50b20895" Value="0,255,0" Type="Color"/>
@@ -1962,9 +1968,12 @@
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="212e4236-1dbf-4ff3-b951-61b099dfa8e0"/>
     <Parameter Name="DeathSpawnTemplates" Value="PoisonousGhost:0.01" Type="string" Guid="03fb6c61-53ba-4670-b2c9-f262a026f377"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="9da37fe6-4109-44cf-939d-c9cccbc2b4ad" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="9da37fe6-4109-44cf-939d-c9cccbc2b4ad">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="4bd1c075-a9dc-44dd-a238-d157b66818d3" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="0e189e89-ffee-4552-a6e1-c4d3a000c5a4" Value="0,255,0" Type="Color"/>
@@ -2104,9 +2113,12 @@
         <MemberComponentTemplate Name="SummonBehavior" Guid="d7b4f75a-8537-4f7a-8b20-483536c3637e" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="24c78383-d5e2-430d-92f1-7de63907a7a9" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="d4f04f7f-53de-4ba7-9012-a33fe23d1a66" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="d4f04f7f-53de-4ba7-9012-a33fe23d1a66">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="97caaae2-4c22-4684-948a-f9fa45c9b26a" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="e24032f5-0393-404e-854d-490a43c5483d" Value="0,255,0" Type="Color"/>
@@ -2442,9 +2454,12 @@
   <Parameter Name="VomitCooldown" Guid="fd1093ee-3fbc-4ec2-a1dd-490714f9d4dc" Value="35" Type="float"/>
   <Parameter Name="VomitDistanceRange" Guid="f1d00867-cfe9-46b0-b1a6-cb7a8abc9f9f" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="15d73a1b-071b-43c9-842b-a8a642a83174" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="15d73a1b-071b-43c9-842b-a8a642a83174">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="BirdModel" Guid="3ef7316f-7acd-4e1a-8c02-d239f4aeb52c">
         <Parameter Name="ModelScale" Guid="4cc36186-62be-4bb4-a28d-54530da90830" Value="1.5" Type="float"/>
@@ -2569,9 +2584,12 @@
   <Parameter Name="VomitCooldown" Guid="8fe4c2f2-de75-4a14-b070-5c1adea2f9dc" Value="35" Type="float"/>
   <Parameter Name="VomitDistanceRange" Guid="dadbb5fa-16f4-44bc-a7c3-088c9cc7cf43" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="8ce4cf6b-9db5-4691-875d-1068a1933893" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="8ce4cf6b-9db5-4691-875d-1068a1933893">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="BirdModel" Guid="cc693b91-3553-4c7f-89b1-e5ab046fc47b">
         <Parameter Name="ModelScale" Guid="820e6bc0-846c-4947-9d1e-ede1a459fabc" Value="1.5" Type="float"/>
@@ -2869,9 +2887,12 @@
         <Parameter Name="GlowingEyesColor" Guid="8bf08c8c-cb82-4bb6-b35b-309a583a4418" Value="0,255,0" Type="Color"/>
         <Parameter Name="GlowingEyesOffset" Guid="c9108e44-0855-4c51-b6fa-8a207e586d75" Value="0.06,0.2,0.1" Type="Vector3"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="681a4c22-0349-4eb9-8a06-d3d524aee20a" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="681a4c22-0349-4eb9-8a06-d3d524aee20a">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="25d2c13d-cc40-494d-8a89-cd03fb1a5053">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -3016,9 +3037,12 @@
         <Parameter Name="GlowingEyesColor" Guid="3e8e9aa0-e7d5-4c1b-9a2e-1759039999a0" Value="0,255,0" Type="Color"/>
         <Parameter Name="GlowingEyesOffset" Guid="17209100-4454-45e1-b389-fca362bd0c1b" Value="0.06,0.2,0.1" Type="Vector3"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="e0a578be-6821-4e8e-ac74-2991ca6bee99" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="e0a578be-6821-4e8e-ac74-2991ca6bee99">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="c1de82fa-1bd2-4323-817c-1e87d163d343">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -5953,9 +5977,12 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="a41b466a-6480-4d93-9ef9-6880079b6d91" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="a41b466a-6480-4d93-9ef9-6880079b6d91">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="e5cec119-ba55-462c-b299-c3d3b9ecc6ca" InheritanceParent="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9">
   <Parameter Name="DayChaseRange" Guid="7fec014a-fcdc-48d6-94c5-925f0554b06f" Value="999" Type="float"/>
@@ -6139,7 +6166,10 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="3cad8e68-7e58-4fa7-8aaa-6cdb02a8387e" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="3cad8e68-7e58-4fa7-8aaa-6cdb02a8387e">
+<Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -12359,9 +12389,12 @@
         <Parameter Name="IdleSound" Guid="0073043d-f90f-4c01-af10-9b3f80c470ad" Value="Audio/Creatures/spider/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="1e9bd21a-cae5-4efc-9cb0-9cdd1731ec28" Value="Audio/Creatures/spider/Attack" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="afcb05da-e374-40e8-bd52-8bfd9eb3dae1" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+            <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="afcb05da-e374-40e8-bd52-8bfd9eb3dae1">
   <Parameter Name="PoisonIntensity" Value="1000" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.1" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="84ae95a5-6980-4472-bbc2-b21bdff4db82">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -12467,9 +12500,12 @@
         <Parameter Name="IdleSound" Guid="1f1c327e-4705-4e74-a2d2-8a1df7021d56" Value="Audio/Creatures/spider/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="787e17ac-61a4-4cbb-a30e-13767b39d0a8" Value="Audio/Creatures/spider/Attack" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="b5438c3f-0658-47fd-8935-f9ba6544bff4" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+            <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="b5438c3f-0658-47fd-8935-f9ba6544bff4">
   <Parameter Name="PoisonIntensity" Value="1000" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.1" Type="float"/>
+  <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="01bbf819-b20a-44b1-9d80-7d0a887a07be">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
