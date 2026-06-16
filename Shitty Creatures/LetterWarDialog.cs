@@ -85,7 +85,11 @@ namespace Game
 					return;
 				}
 
-				// Si no hay guerra aceptada ni rechazada (estado inicial), solo cerrar
+				// Estado inicial: PRIMER rechazo → mostrar RejectMessage y marcar como rechazada
+				invasionSubsystem.CancelWar();
+				m_player.ComponentGui.DisplaySmallMessage(
+					LanguageControl.GetContentWidgets("LetterWarDialog", "RejectMessage"),
+					new Color(200, 200, 200), false, true);
 				DialogsManager.HideDialog(this);
 			}
 		}
