@@ -17,6 +17,95 @@ namespace Game
 		{
 			m_fruitTreeRandom = new Random(m_seed);
 			m_cropsRandom = new Random(m_seed + 7777);
+			this.ChunkGenerationStep4.Add(new ChunkGenerationStep(450, GenerateBlueberryBushes));
+			this.ChunkGenerationStep4.Add(new ChunkGenerationStep(550, GenerateWatermelons));
+		}
+
+		private void GenerateBlueberryBushes(TerrainChunk chunk)
+		{
+			if (!TGExtras) return;
+
+			// Obtener índice del bloque de arándanos usando typeof()
+			int blueberryBlockIndex = BlocksManager.GetBlockIndex(typeof(BlueberryBushBlock), throwIfNotFound: false, mustBeInSameType: true);
+			if (blueberryBlockIndex < 0) return; // Si no existe el bloque, salir
+
+			int blueberryValue = Terrain.MakeBlockValue(blueberryBlockIndex);
+
+			Random random = new Random(m_seed + chunk.Coords.X * 3943 + chunk.Coords.Y * 1991);
+
+			int attempts = random.Int(0, 4);
+			for (int attempt = 0; attempt < attempts; attempt++)
+			{
+				int x = random.Int(2, 13);
+				int z = random.Int(2, 13);
+				int temperature = chunk.GetTemperatureFast(x, z);
+				int humidity = chunk.GetHumidityFast(x, z);
+
+				// Condiciones: clima templado-húmedo (similar a arbustos reales)
+				if (temperature < 4 || temperature > 12 || humidity < 5) continue;
+
+				int y = chunk.CalculateTopmostCellHeight(x, z);
+				if (y < 66) continue;
+
+				int ground = chunk.GetCellContentsFast(x, y, z);
+				// Solo sobre césped (2) o tierra (8)
+				if (ground != 2 && ground != 8) continue;
+
+				// Verificar espacio encima
+				if (chunk.GetCellContentsFast(x, y + 1, z) != 0) continue;
+
+				// Colocar el arbusto
+				chunk.SetCellValueFast(x, y + 1, z, blueberryValue);
+			}
+		}
+
+		private void GenerateWatermelons(TerrainChunk chunk)
+		{
+			if (!TGExtras) return;
+
+			// Obtenemos el índice del bloque de sandía por su nombre (evitamos números)
+			int watermelonBlockIndex = BlocksManager.GetBlockIndex("WatermelonBlock", throwIfNotFound: false);
+			if (watermelonBlockIndex < 0) return; // si no existe, salimos
+
+			// Valor de sandía madura (tamaño 7)
+			int watermelonValue = Terrain.MakeBlockValue(watermelonBlockIndex, 0,
+				BaseWatermelonBlock.SetSize(BaseWatermelonBlock.SetIsDead(0, false), 7));
+
+			Random random = new Random(m_seed + chunk.Coords.X * 3943 + chunk.Coords.Y * 1495);
+
+			int attempts = random.Int(0, 2);
+			for (int attempt = 0; attempt < attempts; attempt++)
+			{
+				int x = random.Int(2, 13);
+				int z = random.Int(2, 13);
+				int temperature = chunk.GetTemperatureFast(x, z);
+				int humidity = chunk.GetHumidityFast(x, z);
+
+				// Sandías prefieren climas cálidos y húmedos
+				if (temperature < 8 || temperature > 15 || humidity < 8) continue;
+
+				int y = chunk.CalculateTopmostCellHeight(x, z);
+				if (y < 66) continue;
+
+				int ground = chunk.GetCellContentsFast(x, y, z);
+				if (ground != 2 && ground != 8) continue;
+
+				// Espacio para la sandía (puede ser un bloque de ancho)
+				bool hasSpace = true;
+				for (int dx = -1; dx <= 1; dx++)
+					for (int dz = -1; dz <= 1; dz++)
+					{
+						if (chunk.GetCellContentsFast(x + dx, y + 1, z + dz) != 0)
+						{
+							hasSpace = false;
+							break;
+						}
+					}
+				if (!hasSpace) continue;
+
+				// Colocar la sandía
+				chunk.SetCellValueFast(x, y + 1, z, watermelonValue);
+			}
 		}
 
 		// ==================== ÁRBOLES FRUTALES ====================
