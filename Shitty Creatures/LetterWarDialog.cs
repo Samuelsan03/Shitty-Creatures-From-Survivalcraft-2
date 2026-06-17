@@ -33,90 +33,105 @@ namespace Game
 
 			if (m_acceptButton.IsClicked)
 			{
-				// CASO 1: Guerra completada → Reiniciar para nueva guerra
-				if (invasionSubsystem.IsWarCompleted)
-				{
-					invasionSubsystem.AcceptWar(); // Esto reinicia el estado internamente
-					m_player.ComponentGui.DisplaySmallMessage(
-						LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
-						new Color(255, 50, 50), false, true);
-					DialogsManager.HideDialog(this);
-					return;
-				}
-
-				// CASO 2: Guerra ya aceptada y en curso → Solo cerrar sin mensaje
-				if (invasionSubsystem.IsWarAccepted)
-				{
-					DialogsManager.HideDialog(this);
-					return;
-				}
-
-				// CASO 3: Primera vez aceptando la guerra
-				SubsystemGreenNightSky greenNight = m_player.Project.FindSubsystem<SubsystemGreenNightSky>(true);
-				bool willBeGreenNight = false;
-				if (greenNight != null && greenNight.GreenNightEnabled)
-				{
-					// La Noche Verde ya está activa o el intervalo de días se ha cumplido (próxima noche)
-					willBeGreenNight = greenNight.IsGreenNightActive ||
-									   greenNight.DaysSinceLastGreenNight >= greenNight.GreenNightIntervalDays;
-				}
-
-				if (willBeGreenNight)
-				{
-					// Mostrar advertencia estilo original
-					var warningDialog = new GreenNightWarConflictDialog(m_player, () =>
-					{
-						invasionSubsystem.AcceptWar();
-						m_player.ComponentGui.DisplaySmallMessage(
-							LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
-							new Color(255, 50, 50), false, true);
-						DialogsManager.HideDialog(this);
-					});
-					DialogsManager.ShowDialog(m_player.GuiWidget, warningDialog);
-				}
-				else
-				{
-					invasionSubsystem.AcceptWar();
-					m_player.ComponentGui.DisplaySmallMessage(
-						LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
-						new Color(255, 50, 50), false, true);
-					DialogsManager.HideDialog(this);
-				}
+				HandleAccept(invasionSubsystem);
 			}
 			else if (m_rejectButton.IsClicked || Input.Cancel)
 			{
-				// Si ya se rechazó antes, solo cerrar sin mensaje
-				if (invasionSubsystem.IsWarRejected)
-				{
-					DialogsManager.HideDialog(this);
-					return;
-				}
+				HandleReject(invasionSubsystem);
+			}
+		}
 
-				// Si la guerra está completada, solo cerrar (no tiene sentido rechazar algo terminado)
-				if (invasionSubsystem.IsWarCompleted)
+		private void HandleAccept(SubsystemBanditInvasion invasion)
+		{
+			// CASO 1: Guerra completada → reiniciar (con verificación de Noche Verde)
+			if (invasion.IsWarCompleted)
+			{
+				AcceptWithGreenNightCheck(invasion, () =>
 				{
-					DialogsManager.HideDialog(this);
-					return;
-				}
-
-				// Si la guerra fue aceptada (activa o pendiente de noche), cancelarla
-				if (invasionSubsystem.IsWarAccepted)
-				{
-					invasionSubsystem.CancelWar();
+					// La guerra se reinicia y se acepta
+					invasion.AcceptWar();
 					m_player.ComponentGui.DisplaySmallMessage(
-						LanguageControl.GetContentWidgets("LetterWarDialog", "RejectMessage"),
-						new Color(200, 200, 200), false, true);
+						LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
+						new Color(255, 50, 50), false, true);
 					DialogsManager.HideDialog(this);
-					return;
-				}
+				});
+				return;
+			}
 
-				// Estado inicial: PRIMER rechazo → mostrar RejectMessage y marcar como rechazada
-				invasionSubsystem.CancelWar();
+			// CASO 2: Guerra ya aceptada y en curso → solo cerrar
+			if (invasion.IsWarAccepted)
+			{
+				DialogsManager.HideDialog(this);
+				return;
+			}
+
+			// CASO 3: Primera vez aceptando la guerra
+			AcceptWithGreenNightCheck(invasion, () =>
+			{
+				invasion.AcceptWar();
+				m_player.ComponentGui.DisplaySmallMessage(
+					LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
+					new Color(255, 50, 50), false, true);
+				DialogsManager.HideDialog(this);
+			});
+		}
+
+		private void AcceptWithGreenNightCheck(SubsystemBanditInvasion invasion, Action onAccept)
+		{
+			SubsystemGreenNightSky greenNight = m_player.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			bool willBeGreenNight = false;
+			if (greenNight != null && greenNight.GreenNightEnabled)
+			{
+				willBeGreenNight = greenNight.IsGreenNightActive ||
+								   greenNight.DaysSinceLastGreenNight >= greenNight.GreenNightIntervalDays;
+			}
+
+			if (willBeGreenNight)
+			{
+				// Mostrar advertencia y ejecutar onAccept solo si el jugador confirma
+				var warningDialog = new GreenNightWarConflictDialog(m_player, onAccept);
+				DialogsManager.ShowDialog(m_player.GuiWidget, warningDialog);
+			}
+			else
+			{
+				// Sin Noche Verde, ejecutar directamente
+				onAccept?.Invoke();
+			}
+		}
+
+		private void HandleReject(SubsystemBanditInvasion invasion)
+		{
+			// Si ya se rechazó antes, solo cerrar
+			if (invasion.IsWarRejected)
+			{
+				DialogsManager.HideDialog(this);
+				return;
+			}
+
+			// Si la guerra está completada, solo cerrar (no tiene sentido rechazar algo terminado)
+			if (invasion.IsWarCompleted)
+			{
+				DialogsManager.HideDialog(this);
+				return;
+			}
+
+			// Si la guerra fue aceptada (activa o pendiente de noche), cancelarla
+			if (invasion.IsWarAccepted)
+			{
+				invasion.CancelWar();
 				m_player.ComponentGui.DisplaySmallMessage(
 					LanguageControl.GetContentWidgets("LetterWarDialog", "RejectMessage"),
 					new Color(200, 200, 200), false, true);
 				DialogsManager.HideDialog(this);
+				return;
 			}
+
+			// Estado inicial: PRIMER rechazo → mostrar RejectMessage y marcar como rechazada
+			invasion.CancelWar();
+			m_player.ComponentGui.DisplaySmallMessage(
+				LanguageControl.GetContentWidgets("LetterWarDialog", "RejectMessage"),
+				new Color(200, 200, 200), false, true);
+			DialogsManager.HideDialog(this);
 		}
 	}
 }
