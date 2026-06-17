@@ -52,11 +52,36 @@ namespace Game
 				}
 
 				// CASO 3: Primera vez aceptando la guerra
-				invasionSubsystem.AcceptWar();
-				m_player.ComponentGui.DisplaySmallMessage(
-					LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
-					new Color(255, 50, 50), false, true);
-				DialogsManager.HideDialog(this);
+				SubsystemGreenNightSky greenNight = m_player.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+				bool willBeGreenNight = false;
+				if (greenNight != null && greenNight.GreenNightEnabled)
+				{
+					// La Noche Verde ya está activa o el intervalo de días se ha cumplido (próxima noche)
+					willBeGreenNight = greenNight.IsGreenNightActive ||
+									   greenNight.DaysSinceLastGreenNight >= greenNight.GreenNightIntervalDays;
+				}
+
+				if (willBeGreenNight)
+				{
+					// Mostrar advertencia estilo original
+					var warningDialog = new GreenNightWarConflictDialog(m_player, () =>
+					{
+						invasionSubsystem.AcceptWar();
+						m_player.ComponentGui.DisplaySmallMessage(
+							LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
+							new Color(255, 50, 50), false, true);
+						DialogsManager.HideDialog(this);
+					});
+					DialogsManager.ShowDialog(m_player.GuiWidget, warningDialog);
+				}
+				else
+				{
+					invasionSubsystem.AcceptWar();
+					m_player.ComponentGui.DisplaySmallMessage(
+						LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
+						new Color(255, 50, 50), false, true);
+					DialogsManager.HideDialog(this);
+				}
 			}
 			else if (m_rejectButton.IsClicked || Input.Cancel)
 			{
