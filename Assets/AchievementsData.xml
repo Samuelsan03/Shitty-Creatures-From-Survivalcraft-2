@@ -9,7 +9,7 @@
   <Achievement Number="6" TitleKey="16" DescriptionKey="17" Reward="50" />
   <Achievement Number="7" TitleKey="18" DescriptionKey="19" Reward="150" />
   <Achievement Number="8" TitleKey="20" DescriptionKey="21" Reward="100" />
-  <Achievement Number="9"  TitleKey="22" DescriptionKey="23" Reward="10" />
+  <Achievement Number="9" TitleKey="22" DescriptionKey="23" Reward="10" />
   <Achievement Number="10" TitleKey="24" DescriptionKey="25" Reward="20" />
   <Achievement Number="11" TitleKey="26" DescriptionKey="27" Reward="50" />
   <Achievement Number="12" TitleKey="28" DescriptionKey="29" Reward="100" />
@@ -66,4 +66,5 @@
   <Achievement Number="67" TitleKey="130" DescriptionKey="131" Reward="120" />
   <Achievement Number="68" TitleKey="132" DescriptionKey="133" Reward="250" />
   <Achievement Number="69" TitleKey="134" DescriptionKey="135" Reward="1000" />
+  <Achievement Number="70" TitleKey="136" DescriptionKey="137" Reward="1000" />
 </AchievementsData>
