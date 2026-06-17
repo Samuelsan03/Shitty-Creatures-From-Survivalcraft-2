@@ -1166,6 +1166,66 @@ namespace Game
 				&& !block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock);
 		}
 
+		private Point3? ProcessSpiderSpawnPoint(Point3 spawnPoint)
+		{
+			int x = spawnPoint.X;
+			int num = Math.Clamp(spawnPoint.Y, 1, 254);
+			int z = spawnPoint.Z;
+
+			TerrainChunk chunkAtCell = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunkAtCell == null || chunkAtCell.State <= TerrainChunkState.InvalidPropagatedLight)
+				return null;
+
+			for (int i = 0; i < 30; i++)
+			{
+				Point3 pointUp = new Point3(x, num + i, z);
+				if (TestSpiderSpawnPoint(pointUp))
+				{
+					return pointUp;
+				}
+
+				Point3 pointDown = new Point3(x, num - i, z);
+				if (TestSpiderSpawnPoint(pointDown))
+				{
+					return pointDown;
+				}
+			}
+			return null;
+		}
+
+		private bool TestSpiderSpawnPoint(Point3 spawnPoint)
+		{
+			int x = spawnPoint.X;
+			int y = spawnPoint.Y;
+			int z = spawnPoint.Z;
+
+			if (y <= 3 || y >= 253)
+				return false;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			if (block is WaterBlock || block is MagmaBlock)
+				return false;
+			if (block2 is WaterBlock || block2 is MagmaBlock)
+				return false;
+			if (block3 is WaterBlock || block3 is MagmaBlock)
+				return false;
+
+			int belowContents = Terrain.ExtractContents(cellValueFast);
+			if (!m_allowedBlockIndices.Contains(belowContents))
+				return false;
+
+			return block.IsCollidable_(cellValueFast)
+				&& !block2.IsCollidable_(cellValueFast2)
+				&& !block3.IsCollidable_(cellValueFast3);
+		}
+
 		private int SpawnSkeletonsAtPoint(Point3 point, bool constantSpawn, int count)
 		{
 			int spawned = 0;
@@ -2038,7 +2098,7 @@ namespace Game
 					spawnPoint.Z += m_random.Int(-8, 8);
 				}
 
-				Point3? processedPoint = ProcessSkeletonSpawnPoint(spawnPoint);
+				Point3? processedPoint = ProcessSpiderSpawnPoint(spawnPoint);
 				if (processedPoint.HasValue)
 				{
 					Vector3 position = new Vector3(
@@ -2243,6 +2303,13 @@ namespace Game
 			Block blockCurrent = BlocksManager.Blocks[Terrain.ExtractContents(cellCurrent)];
 			Block blockAbove = BlocksManager.Blocks[Terrain.ExtractContents(cellAbove)];
 
+			if (blockBelow is WaterBlock || blockBelow is MagmaBlock)
+				return null;
+			if (blockCurrent is WaterBlock || blockCurrent is MagmaBlock)
+				return null;
+			if (blockAbove is WaterBlock || blockAbove is MagmaBlock)
+				return null;
+
 			int belowContents = Terrain.ExtractContents(cellBelow);
 			if (belowContents != 3 && belowContents != 67 && belowContents != 4 && belowContents != 66 && belowContents != 2 && belowContents != 7)
 				return null;
@@ -2250,10 +2317,10 @@ namespace Game
 			if (!blockBelow.IsCollidable_(cellBelow))
 				return null;
 
-			if (blockCurrent.IsCollidable_(cellCurrent) || blockCurrent is WaterBlock)
+			if (blockCurrent.IsCollidable_(cellCurrent))
 				return null;
 
-			if (blockAbove.IsCollidable_(cellAbove) || blockAbove is WaterBlock)
+			if (blockAbove.IsCollidable_(cellAbove))
 				return null;
 
 			int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
