@@ -231,6 +231,22 @@ namespace Game
 				m_invasionCompleted = true;
 				SetAllBanditsDrugTraffickerMode(false);
 				InvasionCompleted?.Invoke();
+				// --- NUEVO: Logro por sobrevivir a ambas amenazas ---
+				var greenNight = Project.FindSubsystem<SubsystemGreenNightSky>(true);
+				if (greenNight != null && greenNight.IsGreenNightActive)
+				{
+					var players = Project.FindSubsystem<SubsystemPlayers>(true);
+					if (players != null)
+					{
+						foreach (var player in players.ComponentPlayers)
+						{
+							if (player != null && player.ComponentHealth != null && player.ComponentHealth.Health > 0f)
+							{
+								AchievementsManager.UnlockAchievementStatic(player, 136, "DoubleThreatSurvivor", null);
+							}
+						}
+					}
+				}
 			}
 
 			m_wasInvasionTime = isInvasionTime;
