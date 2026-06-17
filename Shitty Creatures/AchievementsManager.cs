@@ -589,7 +589,7 @@ namespace Game
 				{
 					string title = LanguageControl.Get(AchievementsWidget.fName, 136);
 					foreach (var player in players.ComponentPlayers)
-						UnlockAchievement(player, 70, "GreenNightWithDrugTraffickers70", title); // ✅ NÚMERO 70
+						UnlockAchievement(player, 70, "GreenNightWithDrugTraffickers", title); // ✅ NÚMERO 70
 				}
 			}
 		}
