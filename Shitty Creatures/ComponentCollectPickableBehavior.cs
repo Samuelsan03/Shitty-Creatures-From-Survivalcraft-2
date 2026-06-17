@@ -204,6 +204,7 @@ namespace Game
 
 		private void OnPickableAdded(Pickable pickable)
 		{
+			// Solo asignar objetivo si no tenemos uno actual
 			if (!IsAnyChaseActive && TryAddPickable(pickable) && m_targetPickable == null)
 			{
 				m_targetPickable = pickable;
@@ -263,6 +264,13 @@ namespace Game
 			if (IsAnyChaseActive)
 				return null;
 
+			// Si ya tenemos un objetivo y sigue siendo válido, mantenerlo
+			if (m_targetPickable != null && !m_targetPickable.ToRemove && m_interestingPickables.Contains(m_targetPickable))
+			{
+				return m_targetPickable;
+			}
+
+			// Si no tenemos objetivo o el actual no es válido, buscar el más cercano
 			if (m_subsystemTime.GameTime > m_nextPickablesUpdateTime)
 			{
 				m_nextPickablesUpdateTime = m_subsystemTime.GameTime + m_random.Float(0.5f, 0.5f);
@@ -661,9 +669,6 @@ namespace Game
 				}
 				return -1;
 			}
-
-			// Funciones auxiliares (GetNormalRanged, GetInfectedRangedOrFirearm, GetRandomMelee, AddBombsToInventory)
-			// ... (se mantienen igual, solo se usa la nueva AddSafe en ellas cuando sea necesario)
 
 			int GetNormalRanged()
 			{
