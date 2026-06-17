@@ -576,8 +576,22 @@ namespace Game
 			if (s_subsystemAchievements == null) return;
 			var players = s_currentProject?.FindSubsystem<SubsystemPlayers>(true);
 			if (players == null) return;
+
+			// Logro 8: Sobrevivir a la guerra de narcos
 			foreach (var player in players.ComponentPlayers)
 				UnlockAchievement(player, 8, "DrugWarSurvived", LanguageControl.Get(AchievementsWidget.fName, 20));
+
+			// 🆕 Logro 70: Sobrevivir a Noche Verde + Narcos al mismo tiempo
+			var greenNight = s_currentProject?.FindSubsystem<SubsystemGreenNightSky>(true);
+			if (greenNight != null && greenNight.IsGreenNightActive)
+			{
+				if (!s_subsystemAchievements.IsAchievementUnlocked(70))
+				{
+					string title = LanguageControl.Get(AchievementsWidget.fName, 136);
+					foreach (var player in players.ComponentPlayers)
+						UnlockAchievement(player, 70, "GreenNightWithDrugTraffickers70", title); // ✅ NÚMERO 70
+				}
+			}
 		}
 
 		private static void UnlockAchievement(ComponentPlayer player, int achievementNumber, string achievementId, string displayName)
