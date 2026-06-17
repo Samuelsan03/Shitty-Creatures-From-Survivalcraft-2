@@ -37,6 +37,8 @@ namespace Game
 		public bool PushWhileAttacking = false;
 		public bool ExplodeOnHit = false;
 		public bool PlaceBlocksWhenTargetHigh = false;
+		private float m_greenNightProtectionTimer;
+		private bool m_wasGreenNightActiveForProtection;
 
 		// ===== CAMPOS PRIVADOS =====
 		private SubsystemTerrain m_subsystemTerrain;
@@ -224,14 +226,23 @@ namespace Game
 		{
 			if (Suppressed)
 			{
-				StopAttack();
-				return;
+				if (IsGreenNightExtremeProtectionActive())
+				{
+					Suppressed = false;
+				}
+				else
+				{
+					StopAttack();
+					return;
+				}
 			}
 
 			if (m_target != null && IsExtremePriorityTarget(m_target))
 			{
 				m_autoChaseSuppressionTime = 0f;
 			}
+
+			UpdateGreenNightProtection(dt);
 
 			m_autoChaseSuppressionTime -= dt;
 
@@ -254,34 +265,28 @@ namespace Game
 				}
 			}
 
-			// Protección extrema anti‑bandidos durante la guerra nocturna
 			if (IsExtremeProtectionActive())
 			{
-				// Si el objetivo actual es forzado y sigue siendo válido, no lo reemplazamos
 				if (m_isForcedTarget && m_target != null && m_target.ComponentHealth.Health > 0f)
 				{
-					// Mantener el objetivo forzado, no hacer nada
 				}
 				else
 				{
-					// Buscar bandidos cercanos
 					ComponentCreature bandit = FindNearestBandit();
 
 					if (bandit != null)
 					{
-						// Hay bandidos - prioridad absoluta
 						if (m_target != bandit)
 						{
 							Attack(bandit, 40f, 120f, true, false);
 						}
-						else if (m_target != null && !m_isPersistent || m_range < 40f || m_chaseTime < 60f)
+						else if (m_target != null && (!m_isPersistent || m_range < 40f || m_chaseTime < 60f))
 						{
 							Attack(m_target, 40f, 120f, true, false);
 						}
 					}
 					else
 					{
-						// No hay bandidos - permitir comportamiento normal de caza
 						if (m_target != null && IsBanditCreature(m_target))
 						{
 							StopAttack();
@@ -290,9 +295,32 @@ namespace Game
 				}
 			}
 
+			if (IsGreenNightExtremeProtectionActive() && m_target != null && !m_isForcedTarget)
+			{
+				ComponentCreature closerEnemy = FindNearestGreenNightEnemy(GetProtectionRange());
+				if (closerEnemy != null && closerEnemy != m_target)
+				{
+					float distToCurrentTarget = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_target.ComponentBody.Position);
+					float distToNewTarget = Vector3.Distance(m_componentCreature.ComponentBody.Position, closerEnemy.ComponentBody.Position);
+
+					if (distToNewTarget < distToCurrentTarget || IsDirectlyAttackingPlayer(closerEnemy))
+					{
+						StopAttack();
+						Attack(closerEnemy, GetProtectionRange(), GetProtectionChaseTime(), true, true);
+					}
+				}
+			}
+
 			if (IsActive && m_target != null)
 			{
 				m_chaseTime -= dt;
+
+				if (IsGreenNightExtremeProtectionActive() && IsGreenNightEnemy(m_target))
+				{
+					m_chaseTime += dt * 0.5f;
+					m_chaseTime = MathUtils.Min(m_chaseTime, GetProtectionChaseTime());
+				}
+
 				m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(m_target.ComponentCreatureModel.EyePosition);
 
 				float distance = GetDistanceToTarget();
@@ -310,6 +338,9 @@ namespace Game
 							if (hitBody != null)
 							{
 								float extraChaseTime = m_isPersistent ? m_random.Float(8f, 10f) : 2f;
+
+								if (IsGreenNightExtremeProtectionActive()) extraChaseTime = 15f;
+
 								m_chaseTime = MathUtils.Max(m_chaseTime, extraChaseTime);
 								m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 								m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
@@ -341,7 +372,8 @@ namespace Game
 
 									float originalMaxSpeed = m_target.ComponentBody.MaxSpeed;
 									m_target.ComponentBody.MaxSpeed = 1e9f;
-									m_target.ComponentBody.ApplyImpulse(direction * 55f);
+									float pushForce = IsGreenNightExtremeProtectionActive() ? 75f : 55f;
+									m_target.ComponentBody.ApplyImpulse(direction * pushForce);
 									m_target.ComponentBody.MaxSpeed = originalMaxSpeed;
 								}
 
@@ -973,21 +1005,67 @@ namespace Game
 			{
 				if (!IsActive)
 				{
+					if (IsGreenNightExtremeProtectionActive())
+					{
+						ComponentCreature enemy = FindNearestGreenNightEnemy(GetProtectionRange());
+						if (enemy != null)
+						{
+							m_target = enemy;
+							m_range = GetProtectionRange();
+							m_chaseTime = GetProtectionChaseTime();
+							m_isPersistent = true;
+							m_isForcedTarget = true;
+							return;
+						}
+					}
 					m_stateMachine.TransitionTo("LookingForTarget");
 				}
 				else if (m_chaseTime <= 0f)
 				{
+					if (IsGreenNightExtremeProtectionActive() && IsGreenNightEnemy(m_target))
+					{
+						m_chaseTime = GetProtectionChaseTime();
+						m_isPersistent = true;
+						m_range = GetProtectionRange();
+						return;
+					}
 					m_isForcedTarget = false;
 					m_autoChaseSuppressionTime = m_random.Float(10f, 60f);
 					m_importanceLevel = 0f;
 				}
 				else if (m_target == null)
 				{
+					if (IsGreenNightExtremeProtectionActive())
+					{
+						ComponentCreature enemy = FindNearestGreenNightEnemy(GetProtectionRange());
+						if (enemy != null)
+						{
+							m_target = enemy;
+							m_range = GetProtectionRange();
+							m_chaseTime = GetProtectionChaseTime();
+							m_isPersistent = true;
+							m_isForcedTarget = true;
+							return;
+						}
+					}
 					m_isForcedTarget = false;
 					m_importanceLevel = 0f;
 				}
 				else if (m_target.ComponentHealth.Health <= 0f)
 				{
+					if (IsGreenNightExtremeProtectionActive())
+					{
+						ComponentCreature nextEnemy = FindNearestGreenNightEnemy(GetProtectionRange());
+						if (nextEnemy != null)
+						{
+							m_target = nextEnemy;
+							m_range = GetProtectionRange();
+							m_chaseTime = GetProtectionChaseTime();
+							m_isPersistent = true;
+							m_isForcedTarget = true;
+							return;
+						}
+					}
 					m_isForcedTarget = false;
 					if (m_componentFeedBehavior != null)
 					{
@@ -1001,6 +1079,12 @@ namespace Game
 				}
 				else if (!m_isPersistent && m_componentPathfinding.IsStuck)
 				{
+					if (IsGreenNightExtremeProtectionActive())
+					{
+						m_isPersistent = true;
+						m_stateMachine.TransitionTo("RandomMoving");
+						return;
+					}
 					m_importanceLevel = 0f;
 				}
 				else if (m_isPersistent && m_componentPathfinding.IsStuck)
@@ -1010,12 +1094,37 @@ namespace Game
 				else
 				{
 					if (ScoreTarget(m_target) <= 0f)
-						m_targetUnsuitableTime += m_dt;
+					{
+						if (IsGreenNightExtremeProtectionActive() && IsGreenNightEnemy(m_target))
+						{
+							m_targetUnsuitableTime += m_dt * 0.3f;
+						}
+						else
+						{
+							m_targetUnsuitableTime += m_dt;
+						}
+					}
 					else
+					{
 						m_targetUnsuitableTime = 0f;
+					}
 
 					if (m_targetUnsuitableTime > 3f)
 					{
+						if (IsGreenNightExtremeProtectionActive())
+						{
+							ComponentCreature otherEnemy = FindNearestGreenNightEnemy(GetProtectionRange());
+							if (otherEnemy != null && otherEnemy != m_target)
+							{
+								m_target = otherEnemy;
+								m_range = GetProtectionRange();
+								m_chaseTime = GetProtectionChaseTime();
+								m_isPersistent = true;
+								m_isForcedTarget = true;
+								m_targetUnsuitableTime = 0f;
+								return;
+							}
+						}
 						m_importanceLevel = 0f;
 					}
 					else
@@ -1024,6 +1133,7 @@ namespace Game
 						if (m_isPersistent)
 						{
 							maxPathfindingPositions = ((m_subsystemTime.FixedTimeStep != null) ? 2000 : 500);
+							if (IsGreenNightExtremeProtectionActive()) maxPathfindingPositions = 3000;
 						}
 						BoundingBox bbSelf = m_componentCreature.ComponentBody.BoundingBox;
 						BoundingBox bbTarget = m_target.ComponentBody.BoundingBox;
@@ -1032,9 +1142,8 @@ namespace Game
 						float dist = Vector3.Distance(selfCenter, targetCenter);
 						float followFactor = (dist < 4f) ? 0.2f : 0f;
 						m_componentPathfinding.SetDestination(targetCenter + followFactor * dist * m_target.ComponentBody.Velocity,
-															1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
+																	1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
 
-						// Movimiento en agua tipo ladder - compensa WaterDrag que se aplica DESPUÉS
 						float immersion = m_componentCreature.ComponentBody.ImmersionFactor;
 						if (immersion > 0.15f)
 						{
@@ -1042,19 +1151,16 @@ namespace Game
 							float verticalDiff = toTarget.Y;
 							float horizontalDist = new Vector2(toTarget.X, toTarget.Z).Length();
 
-							// Velocidad tipo escalera para subir en agua
 							float climbSpeed = 2.8f;
+							if (IsGreenNightExtremeProtectionActive()) climbSpeed = 4.0f;
 
-							// Subir cuando el objetivo está arriba
 							if (verticalDiff > 0.2f)
 							{
 								float upForce = MathUtils.Saturate((verticalDiff - 0.2f) / 1.5f) * climbSpeed * m_dt;
-								// Multiplicar por factor que contrarresta el WaterDrag
 								upForce *= 1f + immersion * 2f;
 								m_componentCreature.ComponentBody.ApplyImpulse(new Vector3(0f, upForce, 0f));
 							}
 
-							// Subir a superficie si está muy sumergido sin necesidad clara de bajar
 							if (immersion > 0.6f && verticalDiff > -0.3f)
 							{
 								float surfaceForce = MathUtils.Saturate((immersion - 0.6f) / 0.4f) * climbSpeed * 0.7f * m_dt;
@@ -1062,12 +1168,11 @@ namespace Game
 								m_componentCreature.ComponentBody.ApplyImpulse(new Vector3(0f, surfaceForce, 0f));
 							}
 
-							// Impulso horizontal para contrarrestar arrastre del agua
 							if (horizontalDist > 0.2f)
 							{
 								Vector2 horizDir = new Vector2(toTarget.X, toTarget.Z) / horizontalDist;
-								// Fuerza proporcional a inmersión, compensando WaterDrag
 								float horizForce = immersion * 12f * m_dt;
+								if (IsGreenNightExtremeProtectionActive()) horizForce *= 1.5f;
 								m_componentCreature.ComponentBody.ApplyImpulse(new Vector3(horizDir.X * horizForce, 0f, horizDir.Y * horizForce));
 							}
 						}
@@ -1211,23 +1316,51 @@ namespace Game
 
 		public void ForceProtectiveAttack()
 		{
-			if (!ShouldProtectPlayer)
+			if (!ShouldProtectPlayer) return;
+
+			if (m_componentHireable != null && !m_componentHireable.IsHired) return;
+
+			if (IsGreenNightExtremeProtectionActive())
+			{
+				Suppressed = false;
+				TargetInRangeTimeToChase = 0f;
+				m_autoChaseSuppressionTime = 0f;
+			}
+			else
+			{
+				if (Suppressed) return;
+			}
+
+			float protectionRange = GetProtectionRange();
+			float protectionChaseTime = GetProtectionChaseTime();
+
+			if (m_target != null && m_target.ComponentHealth.Health > 0f && IsGreenNightEnemy(m_target))
+			{
+				m_chaseTime = protectionChaseTime;
+				m_isPersistent = true;
+				m_range = protectionRange;
 				return;
+			}
 
-			if (Suppressed || m_componentHireable != null && !m_componentHireable.IsHired)
-				return;
+			ComponentCreature enemy;
+			if (IsGreenNightExtremeProtectionActive())
+			{
+				enemy = FindNearestGreenNightEnemy(protectionRange);
+			}
+			else
+			{
+				enemy = FindNearestEnemy(protectionRange);
+			}
 
-			TargetInRangeTimeToChase = 0f;
-			Suppressed = false;
-
-			if (m_target != null && m_target.ComponentHealth.Health > 0f && IsEnemy(m_target))
-				return;
-
-			ComponentCreature enemy = FindNearestEnemy(40f);
 			if (enemy != null)
 			{
 				StopAttack();
-				Attack(enemy, 40f, 120f, true);
+				Attack(enemy, protectionRange, protectionChaseTime, true, true);
+
+				if (m_componentHerd != null)
+				{
+					m_componentHerd.CallNearbyCreaturesHelp(enemy, protectionRange * 0.8f, protectionChaseTime, true, true);
+				}
 			}
 		}
 
@@ -1237,41 +1370,259 @@ namespace Game
 				return false;
 
 			ComponentZombieChaseBehavior zChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
-			if (zChase != null && zChase.ForceAttackDuringGreenNight)
-				return true;
+			if (zChase != null && zChase.ForceAttackDuringGreenNight) return true;
 
 			ComponentBanditChaseBehavior bChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
-			if (bChase != null)
-				return true;
+			if (bChase != null) return true;
+
+			if (IsDirectlyAttackingPlayer(creature)) return true;
+
+			if (IsGreenNightActive)
+			{
+				if (zChase != null && zChase.Target != null && zChase.Target.Entity.FindComponent<ComponentPlayer>() != null) return true;
+			}
 
 			return false;
 		}
 
 		private ComponentCreature FindNearestEnemy(float range)
 		{
-			if (m_componentCreature?.ComponentBody == null)
-				return null;
+			if (m_componentCreature?.ComponentBody == null) return null;
 
 			Vector3 position = m_componentCreature.ComponentBody.Position;
 			ComponentCreature nearest = null;
 			float minDist = float.MaxValue;
 
+			bool isGreenNight = IsGreenNightExtremeProtectionActive();
+			float effectiveRange = isGreenNight ? Math.Max(range, 60f) : range;
+
 			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
 			{
-				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f)
-					continue;
-
-				if (!IsEnemy(creature))
-					continue;
+				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f) continue;
+				if (!IsEnemy(creature)) continue;
 
 				float dist = Vector3.Distance(position, creature.ComponentBody.Position);
-				if (dist <= range && dist < minDist)
+				if (dist <= effectiveRange)
 				{
-					minDist = dist;
+					float effectiveDist = dist;
+					if (isGreenNight && IsDirectlyAttackingPlayer(creature)) effectiveDist *= 0.5f;
+
+					if (effectiveDist < minDist)
+					{
+						minDist = effectiveDist;
+						nearest = creature;
+					}
+				}
+			}
+
+			return nearest;
+		}
+
+		private bool IsGreenNightExtremeProtectionActive()
+		{
+			if (!ShouldProtectPlayer) return false;
+			if (m_subsystemGreenNightSky == null) return false;
+			return m_subsystemGreenNightSky.IsGreenNightActive;
+		}
+
+		private float GetProtectionRange()
+		{
+			if (IsGreenNightExtremeProtectionActive()) return 60f;
+			if (IsExtremeProtectionActive()) return 40f;
+			return 20f;
+		}
+
+		private float GetProtectionChaseTime()
+		{
+			if (IsGreenNightExtremeProtectionActive()) return 180f;
+			if (IsExtremeProtectionActive()) return 120f;
+			return 30f;
+		}
+
+		private bool IsGreenNightEnemy(ComponentCreature creature)
+		{
+			if (creature == null || creature.ComponentHealth.Health <= 0f) return false;
+
+			ComponentZombieChaseBehavior zChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+			if (zChase != null && zChase.ForceAttackDuringGreenNight && IsGreenNightActive) return true;
+
+			if (IsGreenNightActive)
+			{
+				if (zChase != null && zChase.Target != null && zChase.Target.Entity.FindComponent<ComponentPlayer>() != null) return true;
+				ComponentNewChaseBehavior nChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+				if (nChase != null && nChase.Target != null && nChase.Target.Entity.FindComponent<ComponentPlayer>() != null) return true;
+			}
+
+			return false;
+		}
+
+		private ComponentCreature FindNearestGreenNightEnemy(float range)
+		{
+			if (m_subsystemCreatureSpawn == null || m_componentCreature?.ComponentBody == null) return null;
+
+			Vector3 position = m_componentCreature.ComponentBody.Position;
+			ComponentCreature nearest = null;
+			float minDistSq = range * range;
+
+			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
+			{
+				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f) continue;
+				if (!IsGreenNightEnemy(creature)) continue;
+
+				bool isAttackingPlayer = IsDirectlyAttackingPlayer(creature);
+				float distSq = Vector3.DistanceSquared(position, creature.ComponentBody.Position);
+				float effectiveDistSq = isAttackingPlayer ? distSq * 0.5f : distSq;
+
+				if (effectiveDistSq < minDistSq)
+				{
+					minDistSq = effectiveDistSq;
 					nearest = creature;
 				}
 			}
 			return nearest;
+		}
+
+		private bool IsDirectlyAttackingPlayer(ComponentCreature creature)
+		{
+			if (creature == null) return false;
+
+			ComponentZombieChaseBehavior zChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+			if (zChase != null && zChase.Target != null && zChase.Target.Entity.FindComponent<ComponentPlayer>() != null) return true;
+
+			ComponentNewChaseBehavior nChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+			if (nChase != null && nChase.Target != null && nChase.Target.Entity.FindComponent<ComponentPlayer>() != null) return true;
+
+			return false;
+		}
+
+		private ComponentCreature FindCreatureAttackingPlayer(ComponentPlayer player, float range)
+		{
+			if (m_subsystemCreatureSpawn == null || player == null) return null;
+
+			Vector3 playerPos = player.ComponentBody.Position;
+			ComponentCreature nearest = null;
+			float minDistSq = range * range;
+
+			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
+			{
+				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f) continue;
+
+				bool isAttackingThisPlayer = false;
+
+				ComponentZombieChaseBehavior zChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+				if (zChase != null && zChase.Target == player) isAttackingThisPlayer = true;
+
+				ComponentNewChaseBehavior nChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+				if (nChase != null && nChase.Target == player) isAttackingThisPlayer = true;
+
+				ComponentBanditChaseBehavior bChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
+				if (bChase != null) isAttackingThisPlayer = true;
+
+				if (isAttackingThisPlayer)
+				{
+					float distSq = Vector3.DistanceSquared(playerPos, creature.ComponentBody.Position);
+					if (distSq < minDistSq)
+					{
+						minDistSq = distSq;
+						nearest = creature;
+					}
+				}
+			}
+			return nearest;
+		}
+
+		private void UpdateGreenNightProtection(float dt)
+		{
+			if (!ShouldProtectPlayer) return;
+			if (m_componentHireable != null && !m_componentHireable.IsHired) return;
+
+			bool isGreenNightActive = IsGreenNightExtremeProtectionActive();
+
+			if (isGreenNightActive && !m_wasGreenNightActiveForProtection)
+			{
+				Suppressed = false;
+				TargetInRangeTimeToChase = 0f;
+				m_autoChaseSuppressionTime = 0f;
+
+				ComponentCreature enemy = FindNearestGreenNightEnemy(GetProtectionRange());
+				if (enemy != null)
+				{
+					StopAttack();
+					Attack(enemy, GetProtectionRange(), GetProtectionChaseTime(), true, true);
+					if (m_componentHerd != null)
+					{
+						m_componentHerd.CallNearbyCreaturesHelp(enemy, GetProtectionRange() * 0.8f, GetProtectionChaseTime(), true, true);
+					}
+				}
+			}
+			else if (!isGreenNightActive && m_wasGreenNightActiveForProtection)
+			{
+				if (m_target != null && !IsEnemy(m_target))
+				{
+					StopAttack();
+				}
+			}
+
+			m_wasGreenNightActiveForProtection = isGreenNightActive;
+
+			if (!isGreenNightActive) return;
+
+			m_greenNightProtectionTimer -= dt;
+			if (m_greenNightProtectionTimer > 0f) return;
+			m_greenNightProtectionTimer = 0.3f;
+
+			if (m_target != null)
+			{
+				if (!IsGreenNightEnemy(m_target) && !m_isForcedTarget)
+				{
+					ComponentCreature betterTarget = FindNearestGreenNightEnemy(GetProtectionRange());
+					if (betterTarget != null)
+					{
+						StopAttack();
+						Attack(betterTarget, GetProtectionRange(), GetProtectionChaseTime(), true, true);
+						return;
+					}
+				}
+
+				if (IsGreenNightEnemy(m_target) && m_chaseTime < 30f)
+				{
+					m_chaseTime = GetProtectionChaseTime();
+					m_isPersistent = true;
+					m_range = GetProtectionRange();
+				}
+			}
+			else
+			{
+				ComponentCreature enemy = FindNearestGreenNightEnemy(GetProtectionRange());
+				if (enemy != null)
+				{
+					StopAttack();
+					Attack(enemy, GetProtectionRange(), GetProtectionChaseTime(), true, true);
+
+					if (m_componentHerd != null)
+					{
+						m_componentHerd.CallNearbyCreaturesHelp(enemy, GetProtectionRange() * 0.8f, GetProtectionChaseTime(), true, true);
+					}
+				}
+				else if (m_subsystemPlayers != null)
+				{
+					foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
+					{
+						if (player == null || player.ComponentHealth.Health <= 0f) continue;
+
+						float distToPlayer = Vector3.Distance(m_componentCreature.ComponentBody.Position, player.ComponentBody.Position);
+						if (distToPlayer > GetProtectionRange()) continue;
+
+						ComponentCreature playerAttacker = FindCreatureAttackingPlayer(player, GetProtectionRange());
+						if (playerAttacker != null)
+						{
+							StopAttack();
+							Attack(playerAttacker, GetProtectionRange(), GetProtectionChaseTime(), true, true);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 }
