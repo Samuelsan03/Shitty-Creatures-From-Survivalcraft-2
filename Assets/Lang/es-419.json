@@ -1,4 +1,12 @@
 {
+  "GreenNightWarConflictDialog": {
+    "1": "¡ADVERTENCIA!",
+    "2": "¡Has activado la Guerra contra Narcotraficantes durante\n la Noche Verde!\n\nEsto significa que los INFECTADOS y los NARCOTRAFICANTES\n te odian tanto\nque han decidido unir fuerzas para acabar contigo.\n\nVENTAJAS:\n• Subirás de nivel más rápido (si sobrevives).\n• Botín más valioso (totalmente innecesario si estás muerto).\n• Experiencia de combate extrema (para tu próxima vida).\n\nDESVENTAJAS:\n• Doble cantidad de enemigos.\n• Probabilidad de morir: ALTA.\n• Tus aliados probablemente también morirán.\n• El seguro de vida no cubre esto.\n\n¡Estás en dificultad {0}!\nLiteralmente has elegido la peor combinación posible.\nLos desarrolladores recomiendan rezar antes de continuar.\n\n¿Realmente quieres continuar o prefieres vivir para contarlo?",
+    "3": "¡Estás en dificultad {0}!\nLiteralmente has elegido la peor combinación posible.\nLos desarrolladores recomiendan rezar antes de continuar.\n\n",
+    "4": "¿Realmente quieres continuar o prefieres vivir para contarlo?",
+    "5": "Continuar",
+    "6": "Cancelar"
+},
   "InfiniteChallengeWidget": {
     "0": "Infinite el Chacal",
     "1": "Desafío",
@@ -98,18 +106,18 @@
 "77": "Cúrate a ti mismo o a un aliado 100 veces. A estas alturas deberías estar muerto varias veces.",
 "78": "Un sueldo por cada bala",
 "79": "Contrata a tu primer mercenario para que reciba los disparos por ti",
-"80": "Pirata en ciernes",
-"81": "Acaba con 10 piratas",
-"82": "Marea de botín",
-"83": "Acaba con 50 piratas",
-"84": "Rey de la costa",
-"85": "Acaba con 100 piratas",
-"86": "Compinche comercial",
-"87": "Compra cualquier objeto al Pirata Hostil Comerciante",
-"88": "Filón sangriento",
-"89": "Mata al Pirata Hostil Comerciante",
-"90": "Abatir al almirante",
-"91": "Mata al Capitán Pirata",
+"80": "Reclutador de Davy Jones",
+"81": "Envía a 10 piratas a una nueva tripulación bajo el mar.",
+"82": "Capitán de ausencias",
+"83": "Haz que 50 piratas falten indefinidamente al pase de lista.",
+"84": "Auditor de la piratería",
+"85": "Reduce la población pirata en 100 efectivos.",
+"86": "Patrocinador de corsarios",
+"87": "Compra cualquier objeto al Pirata Hostil Comerciante y fortalece la economía del crimen marítimo.",
+"88": "Hundimiento bursátil",
+"89": "Mata al Pirata Hostil Comerciante y desploma el mercado negro del archipiélago.",
+"90": "Cambio de bandera",
+"91": "Mata al Capitán Pirata y ejecuta un golpe de Estado en aguas internacionales.",
 "92": "Controlador aéreo",
 "93": "Haz que 10 criaturas voladoras tengan un aterrizaje definitivo",
 "94": "Cancelador de vuelos",
@@ -153,7 +161,9 @@
   "132": "Emperador del más allá",
   "133": "Domestica 100 fantasmas. Has convertido el más allá en tu propiedad privada. Hasta la muerte te tiene miedo ahora.",
   "134": "Ya no hace falta el Phantom Ruby",
-"135": "Infinite por fin creó la ilusión perfecta: creer que todavía conserva algo de orgullo."
+"135": "Infinite por fin creó la ilusión perfecta: creer que todavía conserva algo de orgullo.",
+"136": "Rezar funcionó",
+"137": "Sobrevive a una Guerra de Narcotraficantes durante una Noche Verde. Ahora mismo los desarrolladores tampoco entienden qué pasó."
   },
   "AchievementsMessages": {
     "0": "¡LOGRO {0} DESBLOQUEADO!",
@@ -271,7 +281,6 @@
   },
   "ShittyCreaturesSettings": {
     "ScreenTitle": "Ajustes de Shitty Creatures",
-    "SettingsButton": "Ajustes de Shitty Creatures",
     "GhostDescription": "Activar/desactivar la música cuando los fantasmas te persiguen",
     "TankDescription": "Activar/desactivar la música cuando los Tanks te persiguen",
     "SpawnDescription": "Activar/desactivar la generación de NPCs al morir uno",
