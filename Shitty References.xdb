@@ -616,6 +616,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="BlueberryBushBlockBehavior" Guid="5493f350-0a0c-4ed1-bf2f-d912ebc4eaa2" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemBlueberryBushBlockBehavior" Type="string" Guid="56dd93e7-a38e-49bf-bf27-63f0f547a51a"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="Achievements" Guid="6c5525ce-a629-4d0f-a2e5-76b31191af3a" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemAchievements" Type="string" Guid="3f8ffe20-2477-476c-8122-01ce7df10eb4"/>
 </MemberSubsystemTemplate>
