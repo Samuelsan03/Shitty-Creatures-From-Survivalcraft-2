@@ -1,4 +1,4 @@
-﻿using Engine;
+using Engine;
 using Engine.Graphics;
 using Game;
 using System;
@@ -215,6 +215,30 @@ namespace Game
 			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, false), 3));
 			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, false), 5));
 			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, false), 7));
+		}
+
+		// SOLUCIÓN: Si está madura (size 7), no hace nada y usa los drops del CSV (las rebanadas).
+		// Si está en crecimiento (size < 7), sobrescribe para botar la sandía entera de su tamaño actual.
+		public override void GetDropValues(SubsystemTerrain subsystemTerrain, int oldValue, int newValue, int toolLevel, List<BlockDropValue> dropValues, out bool showDebris)
+		{
+			int size = GetSize(Terrain.ExtractData(oldValue));
+
+			if (size >= 1 && size < 7)
+			{
+				// Fases de crecimiento: botar la sandía entera de su tamaño actual (muerta)
+				int value = SetDamage(Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, true), size)), GetDamage(oldValue));
+				dropValues.Add(new BlockDropValue
+				{
+					Value = value,
+					Count = 1
+				});
+				showDebris = true;
+			}
+			else
+			{
+				// Madura (size 7) o size 0: usar los drops del CSV (las rodajas)
+				base.GetDropValues(subsystemTerrain, oldValue, newValue, toolLevel, dropValues, out showDebris);
+			}
 		}
 
 		public static int GetSize(int data)
