@@ -234,10 +234,15 @@ namespace Game
 				});
 				showDebris = true;
 			}
+			else if (size >= 7)
+			{
+				// Madura (size 7): usar los drops del CSV (las rodajas)
+				base.GetDropValues(subsystemTerrain, oldValue, newValue, toolLevel, dropValues, out showDebris);
+			}
 			else
 			{
-				// Madura (size 7) o size 0: usar los drops del CSV (las rodajas)
-				base.GetDropValues(subsystemTerrain, oldValue, newValue, toolLevel, dropValues, out showDebris);
+				// Size 0 (recién plantada/semilla): no bota nada
+				showDebris = false;
 			}
 		}
 
