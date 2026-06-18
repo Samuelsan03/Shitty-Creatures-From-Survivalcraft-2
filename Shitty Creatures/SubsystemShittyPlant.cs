@@ -20,7 +20,7 @@ namespace Game
 		{
 			get
 			{
-				var list = new List<int> { BlueberryBushBlock.Index };
+				var list = new List<int> { BlueberryBushBlock.Index, WatermelonBlock.Index };
 				foreach (int idx in GetFruitIndices())
 				{
 					if (idx > 0) list.Add(idx);
@@ -83,8 +83,6 @@ namespace Game
 			return false;
 		}
 
-		// SOLUCIÓN: Usar el índice estático directamente, igual que el juego original.
-		// NUNCA usar BlocksManager.GetBlockIndex en comprobaciones de lógica en tiempo real.
 		private bool IsBlueberryBushBlock(int contents)
 		{
 			return contents == BlueberryBushBlock.Index;
@@ -118,7 +116,16 @@ namespace Game
 			}
 			else if (IsBlueberryBushBlock(contents))
 			{
-				// Lógica exacta del SubsystemPlantBlockBehavior original
+				int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
+				Block belowBlock = BlocksManager.Blocks[Terrain.ExtractContents(belowValue)];
+
+				if (!belowBlock.IsSuitableForPlants(belowValue, cellValue))
+				{
+					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
+				}
+			}
+			else if (contents == WatermelonBlock.Index)
+			{
 				int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
 				Block belowBlock = BlocksManager.Blocks[Terrain.ExtractContents(belowValue)];
 
@@ -133,13 +140,19 @@ namespace Game
 		{
 			int contents = Terrain.ExtractContents(value);
 
-			// Crecimiento del arbusto de arándanos
 			if (IsBlueberryBushBlock(contents))
 			{
-				// COMPROBACIÓN DE MODO DE JUEGO: Igual que el original
 				if (m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
 				{
 					GrowBlueberryBush(value, x, y, z, pollPass);
+				}
+				return;
+			}
+			else if (contents == WatermelonBlock.Index)
+			{
+				if (m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
+				{
+					GrowWatermelon(value, x, y, z, pollPass);
 				}
 				return;
 			}
@@ -172,6 +185,63 @@ namespace Game
 					int newData = BlueberryBushBlock.SetIsSmall(data, false);
 					int newValue = Terrain.ReplaceData(value, newData);
 					m_subsystemCellChangeQueue.QueueCellChange(x, y, z, newValue, false);
+				}
+			}
+		}
+
+		public void GrowWatermelon(int value, int x, int y, int z, int pollPass)
+		{
+			if (Terrain.ExtractLight(base.SubsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z)) < 9)
+			{
+				return;
+			}
+			int data = Terrain.ExtractData(value);
+			int size = BaseWatermelonBlock.GetSize(data);
+			if (BaseWatermelonBlock.GetIsDead(data) || size >= 7)
+			{
+				return;
+			}
+			int cellValueFast = base.SubsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int num = Terrain.ExtractContents(cellValueFast);
+			int data2 = Terrain.ExtractData(cellValueFast);
+			bool flag = num == 168 && SoilBlock.GetHydration(data2);
+			int num2 = (num == 168) ? SoilBlock.GetNitrogen(data2) : 0;
+			int num3 = base.SubsystemTerrain.Terrain.GetSeasonalTemperature(x, z) + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
+			int num4 = 4;
+			float num5 = 0.15f;
+			if (num == 168)
+			{
+				num4--;
+				num5 -= 0.05f;
+			}
+			if (num2 > 0)
+			{
+				num4--;
+				num5 -= 0.05f;
+			}
+			if (flag)
+			{
+				num4--;
+				num5 -= 0.05f;
+			}
+			if (num3 <= 8)
+			{
+				num4 += 5;
+			}
+			if (pollPass % MathUtils.Max(num4, 1) == 0 || num5 >= 1f)
+			{
+				int data3 = BaseWatermelonBlock.SetSize(data, MathUtils.Min(size + 1, 7));
+				if (this.m_regenerationRandom.Float(0f, 1f) < num5)
+				{
+					data3 = BaseWatermelonBlock.SetIsDead(data3, true);
+				}
+				int value2 = Terrain.ReplaceData(value, data3);
+				this.m_subsystemCellChangeQueue.QueueCellChange(x, y, z, value2, false);
+				if (num == 168 && size + 1 == 7)
+				{
+					int data4 = SoilBlock.SetNitrogen(data2, MathUtils.Max(num2 - 3, 0));
+					int value3 = Terrain.ReplaceData(cellValueFast, data4);
+					this.m_subsystemCellChangeQueue.QueueCellChange(x, y - 1, z, value3, false);
 				}
 			}
 		}
