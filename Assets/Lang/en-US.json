@@ -1,4 +1,12 @@
 {
+  "GreenNightWarConflictDialog": {
+    "1": "WARNING!",
+    "2": "You have activated the War Against Drug Traffickers during\n Green Night!\n\nThis means that the INFECTED and the DRUG TRAFFICKERS\n hate you so much\nthat they have decided to join forces to take you down.\n\nADVANTAGES:\n• You will level up faster (if you survive).\n• More valuable loot (completely useless if you're dead).\n• Extreme combat experience (for your next life).\n\nDISADVANTAGES:\n• Double the number of enemies.\n• Chance of death: HIGH.\n• Your allies will probably die too.\n• Life insurance does not cover this.\n\nYou are on {0} difficulty!\nYou have literally chosen the worst possible combination.\nThe developers recommend praying before continuing.\n\nDo you really want to continue, or would you rather live to tell the tale?",
+    "3": "You are on {0} difficulty!\nYou have literally chosen the worst possible combination.\nThe developers recommend praying before continuing.\n\n",
+    "4": "Do you really want to continue, or would you rather live to tell the tale?",
+    "5": "Continue",
+    "6": "Cancel"
+  },
   "InfiniteChallengeWidget": {
     "0": "Infinite The Jackal",
     "1": "Challenge",
@@ -98,18 +106,18 @@
   "77": "Heal yourself or an ally 100 times. Death no longer knocks on your door; it files complaints.",
 "78": "A paycheck for every bullet",
 "79": "Hire your first mercenary to take the bullets for you",
-"80": "Novice pirate",
-"81": "Defeat 10 pirates",
-"82": "Plunder tide",
-"83": "Defeat 50 pirates",
-"84": "Coast king",
-"85": "Defeat 100 pirates",
-"86": "Trade companion",
-"87": "Buy any item from the Pirata Hostil Comerciante",
-"88": "Bloody vein",
-"89": "Defeat the Pirata Hostil Comerciante",
-"90": "Admiral downfall",
-"91": "Defeat the Capitán Pirata",
+"80": "Davy Jones' Recruiter",
+"81": "Send 10 pirates to a new crew beneath the sea.",
+"82": "Captain of Absences",
+"83": "Make 50 pirates miss roll call indefinitely.",
+"84": "Piracy Auditor",
+"85": "Reduce the pirate population by 100 members.",
+"86": "Privateer Sponsor",
+"87": "Buy any item from the Pirata Hostil Comerciante and strengthen the maritime crime economy.",
+"88": "Market Crash",
+"89": "Kill the Pirata Hostil Comerciante and bring down the archipelago's black market.",
+"90": "Change of Flag",
+"91": "Kill the Capitan Pirata and carry out a coup d'état in international waters.",
 "92": "Air Traffic Controller",
 "93": "Give 10 flying creatures a permanent landing",
 "94": "Flight Canceller",
@@ -153,7 +161,9 @@
   "132": "Emperor of the Afterlife",
   "133": "Tame 100 ghosts. You've turned the afterlife into your private property. Even death fears you now.",
   "134": "No More Need for the Phantom Ruby",
-"135": "Infinite finally created the perfect illusion: believing he still has some pride left."
+"135": "Infinite finally created the perfect illusion: believing he still has some pride left.",
+"136": "Praying Worked",
+"137": "Survive a Drug Traffickers War during a Green Night. Right now, even the developers have no idea what happened."
   },
   "AchievementsMessages": {
     "0": "ACHIEVEMENT {0} UNLOCKED!",
@@ -271,7 +281,6 @@
   },
   "ShittyCreaturesSettings": {
     "ScreenTitle": "Shitty Creatures Settings",
-    "SettingsButton": "Shitty Creatures Settings",
     "GhostDescription": "Enable/disable music when ghosts chase you",
     "TankDescription": "Enable/disable music when tanks chase you",
     "SpawnDescription": "Enable/disable spawning of NPCs when one dies",
