@@ -8,47 +8,26 @@ namespace Game
 {
 	public class SubsystemShittyPlant : SubsystemPollableBlockBehavior
 	{
-		private static readonly int[] FruitIndices;
-		private static readonly int[] LeavesIndices;
-
 		private SubsystemTime m_subsystemTime;
 		private SubsystemTerrain m_subsystemTerrain;
+		private SubsystemCellChangeQueue m_subsystemCellChangeQueue;
+		private SubsystemGameInfo m_subsystemGameInfo;
 		private double m_lastOrphanCheckTime;
 		private double m_lastRegenerationTime;
 		private Random m_regenerationRandom = new Random();
-
-		static SubsystemShittyPlant()
-		{
-			FruitIndices = new int[]
-			{
-				BlocksManager.GetBlockIndex("AppleBlock", false),
-				BlocksManager.GetBlockIndex("PearBlock", false),
-				BlocksManager.GetBlockIndex("OrangeBlock", false),
-				BlocksManager.GetBlockIndex("CherryBlock", false),
-				BlocksManager.GetBlockIndex("BananaBlock", false)
-			};
-			LeavesIndices = new int[]
-			{
-				BlocksManager.GetBlockIndex("AppleLeavesBlock", false),
-				BlocksManager.GetBlockIndex("PearLeavesBlock", false),
-				BlocksManager.GetBlockIndex("OrangeLeavesBlock", false),
-				BlocksManager.GetBlockIndex("CherryLeavesBlock", false),
-				BlocksManager.GetBlockIndex("BananaLeavesBlock", false)
-			};
-		}
 
 		public override int[] HandledBlocks
 		{
 			get
 			{
 				var list = new List<int> { BlueberryBushBlock.Index };
-				for (int i = 0; i < FruitIndices.Length; i++)
+				foreach (int idx in GetFruitIndices())
 				{
-					if (FruitIndices[i] > 0) list.Add(FruitIndices[i]);
+					if (idx > 0) list.Add(idx);
 				}
-				for (int i = 0; i < LeavesIndices.Length; i++)
+				foreach (int idx in GetLeavesIndices())
 				{
-					if (LeavesIndices[i] > 0) list.Add(LeavesIndices[i]);
+					if (idx > 0) list.Add(idx);
 				}
 				return list.ToArray();
 			}
@@ -60,53 +39,111 @@ namespace Game
 			ShittyPlantsManager.EnsureInitialized();
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemCellChangeQueue = base.Project.FindSubsystem<SubsystemCellChangeQueue>(true);
+			m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
 			m_lastOrphanCheckTime = m_subsystemTime.GameTime;
 			m_lastRegenerationTime = m_subsystemTime.GameTime;
+		}
+
+		private int[] GetFruitIndices()
+		{
+			return new int[]
+			{
+				BlocksManager.GetBlockIndex("AppleBlock", false),
+				BlocksManager.GetBlockIndex("PearBlock", false),
+				BlocksManager.GetBlockIndex("OrangeBlock", false),
+				BlocksManager.GetBlockIndex("CherryBlock", false),
+				BlocksManager.GetBlockIndex("BananaBlock", false)
+			};
+		}
+
+		private int[] GetLeavesIndices()
+		{
+			return new int[]
+			{
+				BlocksManager.GetBlockIndex("AppleLeavesBlock", false),
+				BlocksManager.GetBlockIndex("PearLeavesBlock", false),
+				BlocksManager.GetBlockIndex("OrangeLeavesBlock", false),
+				BlocksManager.GetBlockIndex("CherryLeavesBlock", false),
+				BlocksManager.GetBlockIndex("BananaLeavesBlock", false)
+			};
+		}
+
+		private bool IsFruitBlock(int contents)
+		{
+			foreach (int idx in GetFruitIndices())
+				if (contents == idx) return true;
+			return false;
+		}
+
+		private bool IsLeavesBlock(int contents)
+		{
+			foreach (int idx in GetLeavesIndices())
+				if (contents == idx) return true;
+			return false;
+		}
+
+		// SOLUCIÓN: Usar el índice estático directamente, igual que el juego original.
+		// NUNCA usar BlocksManager.GetBlockIndex en comprobaciones de lógica en tiempo real.
+		private bool IsBlueberryBushBlock(int contents)
+		{
+			return contents == BlueberryBushBlock.Index;
 		}
 
 		public sealed override void OnNeighborBlockChanged(int x, int y, int z, int neighborX, int neighborY, int neighborZ)
 		{
 			int cellValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y, z);
 			int contents = Terrain.ExtractContents(cellValue);
-			if (FruitIndices.Contains(contents))
+
+			if (IsFruitBlock(contents))
 			{
 				if (neighborY == y + 1)
 				{
 					int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
 					int aboveContents = Terrain.ExtractContents(aboveValue);
-					if (aboveContents == 0 || aboveContents == 20 || !LeavesIndices.Contains(aboveContents))
+					if (aboveContents == 0 || aboveContents == 20 || !IsLeavesBlock(aboveContents))
 					{
 						base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 					}
 				}
 			}
-			else if (LeavesIndices.Contains(contents))
+			else if (IsLeavesBlock(contents))
 			{
-				if (Terrain.ExtractContents(base.SubsystemTerrain.Terrain.GetCellValue(x, y, z)) == 0)
+				int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
+				int belowContents = Terrain.ExtractContents(belowValue);
+				if (IsFruitBlock(belowContents))
 				{
-					int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
-					if (FruitIndices.Contains(Terrain.ExtractContents(belowValue)))
-					{
-						base.SubsystemTerrain.DestroyCell(0, x, y - 1, z, 0, false, false, null);
-					}
+					base.SubsystemTerrain.DestroyCell(0, x, y - 1, z, 0, false, false, null);
 				}
 			}
-			else
+			else if (IsBlueberryBushBlock(contents))
 			{
-				if (neighborY == y - 1)
+				// Lógica exacta del SubsystemPlantBlockBehavior original
+				int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
+				Block belowBlock = BlocksManager.Blocks[Terrain.ExtractContents(belowValue)];
+
+				if (!belowBlock.IsSuitableForPlants(belowValue, cellValue))
 				{
-					int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
-					Block belowBlock = BlocksManager.Blocks[Terrain.ExtractContents(belowValue)];
-					if (!belowBlock.IsSuitableForPlants(belowValue, cellValue))
-					{
-						base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
-					}
+					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 				}
 			}
 		}
 
 		public override void OnPoll(int value, int x, int y, int z, int pollPass)
 		{
+			int contents = Terrain.ExtractContents(value);
+
+			// Crecimiento del arbusto de arándanos
+			if (IsBlueberryBushBlock(contents))
+			{
+				// COMPROBACIÓN DE MODO DE JUEGO: Igual que el original
+				if (m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
+				{
+					GrowBlueberryBush(value, x, y, z, pollPass);
+				}
+				return;
+			}
+
 			if (pollPass == 0 && m_subsystemTime != null)
 			{
 				double currentTime = m_subsystemTime.GameTime;
@@ -123,17 +160,18 @@ namespace Game
 			}
 		}
 
-		private void CheckOrphanFruits(int x, int y, int z)
+		public void GrowBlueberryBush(int value, int x, int y, int z, int pollPass)
 		{
-			int cellValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y, z);
-			int contents = Terrain.ExtractContents(cellValue);
-			if (FruitIndices.Contains(contents))
+			int data = Terrain.ExtractData(value);
+
+			if (BlueberryBushBlock.GetIsSmall(data))
 			{
-				int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
-				int aboveContents = Terrain.ExtractContents(aboveValue);
-				if (!LeavesIndices.Contains(aboveContents))
+				int lightAbove = Terrain.ExtractLight(base.SubsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z));
+				if (lightAbove >= 9)
 				{
-					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
+					int newData = BlueberryBushBlock.SetIsSmall(data, false);
+					int newValue = Terrain.ReplaceData(value, newData);
+					m_subsystemCellChangeQueue.QueueCellChange(x, y, z, newValue, false);
 				}
 			}
 		}
@@ -142,10 +180,25 @@ namespace Game
 		{
 			if (isLoaded) return;
 			int contents = Terrain.ExtractContents(value);
-			if (FruitIndices.Contains(contents))
+			if (IsFruitBlock(contents))
 			{
 				int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
-				if (!LeavesIndices.Contains(Terrain.ExtractContents(aboveValue)))
+				if (!IsLeavesBlock(Terrain.ExtractContents(aboveValue)))
+				{
+					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
+				}
+			}
+		}
+
+		private void CheckOrphanFruits(int x, int y, int z)
+		{
+			int cellValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y, z);
+			int contents = Terrain.ExtractContents(cellValue);
+			if (IsFruitBlock(contents))
+			{
+				int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
+				int aboveContents = Terrain.ExtractContents(aboveValue);
+				if (!IsLeavesBlock(aboveContents))
 				{
 					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 				}
@@ -156,25 +209,29 @@ namespace Game
 		{
 			int leafValue = base.SubsystemTerrain.Terrain.GetCellValue(leafX, leafY, leafZ);
 			int leafContents = Terrain.ExtractContents(leafValue);
-			if (!LeavesIndices.Contains(leafContents))
+			if (!IsLeavesBlock(leafContents))
 				return;
+
 			ShittyTreeType? treeType = GetTreeTypeFromLeaf(leafContents);
 			if (!treeType.HasValue)
 				return;
+
 			int fruitIndex = GetFruitIndexFromType(treeType.Value);
 			if (fruitIndex == 0)
 				return;
+
 			int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(leafX, leafY - 1, leafZ);
 			int belowContents = Terrain.ExtractContents(belowValue);
-			if (FruitIndices.Contains(belowContents))
+			if (IsFruitBlock(belowContents))
 				return;
-			int temperature = m_subsystemTerrain.Terrain.GetTemperature(leafX, leafZ);
-			int humidity = m_subsystemTerrain.Terrain.GetHumidity(leafX, leafZ);
-			int y = leafY - 1;
+
 			int seasonalTemperature = m_subsystemTerrain.Terrain.GetSeasonalTemperature(leafX, leafZ);
 			int seasonalHumidity = m_subsystemTerrain.Terrain.GetSeasonalHumidity(leafX, leafZ);
+
 			float baseProbability = 0.02f;
-			float probability = baseProbability * ShittyPlantsManager.CalculateFruitTreeProbability(treeType.Value, seasonalTemperature, seasonalHumidity, y);
+			float probability = baseProbability * ShittyPlantsManager.CalculateFruitTreeProbability(
+				treeType.Value, seasonalTemperature, seasonalHumidity, leafY - 1);
+
 			if (m_regenerationRandom.Float(0f, 1f) < probability)
 			{
 				int newFruitValue = Terrain.MakeBlockValue(fruitIndex);
