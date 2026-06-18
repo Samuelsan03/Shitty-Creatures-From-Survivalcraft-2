@@ -48,11 +48,8 @@ namespace Game
 			{
 				AcceptWithGreenNightCheck(invasion, () =>
 				{
-					// La guerra se reinicia y se acepta
 					invasion.AcceptWar();
-					m_player.ComponentGui.DisplaySmallMessage(
-						LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
-						new Color(255, 50, 50), false, true);
+					ShowAcceptanceMessage(invasion);
 					DialogsManager.HideDialog(this);
 				});
 				return;
@@ -69,11 +66,49 @@ namespace Game
 			AcceptWithGreenNightCheck(invasion, () =>
 			{
 				invasion.AcceptWar();
-				m_player.ComponentGui.DisplaySmallMessage(
-					LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
-					new Color(255, 50, 50), false, true);
+				ShowAcceptanceMessage(invasion);
 				DialogsManager.HideDialog(this);
 			});
+		}
+
+		private void ShowAcceptanceMessage(SubsystemBanditInvasion invasion)
+		{
+			// Verificar si la Noche Verde está activa o programada para esta noche
+			SubsystemGreenNightSky greenNight = m_player.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			bool isGreenNightActive = greenNight != null && greenNight.IsGreenNightActive;
+			bool isGreenNightTonight = greenNight != null && greenNight.GreenNightEnabled &&
+									   greenNight.DaysSinceLastGreenNight >= greenNight.GreenNightIntervalDays;
+
+			string messageKey;
+			Color color;
+
+			if (isGreenNightActive)
+			{
+				// Noche Verde activa ahora mismo → mensaje normal de aceptación
+				messageKey = "AcceptMessage";
+				color = new Color(255, 50, 50);
+			}
+			else if (isGreenNightTonight)
+			{
+				// Noche Verde programada para esta noche → NUEVO MENSAJE
+				messageKey = "AcceptBeforeGreenNightMessage";
+				color = new Color(255, 200, 0);
+			}
+			else
+			{
+				// Día normal sin Noche Verde próxima → mensaje normal
+				messageKey = "AcceptMessage";
+				color = new Color(255, 50, 50);
+			}
+
+			string message = LanguageControl.GetContentWidgets("LetterWarDialog", messageKey);
+			if (string.IsNullOrEmpty(message))
+			{
+				// Fallback si no existe la clave
+				message = LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage");
+			}
+
+			m_player.ComponentGui.DisplaySmallMessage(message, color, false, true);
 		}
 
 		private void AcceptWithGreenNightCheck(SubsystemBanditInvasion invasion, Action onAccept)
@@ -108,14 +143,14 @@ namespace Game
 				return;
 			}
 
-			// Si la guerra está completada, solo cerrar (no tiene sentido rechazar algo terminado)
+			// Si la guerra está completada, solo cerrar
 			if (invasion.IsWarCompleted)
 			{
 				DialogsManager.HideDialog(this);
 				return;
 			}
 
-			// Si la guerra fue aceptada (activa o pendiente de noche), cancelarla
+			// Si la guerra fue aceptada, cancelarla
 			if (invasion.IsWarAccepted)
 			{
 				invasion.CancelWar();
@@ -126,7 +161,7 @@ namespace Game
 				return;
 			}
 
-			// Estado inicial: PRIMER rechazo → mostrar RejectMessage y marcar como rechazada
+			// Estado inicial: PRIMER rechazo
 			invasion.CancelWar();
 			m_player.ComponentGui.DisplaySmallMessage(
 				LanguageControl.GetContentWidgets("LetterWarDialog", "RejectMessage"),
