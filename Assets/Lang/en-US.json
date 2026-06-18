@@ -160,8 +160,8 @@
   "131": "Tame 50 ghosts. Who needs living minions when you have an army of the dead obeying your every command?",
   "132": "Emperor of the Afterlife",
   "133": "Tame 100 ghosts. You've turned the afterlife into your private property. Even death fears you now.",
-  "134": "No More Need for the Phantom Ruby",
-"135": "Infinite finally created the perfect illusion: believing he still has some pride left.",
+  "134": "False God",
+"135": "Infinite believed he was invincible. Turns out all he needed was an urgent ego check.",
 "136": "Praying Worked",
 "137": "Survive a Drug Traffickers War during a Green Night. Right now, even the developers have no idea what happened."
   },
@@ -634,6 +634,16 @@
   }
 },
   "Blocks": {
+    "WatermelonSeedBlock:0": {
+  "DisplayName": "Watermelon Seed",
+  "Description": "Watermelon seeds are used to grow watermelons. They require suitable soil and enough light to reach full size.",
+  "CRDescription:0": "Extract seeds from a watermelon slice"
+},
+    "BlueberrySeedBlock:0": {
+    "DisplayName": "Blueberry Seeds",
+    "Description": "Blueberry seeds are used to plant blueberry bushes. Plant them on suitable soil and provide enough light for healthy growth. Young bushes start as small sprouts and mature over time into full blueberry bushes.",
+    "CRDescription:0": "Extract seeds from blueberries"
+},
     "LetterWarBlock:0": {
   "DisplayName": "Mysterious Letter",
   "Description": "A sealed envelope with no sender name. It seems important... Reading it might lead to something dangerous. You can find this letter inside a chest that appears near you after surviving all green night waves."
@@ -1435,6 +1445,7 @@
     "RejectButton": "REJECT",
     "Message": "From the Cartel of Los Bandidos (Cartel de Los Bandidos):\nAfter surviving the Green Night, you proved that at least\nyou could make it through the green nights, from the easiest\nto the hardest.\nHowever, we want to declare war on you as a new\nchallenge. We want to know if you can survive once again.\nIf you accept, tomorrow at dawn we’re gonna beat the hell out of you.\nBut if you manage to win the war against us, we’ll leave you alone\nforever. Not a single bullet anymore.\nIf you refuse, you’ll still be able to read this letter for now.\nBut everyone will know you’re a damn coward hiding\nbefore a real fight.\nThe Cartel never forgives. Choose carefully, for your own damn sake.\nSigned: The Council of Bandidos",
     "AcceptMessage": "You accepted the war, idiot. The Cartel is gonna crush you at dawn. You already signed your own sentence.",
+    "AcceptBeforeGreenNightMessage": "You accepted the war right before the Green Night falls. Infected and narcos are going to hit you from all sides at the same time. Tonight you won't sleep, you'll pray. Enjoy hell, you bastard!",
     "RejectMessage": "You rejected the challenge, coward. The letter will stay here, but don’t think we forgot about you. The Cartel always comes back."
   },
         "RefrigeratorXiaomi": {
