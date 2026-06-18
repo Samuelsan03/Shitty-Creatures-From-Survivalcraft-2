@@ -160,8 +160,8 @@
   "131": "Domestica 50 fantasmas. ¿Quién necesita esbirros vivos cuando tienes un ejército de muertos que te obedecen?",
   "132": "Emperador del más allá",
   "133": "Domestica 100 fantasmas. Has convertido el más allá en tu propiedad privada. Hasta la muerte te tiene miedo ahora.",
-  "134": "Ya no hace falta el Phantom Ruby",
-"135": "Infinite por fin creó la ilusión perfecta: creer que todavía conserva algo de orgullo.",
+  "134": "Falso dios",
+"135": "Infinite se creía invencible. Resultó que solo necesitaba una revisión urgente de su ego.",
 "136": "Rezar funcionó",
 "137": "Sobrevive a una Guerra de Narcotraficantes durante una Noche Verde. Ahora mismo los desarrolladores tampoco entienden qué pasó."
   },
@@ -634,6 +634,16 @@
     }
   },
   "Blocks": {
+    "WatermelonSeedBlock:0": {
+  "DisplayName": "Semilla de Sandía",
+  "Description": "Las semillas de sandía se utilizan para cultivar sandías. Requieren suelo adecuado y suficiente luz para alcanzar su tamaño completo.",
+  "CRDescription:0": "Extrae semillas de una rebanada de sandía"
+},
+    "BlueberrySeedBlock:0": {
+    "DisplayName": "Semillas de Arándano",
+    "Description": "Las semillas de arándano se utilizan para plantar arbustos de arándano. Plántalas en suelo adecuado y proporciónales suficiente luz para un crecimiento saludable. Los arbustos jóvenes comienzan como pequeños brotes y maduran con el tiempo hasta convertirse en arbustos de arándano completos.",
+    "CRDescription:0": "Extrae semillas de los arándanos"
+},
     "LetterWarBlock:0": {
   "DisplayName": "Carta Misteriosa",
   "Description": "Un sobre sellado sin nombre de remitente. Parece importante... Leerlo podría llevarte a algo peligroso. Puedes encontrar esta carta dentro de un cofre que aparece cerca de ti después de sobrevivir a todas las oleadas nocturnas verdes."
@@ -1437,6 +1447,7 @@
       "RejectButton": "RECHAZAR",
       "Message": "De parte del Cartel de Los Bandidos:\nTras terminar la noche verde nos demostraste que al menos\npudiste sobrevivir a las noches verdes, desde las faciles\nhasta las mas dificiles.\nSin embargo, queremos declararte la guerra como un nuevo\nreto. Queremos saber si eres capaz de otra vez sobrevivir.\nSi aceptas, manana al amanecer te vamos a dar en la madre.\nPero si logras ganarnos la guerra, te dejaremos en paz\npara siempre. Ni un solo plomazo mas.\nSi rechazas, podras volver a leer la carta por ahora.\nPero todos sabran que eres un pinche cobarde que se esconde\nantes de luchar de verdad.\nEl Cartel no perdona. Elige con cuidado, por tu puta madre.\nFirma: El Consejo de Bandidos",
       "AcceptMessage": "Has aceptado la guerra, pendejo. El Cartel te va a triturar al amanecer. Ya firmaste tu sentencia.",
+      "AcceptBeforeGreenNightMessage": "Aceptaste la guerra justo antes de que caiga la Noche Verde. Infectados y narcos te van a dar por todos lados al mismo tiempo. Esta noche no vas a dormir, vas a rezar. ¡Disfruta el infierno, desgraciado!",
       "RejectMessage": "Rechazaste el desafio, cobarde. La carta seguira aqui, pero no creas que te olvidamos. El Cartel siempre vuelve."
     },
     "RefrigeratorXiaomi": {
