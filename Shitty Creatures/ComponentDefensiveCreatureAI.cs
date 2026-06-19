@@ -57,6 +57,12 @@ namespace Game
 		private ComponentSummonBehavior m_componentSummon;
 		private ComponentWalkAroundBehavior m_walkAroundBehavior;
 
+		private SubsystemCollarBlockBehavior m_subsystemCollarBlockBehavior;
+		private int m_collarBlockIndex = -1;
+		private float m_autoTameCooldown = 0f;
+		private const float AutoTameCooldownTime = 1.5f;
+		private const float AutoTameMaxDistance = 3f;
+
 		private enum MountState { None, Searching, Mounting }
 		private MountState m_mountState = MountState.None;
 		private float m_mountTimer = 0f;
@@ -236,6 +242,57 @@ namespace Game
 
 			// Inicializar lista de bloques lanzables
 			InitializeThrowableIndices();
+			m_subsystemCollarBlockBehavior = Project.FindSubsystem<SubsystemCollarBlockBehavior>();
+			m_collarBlockIndex = BlocksManager.GetBlockIndex<CollarBlock>(false, false);
+		}
+
+		private int FindCollarInInventory()
+		{
+			if (m_collarBlockIndex < 0 || m_componentMiner?.Inventory == null) return -1;
+			IInventory inv = m_componentMiner.Inventory;
+			for (int i = 0; i < inv.SlotsCount; i++)
+			{
+				int value = inv.GetSlotValue(i);
+				if (value != 0 && Terrain.ExtractContents(value) == m_collarBlockIndex)
+					return i;
+			}
+			return -1;
+		}
+
+		private bool TryAutoTameTarget()
+		{
+			if (m_subsystemCollarBlockBehavior == null) return false;
+			if (m_collarBlockIndex < 0) return false;
+			if (m_componentChase == null) return false;
+			if (!CanUseInventory || m_componentMiner == null) return false;
+			if (m_componentCreature.ComponentHealth.Health <= 0f) return false;
+
+			ComponentCreature target = m_componentChase.Target;
+			if (target == null) return false;
+			if (target.ComponentHealth.Health <= 0f) return false;
+
+			string tamedName = m_subsystemCollarBlockBehavior.GetTamedTemplateName(target.Entity);
+			if (string.IsNullOrEmpty(tamedName)) return false;
+
+			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
+			if (distance > AutoTameMaxDistance) return false;
+
+			int collarSlot = FindCollarInInventory();
+			if (collarSlot < 0) return false;
+
+			if (m_subsystemCollarBlockBehavior.TryTameCreature(target.Entity, m_componentMiner.Inventory, collarSlot))
+			{
+				if (m_componentChase != null)
+				{
+					m_componentChase.StopAttack();
+				}
+				CancelAiming();
+				if (m_isCustomAiming) StopCustomAiming();
+				m_autoTameCooldown = AutoTameCooldownTime;
+				return true;
+			}
+
+			return false;
 		}
 
 		// Buscar la montura más cercana (sin temporizador, evaluación inmediata)
@@ -553,6 +610,11 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			if (m_autoTameCooldown > 0f)
+				m_autoTameCooldown -= dt;
+			if (m_autoTameCooldown <= 0f && CanUseInventory && TryAutoTameTarget())
+				return;
+
 			// Si la celebración está activa, solo bloquear combate, pero permitir equipar ropa
 			bool celebrationActive = AchievementsManager.IsCelebrationActive;
 
