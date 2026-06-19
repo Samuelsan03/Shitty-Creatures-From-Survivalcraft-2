@@ -842,6 +842,12 @@ namespace Game
 			// Manejar apuntado personalizado (sin levantar brazo)
 			if (m_isCustomAiming)
 			{
+				// Verificar que el arma que se está usando siga en el slot activo
+				if (!IsWeaponStillValid(m_customWeaponContents))
+				{
+					StopCustomAiming();
+					return;
+				}
 				bool hasLineOfSight = true;
 				if (IsThrowable(m_customWeaponContents))
 				{
@@ -1042,6 +1048,27 @@ namespace Game
 			// Manejar apuntado normal (comportamiento original)
 			if (m_isAiming)
 			{
+				// Obtener el contenido actual del slot activo
+				int activeSlot = m_componentMiner.Inventory.ActiveSlotIndex;
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(activeSlot);
+				int currentContents = Terrain.ExtractContents(slotValue);
+
+				// Verificar que sea un arma a distancia válida (mosquete, ballesta, arco, lanzallamas, etc.)
+				bool isValidRangedWeapon = (currentContents == MusketBlock.Index ||
+											currentContents == CrossbowBlock.Index ||
+											currentContents == BowBlock.Index ||
+											currentContents == ItemsLauncherBlock.Index ||
+											currentContents == RepeatCrossbowBlock.Index ||
+											currentContents == FlameThrowerBlock.Index ||
+											currentContents == DoubleMusketBlock.Index ||
+											FirearmDefensiveConfigs.ContainsKey(currentContents) ||
+											IsThrowable(currentContents));
+
+				if (!isValidRangedWeapon)
+				{
+					CancelAiming();
+					return;
+				}
 				bool hasLineOfSight = true;
 				int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
 				if (IsThrowable(activeContents))
@@ -2387,6 +2414,18 @@ namespace Game
 			if (m_isAiming) CancelAiming();
 			if (m_isCustomAiming) StopCustomAiming();
 			base.Dispose();
+		}
+
+		private bool IsWeaponStillValid(int expectedContents)
+		{
+			if (m_componentMiner?.Inventory == null)
+				return false;
+
+			int activeSlot = m_componentMiner.Inventory.ActiveSlotIndex;
+			int slotValue = m_componentMiner.Inventory.GetSlotValue(activeSlot);
+			int currentContents = Terrain.ExtractContents(slotValue);
+
+			return currentContents == expectedContents;
 		}
 	}
 }
