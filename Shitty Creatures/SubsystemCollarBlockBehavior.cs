@@ -419,5 +419,128 @@ namespace Game
 			if (this.m_subsystemPlayers.ComponentPlayers.Count > 0) return this.m_subsystemPlayers.ComponentPlayers[0];
 			return null;
 		}
+
+		public string GetTamedTemplateName(Entity entity)
+		{
+			if (entity == null || m_tameableCreatures == null) return null;
+			try
+			{
+				string entityName = entity.ValuesDictionary?.DatabaseObject?.Name;
+				if (string.IsNullOrEmpty(entityName)) return null;
+				m_tameableCreatures.TryGetValue(entityName, out string tamedName);
+				return tamedName;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		public bool TryTameCreature(Entity targetEntity, IInventory collarInventory, int collarSlotIndex)
+		{
+			if (targetEntity == null || collarInventory == null || m_tameableCreatures == null) return false;
+			try
+			{
+				string currentEntityName = targetEntity.ValuesDictionary?.DatabaseObject?.Name;
+				if (string.IsNullOrEmpty(currentEntityName)) return false;
+				if (!m_tameableCreatures.ContainsKey(currentEntityName)) return false;
+
+				ComponentHealth componentHealth = targetEntity.FindComponent<ComponentHealth>();
+				if (componentHealth != null && componentHealth.Health <= 0f) return false;
+
+				bool isBoomer = currentEntityName.StartsWith("Boomer") || currentEntityName.StartsWith("GhostBoomer");
+				bool isFrozenGhostBoomer = currentEntityName == "FrozenGhostBoomer";
+				bool isBoomerFrozen = currentEntityName == "BoomerFrozen";
+				bool isFrozenGhost = currentEntityName == "FrozenGhost";
+				ComponentBoomerExplosion boomerExplosion = null;
+				ComponentBoomerFireExplosion boomerExplosion2 = null;
+				ComponentBoomerPoisonExplosion boomerPoisonExplosion = null;
+				ComponentBoomerFrozenExplosion boomerFrozenExplosion = null;
+				if (isBoomer)
+				{
+					boomerExplosion = targetEntity.FindComponent<ComponentBoomerExplosion>();
+					boomerExplosion2 = targetEntity.FindComponent<ComponentBoomerFireExplosion>();
+					boomerPoisonExplosion = targetEntity.FindComponent<ComponentBoomerPoisonExplosion>();
+					if (boomerExplosion != null) boomerExplosion.PreventExplosion = true;
+					if (boomerExplosion2 != null) boomerExplosion2.PreventExplosion = true;
+					if (boomerPoisonExplosion != null) boomerPoisonExplosion.PreventExplosion = true;
+				}
+				if (isFrozenGhostBoomer || isBoomerFrozen || isFrozenGhost)
+				{
+					boomerFrozenExplosion = targetEntity.FindComponent<ComponentBoomerFrozenExplosion>();
+					if (boomerFrozenExplosion != null) boomerFrozenExplosion.PreventExplosion = true;
+				}
+
+				string entityTemplateName = m_tameableCreatures[currentEntityName];
+				Entity entity2 = DatabaseManager.CreateEntity(base.Project, entityTemplateName, false);
+				if (entity2 == null)
+				{
+					if (boomerExplosion != null) boomerExplosion.PreventExplosion = false;
+					if (boomerExplosion2 != null) boomerExplosion2.PreventExplosion = false;
+					if (boomerPoisonExplosion != null) boomerPoisonExplosion.PreventExplosion = false;
+					if (boomerFrozenExplosion != null) boomerFrozenExplosion.PreventExplosion = false;
+					return false;
+				}
+
+				ComponentBody targetBody = targetEntity.FindComponent<ComponentBody>();
+				ComponentBody newBody = entity2.FindComponent<ComponentBody>(true);
+				if (targetBody != null && newBody != null)
+				{
+					newBody.Position = targetBody.Position;
+					newBody.Rotation = targetBody.Rotation;
+					newBody.Velocity = targetBody.Velocity;
+				}
+				entity2.FindComponent<ComponentSpawn>(true).SpawnDuration = 0f;
+
+				ComponentCollectPickableBehavior collectBehavior = entity2.FindComponent<ComponentCollectPickableBehavior>();
+				if (collectBehavior != null)
+				{
+					collectBehavior.CopyInventoryFrom(targetEntity);
+				}
+
+				base.Project.RemoveEntity(targetEntity, true);
+				base.Project.AddEntity(entity2);
+
+				collarInventory.RemoveSlotItems(collarSlotIndex, 1);
+
+				string soundToPlay = GetTamingSound(entityTemplateName);
+				if (this.m_subsystemAudio != null && !string.IsNullOrEmpty(soundToPlay))
+				{
+					Vector3 soundPos = (newBody != null) ? newBody.Position : Vector3.Zero;
+					this.m_subsystemAudio.PlaySound(soundToPlay, 1f, 0f, soundPos, 5f, false);
+				}
+
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		private string GetTamingSound(string entityTemplateName)
+		{
+			bool isTamedBoss = entityTemplateName == "FlyingInfectedBossTamed";
+			bool isTamedBoomer = entityTemplateName.StartsWith("BoomerTamed");
+			bool isTamedGhostBoomer = entityTemplateName.StartsWith("GhostBoomerTamed");
+			bool isTamedFrozenGhostBoomer = entityTemplateName == "FrozenGhostBoomerTamed";
+			bool isTamedBoomerFrozen = entityTemplateName == "BoomerFrozenTamed";
+			bool isTamedFrozenGhost = entityTemplateName == "FrozenGhostTamed";
+			bool isTamedCharger = entityTemplateName.StartsWith("ChargerTamed");
+			bool isTamedGhostCharger = entityTemplateName == "GhostChargerTamed";
+			bool isTamedTank = entityTemplateName.StartsWith("TankTamed");
+			bool isTamedGhostTank = entityTemplateName.StartsWith("TankGhostTamed");
+			bool isTamedMachineGun = entityTemplateName == "MachineGunInfectedTamed";
+
+			if (isTamedBoss || isTamedBoomer || isTamedGhostBoomer || isTamedFrozenGhostBoomer || isTamedBoomerFrozen || isTamedCharger || isTamedGhostCharger)
+			{
+				return "Audio/UI/Bosses FNAF 3";
+			}
+			if (isTamedTank || isTamedGhostTank || isTamedMachineGun || entityTemplateName == "FrozenTankTamed" || entityTemplateName == "FrozenTankGhostTamed")
+			{
+				return "Audio/UI/Tank Tamed Sound";
+			}
+			return "Audio/UI/Tada";
+		}
 	}
 }
