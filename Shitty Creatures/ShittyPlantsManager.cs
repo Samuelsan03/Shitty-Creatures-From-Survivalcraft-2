@@ -544,5 +544,49 @@ namespace Game
 				}
 			}
 		}
+
+		public static void TryRegenerateFruit(SubsystemTerrain subsystemTerrain, int leafX, int leafY, int leafZ, Random random)
+		{
+			EnsureInitialized();
+			int leafValue = subsystemTerrain.Terrain.GetCellValueFast(leafX, leafY, leafZ);
+			int leafContents = Terrain.ExtractContents(leafValue);
+
+			ShittyTreeType? treeType = GetTreeTypeFromLeaf(leafContents);
+			if (!treeType.HasValue)
+				return;
+
+			int fruitIndex = GetFruitIndexFromType(treeType.Value);
+			if (fruitIndex == 0)
+				return;
+
+			int belowValue = subsystemTerrain.Terrain.GetCellValueFast(leafX, leafY - 1, leafZ);
+			int belowContents = Terrain.ExtractContents(belowValue);
+			if (belowContents != 0)
+				return;
+
+			int seasonalTemperature = subsystemTerrain.Terrain.GetSeasonalTemperature(leafX, leafZ);
+			int seasonalHumidity = subsystemTerrain.Terrain.GetSeasonalHumidity(leafX, leafZ);
+
+			float baseProbability = 0.02f;
+			float probability = baseProbability * CalculateFruitTreeProbability(
+				treeType.Value, seasonalTemperature, seasonalHumidity, leafY - 1);
+
+			if (random.Float(0f, 1f) < probability)
+			{
+				int newFruitValue = Terrain.MakeBlockValue(fruitIndex);
+				subsystemTerrain.ChangeCell(leafX, leafY - 1, leafZ, newFruitValue, true, null);
+			}
+		}
+
+		private static ShittyTreeType? GetTreeTypeFromLeaf(int leafContents)
+		{
+			EnsureInitialized();
+			for (int i = 0; i < m_treeLeavesByType.Length; i++)
+			{
+				if (m_treeLeavesByType[i] == leafContents)
+					return (ShittyTreeType)i;
+			}
+			return null;
+		}
 	}
 }
