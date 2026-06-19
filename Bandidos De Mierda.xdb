@@ -51,7 +51,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="c7ff22be-b261-4ea9-a88c-64ae043a6ed5" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="443" Type="int"/> <!-- Tiene puesto su desert eagle-->
+            <Parameter Name="Contents" Value="444" Type="int"/> <!-- Tiene puesto su desert eagle-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -180,7 +180,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="416816e5-f69f-4fd3-816b-bd085731f70f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="419" Type="int"/> <!-- Tiene puesto su M4-->
+            <Parameter Name="Contents" Value="420" Type="int"/> <!-- Tiene puesto su M4-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -417,7 +417,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="8e20ad8c-448b-4cc4-ba5c-be345b936e2c" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="386" Type="int"/> <!-- Tiene puesto su AUG-->
+            <Parameter Name="Contents" Value="385" Type="int"/> <!-- Tiene puesto su AUG-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -547,7 +547,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="9cf1b1de-24c0-4035-a8dc-a501ad3b1a77" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="431" Type="int"/> <!-- Tiene puesto su Revolver-->
+            <Parameter Name="Contents" Value="432" Type="int"/> <!-- Tiene puesto su Revolver-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -677,7 +677,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="fdfddd8c-151b-4741-a515-cb36840652a2" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="416" Type="int"/> <!-- Tiene puesto su Izh-->
+            <Parameter Name="Contents" Value="417" Type="int"/> <!-- Tiene puesto su Izh-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -959,7 +959,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="a0b1e1c8-4d9a-48f1-a03b-e9d83b08dfd4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="428" Type="int"/> <!-- Tiene puesto su FN P90-->
+            <Parameter Name="Contents" Value="429" Type="int"/> <!-- Tiene puesto su FN P90-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -1219,7 +1219,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="b6f0640a-6e50-4773-9e0b-3ce3abffb7ed" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="446" Type="int"/> <!-- Tiene puesto su Uzi-->
+            <Parameter Name="Contents" Value="447" Type="int"/> <!-- Tiene puesto su Uzi-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -1654,7 +1654,7 @@
 <MemberComponentTemplate Name="Inventory" Guid="5c1d4b1b-dc08-4426-bd96-12d2bd30647a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="439" Type="int"/> <!-- Tiene puesto su SCAR-->
+            <Parameter Name="Contents" Value="440" Type="int"/> <!-- Tiene puesto su SCAR-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -1779,12 +1779,12 @@
     <Parameter Name="FlySpeed" Guid="895fc170-7fa4-4152-947e-5a7b7be743f5" Value="0" Type="float"/>
     <Parameter Name="TurnSpeed" Guid="9ada6577-fa42-48df-95e6-2fe911202ca2" Value="3" Type="float"/>
     <Parameter Name="WalkSpeed" Guid="c21149e4-b53e-4ebb-875a-2a3b6df0d660" Value="4" Type="float"/>
-    <Parameter Name="LadderSpeed" Guid="fde5916c-ada4-4c72-8344-17164288e6c3" Value="1.0" Type="float"/>
+    <Parameter Name="LadderSpeed" Guid="fde5916c-ada4-4c72-8344-17164288e6c3" Value="0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="a5e9b2d8-0cc9-4ecb-8f67-a8499e3aec82" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="423" Type="int"/> <!-- Tiene puesto su Mendoza-->
+            <Parameter Name="Contents" Value="424" Type="int"/> <!-- Tiene puesto su Mendoza-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -1914,7 +1914,7 @@
 <MemberComponentTemplate Name="Inventory" Guid="8243b42e-acce-4613-b3f2-459e15ba4f5b" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="406" Type="int"/> <!-- Tiene puesto su BK 43-->
+            <Parameter Name="Contents" Value="392" Type="int"/> <!-- Tiene puesto su BK 43-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -2163,7 +2163,7 @@
             <MemberComponentTemplate Name="Inventory" Guid="71ad2d1c-13c6-447b-8ce4-69642f52a910" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="441" Type="int"/> <!-- Tiene puesto su francotirador-->
+            <Parameter Name="Contents" Value="442" Type="int"/> <!-- Tiene puesto su francotirador-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     <ParameterSet Name="Slot1">
