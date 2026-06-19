@@ -95,23 +95,18 @@ namespace Game
 
 			if (IsFruitBlock(contents))
 			{
-				if (neighborY == y + 1)
+				// Solo verificar cuando el bloque DIRECTAMENTE arriba cambió (no diagonales)
+				if (neighborX == x && neighborZ == z && neighborY == y + 1)
 				{
 					int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
 					int aboveContents = Terrain.ExtractContents(aboveValue);
-					if (aboveContents == 0 || aboveContents == 20 || !IsLeavesBlock(aboveContents))
+
+					// Solo destruir si arriba NO hay hojas frutales
+					// NOTA: No destruir si es aire (0) porque podría ser durante el crecimiento
+					if (aboveContents != 0 && aboveContents != 20 && !IsLeavesBlock(aboveContents))
 					{
 						base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 					}
-				}
-			}
-			else if (IsLeavesBlock(contents))
-			{
-				int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
-				int belowContents = Terrain.ExtractContents(belowValue);
-				if (IsFruitBlock(belowContents))
-				{
-					base.SubsystemTerrain.DestroyCell(0, x, y - 1, z, 0, false, false, null);
 				}
 			}
 			else if (IsBlueberryBushBlock(contents))
@@ -134,6 +129,7 @@ namespace Game
 					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 				}
 			}
+			// ELIMINADO: El bloque de hojas que destruía frutos incorrectamente
 		}
 
 		public override void OnPoll(int value, int x, int y, int z, int pollPass)
