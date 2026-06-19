@@ -272,7 +272,7 @@ namespace Game
 				case ShittyTreeType.Cherry:
 					return RangeProb(temperature, 3, 5, 11, 13) * RangeProb(humidity, 3, 6, 11, 13) * RangeProb(y, 0, 0, 85, 92);
 				case ShittyTreeType.Banana:
-					return RangeProb(temperature, 7, 9, 15, 15) * RangeProb(humidity, 10, 12, 15, 15) * RangeProb(y, 0, 0, 70, 80);
+					return RangeProb(temperature, 8, 10, 15, 15) * RangeProb(humidity, 9, 11, 15, 15) * RangeProb(y, 0, 0, 95, 110);
 				default: return 0f;
 			}
 		}
@@ -290,7 +290,7 @@ namespace Game
 				case ShittyTreeType.Cherry:
 					return RangeProb(temperature, 3, 5, 11, 13) * RangeProb(humidity, 3, 6, 11, 13);
 				case ShittyTreeType.Banana:
-					return RangeProb(temperature, 7, 9, 15, 15) * RangeProb(humidity, 10, 12, 15, 15);
+					return RangeProb(temperature, 8, 10, 15, 15) * (RangeProb(humidity, 9, 11, 15, 15) * 1.5f);
 				default: return 0f;
 			}
 		}
