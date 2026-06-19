@@ -389,10 +389,10 @@ namespace Game
 					if (prob < 0.7f) return 0.7f;
 					return 0.9f;
 				case ShittyTreeType.Cherry:
-					if (prob < 0.2f) return 0.05f;
-					if (prob < 0.4f) return 0.15f;
-					if (prob < 0.7f) return 0.35f;
-					return 0.5f;
+					if (prob < 0.2f) return 0.1f;
+					if (prob < 0.4f) return 0.3f;
+					if (prob < 0.7f) return 0.6f;
+					return 0.8f;
 				case ShittyTreeType.Banana:
 					if (prob < 0.2f) return 0.2f;
 					if (prob < 0.4f) return 0.5f;
@@ -427,7 +427,7 @@ namespace Game
 				case ShittyTreeType.Apple: baseMultiplier = 1.0f; break;
 				case ShittyTreeType.Pear: baseMultiplier = 0.9f; break;
 				case ShittyTreeType.Orange: baseMultiplier = 1.2f; break;
-				case ShittyTreeType.Cherry: baseMultiplier = 0.6f; break;
+				case ShittyTreeType.Cherry: baseMultiplier = 1.0f; break;
 				case ShittyTreeType.Banana: baseMultiplier = 1.3f; break;
 			}
 			float adjustedDensity = fruitDensity * baseMultiplier;
@@ -501,7 +501,7 @@ namespace Game
 				case ShittyTreeType.Apple: baseMultiplier = 1.0f; break;
 				case ShittyTreeType.Pear: baseMultiplier = 0.9f; break;
 				case ShittyTreeType.Orange: baseMultiplier = 1.2f; break;
-				case ShittyTreeType.Cherry: baseMultiplier = 0.6f; break;
+				case ShittyTreeType.Cherry: baseMultiplier = 1.0f; break;
 				case ShittyTreeType.Banana: baseMultiplier = 1.3f; break;
 			}
 			float adjustedDensity = fruitDensity * baseMultiplier;
