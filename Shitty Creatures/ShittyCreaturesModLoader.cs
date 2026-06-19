@@ -179,6 +179,7 @@ namespace Game
 			
 			// Bloquear montura zombi para jugadores
 			ModsManager.RegisterHook("ScoreMount", this);
+			ModsManager.RegisterHook("OnEatPickable", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -2728,6 +2729,34 @@ namespace Game
 
 			// Finalmente, ejecutar el golpe
 			player.ComponentMiner.Hit(hitBody, hitPoint, hitDirection);
+		}
+
+		public override void OnEatPickable(ComponentEatPickableBehavior behavior, Pickable pickable, out bool result)
+		{
+			result = false;
+
+			ComponentCreature creature = behavior.m_componentCreature;
+			if (creature == null) return;
+
+			// Verificar que sea Aimep3
+			string templateName = creature.Entity.ValuesDictionary?.DatabaseObject?.Name;
+			if (templateName != "Aimep3") return;
+
+			// Verificar que sea pan
+			int contents = Terrain.ExtractContents(pickable.Value);
+			if (contents != BreadBlock.Index) return;
+
+			// Obtener el componente de evolución
+			ComponentAimep3Evolution evolution = creature.Entity.FindComponent<ComponentAimep3Evolution>();
+			if (evolution == null) return;
+
+			// Intentar evolucionar
+			bool evolved = evolution.TryEvolve();
+
+			if (evolved)
+			{
+				result = true; // Marcar que ya se procesó
+			}
 		}
 
 		// ---------------------------------------------------------------------------------
