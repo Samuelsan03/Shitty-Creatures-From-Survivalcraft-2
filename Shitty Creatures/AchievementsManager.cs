@@ -78,6 +78,30 @@ namespace Game
 
 		public static void Initialize(Project project)
 		{
+			// ========== LIMPIEZA DE ESTADO RESIDUAL ==========
+			// Al cargar un nuevo proyecto, asegurar que no quede estado de celebración
+			// de un mundo anterior (evita que suene música o bailen criaturas en mundo nuevo)
+			bool wasCelebrationActive = IsCelebrationActive;
+			bool wasGeneratingFireworks = s_isGeneratingFireworks;
+			s_isGeneratingFireworks = false;
+			IsCelebrationActive = false;
+
+			if (wasCelebrationActive || wasGeneratingFireworks)
+			{
+				try
+				{
+					InGameMusicManager.StopMusic();
+				}
+				catch (Exception ex)
+				{
+					Log.Warning($"[AchievementsManager] Error stopping residual music: {ex.Message}");
+				}
+				// Notificar fin de celebración para que cualquier suscriptor limpie su estado
+				OnCelebrationEnded?.Invoke();
+			}
+			s_celebrationEndTime = 0;
+			// ========== FIN LIMPIEZA ==========
+
 			s_currentProject = project;
 			s_subsystemAchievements = project.FindSubsystem<SubsystemAchievements>(true);
 			s_subsystemTime = project.FindSubsystem<SubsystemTime>(true);
@@ -99,6 +123,7 @@ namespace Game
 			}
 
 			// --- RESTAURAR CELEBRACIÓN SI ESTABA ACTIVA Y AÚN NO HA TERMINADO ---
+			// Solo restaurar si el MUNDO ACTUAL tiene la bandera activa (no estado residual estático)
 			if (s_subsystemAchievements != null && s_subsystemAchievements.IsAllAchievementsCelebrationTriggered())
 			{
 				double endTime = s_subsystemAchievements.GetCelebrationEndTime();
@@ -727,6 +752,20 @@ namespace Game
 
 			Action loop = null;
 			loop = () => {
+				// ========== VERIFICACIÓN DE SEGURIDAD ==========
+				// Si la celebración fue cancelada (ej: al crear un mundo nuevo), detener inmediatamente
+				// Esto protege contra acciones ya encoladas en el dispatcher que intentarían continuar
+				if (!s_isGeneratingFireworks || !IsCelebrationActive)
+				{
+					try
+					{
+						InGameMusicManager.StopMusic();
+					}
+					catch { }
+					return;
+				}
+				// ========== FIN VERIFICACIÓN ==========
+
 				if (s_currentProject == null || Time.RealTime >= endTime)
 					return;
 
@@ -794,8 +833,16 @@ namespace Game
 			Action generateFireworks = null;
 			generateFireworks = () =>
 			{
+				// ========== VERIFICACIÓN DE SEGURIDAD ==========
+				// Si la celebración fue cancelada (ej: al crear un mundo nuevo), detener inmediatamente
+				// Esto protege contra acciones ya encoladas en el dispatcher que intentarían continuar
+				if (!s_isGeneratingFireworks || !IsCelebrationActive)
+				{
+					return;
+				}
+				// ========== FIN VERIFICACIÓN ==========
+
 				if (s_currentProject == null) return;
-				if (!s_isGeneratingFireworks) return;
 
 				double currentTime = Time.RealTime;
 				// Calcular dt real (cap a 100ms para evitar spikes)
