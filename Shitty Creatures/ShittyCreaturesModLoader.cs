@@ -190,6 +190,35 @@ namespace Game
 
 		public override void OnProjectLoaded(Project project)
 		{
+			// ========== LIMPIAR ESTADO DE CELEBRACIÓN DE MUNDOS ANTERIORES ==========
+			// Esto debe hacerse ANTES de suscribirse a eventos y ANTES de inicializar el manager
+			// para evitar que las criaturas sigan bailando o la música siga sonando en un mundo nuevo
+			if (m_celebrationActive)
+			{
+				// Intentar restaurar estado original de las criaturas del mundo anterior
+				foreach (var kvp in m_originalSuppressedState)
+				{
+					if (kvp.Key != null)
+					{
+						try
+						{
+							var chaseBehavior = kvp.Key.Entity?.FindComponent<ComponentChaseBehavior>();
+							if (chaseBehavior != null)
+							{
+								chaseBehavior.Suppressed = kvp.Value;
+							}
+						}
+						catch (Exception ex)
+						{
+							Log.Warning($"[ShittyCreatures] Error restaurando estado de criatura: {ex.Message}");
+						}
+					}
+				}
+				m_originalSuppressedState.Clear();
+				m_celebrationActive = false;
+			}
+			// ========== FIN LIMPIEZA ==========
+
 			if (!m_greenNightHooksRegistered)
 			{
 				m_greenNightHooksRegistered = true;
