@@ -727,10 +727,10 @@ namespace Game
 
 			Action loop = null;
 			loop = () => {
-				if (player?.Project == null || Time.RealTime >= endTime)
+				if (s_currentProject == null || Time.RealTime >= endTime)
 					return;
 
-				bool isActive = IsGameActive(player);
+				bool isActive = IsGameActiveForCelebration();
 
 				if (wasActive && !isActive)
 				{
@@ -780,21 +780,21 @@ namespace Game
 
 		private static void StartContinuousFireworks(ComponentPlayer player, double durationSeconds)
 		{
-			if (player == null || player.Project == null) return;
+			if (player == null || s_currentProject == null) return;
 
 			double startTime = Time.RealTime;
 			double endTime = startTime + durationSeconds;
 			s_celebrationEndTime = endTime;
 			double lastTime = Time.RealTime;
 
-			// Cachear subsistemas para evitar buscarlos cada frame
-			var subsystemTerrain = player.Project.FindSubsystem<SubsystemTerrain>(true);
-			var subsystemProjectiles = player.Project.FindSubsystem<SubsystemProjectiles>(true);
+			// Cachear subsistemas usando s_currentProject (persiste incluso si el jugador muere)
+			var subsystemTerrain = s_currentProject.FindSubsystem<SubsystemTerrain>(true);
+			var subsystemProjectiles = s_currentProject.FindSubsystem<SubsystemProjectiles>(true);
 
 			Action generateFireworks = null;
 			generateFireworks = () =>
 			{
-				if (player?.Project == null) return;
+				if (s_currentProject == null) return;
 				if (!s_isGeneratingFireworks) return;
 
 				double currentTime = Time.RealTime;
@@ -849,9 +849,9 @@ namespace Game
 					intensity = MathUtils.Lerp(1f, 7f, 0.5f * MathF.Sin(0.25f * timeLeft) + 0.5f);
 				}
 
-				if (s_fireworkRandom.Float(0f, 1f) < intensity * dt && IsGameActive(player))
+				if (s_fireworkRandom.Float(0f, 1f) < intensity * dt && IsGameActiveForCelebration())
 				{
-					SpawnRandomFireworkWithRaycast(player, subsystemTerrain, subsystemProjectiles);
+					SpawnRandomFireworkWithRaycast(subsystemTerrain, subsystemProjectiles);
 				}
 
 				GameManager.SyncDispatcher.Add(() => { generateFireworks(); return true; });
@@ -860,12 +860,37 @@ namespace Game
 			generateFireworks();
 		}
 
-		private static void SpawnRandomFireworkWithRaycast(ComponentPlayer player, SubsystemTerrain subsystemTerrain, SubsystemProjectiles subsystemProjectiles)
+		private static void SpawnRandomFireworkWithRaycast(SubsystemTerrain subsystemTerrain, SubsystemProjectiles subsystemProjectiles)
 		{
-			if (player == null || player.Project == null) return;
+			if (s_currentProject == null) return;
 			if (subsystemTerrain == null || subsystemProjectiles == null) return;
 
-			Vector3 playerPos = player.ComponentBody.Position;
+			// Obtener posición de cualquier jugador (vivo o muerto, el cuerpo sigue ahí por CorpseDuration)
+			Vector3 playerPos = Vector3.Zero;
+			var playersSubsystem = s_currentProject.FindSubsystem<SubsystemPlayers>(true);
+			if (playersSubsystem != null)
+			{
+				// Primero intentar con un jugador vivo
+				foreach (var p in playersSubsystem.ComponentPlayers)
+				{
+					if (p != null && p.ComponentBody != null && p.ComponentHealth.Health > 0f)
+					{
+						playerPos = p.ComponentBody.Position;
+						break;
+					}
+				}
+				// Si no hay jugadores vivos, usar el primer jugador (su cuerpo sigue existiendo durante CorpseDuration)
+				if (playerPos == Vector3.Zero && playersSubsystem.ComponentPlayers.Count > 0)
+				{
+					var firstPlayer = playersSubsystem.ComponentPlayers[0];
+					if (firstPlayer?.ComponentBody != null)
+					{
+						playerPos = firstPlayer.ComponentBody.Position;
+					}
+				}
+			}
+
+			if (playerPos == Vector3.Zero) return;
 
 			// === IGUAL QUE EL ORIGINAL: vector2 aleatorio entre 35-50 de distancia ===
 			Vector2 offset = s_fireworkRandom.Vector2(35f, 50f);
@@ -1030,6 +1055,19 @@ namespace Game
 			// Programar la verificación después de 8 segundos
 			var time = player.Project.FindSubsystem<SubsystemTime>(true);
 			time.QueueGameTimeDelayedExecution(time.GameTime + 8.0, () => CheckAndTriggerAllAchievements(player));
+		}
+
+		private static bool IsGameActiveForCelebration()
+		{
+			if (s_currentProject == null) return false;
+
+			var currentScreen = ScreensManager.CurrentScreen;
+			if (currentScreen == null) return false;
+
+			string screenName = currentScreen.GetType().Name;
+
+			// Los fuegos artificiales y música suenan en GameScreen (incluida la pantalla de muerte)
+			return screenName == "GameScreen";
 		}
 	}
 }
