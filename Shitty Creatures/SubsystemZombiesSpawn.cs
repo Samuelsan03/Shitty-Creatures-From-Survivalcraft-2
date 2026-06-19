@@ -1926,26 +1926,27 @@ namespace Game
 		// ===== SPAWN NORMAL DE INFECTED SPIDER (SUPERFICIE) =====
 		private void SpawnNormalSpidersInChunk(SpawnChunk chunk, int maxAttempts)
 		{
-			int currentCount = CountSpiders(false);
+			int currentCount = CountSpiders(false, false); // false=not constant, false=surface
 			if (currentCount >= SpiderNormalTotalLimit)
 				return;
 
 			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(16);
 			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(16);
-			int areaCount = CountSpidersInArea(c1, c2, false);
+			int areaCount = CountSpidersInArea(c1, c2, false, false);
 
 			for (int i = 0; i < maxAttempts; i++)
 			{
 				if (currentCount >= SpiderNormalTotalLimit || areaCount >= SpiderNormalAreaLimit)
 					break;
 
+				// Usar método de superficie (original)
 				Point3? spawnPoint = GetRandomChunkSpawnPoint(chunk);
 				if (!spawnPoint.HasValue)
 					continue;
 
 				Point3 point = spawnPoint.Value;
 
-				float suitability = CalculateNormalSpiderSuitability(point);
+				float suitability = CalculateSurfaceSpiderSuitability(point);
 				if (suitability <= 0f)
 					continue;
 
@@ -2003,26 +2004,27 @@ namespace Game
 				? SpiderConstantTotalLimitChallenging
 				: SpiderConstantTotalLimitNormal;
 
-			int currentCount = CountSpiders(true);
+			int currentCount = CountSpiders(true, false); // true=constant, false=surface
 			if (currentCount >= totalLimit)
 				return;
 
 			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(SpiderConstantAreaRadius);
 			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(SpiderConstantAreaRadius);
-			int areaCount = CountSpidersInArea(c1, c2, true);
+			int areaCount = CountSpidersInArea(c1, c2, true, false);
 
 			for (int i = 0; i < maxAttempts; i++)
 			{
 				if (currentCount >= totalLimit || areaCount >= SpiderConstantAreaLimit)
 					break;
 
+				// Usar método de superficie (original)
 				Point3? spawnPoint = GetRandomChunkSpawnPoint(chunk);
 				if (!spawnPoint.HasValue)
 					continue;
 
 				Point3 point = spawnPoint.Value;
 
-				float suitability = CalculateConstantSpiderSuitability(point);
+				float suitability = CalculateSurfaceSpiderSuitability(point);
 				if (suitability <= 0f)
 					continue;
 
@@ -2030,6 +2032,56 @@ namespace Game
 				currentCount += spawned;
 				areaCount += spawned;
 			}
+		}
+
+		private float CalculateSurfaceSpiderSuitability(Point3 point)
+		{
+			int x = point.X;
+			int y = point.Y;
+			int z = point.Z;
+
+			if (m_subsystemSky.SkyLightIntensity >= NightLightThreshold)
+				return 0f;
+
+			TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunk == null || chunk.State <= TerrainChunkState.InvalidPropagatedLight)
+				return 0f;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			// No agua/magma
+			if (block is WaterBlock || block is MagmaBlock)
+				return 0f;
+			if (block2 is WaterBlock || block2 is MagmaBlock)
+				return 0f;
+			if (block3 is WaterBlock || block3 is MagmaBlock)
+				return 0f;
+
+			// Solo bloques de superficie permitidos
+			int belowContents = Terrain.ExtractContents(cellValueFast);
+			if (!m_allowedBlockIndices.Contains(belowContents))
+				return 0f;
+
+			// Sólido abajo, vacío actual y arriba
+			if (!block.IsCollidable_(cellValueFast) ||
+				block2.IsCollidable_(cellValueFast2) ||
+				block3.IsCollidable_(cellValueFast3))
+			{
+				return 0f;
+			}
+
+			// Verificar que esté en o cerca de la superficie (no bajo tierra)
+			int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+			if (y > topHeight + 2 || y < topHeight - 2)
+				return 0f;
+
+			return SpiderNormalSuitability;
 		}
 
 		private float CalculateConstantSpiderSuitability(Point3 point)
@@ -2098,7 +2150,20 @@ namespace Game
 					spawnPoint.Z += m_random.Int(-8, 8);
 				}
 
-				Point3? processedPoint = ProcessSpiderSpawnPoint(spawnPoint);
+				// Determinar si es cueva o superficie según la posición
+				int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(spawnPoint.X, spawnPoint.Z);
+				bool isCave = spawnPoint.Y < topHeight;
+
+				Point3? processedPoint;
+				if (isCave)
+				{
+					processedPoint = ProcessCaveSpiderSpawnPoint(spawnPoint, topHeight);
+				}
+				else
+				{
+					processedPoint = ProcessSpiderSpawnPoint(spawnPoint);
+				}
+
 				if (processedPoint.HasValue)
 				{
 					Vector3 position = new Vector3(
@@ -2122,6 +2187,69 @@ namespace Game
 				attempts++;
 			}
 			return spawned;
+		}
+
+		private int CountSpiders(bool constantSpawn, bool isCave)
+		{
+			int count = 0;
+			foreach (ComponentBody body in m_subsystemBodies.Bodies)
+			{
+				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+				if (creature != null && creature.ConstantSpawn == constantSpawn)
+				{
+					if (body.Entity.ValuesDictionary.DatabaseObject?.Name == InfectedSpiderTemplateName)
+					{
+						// Verificar si está en cueva o superficie según posición
+						Vector3 pos = body.Position;
+						int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(
+							Terrain.ToCell(pos.X),
+							Terrain.ToCell(pos.Z));
+						bool creatureInCave = pos.Y < topHeight;
+
+						if (creatureInCave == isCave)
+						{
+							count++;
+						}
+					}
+				}
+			}
+			return count;
+		}
+
+		private int CountSpidersInArea(Vector2 c1, Vector2 c2, bool constantSpawn, bool isCave)
+		{
+			int count = 0;
+			m_tempBodiesArray.Clear();
+			m_subsystemBodies.FindBodiesInArea(c1, c2, m_tempBodiesArray);
+
+			for (int i = 0; i < m_tempBodiesArray.Count; i++)
+			{
+				ComponentBody body = m_tempBodiesArray.Array[i];
+				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+
+				if (creature != null && creature.ConstantSpawn == constantSpawn)
+				{
+					if (body.Entity.ValuesDictionary.DatabaseObject?.Name == InfectedSpiderTemplateName)
+					{
+						Vector3 position = body.Position;
+						if (position.X >= c1.X && position.X <= c2.X &&
+							position.Z >= c1.Y && position.Z <= c2.Y)
+						{
+							// Verificar cueva vs superficie
+							int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(
+								Terrain.ToCell(position.X),
+								Terrain.ToCell(position.Z));
+							bool creatureInCave = position.Y < topHeight;
+
+							if (creatureInCave == isCave)
+							{
+								count++;
+							}
+						}
+					}
+				}
+			}
+			return count;
 		}
 
 		private int CountSpiders(bool constantSpawn)
@@ -2171,26 +2299,28 @@ namespace Game
 		// ===== SPAWN DE INFECTED SPIDER EN CUEVAS =====
 		private void SpawnCaveSpidersInChunk(SpawnChunk chunk, int maxAttempts)
 		{
-			int currentCount = CountSpiders(false);
+			int currentCount = CountSpiders(false, true); // false=not constant, true=cave
 			if (currentCount >= SpiderCaveTotalLimit)
 				return;
 
 			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(16);
 			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(16);
-			int areaCount = CountSpidersInArea(c1, c2, false);
+			int areaCount = CountSpidersInArea(c1, c2, false, true);
 
 			for (int i = 0; i < maxAttempts; i++)
 			{
 				if (currentCount >= SpiderCaveTotalLimit || areaCount >= SpiderCaveAreaLimit)
 					break;
 
-				Point3? spawnPoint = GetRandomCaveSpawnPoint(chunk);
+				// USAR el método específico para cuevas
+				Point3? spawnPoint = GetRandomCaveChunkSpawnPoint(chunk);
 				if (!spawnPoint.HasValue)
 					continue;
 
 				Point3 point = spawnPoint.Value;
-				int belowContents = Terrain.ExtractContents(m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-				if (belowContents != 3 && belowContents != 67 && belowContents != 4 && belowContents != 66 && belowContents != 2 && belowContents != 7)
+
+				float suitability = CalculateCaveSpiderSuitability(point);
+				if (suitability <= 0f)
 					continue;
 
 				int spawned = SpawnSpidersAtPoint(point, false, 1);
@@ -2201,40 +2331,84 @@ namespace Game
 
 		private void SpawnConstantCaveSpidersInChunk(SpawnChunk chunk, int maxAttempts)
 		{
-			int currentCount = CountSpiders(true);
+			int currentCount = CountSpiders(true, true); // true=constant, true=cave
 			if (currentCount >= SpiderCaveConstantTotalLimit)
 				return;
 
-			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(16);
-			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(16);
-			int areaCount = CountSpidersInArea(c1, c2, true);
+			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(SpiderConstantAreaRadius);
+			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(SpiderConstantAreaRadius);
+			int areaCount = CountSpidersInArea(c1, c2, true, true);
 
 			for (int i = 0; i < maxAttempts; i++)
 			{
 				if (currentCount >= SpiderCaveConstantTotalLimit || areaCount >= SpiderCaveConstantAreaLimit)
 					break;
 
-				Point3? spawnPoint = GetRandomCaveSpawnPoint(chunk);
+				// USAR el método específico para cuevas
+				Point3? spawnPoint = GetRandomCaveChunkSpawnPoint(chunk);
 				if (!spawnPoint.HasValue)
 					continue;
 
 				Point3 point = spawnPoint.Value;
-				int belowContents = Terrain.ExtractContents(m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-				if (belowContents != 3 && belowContents != 67 && belowContents != 4 && belowContents != 66 && belowContents != 2 && belowContents != 7)
-					continue;
 
-				int cellLightFast = m_subsystemTerrain.Terrain.GetCellLightFast(point.X, point.Y + 1, point.Z);
-				if (cellLightFast > 7)
-					continue;
-
-				float limitFactor = 1f - ((float)currentCount / SpiderCaveConstantTotalLimit * 0.7f);
-				if (m_random.Float(0f, 1f) > SpiderCaveConstantSuitability * limitFactor)
+				float suitability = CalculateCaveSpiderSuitability(point);
+				if (suitability <= 0f)
 					continue;
 
 				int spawned = SpawnSpidersAtPoint(point, true, 1);
 				currentCount += spawned;
 				areaCount += spawned;
 			}
+		}
+
+		private float CalculateCaveSpiderSuitability(Point3 point)
+		{
+			int x = point.X;
+			int y = point.Y;
+			int z = point.Z;
+
+			// Verificación doble de que esté bajo tierra
+			int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+			if (y >= topHeight)
+				return 0f;
+
+			TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunk == null || chunk.State <= TerrainChunkState.InvalidPropagatedLight)
+				return 0f;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			// No agua/magma
+			if (block is WaterBlock || block is MagmaBlock)
+				return 0f;
+			if (block2 is WaterBlock || block2 is MagmaBlock)
+				return 0f;
+			if (block3 is WaterBlock || block3 is MagmaBlock)
+				return 0f;
+
+			// Solo bloques de cueva
+			int belowContents = Terrain.ExtractContents(cellValueFast);
+			if (belowContents != 2 && belowContents != 3 && belowContents != 4 &&
+				belowContents != 66 && belowContents != 67 && belowContents != 7)
+			{
+				return 0f;
+			}
+
+			// Sólido abajo, vacío actual y arriba
+			if (!block.IsCollidable_(cellValueFast) ||
+				block2.IsCollidable_(cellValueFast2) ||
+				block3.IsCollidable_(cellValueFast3))
+			{
+				return 0f;
+			}
+
+			return SpiderCaveSuitability;
 		}
 
 		private Point3? GetRandomCaveSpawnPoint(SpawnChunk chunk)
@@ -2328,6 +2502,114 @@ namespace Game
 				return null;
 
 			return spawnPoint;
+		}
+
+		private Point3? GetRandomCaveChunkSpawnPoint(SpawnChunk chunk)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				int x = 16 * chunk.Point.X + m_random.Int(0, 15);
+				int z = 16 * chunk.Point.Y + m_random.Int(0, 15);
+
+				// Obtener la altura de la superficie para garantizar que spawnee DEBAJO
+				int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+
+				// Las arañas de cueva deben spawnear bajo tierra
+				// Rango: desde 5 bloques bajo superficie hasta máximo 50 bloques de profundidad
+				int minY = Math.Max(5, topHeight - 50);
+				int maxY = Math.Max(minY + 1, topHeight - 3);
+
+				// Si la superficie es muy baja, ajustar
+				if (maxY <= minY)
+				{
+					minY = 5;
+					maxY = Math.Min(Math.Max(6, topHeight - 2), 80);
+					if (maxY <= minY)
+						continue;
+				}
+
+				int y = m_random.Int(minY, maxY);
+
+				Point3? result = ProcessCaveSpiderSpawnPoint(new Point3(x, y, z), topHeight);
+				if (result.HasValue)
+				{
+					return result;
+				}
+			}
+			return null;
+		}
+
+		private Point3? ProcessCaveSpiderSpawnPoint(Point3 spawnPoint, int surfaceHeight)
+		{
+			int x = spawnPoint.X;
+			int num = Math.Clamp(spawnPoint.Y, 1, 254);
+			int z = spawnPoint.Z;
+
+			TerrainChunk chunkAtCell = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunkAtCell == null || chunkAtCell.State <= TerrainChunkState.InvalidPropagatedLight)
+				return null;
+
+			for (int i = 0; i < 30; i++)
+			{
+				// Buscar hacia arriba, pero NUNCA arriba de la superficie
+				Point3 pointUp = new Point3(x, Math.Min(num + i, surfaceHeight - 1), z);
+				if (pointUp.Y > num && TestCaveSpiderSpawnPoint(pointUp, surfaceHeight))
+				{
+					return pointUp;
+				}
+
+				// Buscar hacia abajo
+				Point3 pointDown = new Point3(x, num - i, z);
+				if (TestCaveSpiderSpawnPoint(pointDown, surfaceHeight))
+				{
+					return pointDown;
+				}
+			}
+			return null;
+		}
+
+		private bool TestCaveSpiderSpawnPoint(Point3 spawnPoint, int surfaceHeight)
+		{
+			int x = spawnPoint.X;
+			int y = spawnPoint.Y;
+			int z = spawnPoint.Z;
+
+			// VERIFICACIÓN CRÍTICA: Debe estar BAJO TIERRA
+			if (y >= surfaceHeight)
+				return false;
+
+			if (y <= 3 || y >= 253)
+				return false;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			// No spawnear en agua o magma
+			if (block is WaterBlock || block is MagmaBlock)
+				return false;
+			if (block2 is WaterBlock || block2 is MagmaBlock)
+				return false;
+			if (block3 is WaterBlock || block3 is MagmaBlock)
+				return false;
+
+			// Bloques válidos para piso de CUEVA (diferente a superficie)
+			// Stone=2, Dirt=3, Gravel=4, GravelBlock=66, Sandstone=67, Clay=7
+			int belowContents = Terrain.ExtractContents(cellValueFast);
+			if (belowContents != 2 && belowContents != 3 && belowContents != 4 &&
+				belowContents != 66 && belowContents != 67 && belowContents != 7)
+			{
+				return false;
+			}
+
+			// Sólido abajo, vacío actual y arriba
+			return block.IsCollidable_(cellValueFast)
+				&& !block2.IsCollidable_(cellValueFast2)
+				&& !block3.IsCollidable_(cellValueFast3);
 		}
 		// ===== FIN SPAWN CONSTANTE INFECTED SPIDER =====
 	}
