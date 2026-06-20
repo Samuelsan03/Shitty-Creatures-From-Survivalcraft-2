@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
 
@@ -13,7 +14,6 @@ namespace Game
 		{
 		}
 
-		// --- Métodos para manipular el estado "pequeño" ---
 		public static bool GetIsSmall(int data)
 		{
 			return (data & 1) != 0;
@@ -26,7 +26,33 @@ namespace Game
 			else
 				return data & ~1;
 		}
-		// ---------------------------------------------------
+
+		/// <summary>
+		/// Verifica si el bloque es válido como soporte para el arbusto
+		/// </summary>
+		public static bool IsValidSupportBlock(int belowValue, int plantValue)
+		{
+			int belowContents = Terrain.ExtractContents(belowValue);
+			if (belowContents == 0) return false; // Aire no es válido
+
+			Block belowBlock = BlocksManager.Blocks[belowContents];
+
+			// Bloques suitability para plantas O tierra rastrillada (168)
+			return belowBlock.IsSuitableForPlants(belowValue, plantValue) || belowContents == 168;
+		}
+
+		public override void GetDropValues(SubsystemTerrain subsystemTerrain, int oldValue, int newValue, int toolLevel, List<BlockDropValue> dropValues, out bool showDebris)
+		{
+			int data = Terrain.ExtractData(oldValue);
+
+			if (GetIsSmall(data))
+			{
+				showDebris = (this.DestructionDebrisScale > 0f);
+				return;
+			}
+
+			base.GetDropValues(subsystemTerrain, oldValue, newValue, toolLevel, dropValues, out showDebris);
+		}
 
 		public override bool IsFaceNonAttachable(SubsystemTerrain subsystemTerrain, int face, int value, int attachBlockValue)
 		{
@@ -35,6 +61,9 @@ namespace Game
 				int contents = Terrain.ExtractContents(attachBlockValue);
 				Block block = BlocksManager.Blocks[contents];
 				if (block.IsSuitableForPlants(value, Terrain.MakeBlockValue(contents, 0, Terrain.ExtractData(attachBlockValue))))
+					return false;
+				// También permitir si es tierra rastrillada
+				if (contents == 168)
 					return false;
 			}
 			return true;
@@ -47,19 +76,16 @@ namespace Game
 			Point3 targetCell = placementData.CellFace.Point + CellFace.FaceToPoint3(placementData.CellFace.Face);
 			int belowY = targetCell.Y - 1;
 			int belowValue = subsystemTerrain.Terrain.GetCellValue(targetCell.X, belowY, targetCell.Z);
-			Block belowBlock = BlocksManager.Blocks[Terrain.ExtractContents(belowValue)];
 
-			if (!belowBlock.IsSuitableForPlants(belowValue, value))
+			// Usar el método estático para verificación consistente
+			if (!IsValidSupportBlock(belowValue, value))
 			{
 				placementData.Value = 0;
 			}
-			// Se eliminó el "else" que forzaba el estado pequeño. 
-			// Ahora respeta el valor original (0 = Grande normal).
 
 			return placementData;
 		}
 
-		// --- SOLUCIÓN AL CRECIMIENTO VISUAL EN EL MUNDO ---
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
 		{
 			if (this.m_texture != null)
@@ -69,12 +95,10 @@ namespace Game
 
 				if (GetIsSmall(data))
 				{
-					// Generar malla pequeña (cuando nace de la semilla)
 					GenerateSmallCrossVertices(generator, value, x, y, z, customGeometry.SubsetAlphaTest);
 				}
 				else
 				{
-					// Generar malla normal (cuando se coloca desde inventario)
 					base.GenerateTerrainVertices(generator, geometry, value, x, y, z);
 				}
 			}
@@ -94,7 +118,6 @@ namespace Game
 			float u1 = u0 + 1.0f / textureSlotCount;
 			float v1 = v0 + 1.0f / textureSlotCount;
 
-			// Tamaño y altura reducidos para la plántula
 			float halfSize = 0.25f;
 			float height = 0.6f;
 
@@ -143,7 +166,6 @@ namespace Game
 			AddQuad(quadX);
 			AddQuad(quadZ);
 		}
-		// ---------------------------------------------------
 
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
