@@ -22,8 +22,11 @@ namespace Game
 
 		public override void OnNeighborBlockChanged(int x, int y, int z, int neighborX, int neighborY, int neighborZ)
 		{
-			int cellValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
-			if (BlocksManager.Blocks[Terrain.ExtractContents(cellValue)].IsNonAttachable(cellValue))
+			int belowValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
+			int cellValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y, z);
+
+			// Usar el método estático para verificación consistente
+			if (!BlueberryBushBlock.IsValidSupportBlock(belowValue, cellValue))
 			{
 				base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 			}
@@ -31,7 +34,7 @@ namespace Game
 
 		public override void OnPoll(int value, int x, int y, int z, int pollPass)
 		{
-			// PRIMERO: Verificar soporte (respaldo por si OnNeighborBlockChanged no funciona)
+			// PRIMERO: Verificar soporte
 			if (DestroyIfNoSupport(x, y, z))
 				return;
 
@@ -52,13 +55,8 @@ namespace Game
 			}
 		}
 
-		/// <summary>
-		/// Destruye el arbusto si no tiene soporte válido debajo.
-		/// Retorna true si se destruyó, false si sigue vivo.
-		/// </summary>
 		private bool DestroyIfNoSupport(int x, int y, int z)
 		{
-			// Si está en Y=0 o menor, no puede tener soporte
 			if (y <= 0)
 			{
 				m_subsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
@@ -68,16 +66,13 @@ namespace Game
 			int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 			int contents = Terrain.ExtractContents(cellValue);
 
-			// Verificar que sigue siendo un arbusto (podría haber cambiado)
 			if (contents != BlueberryBushBlock.Index)
 				return false;
 
 			int belowValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
-			int belowContents = Terrain.ExtractContents(belowValue);
-			Block belowBlock = BlocksManager.Blocks[belowContents];
 
-			// Si el bloque de abajo es aire (0) o no es suitable para plantas, destruir
-			if (belowContents == 0 || !belowBlock.IsSuitableForPlants(belowValue, cellValue))
+			// Usar el método estático para verificación consistente
+			if (!BlueberryBushBlock.IsValidSupportBlock(belowValue, cellValue))
 			{
 				m_subsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 				return true;
