@@ -176,7 +176,7 @@ namespace Game
 			ModsManager.RegisterHook("SetHitInterval", this);
 			ModsManager.RegisterHook("OnChaseBehaviorAttacked", this);  // Prioridad alta para cancelar
 			ModsManager.RegisterHook("OnMinerHit", this);  // Para criaturas que usan ComponentMiner directamente
-			
+
 			// Bloquear montura zombi para jugadores
 			ModsManager.RegisterHook("ScoreMount", this);
 			ModsManager.RegisterHook("OnEatPickable", this);
@@ -864,7 +864,7 @@ namespace Game
 						AchievementsManager.UpdateDayAchievements();
 						// ===== ACTUALIZACIÓN PERIÓDICA DE ESTADÍSTICAS POR DIFICULTAD =====
 						if (m_subsystemGreenNightSky != null)
-						{	
+						{
 							{
 								var project = m_subsystemGreenNightSky.Project;
 								if (project != null)
@@ -899,7 +899,7 @@ namespace Game
 											{
 												m_lastMountAttemptMessageTime[player] = now;
 												string message = LanguageControl.Get("MountLock", 0);
-												player.ComponentGui?.DisplaySmallMessage(message, new Color (255,110,110), false, true);
+												player.ComponentGui?.DisplaySmallMessage(message, new Color(255, 110, 110), false, true);
 											}
 										}
 									}
