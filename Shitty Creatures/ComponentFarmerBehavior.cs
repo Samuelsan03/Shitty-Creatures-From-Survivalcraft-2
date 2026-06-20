@@ -12,8 +12,8 @@ namespace Game
 	public class ComponentFarmerBehavior : ComponentBehavior, IUpdateable
 	{
 		// Prioridades de tarea
-		private const int PRIORITY_HARVEST_MATURE = 0;      // Planta madura (cosechar inmediatamente)
-		private const int PRIORITY_HARVEST_TRAMPLED = 1;     // Planta sobre tierra pisoteada (cosechar de todas formas)
+		private const int PRIORITY_HARVEST_MATURE = 0;
+		private const int PRIORITY_RAKE_TRAMPLED = 1;     // Rastrillar tierra pisoteada con planta encima
 		private const int PRIORITY_PLANT = 2;
 		private const int PRIORITY_RAKE = 3;
 
@@ -55,10 +55,8 @@ namespace Game
 		private int m_pumpkinBlockIndex;
 		private int m_saltpeterBlockIndex;
 
-		// CORRECCIÓN: Índices de las nuevas semillas
 		private int m_blueberrySeedIndex;
 		private int m_watermelonSeedIndex;
-		// Opcional: Si también quieres que coseche los arbustos/sandías cuando maduren, agrega sus plantas aquí:
 		private int m_blueberryBushIndex;
 		private int m_watermelonBlockIndex;
 
@@ -92,10 +90,10 @@ namespace Game
 			m_pumpkinBlockIndex = BlocksManager.GetBlockIndex("PumpkinBlock", false);
 			m_saltpeterBlockIndex = BlocksManager.GetBlockIndex("SaltpeterChunkBlock", false);
 
-			// CORRECCIÓN: Cargar índices de las nuevas semillas (y sus plantas por si acaso)
 			m_blueberrySeedIndex = BlocksManager.GetBlockIndex("BlueberrySeedBlock", false);
 			m_watermelonSeedIndex = BlocksManager.GetBlockIndex("WatermelonSeedBlock", false);
 			m_blueberryBushIndex = BlocksManager.GetBlockIndex("BlueberryBushBlock", false);
+
 			m_watermelonBlockIndex = BlocksManager.GetBlockIndex("WatermelonBlock", false);
 
 			m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
@@ -189,9 +187,13 @@ namespace Game
 						int value = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 						int contents = Terrain.ExtractContents(value);
 
-						if (IsHarvestable(contents, value) || IsPlantOnTrampledGround(x, y, z, contents))
+						if (IsHarvestable(contents, value))
 						{
 							m_stateMachine.TransitionTo("Harvest");
+						}
+						else if (IsGrassOrDirt(contents) && HasPlantAbove(x, y, z))
+						{
+							m_stateMachine.TransitionTo("RakeTrampled");
 						}
 						else if (IsGrassOrDirt(contents))
 						{
@@ -221,6 +223,40 @@ namespace Game
 						}
 					}
 				},
+				leave: null
+			);
+
+			// CORRECCIÓN: Usar DestroyCell con noDrop = true para cambiar DirtBlock/GrassBlock a SoilBlock.
+			// Esto evita bugs con ChangeCell y garantiza que el cambio se aplique correctamente.
+			m_stateMachine.AddState("RakeTrampled",
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
+
+					if (m_targetCellFace == null)
+					{
+						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
+					int x = m_targetCellFace.Value.X;
+					int y = m_targetCellFace.Value.Y;
+					int z = m_targetCellFace.Value.Z;
+
+					int currentValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+					int currentContents = Terrain.ExtractContents(currentValue);
+
+					// Si es tierra pisoteada, destruirla (sin drops) y colocar SoilBlock
+					if (IsGrassOrDirt(currentContents) && m_soilBlockIndex >= 0)
+					{
+						int newValue = Terrain.MakeBlockValue(m_soilBlockIndex, 0, 0);
+						// noDrop = true para no botar tierra/siéntes
+						m_subsystemTerrain.DestroyCell(0, x, y, z, newValue, true, false, null);
+					}
+
+					m_stateMachine.TransitionTo("Inactive");
+				},
+				update: null,
 				leave: null
 			);
 
@@ -415,7 +451,7 @@ namespace Game
 						int currentValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 						int currentContents = Terrain.ExtractContents(currentValue);
 
-						if (IsHarvestable(currentContents, currentValue) || IsPlantOnTrampledGround(x, y, z, currentContents))
+						if (IsHarvestable(currentContents, currentValue))
 						{
 							m_stateMachine.TransitionTo("Harvest");
 							return;
@@ -452,25 +488,23 @@ namespace Game
 			);
 		}
 
+		/// <summary>
+		/// Verifica si hay cualquier bloque (planta) encima de la celda especificada.
+		/// </summary>
+		private bool HasPlantAbove(int x, int y, int z)
+		{
+			if (y + 1 > 255) return false;
+			int aboveContents = m_subsystemTerrain.Terrain.GetCellContents(x, y + 1, z);
+			return aboveContents != 0;
+		}
+
 		private bool IsCropPlant(int contents)
 		{
 			return contents == m_ryeBlockIndex ||
 				   contents == m_cottonBlockIndex ||
 				   contents == m_pumpkinBlockIndex ||
-				   contents == m_blueberryBushIndex || // CORRECCIÓN: Agregado
-				   contents == m_watermelonBlockIndex;  // CORRECCIÓN: Agregado
-		}
-
-		private bool IsPlantOnTrampledGround(int x, int y, int z, int contents)
-		{
-			if (!IsCropPlant(contents))
-				return false;
-
-			if (y <= 0)
-				return false;
-
-			int belowContents = m_subsystemTerrain.Terrain.GetCellContents(x, y - 1, z);
-			return IsGrassOrDirt(belowContents);
+				   contents == m_blueberryBushIndex ||
+				   contents == m_watermelonBlockIndex;
 		}
 
 		private void CollectPickables()
@@ -562,17 +596,18 @@ namespace Game
 							continue;
 						}
 
-						if (IsPlantOnTrampledGround(x, y, z, contents))
+						int above = m_subsystemTerrain.Terrain.GetCellContents(x, y + 1, z);
+
+						// Si es tierra y tiene planta arriba, priorizar rastrillo para recuperar
+						if (IsGrassOrDirt(contents) && above != 0 && hasRake)
 						{
-							if (IsBetterTask(PRIORITY_HARVEST_TRAMPLED, dist, bestPriority, bestCell, pos))
+							if (IsBetterTask(PRIORITY_RAKE_TRAMPLED, dist, bestPriority, bestCell, pos))
 							{
-								bestPriority = PRIORITY_HARVEST_TRAMPLED;
+								bestPriority = PRIORITY_RAKE_TRAMPLED;
 								bestCell = cell;
 							}
 							continue;
 						}
-
-						int above = m_subsystemTerrain.Terrain.GetCellContents(x, y + 1, z);
 
 						if (IsSoil(contents) && above == 0 && hasSeeds)
 						{
@@ -649,16 +684,23 @@ namespace Game
 				bool isDead = BasePumpkinBlock.GetIsDead(data);
 				return size >= 7 && !isDead;
 			}
-			// CORRECCIÓN: Agregar lógica de cosecha para tus plantas personalizadas aquí si deseas que las coseche cuando maduren
-			/*
-            if (contents == m_watermelonBlockIndex)
-            {
-                int data = Terrain.ExtractData(value);
-                int size = BaseWatermelonBlock.GetSize(data);
-                bool isDead = BaseWatermelonBlock.GetIsDead(data);
-                return size >= 7 && !isDead; // Ajusta el tamaño maduro según tu bloque
-            }
-            */
+			if (contents == m_watermelonBlockIndex)
+			{
+				int data = Terrain.ExtractData(value);
+				int size = BaseWatermelonBlock.GetSize(data);
+				bool isDead = BaseWatermelonBlock.GetIsDead(data);
+				return size >= 7 && !isDead;
+			}
+			// ============================================
+			// AGREGADO: Arbusto de arándanos adulto
+			// Es cosechable cuando NO es pequeño (es adulto)
+			// ============================================
+			if (contents == m_blueberryBushIndex)
+			{
+				int data = Terrain.ExtractData(value);
+				bool isSmall = BlueberryBushBlock.GetIsSmall(data);
+				return !isSmall;
+			}
 			return false;
 		}
 
@@ -703,7 +745,6 @@ namespace Game
 				int contents = Terrain.ExtractContents(value);
 				Block block = BlocksManager.Blocks[contents];
 
-				// CORRECCIÓN: Detectar semillas genéricas O las nuevas semillas personalizadas por índice directo
 				if (typeof(SeedsBlock).IsAssignableFrom(block.GetType()) ||
 					contents == m_blueberrySeedIndex ||
 					contents == m_watermelonSeedIndex)
