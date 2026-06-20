@@ -10,7 +10,6 @@ namespace Game
 
 		public override int GetFaceTextureSlot(int face, int value)
 		{
-			// Usar el slot de textura 75 que es la forma genérica de semillas
 			return 75;
 		}
 
@@ -21,17 +20,30 @@ namespace Game
 
 			if (raycastResult.CellFace.Face == 4)
 			{
-				// Usar BlocksManager con el NOMBRE del bloque para obtener el índice
-				Block blueberryBushBlock = BlocksManager.GetBlock("BlueberryBushBlock");
+				// Verificar el bloque donde se plantará (debajo)
+				int belowValue = subsystemTerrain.Terrain.GetCellValue(
+					raycastResult.CellFace.Point.X,
+					raycastResult.CellFace.Point.Y,
+					raycastResult.CellFace.Point.Z
+				);
+				int belowContents = Terrain.ExtractContents(belowValue);
+				Block belowBlock = BlocksManager.Blocks[belowContents];
 
-				if (blueberryBushBlock != null)
+				// Permitir: bloques suitability para plantas O tierra rastrillada (168)
+				bool canPlant = belowBlock.IsSuitableForPlants(belowValue, value) || belowContents == 168;
+
+				if (canPlant)
 				{
-					// Colocar el arbusto en estado pequeño
-					result.Value = Terrain.MakeBlockValue(
-						blueberryBushBlock.BlockIndex,
-						0,
-						BlueberryBushBlock.SetIsSmall(0, true)
-					);
+					Block blueberryBushBlock = BlocksManager.GetBlock("BlueberryBushBlock");
+
+					if (blueberryBushBlock != null)
+					{
+						result.Value = Terrain.MakeBlockValue(
+							blueberryBushBlock.BlockIndex,
+							0,
+							BlueberryBushBlock.SetIsSmall(0, true)
+						);
+					}
 				}
 			}
 
@@ -40,7 +52,6 @@ namespace Game
 
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
-			// Color para las semillas de arándano - tono azulado/morado
 			color *= new Color(100, 80, 130);
 			BlocksManager.DrawFlatOrImageExtrusionBlock(primitivesRenderer, value, size, ref matrix, null, color, false, environmentData);
 		}
