@@ -1361,7 +1361,8 @@ namespace Game
 				if (MountedZombiesEnabled &&
 					!BossTemplates.Contains(entry.TemplateName) &&
 					!MiniBossTemplates.Contains(entry.TemplateName) &&
-					m_random.Float(0f, 1f) < MountedSpawnProbability)
+					m_random.Float(0f, 1f) < MountedSpawnProbability &&
+					m_currentWaveEntries.Any(e => e.TemplateName == "InfectedBear"))
 				{
 					spawnedMounted = TrySpawnMountedCreature(entry.TemplateName, spawnPos);
 				}
