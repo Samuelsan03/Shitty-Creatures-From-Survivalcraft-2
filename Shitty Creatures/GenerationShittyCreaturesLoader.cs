@@ -36,7 +36,7 @@ namespace Game
 			}
 		}
 
-		// ==================== SPAWN DE CRIATURAS (código original) ====================
+		// ==================== SPAWN DE CRIATURAS ====================
 		public override void InitializeCreatureTypes(SubsystemCreatureSpawn subsystemCreatureSpawn, List<SubsystemCreatureSpawn.CreatureType> creatureTypes)
 		{
 			// Subsistemas necesarios
@@ -60,6 +60,28 @@ namespace Game
 			{
 				int count = spawnSys.m_random.Int(0, 1) == 0 ? 3 : 5;
 				return spawnSys.SpawnCreatures(ct, templateName, point, count).Count;
+			};
+
+			// Función auxiliar para verificar bloque de suelo válido (para bandits) - IGUAL QUE EL ORIGINAL
+			Func<Point3, bool> isValidGround = delegate (Point3 point)
+			{
+				int cellValue = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+				int blockAbove = Terrain.ExtractContents(cellValue);
+				int cellValueHead = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+				int blockHead = Terrain.ExtractContents(cellValueHead);
+				if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					return false;
+				int cellValueGround = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+				int groundBlock = Terrain.ExtractContents(cellValueGround);
+				return (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8);
+			};
+
+			// Función auxiliar para spawn de bandits (1 criatura)
+			Func<SubsystemCreatureSpawn.CreatureType, Point3, string, int> spawnBandit = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point, string templateName)
+			{
+				int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+				Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+				return subsystemCreatureSpawn.SpawnCreatures(ct, templateName, correctedPoint, 1).Count;
 			};
 
 			// ==========================================
@@ -199,7 +221,6 @@ namespace Game
 					double totalDays = timeOfDay.CalculateDay(gameInfo.TotalElapsedGameTime);
 					if (totalDays < 2.0) return 0f;
 
-					// ===== NUEVO: Verificar bloque bajo (como Sonic) =====
 					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
 					if (blockUnder != GrassBlock.Index &&
 						blockUnder != DirtBlock.Index &&
@@ -330,6 +351,337 @@ namespace Game
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
 					return subsystemCreatureSpawn.SpawnCreatures(ct, "InfiniteTheJackal", correctedPoint, 1).Count;
+				}
+			});
+
+			// ==========================================
+			// 11. BANDIT1 - 20% probabilidad - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit1", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (isValidGround(point))
+						return 0.1f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit1");
+				}
+			});
+
+			// ==========================================
+			// 12. BANDIT2 - 10% probabilidad - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit2", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (isValidGround(point))
+						return 0.1f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit2");
+				}
+			});
+
+			// ==========================================
+			// 13. BANDIT3 - 10% probabilidad - SOLO DE NOCHE
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit3", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity >= 0.3f) return 0f;
+					if (isValidGround(point))
+						return 0.1f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit3");
+				}
+			});
+
+			// ==========================================
+			// 14. BANDIT4 - 10% probabilidad - SOLO DE NOCHE
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit4", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity >= 0.3f) return 0f;
+					if (isValidGround(point))
+						return 0.5f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit4");
+				}
+			});
+
+			// ==========================================
+			// 15. BANDIT5 - 10% probabilidad - SOLO DE DÍA
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit5", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity <= 0.5f) return 0f;
+					if (isValidGround(point))
+						return 0.05f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit5");
+				}
+			});
+
+			// ==========================================
+			// 16. BANDIT6 - 10% probabilidad - SOLO DE DÍA
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit6", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity <= 0.5f) return 0f;
+					if (isValidGround(point))
+						return 0.05f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit6");
+				}
+			});
+
+			// ==========================================
+			// 17. BANDIT7 - 45% probabilidad - CUALQUIER HORA
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit7", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (isValidGround(point))
+						return 0.5f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit7");
+				}
+			});
+
+			// ==========================================
+			// 18. BANDIT8 - 5% probabilidad - SOLO DE DÍA, SOLO OTOÑO
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit8", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity <= 0.5f) return 0f;
+					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
+					if (currentSeason != Season.Autumn) return 0f;
+					if (isValidGround(point))
+						return 0.025f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit8");
+				}
+			});
+
+			// ==========================================
+			// 19. BANDIT9 - 5% probabilidad - SOLO DE DÍA, SOLO OTOÑO
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit9", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity <= 0.5f) return 0f;
+					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
+					if (currentSeason != Season.Autumn) return 0f;
+					if (isValidGround(point))
+						return 0.05f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit9");
+				}
+			});
+
+			// ==========================================
+			// 20. BANDIT10 - 10% probabilidad - SOLO DE NOCHE, SOLO INVIERNO
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit10", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity >= 0.3f) return 0f;
+					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
+					if (currentSeason != Season.Winter) return 0f;
+					if (isValidGround(point))
+						return 0.1f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit10");
+				}
+			});
+
+			// ==========================================
+			// 21. BANDIT11 - 45% probabilidad - CUALQUIER HORA
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit11", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (isValidGround(point))
+						return 0.15f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit11");
+				}
+			});
+
+			// ==========================================
+			// 22. BANDIT12 - 5% probabilidad - SOLO DE DÍA, SOLO PRIMAVERA
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit12", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity <= 0.5f) return 0f;
+					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
+					if (currentSeason != Season.Spring) return 0f;
+					if (isValidGround(point))
+						return 0.25f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit12");
+				}
+			});
+
+			// ==========================================
+			// 23. BANDIT13 - 5% probabilidad - SOLO VERANO
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit13", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
+					if (currentSeason != Season.Summer) return 0f;
+					if (isValidGround(point))
+						return 0.05f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit13");
+				}
+			});
+
+			// ==========================================
+			// 24. BANDIT14 - 5% probabilidad - SOLO DE NOCHE, OTOÑO/INVIERNO
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit14", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity >= 0.3f) return 0f;
+					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
+					if (currentSeason != Season.Autumn && currentSeason != Season.Winter) return 0f;
+					if (isValidGround(point))
+						return 0.25f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit14");
+				}
+			});
+
+			// ==========================================
+			// 25. BANDIT15 - 5% probabilidad - PRIMAVERA/VERANO
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit15", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
+					if (currentSeason != Season.Spring && currentSeason != Season.Summer) return 0f;
+					if (isValidGround(point))
+						return 0.25f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit15");
+				}
+			});
+
+			// ==========================================
+			// 26. BANDIT16 - SOLO DE NOCHE
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit16", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity >= 0.3f) return 0f;
+					if (isValidGround(point))
+						return 0.15f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit16");
+				}
+			});
+
+			// ==========================================
+			// 27. BANDIT17 - SOLO DE NOCHE
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit17", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity >= 0.3f) return 0f;
+					if (isValidGround(point))
+						return 0.5f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit17");
+				}
+			});
+
+			// ==========================================
+			// 28. FIREARMS DEALER - 10% probabilidad - CUALQUIER HORA, ESTACIÓN, UBICACIÓN
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FirearmsDealer", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (isValidGround(point))
+						return 0.5f;
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "FirearmsDealer");
 				}
 			});
 		}
