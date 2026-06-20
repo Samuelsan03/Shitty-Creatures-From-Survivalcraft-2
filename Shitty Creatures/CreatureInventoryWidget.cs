@@ -19,22 +19,7 @@ namespace Game
 			m_creatureGrid = Children.Find<GridPanelWidget>("CreatureGrid", true);
 			m_inventoryGrid = Children.Find<GridPanelWidget>("InventoryGrid", true);
 
-			// Configurar etiquetas con LanguageControl - Usando la estructura ContentWidgets
-			LabelWidget creatureLabel = Children.Find<LabelWidget>("CreatureInventoryLabel", true);
-			LabelWidget inventoryLabel = Children.Find<LabelWidget>("InventoryLabel", true);
-
-			// Usar la ruta completa dentro de ContentWidgets
-			creatureLabel.Text = LanguageControl.GetContentWidgets("CreatureInventoryWidget", "CreatureInventoryLabel");
-			inventoryLabel.Text = LanguageControl.GetContentWidgets("CreatureInventoryWidget", "InventoryLabel");
-
-			// Fallback por si no encuentra la traducción
-			if (string.IsNullOrEmpty(creatureLabel.Text) || creatureLabel.Text.Contains("CreatureInventoryWidget"))
-				creatureLabel.Text = "Creature Inventory";
-
-			if (string.IsNullOrEmpty(inventoryLabel.Text) || inventoryLabel.Text.Contains("CreatureInventoryWidget"))
-				inventoryLabel.Text = "Inventory";
-
-			int creatureSlots = creatureInventory.SlotsCount; // Debe ser 16 según Load
+			int creatureSlots = creatureInventory.SlotsCount;
 
 			// Ajustar cuadrícula de la criatura (4 columnas fijas)
 			int columns = 4;
