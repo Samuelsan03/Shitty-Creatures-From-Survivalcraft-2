@@ -1,0 +1,27 @@
+<CanvasWidget xmlns="runtime-namespace:Game">
+
+  <CanvasWidget Size="600, 420" ClampToBounds="true" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <BevelledRectangleWidget Style="{Styles/DialogArea}" />
+
+    <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="10, 0" IsVisible="true">
+
+      <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <LabelWidget Text="CONVERTIR EN GRANJERA?" HorizontalAlignment="Center" Margin="0, 15" />
+      </StackPanelWidget>
+
+      <CanvasWidget Size="500, Infinity" HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="0, 0">
+        <ScrollPanelWidget Name="MakeFarmerDialog.ScrollPanel" Direction="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <LabelWidget Text="¿Cansado de arar, sembrar y cosechar? ¡Convierte a esta criatura en tu granjera personal!\n\nAl sostener un rastrillo e interactuar con ella, la criatura asumirá todas las tareas agrícolas por ti, de forma completamente automática:\n\n• Preparará el terreno: convertirá hierba o tierra baldía en tierra de cultivo.\n• Sembrará semillas en cualquier tierra vacía que encuentre, siempre que tenga las semillas en su inventario.\n• Cosechará los cultivos maduros, recogiendo los objetos y la experiencia por sí sola.\n\nMientras ella trabaja, tú puedes dedicarte a explorar, construir o combatir, sin preocuparte por las cosechas.\n\nSolo asegúrate de que su inventario tenga suficientes herramientas y semillas. Si la tierra vuelve a su estado natural, ella la preparará de nuevo para el siguiente ciclo.\n\n¿Quieres que esta criatura trabaje para ti?" Color="200, 200, 200" HorizontalAlignment="Stretch" WordWrap="true" />
+        </ScrollPanelWidget>
+      </CanvasWidget>
+
+      <UniformSpacingPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10, 15">
+        <BevelledButtonWidget Style="{Styles/ButtonStyle_160x60}" HorizontalAlignment="Center" Name="MakeFarmerDialog.YesButton" Text="Si" />
+        <BevelledButtonWidget Style="{Styles/ButtonStyle_160x60}" HorizontalAlignment="Center" Name="MakeFarmerDialog.NoButton" Text="No" />
+      </UniformSpacingPanelWidget>
+
+    </StackPanelWidget>
+
+  </CanvasWidget>
+
+</CanvasWidget>
