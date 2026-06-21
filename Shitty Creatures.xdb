@@ -4401,7 +4401,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="80f33ca3-3fe9-4134-b9a4-a1b48c804a9f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="373" Type="int"/>
+                <Parameter Name="Contents" Value="382" Type="int"/>
                 <Parameter Name="Count" Value="1" Type="int"/>
             </ParameterSet>
         </ParameterSet>
@@ -4503,6 +4503,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Sparkster" Guid="f7e2a9c3-8d1b-4f5a-9b2c-6a3e7b1d4c0f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="FarmerBehavior" Guid="f1727603-81b2-46d0-ae68-481018603bd6" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
 <MemberComponentTemplate Name="Rider" Guid="324a69c9-52c2-43cb-8681-a659785f17cc" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
               <Parameter Name="RiderOffset" Guid="a02b2b01-138c-41de-ad37-6fd0430b7c68" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
@@ -5053,7 +5054,7 @@
             <MemberComponentTemplate Name="Inventory" Guid="df1f32f4-80a2-43d3-a430-362d68f42e37" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="373" Type="int"/>
+                <Parameter Name="Contents" Value="382" Type="int"/>
                 <Parameter Name="Count" Value="1" Type="int"/>
             </ParameterSet>
         </ParameterSet>
@@ -5155,6 +5156,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PirataNormalAliado" Guid="5113ebe2-e315-4a9b-939d-ed69319f26a8" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="FarmerBehavior" Guid="2cb64955-de85-44bd-b1cc-b85cae4ce72a" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
         <MemberComponentTemplate Name="Rider" Guid="767d5907-9ad9-4aab-a73c-921049455df5" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
               <Parameter Name="RiderOffset" Guid="8e86a359-242a-44b6-9447-a6e05ea58921" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
@@ -5319,13 +5321,13 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PirataEliteAliado" Guid="7f0552e6-61d8-4365-988d-94e5197212bd" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="Rider" Guid="f599fa24-9963-4c24-b971-27ef691d3680" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
-              <Parameter Name="RiderOffset" Guid="76645002-9f66-4b8f-970a-7f27728967d1" Value="0,-0.71,0" Type="Vector3" />
-            </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureInventory" Guid="5a0235f5-20df-4c9b-9fd8-c198fee24969" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
+        <MemberComponentTemplate Name="CreatureInventory" Guid="5a0235f5-20df-4c9b-9fd8-c198fee24969" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
+        <MemberComponentTemplate Name="Rider" Guid="f599fa24-9963-4c24-b971-27ef691d3680" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="76645002-9f66-4b8f-970a-7f27728967d1" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
   <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="833b9ed8-81f4-4fea-adea-5d58fe407a9e" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="ce8c4e2c-2076-4a50-b3fa-75ba2d978b6a" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="664a137f-6dbd-4e4a-9ec1-1084bffbd148" Value="true" Type="bool" />
@@ -5428,7 +5430,15 @@
             <MemberComponentTemplate Name="Spawn" Guid="b315f890-bd81-4b9a-9b09-426fb30d48a9">
     <Parameter Name="AutoDespawn" Guid="12ce441a-e557-48b3-a5b4-c5dbfb482772" Value="False" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FarmerBehavior" Guid="0099132c-c1ac-4429-a857-bdd4fb87741a" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a8fbcb29-fde1-4c0e-9683-badb786d6403" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+            <MemberComponentTemplate Name="Inventory" Guid="05a01281-2c02-410d-9aca-10c401dc8c7e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
+            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="adced656-2db0-4fdd-8044-1c4ce992012a" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="65e91937-dcbd-4d4b-a357-2deac11b6a17">
+                <Parameter Name="Weapons" Guid="9b7d5321-e465-417f-ba95-bc629e6d552d" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="4fbeac17-6cc2-4d9e-86c2-2523aa86915e" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="Miner" Guid="68117a03-ded8-48d9-9cc6-5617f7154358" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="c85dae1c-8fb5-4a73-a94b-c976301e1a51" Value="6.5" Type="float"/>
             </MemberComponentTemplate>
@@ -5467,14 +5477,6 @@
     <Parameter Name="ChaseToCreatures" Guid="f3825082-2497-4f26-be89-a385437ddbf3" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="3e94fab2-a186-46d4-8dc9-96d122c58d9f" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="05a01281-2c02-410d-9aca-10c401dc8c7e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="adced656-2db0-4fdd-8044-1c4ce992012a" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="65e91937-dcbd-4d4b-a357-2deac11b6a17">
-                <Parameter Name="Weapons" Guid="9b7d5321-e465-417f-ba95-bc629e6d552d" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="4fbeac17-6cc2-4d9e-86c2-2523aa86915e" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="b1729546-090d-482f-b780-6d1138887dda">
                 <Parameter Name="Color" Guid="cff94536-30ac-4997-a43d-9c5a87c5fae0" Value="28,78,142" Type="Color"/>
                 <Parameter Name="TextureSlot" Guid="7ed78de0-ef73-4465-ba72-5427b2510d8a" Value="8" Type="int"/>
@@ -6053,6 +6055,15 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Aimep3" Guid="b90aa099-6f90-48b5-a98d-446de69f0e6d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="Aimep3Evolution" Guid="6603f728-9bb3-41d0-b431-0ad16ae595a3" InheritanceParent="e57be29f-3831-4d9e-86e7-967b10eaf218">
+  <Parameter Name="MaxEvolutionLevel" Guid="1712b829-96a5-4339-accb-f9643c0adc69" Value="4" Type="int" />
+  <Parameter Name="EvolutionMultiplier" Guid="f3ecc3bc-6bf4-47a3-8910-c1a1b4e4f247" Value="5" Type="float" />
+  <Parameter Name="FireDuration" Guid="0f339b46-e750-429d-81be-9dc54cfacf37" Value="12" Type="float" />
+  <Parameter Name="BurnRadius" Guid="7d20e9f2-1651-47d7-ba97-91c2cf7f0ac1" Value="50" Type="float" />
+  <Parameter Name="BurnProbability" Guid="36472110-82a0-46e5-9430-44ed5ed10410" Value="0.5" Type="float" />
+  <Parameter Name="FireCooldown" Guid="b8ed32c3-d4b6-48dd-b5bf-8dc4a8f2b0af" Value="30" Type="float" />
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="FarmerBehavior" Guid="e9adbd42-b75a-42c9-9004-e55b35d69cc6" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
         <MemberComponentTemplate Name="Rider" Guid="74179e6f-3053-4273-b5c2-63e81d2cb5c8" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
               <Parameter Name="RiderOffset" Guid="38573de9-18e5-436b-92ac-0a39a8e19dcb" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
@@ -6117,6 +6128,7 @@
                 <ParameterSet Name="FoodFactors" Guid="06594a85-ae00-48e7-94e4-7839e31c1763">
                     <Parameter Name="Fish" Guid="c14632e3-4314-435e-b19d-1069373f7500" Value="1" Type="float"/>
                     <Parameter Name="Meat" Guid="78d2fdff-88b2-43ae-8975-d0deb6c1e7ce" Value="1" Type="float"/>
+                    <Parameter Name="Bread" Guid="39405fe9-bf8c-4db3-87e1-f9d7c3fa48ad" Value="1" Type="float"/>
                 </ParameterSet>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Spawn" Guid="4d63b05d-d3e7-40df-98df-9a5bc80469cd" InheritanceParent="65268743-4076-4ee3-aefe-f02a54d16b36">
@@ -6404,6 +6416,7 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="RunAwayBehavior" Guid="ee374264-60d6-427d-8a9e-0ff343392ca7" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="8e40e5c3-51fb-48ee-a848-faa8f5756bc7" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="FarmerBehavior" Guid="33018f72-fbfc-4ecb-97a0-e7362b199923" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="4a5ec484-8db0-499a-a8c6-09bff4b4d973" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="55ca4e92-59d0-4904-b176-5023375d4a9a" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="86e205f6-a08d-42bf-a60a-cfd7a57fd588" Value="0" Type="float"/>
@@ -6566,6 +6579,7 @@
               <Parameter Name="BoxSize" Guid="fc85015a-2a1c-4b76-84d3-97d800b3a78a" Value="0.7,1.8,0.7" Type="Vector3" />
               <Parameter Name="Mass" Guid="d7948b8c-33b0-46ce-aaa2-c09aca87d9e1" Value="35" Type="float" />
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="79fe37a2-8fee-40e0-bbc4-33a1cc61e0f9" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b1019d52-fcd4-42c0-909d-f534127753e8" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71" />
             <MemberComponentTemplate Name="Health" Guid="c79fa4f4-d0cc-4b10-bc83-c3c581798ee4">
               <Parameter Name="AttackResilience" Guid="839851bb-58bf-4c53-9faa-c9a03273c503" Value="55" Type="float" />
@@ -6664,6 +6678,7 @@
             <Parameter Name="CanCollect" Guid="0cd454a3-df38-4de3-be8c-e0039c0e9309" Value="true" Type="bool"/>
     <Parameter Name="CollectableItems" Guid="d18bdae2-387a-4b8c-8b28-6b9d61f85c71" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FarmerBehavior" Guid="c447fae6-9029-4873-a5d6-6065f9e28218" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="RunAwayBehavior" Guid="7377b9cd-40c4-400e-834d-0a57b4dcc3c8" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="fd3d7d78-0ce7-4e7f-ae9e-157952d9b3e2" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="cf45d965-7a49-41b8-8107-d82502457d50" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -6796,6 +6811,7 @@
 <MemberComponentTemplate Name="SummonBehavior" Guid="4be7861d-736a-4a81-967a-d25fb8d81905" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="8ed6a18e-579d-4569-bd77-9f895dd8c3ee" Value="True" Type="bool"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="876d4d94-747c-4748-895a-f65c8006ce35" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="RunAwayBehavior" Guid="72bbf21d-79b9-4c8e-9516-cbbead81a719" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="e4244432-be87-418d-b986-9e68b9fe7f82" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="90699120-5233-4fb7-8247-934e279ec02e" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -6901,6 +6917,7 @@
               <Parameter Name="AutoDespawn" Guid="9db4dadb-4134-4f6c-811d-96d55dd3b709" Value="False" Type="bool" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="11a2b592-3c72-4a1f-af63-8982b9570808" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="9cd3526b-7b1b-4c9d-8b4c-5fcbacdca227" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="CollectPickableBehavior" Guid="66812db4-872a-4332-81c1-a8c04a9927fa" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
               <ParameterSet Name="CollectFactors" Guid="3a073dc2-da23-46f4-be07-9d67636815f7">
                 <Parameter Name="Weapons" Guid="7ed5217a-c5de-420e-aa80-416091ff1114" Value="1" Type="float" />
