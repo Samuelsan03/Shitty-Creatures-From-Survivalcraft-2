@@ -1,5 +1,11 @@
 <ShittyRecipes>
     <Recipes>
+    <Recipe Result="WatermelonSeedBlock" ResultCount="1" RequiredHeatLevel="0" a="sliceofwatermelon" Description="[0]">
+    "a"
+    </Recipe>
+    <Recipe Result="BlueberrySeedBlock" ResultCount="1" RequiredHeatLevel="0" a="blueberry" Description="[0]">
+    "a"
+    </Recipe>
     <Recipe Result="EmptyBowlBlock" ResultCount="1" RequiredHeatLevel="0" a="dirt" Description="[0]">
     "a a"
     " a "
