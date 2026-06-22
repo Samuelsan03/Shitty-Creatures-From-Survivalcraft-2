@@ -693,7 +693,6 @@ namespace Game
 
 			bool isGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 			int maxWave = m_waves.Keys.Max();
-
 			bool isNormalNight = IsNormalNight();
 
 			// ===== VERIFICAR ESTADO DEL JEFE DESPUÉS DE CARGAR =====
@@ -704,53 +703,61 @@ namespace Game
 					VerifyAndRestoreBossState();
 				}
 			}
-			// ===== FIN VERIFICACIÓN =====
 
-			// ===== SPAWN DE INFECTED SPIDER (INDEPENDIENTE DE CONFIGURACIÓN, PERO NO EN NOCHE VERDE) =====
-			if (m_skeletonNewSpawnChunks.Count > 0 && !isGreenNightActive)
+			// ===== SPAWN DE INFECTED SPIDER (SOLO SI LA OPCIÓN ESTÁ ACTIVA) =====
+			if (ShittyCreaturesSettingsManager.SkeletonSpawnEnabled)
 			{
-				// Spawn CUEVAS - activo excepto en noche verde
-				foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
+				if (m_skeletonNewSpawnChunks.Count > 0 && !isGreenNightActive)
 				{
-					SpawnCaveSpidersInChunk(chunk, SpiderCaveNewChunkAttempts);
-				}
-
-				// Spawn SUPERFICIE - solo noche normal
-				if (isNormalNight)
-				{
+					// Spawn CUEVAS - activo excepto en noche verde
 					foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
 					{
-						SpawnNormalSpidersInChunk(chunk, SpiderNormalNewChunkAttempts);
+						SpawnCaveSpidersInChunk(chunk, SpiderCaveNewChunkAttempts);
+					}
+
+					// Spawn SUPERFICIE - solo noche normal
+					if (isNormalNight)
+					{
+						foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
+						{
+							SpawnNormalSpidersInChunk(chunk, SpiderNormalNewChunkAttempts);
+						}
 					}
 				}
-			}
 
-			if (!isNormalNight || isGreenNightActive)
-			{
-				m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
+				// Control de cooldown para spawn constante de superficie
+				if (!isNormalNight || isGreenNightActive)
+				{
+					m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
+				}
+				else
+				{
+					m_spiderConstantSpawnCooldown -= dt;
+				}
+
+				if (m_skeletonSpawnChunks.Count > 0 && !isGreenNightActive)
+				{
+					// Spawn CONSTANTE CUEVAS - activo excepto en noche verde
+					foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
+					{
+						SpawnConstantCaveSpidersInChunk(chunk, SpiderCaveConstantChunkAttempts);
+					}
+
+					// Spawn CONSTANTE SUPERFICIE - solo noche normal con cooldown
+					if (isNormalNight && m_spiderConstantSpawnCooldown <= 0f)
+					{
+						foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
+						{
+							SpawnConstantSpidersInChunk(chunk, SpiderConstantChunkAttempts);
+						}
+						m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
+					}
+				}
 			}
 			else
 			{
-				m_spiderConstantSpawnCooldown -= dt;
-			}
-
-			if (m_skeletonSpawnChunks.Count > 0 && !isGreenNightActive)
-			{
-				// Spawn CONSTANTE CUEVAS - activo excepto en noche verde
-				foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
-				{
-					SpawnConstantCaveSpidersInChunk(chunk, SpiderCaveConstantChunkAttempts);
-				}
-
-				// Spawn CONSTANTE SUPERFICIE - solo noche normal con cooldown
-				if (isNormalNight && m_spiderConstantSpawnCooldown <= 0f)
-				{
-					foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
-					{
-						SpawnConstantSpidersInChunk(chunk, SpiderConstantChunkAttempts);
-					}
-					m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
-				}
+				// Si la opción está desactivada, reseteamos el cooldown para que no se dispare al reactivar
+				m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
 			}
 			// ===== FIN SPAWN DE INFECTED SPIDER =====
 
