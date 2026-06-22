@@ -21,7 +21,7 @@ namespace Game
 		public static bool CreativeDefenseEnabled { get; set; } = true;
 		public static bool BleedingEnabled { get; set; } = true;
 		public static bool HealthBarEnabled { get; set; } = true;
-		public static bool SkeletonSpawnEnabled { get; set; } = true;
+		public static bool NightCreaturesSpawnEnabled { get; set; } = true;
 		public static bool FastMeleeEnabled { get; set; } = false;
 		public static bool InGameMusicButtonEnabled { get; set; } = true;
 
@@ -76,8 +76,8 @@ namespace Game
 							case "HealthBarEnabled":
 								HealthBarEnabled = value;
 								break;
-							case "SkeletonSpawnEnabled":
-								SkeletonSpawnEnabled = value;
+							case "NightCreaturesSpawnEnabled":
+								NightCreaturesSpawnEnabled = value;
 								break;
 							case "FastMeleeEnabled":
 								FastMeleeEnabled = value;
@@ -157,9 +157,9 @@ namespace Game
 				        new XAttribute("Value", HealthBarEnabled)));
 
 					root.Add(new XElement("Value",
-                        new XAttribute("Name", "SkeletonSpawnEnabled"),
+                        new XAttribute("Name", "NightCreaturesSpawnEnabled"),
                         new XAttribute("Type", "bool"),
-                        new XAttribute("Value", SkeletonSpawnEnabled)));
+                        new XAttribute("Value", NightCreaturesSpawnEnabled)));
 					root.Add(new XElement("Value",
                         new XAttribute("Name", "FastMeleeEnabled"),
                         new XAttribute("Type", "bool"),
