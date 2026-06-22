@@ -988,7 +988,7 @@ namespace Game
 				return 1f;
 
 			// Logros de día (9-14) y otros condicionales: van al final (progreso -1)
-			if ((number >= 9 && number <= 14) || number == 52 || number == 8 || number == 37 || number == 41 || number == 42 || number == 43)
+			if ((number >= 9 && number <= 14) || number == 52 || number == 8 || number == 37 || number == 41 || number == 42 || number == 43 || number == 70)
 				return -1f;
 
 			// Logros de contador: obtener current / target
