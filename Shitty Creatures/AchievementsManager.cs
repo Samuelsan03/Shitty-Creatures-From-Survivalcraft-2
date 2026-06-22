@@ -607,14 +607,17 @@ namespace Game
 				UnlockAchievement(player, 8, "DrugWarSurvived", LanguageControl.Get(AchievementsWidget.fName, 20));
 
 			// 🆕 Logro 70: Sobrevivir a Noche Verde + Narcos al mismo tiempo
-			var greenNight = s_currentProject?.FindSubsystem<SubsystemGreenNightSky>(true);
-			if (greenNight != null && greenNight.IsGreenNightActive)
+			// NOTA: Se usa WasGreenNightActiveDuringInvasion en lugar de IsGreenNightActive
+			// porque cuando la invasión finaliza, la Noche Verde ya terminó (IsGreenNightActive = false).
+			// WasGreenNightActiveDuringInvasion rastrea si estuvo activa en algún punto durante la invasión.
+			var banditInvasion = s_currentProject?.FindSubsystem<SubsystemBanditInvasion>(true);
+			if (banditInvasion != null && banditInvasion.WasGreenNightActiveDuringInvasion)
 			{
 				if (!s_subsystemAchievements.IsAchievementUnlocked(70))
 				{
 					string title = LanguageControl.Get(AchievementsWidget.fName, 136);
 					foreach (var player in players.ComponentPlayers)
-						UnlockAchievement(player, 70, "GreenNightWithDrugTraffickers", title); // ✅ NÚMERO 70
+						UnlockAchievement(player, 70, "GreenNightWithDrugTraffickers", title);
 				}
 			}
 		}
