@@ -16,6 +16,7 @@ namespace Game
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemBodies m_subsystemBodies;
 		private SubsystemPlayers m_subsystemPlayers;
+		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 		private Random m_random = new Random();
 
 		public event Action InvasionCompleted;
@@ -30,9 +31,16 @@ namespace Game
 
 		private bool m_wasRejected;
 
+		/// <summary>
+		/// Indica si la Noche Verde estuvo activa en algún momento durante la invasión actual.
+		/// Se usa para otorgar el logro 70 (Noche Verde + Guerra de Narcos).
+		/// </summary>
+		private bool m_greenNightWasActiveDuringInvasion;
+
 		public bool IsWarAccepted => m_acceptedWar;
 		public bool IsWarRejected => m_wasRejected;
 		public bool IsWarCompleted => m_invasionCompleted;
+		public bool WasGreenNightActiveDuringInvasion => m_greenNightWasActiveDuringInvasion;
 
 		private float m_spawnTimer;
 		private float m_spawnInterval = 3.0f;
@@ -40,7 +48,11 @@ namespace Game
 		private const int MaxGlobalBandits = 35;
 		private const int MaxSpawnsPerFrame = 2;
 
-		private bool m_wasInvasionTime;
+		/// <summary>
+		/// Trackea el "tiempo efectivo de invasión" (invasion time normal + noche verde activa).
+		/// La invasión solo finaliza cuando este valor pasa de true a false.
+		/// </summary>
+		private bool m_wasEffectiveInvasionTime;
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 		public bool IsInvasionActive => m_invasionActive;
@@ -56,6 +68,8 @@ namespace Game
 				m_acceptedWar = true;
 				m_wasRejected = false;
 				m_spawnTimer = 0f;
+				m_greenNightWasActiveDuringInvasion = false;
+				m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 				return;
 			}
 
@@ -64,6 +78,7 @@ namespace Game
 			{
 				m_acceptedWar = true;
 				m_wasRejected = false;
+				m_greenNightWasActiveDuringInvasion = false;
 			}
 		}
 
@@ -77,7 +92,6 @@ namespace Game
 					banditChase.IsDrugTraffickerMode = enabled;
 					if (!enabled)
 						banditChase.StopAttack();
-					// Si enabled == true, no detenemos ataques (solo cambiamos el modo)
 				}
 			}
 		}
@@ -104,16 +118,20 @@ namespace Game
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
+			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(false);
 
 			LoadBanditsFromXml();
 
 			m_acceptedWar = valuesDictionary.GetValue<bool>("AcceptedWar", false);
 			m_invasionCompleted = valuesDictionary.GetValue<bool>("InvasionCompleted", false);
 			m_wasRejected = valuesDictionary.GetValue<bool>("WasRejected", false);
-			m_wasInvasionTime = IsInvasionTime();
+			m_greenNightWasActiveDuringInvasion = valuesDictionary.GetValue<bool>("GreenNightWasActiveDuringInvasion", false);
+
+			// Calcular tiempo efectivo de invasión (incluye noche verde)
+			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 
 			// Restaurar estado activo si corresponde
-			if (m_acceptedWar && !m_invasionCompleted && m_wasInvasionTime)
+			if (m_acceptedWar && !m_invasionCompleted && m_wasEffectiveInvasionTime)
 			{
 				m_invasionActive = true;
 				m_invasionStarted = true;
@@ -133,6 +151,7 @@ namespace Game
 			valuesDictionary.SetValue("AcceptedWar", m_acceptedWar);
 			valuesDictionary.SetValue("InvasionCompleted", m_invasionCompleted);
 			valuesDictionary.SetValue("WasRejected", m_wasRejected);
+			valuesDictionary.SetValue("GreenNightWasActiveDuringInvasion", m_greenNightWasActiveDuringInvasion);
 		}
 
 		public void CancelWar()
@@ -141,6 +160,7 @@ namespace Game
 
 			m_acceptedWar = false;
 			m_wasRejected = true;
+			m_greenNightWasActiveDuringInvasion = false;
 
 			// Si la invasión estaba activa, detenerla y restaurar bandidos a modo normal
 			if (m_invasionActive)
@@ -150,6 +170,28 @@ namespace Game
 				m_spawnTimer = 0f;
 				SetAllBanditsDrugTraffickerMode(false);
 			}
+
+			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
+		}
+
+		/// <summary>
+		/// Calcula si estamos en "tiempo efectivo de invasión":
+		/// - Tiempo de invasión normal (DuskStart → DawnStart), O
+		/// - Noche Verde activa (que se extiende más allá de DawnStart)
+		/// 
+		/// Esto asegura que la invasión NO finalice en DawnStart si la Noche Verde
+		/// sigue activa, igual que hace SubsystemZombiesSpawn.IsNormalNight()
+		/// al verificar IsGreenNightActive antes de considerar que es de noche.
+		/// </summary>
+		private bool CalculateEffectiveInvasionTime()
+		{
+			// Si la Noche Verde está activa, siempre es tiempo efectivo de invasión
+			// Esto extiende la invasión más allá de DawnStart hasta que la Noche Verde termine
+			if (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
+				return true;
+
+			// Si no hay Noche Verde, usar el tiempo de invasión normal
+			return IsInvasionTime();
 		}
 
 		private void LoadBanditsFromXml()
@@ -196,7 +238,7 @@ namespace Game
 			if (m_invasionCompleted)
 				return;
 
-			bool isInvasionTime = IsInvasionTime();
+			bool effectiveInvasionTime = CalculateEffectiveInvasionTime();
 
 			// Si no hay guerra aceptada, desactivamos cualquier invasión activa
 			if (!m_acceptedWar)
@@ -206,26 +248,34 @@ namespace Game
 					m_invasionActive = false;
 					SetAllBanditsDrugTraffickerMode(false);
 				}
-				m_wasInvasionTime = isInvasionTime;
+				m_wasEffectiveInvasionTime = effectiveInvasionTime;
 				return;
 			}
 
 			// Si la guerra está aceptada y la invasión no está activa
 			if (!m_invasionActive)
 			{
-				// Si es hora de invasión (dusk o después), activamos inmediatamente
-				if (isInvasionTime)
+				// Si es tiempo efectivo de invasión (dusk/normal O noche verde), activamos inmediatamente
+				if (effectiveInvasionTime)
 				{
 					m_invasionActive = true;
 					m_invasionStarted = true;
 					m_spawnTimer = 0f;
 					SetAllBanditsDrugTraffickerMode(true);
 				}
-				// Si no es hora, esperamos a que caiga el dusk
 			}
 
-			// Manejar finalización al llegar a dawn (transición de invasion time a no invasion time)
-			if (m_wasInvasionTime && !isInvasionTime && m_invasionActive)
+			// Rastrear si la Noche Verde estuvo activa durante esta invasión
+			if (m_invasionActive && m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
+			{
+				m_greenNightWasActiveDuringInvasion = true;
+			}
+
+			// Manejar finalización: SOLO cuando el tiempo efectivo de invasión termina.
+			// Esto significa que AMBOS el invasion time normal (DawnStart) Y la Noche Verde
+			// han terminado. Si la Noche Verde sigue activa después de DawnStart,
+			// la invasión continúa hasta que la Noche Verde también termine.
+			if (m_wasEffectiveInvasionTime && !effectiveInvasionTime && m_invasionActive)
 			{
 				m_invasionActive = false;
 				m_invasionCompleted = true;
@@ -233,7 +283,7 @@ namespace Game
 				InvasionCompleted?.Invoke();
 			}
 
-			m_wasInvasionTime = isInvasionTime;
+			m_wasEffectiveInvasionTime = effectiveInvasionTime;
 
 			if (!m_invasionActive)
 				return;
@@ -255,7 +305,9 @@ namespace Game
 		}
 
 		/// <summary>
-		/// Determina si es hora de invasión: desde DuskStart hasta DawnStart
+		/// Determina si es hora de invasión NORMAL: desde DuskStart hasta DawnStart.
+		/// NOTA: Esto NO considera la Noche Verde.
+		/// Usar CalculateEffectiveInvasionTime() para el tiempo efectivo completo.
 		/// </summary>
 		private bool IsInvasionTime()
 		{
@@ -276,10 +328,6 @@ namespace Game
 				float duskStart = m_subsystemTimeOfDay.DuskStart;
 				float dawnStart = m_subsystemTimeOfDay.DawnStart;
 
-				// La invasión está activa desde DuskStart hasta DawnStart
-				// El ciclo es: DawnStart -> DayStart -> DuskStart -> NightStart -> DawnStart
-				// Entonces: timeOfDay >= DuskStart (estamos en dusk/night) 
-				//           OR timeOfDay < DawnStart (estamos en madrugada antes del amanecer)
 				return timeOfDay >= duskStart || timeOfDay < dawnStart;
 			}
 
