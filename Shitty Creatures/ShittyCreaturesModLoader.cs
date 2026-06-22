@@ -803,7 +803,19 @@ namespace Game
 			GameWidget gameWidget = widget as GameWidget;
 			if (gameWidget != null)
 			{
-				// ─── Sistema de sangrado (siempre se ejecuta cada frame) ───
+				ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
+
+				// ─── Botón de logros (SIEMPRE, independientemente de coordenadas) ───
+				if (player != null && m_achievementButtons.TryGetValue(player, out var btn) && btn != null && btn.IsClicked)
+				{
+					// Toggle: si ya está abierto, lo cierra; si no, lo abre
+					if (player.ComponentGui.ModalPanelWidget is AchievementsWidget)
+						player.ComponentGui.ModalPanelWidget = null;
+					else
+						player.ComponentGui.ModalPanelWidget = new AchievementsWidget(player);
+				}
+
+				// ─── Sistema de sangrado (siempre se ejecuta) ───
 				UpdateBleedingSystems(gameWidget);
 
 				// ─── Hacer bailar a las criaturas durante la celebración ───
@@ -815,15 +827,6 @@ namespace Game
 				// ─── Coordenadas (solo si están activadas) ───
 				if (ShittyCreaturesSettingsManager.CoordinateDisplayEnabled)
 				{
-					ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
-					if (player != null && m_achievementButtons.TryGetValue(player, out var btn) && btn != null && btn.IsClicked)
-					{
-						// Toggle: si ya está abierto, lo cierra; si no, lo abre
-						if (player.ComponentGui.ModalPanelWidget is AchievementsWidget)
-							player.ComponentGui.ModalPanelWidget = null;
-						else
-							player.ComponentGui.ModalPanelWidget = new AchievementsWidget(player);
-					}
 					if (player != null && player.ComponentHealth.Health > 0f)
 					{
 						// Elegir la posición según la cámara activa
