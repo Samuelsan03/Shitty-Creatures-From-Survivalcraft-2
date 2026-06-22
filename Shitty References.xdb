@@ -17,6 +17,20 @@
 </Folder>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="FarmerBehavior" Description="Comportamiento de granjero: ara, siembra y cosecha plantas automáticamente" Guid="4a244fdc-71c0-4e63-9f0e-0af1170138af" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="c13e7cd0-4d21-44b4-9bd2-112b732eace2" Value="Game.ComponentFarmerBehavior" Type="string" />
+</ComponentTemplate>
+
+    <ComponentTemplate Name="Aimep3Evolution" Description="Controla la evolución de Aimep3 al comer pan" Guid="e57be29f-3831-4d9e-86e7-967b10eaf218" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="3fd9345c-4c19-4e8c-aa60-a5c5b169758b" Value="Game.ComponentAimep3Evolution" Type="string" />
+  <Parameter Name="MaxEvolutionLevel" Description="Número máximo de evoluciones permitidas" Guid="79b96919-f29d-45d9-8e65-729e6edea74e" Value="10" Type="int" />
+  <Parameter Name="EvolutionMultiplier" Description="Factor multiplicador para ataque y resistencia (ej: 1.5 = +50%)" Guid="dca9d332-3b07-4e9b-b4d8-19da134f4c1f" Value="1.5" Type="float" />
+  <Parameter Name="FireDuration" Description="Duración base del fuego en segundos al nivel 1 (escala con evolución)" Guid="7524e510-ef8f-4bb5-890b-3b38859a053f" Value="12" Type="float" />
+  <Parameter Name="BurnRadius" Description="Radio único del área de fuego en bloques" Guid="e8c9a999-b2d0-4d53-a967-ec30f92d6fe8" Value="50" Type="float" />
+  <Parameter Name="BurnProbability" Description="Probabilidad de quemar a cada criatura dentro del radio (0.0 a 1.0)" Guid="5bd31f53-2442-4b00-aa8c-259400f96d8a" Value="0.5" Type="float" />
+  <Parameter Name="FireCooldown" Description="Cooldown en segundos entre cada ráfaga de fuego" Guid="a3beddac-6999-4dc1-a88b-3860d8722a65" Value="30" Type="float" />
+</ComponentTemplate>
+
     <ComponentTemplate Name="CollectPickableBehavior" Description="Comportamiento para recolectar objetos por categoría con probabilidad" Guid="f71c13fd-9888-4e95-9ac2-72e48fe84397" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
   <ParameterSet Name="CollectFactors" Description="Factores de recolección por categoría (probabilidad 0-1)" Guid="31ae3f3f-0b90-4843-8c98-9ca301d66220">
     <Parameter Name="Terrain" Description="Probabilidad de recolectar bloques de terreno" Guid="59c625e9-06cb-43b0-8a12-975ab16f02a0" Value="0" Type="float" />
@@ -676,9 +690,6 @@
 <MemberSubsystemTemplate Name="MediumFirstAidKitBlockBehavior" Guid="2949f1c3-a7d6-4e37-b109-1e28d6027758" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemMediumFirstAidKitBlockBehavior" Type="string" Guid="9dae5e67-b1b6-4360-8965-5f98b1d69e86"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="FireBulletBlockBehavior" Guid="60983db0-4933-45fd-8297-6071b1bc76af" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemFireBulletBlockBehavior" Type="string" Guid="82af8d72-320a-47d9-8133-cbccffd1d941"/>
-</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="AirConditionerBlockBehavior" Guid="2d3cb7a4-5c7b-4473-a52f-02b7a7b9e93f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemAirConditionerBlockBehavior" Type="string" Guid="e15ec911-499b-4f7b-9476-47978bd06bf7"/>
 </MemberSubsystemTemplate>
@@ -708,9 +719,6 @@
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="M249Behavior" Guid="327f41d4-193a-4900-af8a-826d841d774f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemM249Behavior" Type="string" Guid="127552cf-f2dd-4ee5-9be6-87493cbe574f"/>
-</MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="BanditsSpawn" Guid="cea6dfe3-467d-44b6-9f60-4b2af2e217d1" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemBanditsSpawn" Type="string" Guid="f84ec32f-5f7e-435f-87c5-33e9c4554d2a"/>
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="FamasBehavior" Guid="2f91a7a6-b782-418b-a4dd-042ceaf42d4f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemFamasBehavior" Type="string" Guid="675d6a27-72a1-41b3-b53e-87892e093bcd"/>
@@ -789,9 +797,6 @@
     </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="FreezeExplosions" Guid="e27d0ea5-c8f4-4b6f-9012-5e09a6fad859" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="78187e73-33f0-4ff3-910d-d0de56d6619f" Value="Game.SubsystemFreezeExplosions" Type="string"/>
-    </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="PoisonBulletBlockBehavior" Guid="fc95d14d-87db-4f63-9dfc-e5624c8b033f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-        <Parameter Name="Class" Guid="4a9520e6-1988-4a8a-8e2d-5b84303d2576" Value="Game.SubsystemPoisonBulletBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="CollarBlockBehavior" Guid="de432b96-c29b-445c-bbde-660e3b5eaded" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="21eb6fcd-4350-4e1a-8484-69fed75144f0" Value="Game.SubsystemCollarBlockBehavior" Type="string"/>
