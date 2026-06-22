@@ -17,7 +17,7 @@ namespace Game
 		private BevelledButtonWidget m_freeCameraButton;
 		private BevelledButtonWidget m_bleedingButton;
 		private BevelledButtonWidget m_healthBarButton;
-		private BevelledButtonWidget m_skeletonSpawnButton;
+		private BevelledButtonWidget m_nightcreaturesSpawnButton;
 		private BevelledButtonWidget m_fastMeleeButton;
 		private BevelledButtonWidget m_musicButton;
 		private StackPanelWidget m_contentPanel;
@@ -43,7 +43,7 @@ namespace Game
 			CreateOptionRow("ShittyCreaturesSettings", "FreeCameraDescription", out m_freeCameraButton, GetFreeCameraButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "BleedingDescription", out m_bleedingButton, GetBleedingButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "HealthBarDescription", out m_healthBarButton, GetHealthBarButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "SkeletonSpawnDescription", out m_skeletonSpawnButton, GetSkeletonSpawnButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "NightCreaturesSpawnEnabled", out m_nightcreaturesSpawnButton, GetNightCreaturesSpawnButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "FastMeleeDescription", out m_fastMeleeButton, GetFastMeleeButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "InGameMusicDescription", out m_musicButton, GetMusicButtonText);
 		}
@@ -125,7 +125,7 @@ namespace Game
 		private string GetFreeCameraButtonText() => ShittyCreaturesSettingsManager.FreeCameraEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetBleedingButtonText() => ShittyCreaturesSettingsManager.BleedingEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetHealthBarButtonText() => ShittyCreaturesSettingsManager.HealthBarEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetSkeletonSpawnButtonText() => ShittyCreaturesSettingsManager.SkeletonSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetNightCreaturesSpawnButtonText() => ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetFastMeleeButtonText() => ShittyCreaturesSettingsManager.FastMeleeEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetMusicButtonText() => ShittyCreaturesSettingsManager.InGameMusicButtonEnabled ? LanguageControl.On : LanguageControl.Off;
 
@@ -195,10 +195,10 @@ namespace Game
 				ShittyCreaturesSettingsManager.HealthBarEnabled = !ShittyCreaturesSettingsManager.HealthBarEnabled;
 				m_healthBarButton.Text = GetHealthBarButtonText();
 			}
-			if (m_skeletonSpawnButton != null && m_skeletonSpawnButton.IsClicked)
+			if (m_nightcreaturesSpawnButton != null && m_nightcreaturesSpawnButton.IsClicked)
 			{
-				ShittyCreaturesSettingsManager.SkeletonSpawnEnabled = !ShittyCreaturesSettingsManager.SkeletonSpawnEnabled;
-				m_skeletonSpawnButton.Text = GetSkeletonSpawnButtonText();
+				ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled = !ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled;
+				m_nightcreaturesSpawnButton.Text = GetNightCreaturesSpawnButtonText();
 			}
 			if (m_fastMeleeButton != null && m_fastMeleeButton.IsClicked)
 			{
