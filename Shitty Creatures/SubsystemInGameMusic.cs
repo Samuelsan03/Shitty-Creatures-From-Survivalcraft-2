@@ -21,7 +21,6 @@ namespace Game
 			("MenuMusic/You Can Do Anything Sonic CD", 91),
 			("MenuMusic/Digimon Frontiers FIRE Wada Kouji", 253),
 			("MenuMusic/Dragon Quest NES Title Theme", 180),
-			("MenuMusic/Alan Walker Alone High Pitch Speed Up", 145),
 			("MenuMusic/Power Rangers The Movie Title Theme SNES", 117),
 			("MenuMusic/Prince Of Persia (SNES) Recap", 129),
 			("MenuMusic/Prince Of Persia (SNES) Staff Roll", 185),
