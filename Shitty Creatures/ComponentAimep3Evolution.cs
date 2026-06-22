@@ -14,21 +14,13 @@ namespace Game
 		public float EvolutionMultiplier { get; set; } = 1.5f;
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
-		// ===== CONFIGURACIÓN DE FUEGO (una sola área, un solo radio, una sola probabilidad) =====
-		/// <summary>Duración BASE del fuego al nivel 1. Escala con la evolución.</summary>
+		// ===== CONFIGURACIÓN DE FUEGO =====
 		public float FireDuration { get; set; } = 12f;
-
-		/// <summary>Radio único del área de fuego. Si la criatura está fuera, no hace nada.</summary>
 		public float BurnRadius { get; set; } = 50f;
-
-		/// <summary>Probabilidad de quemar a cada criatura dentro del radio.</summary>
 		public float BurnProbability { get; set; } = 0.5f;
-
-		/// <summary>Cooldown en segundos entre cada ráfaga de fuego.</summary>
 		public float FireCooldown { get; set; } = 30f;
 
 		// ===== PROPIEDADES CALCULADAS =====
-		/// <summary>Duración efectiva del fuego: escala con el nivel. Nivel 1=12s, Nivel 10=~34s</summary>
 		private float EffectiveFireDuration => FireDuration * (1f + (EvolutionLevel - 1) * 0.2f);
 
 		private bool HasFireAbility => EvolutionLevel >= 1;
@@ -83,6 +75,36 @@ namespace Game
 		private double m_lastFireBurstTime;
 		private Random m_random = new Random();
 
+		// ===== MÉTODO AUXILIAR: Validar y capturar valores base =====
+		/// <summary>
+		/// Asegura que los valores base sean válidos (> 0). Si no lo son, los captura de las estadísticas actuales.
+		/// </summary>
+		private void EnsureValidBaseValues()
+		{
+			if (m_componentHealth == null || m_componentMiner == null)
+				return;
+
+			bool needsCapture = false;
+
+			// Si los valores base son inválidos (0 o negativos), necesitamos recapturarlos
+			if (m_baseAttackResilienceFactor <= 0f)
+			{
+				m_baseAttackResilienceFactor = m_componentHealth.AttackResilienceFactor;
+				needsCapture = true;
+			}
+
+			if (m_baseAttackPower <= 0f)
+			{
+				m_baseAttackPower = m_componentMiner.AttackPower;
+				needsCapture = true;
+			}
+
+			if (needsCapture)
+			{
+				m_hasSavedBaseValues = true;
+			}
+		}
+
 		// ===== MÉTODOS PÚBLICOS =====
 		public bool TryEvolve()
 		{
@@ -92,11 +114,15 @@ namespace Game
 			if (m_componentHealth == null || m_componentHealth.Health <= 0f)
 				return false;
 
-			if (!m_hasSavedBaseValues)
+			// ===== FIX PRINCIPAL: Siempre validar valores base antes de evolucionar =====
+			if (!m_hasSavedBaseValues || m_baseAttackResilienceFactor <= 0f || m_baseAttackPower <= 0f)
 			{
 				m_baseAttackResilienceFactor = m_componentHealth.AttackResilienceFactor;
 				m_baseAttackPower = m_componentMiner.AttackPower;
 				m_hasSavedBaseValues = true;
+
+				// Log de debug (puedes comentarlo después)
+				Log.Information($"[Aimep3Evolution] Valores base capturados - Resilience: {m_baseAttackResilienceFactor}, Attack: {m_baseAttackPower}");
 			}
 
 			m_isEvolving = true;
@@ -148,13 +174,21 @@ namespace Game
 				return;
 			}
 
-			m_componentHealth.AttackResilienceFactor = m_baseAttackResilienceFactor * (float)Math.Pow(EvolutionMultiplier, EvolutionLevel + 1);
-			m_componentMiner.AttackPower = m_baseAttackPower * (float)Math.Pow(EvolutionMultiplier, EvolutionLevel + 1);
+			// ===== FIX: Validar valores base antes de aplicar =====
+			EnsureValidBaseValues();
+
+			float multiplier = (float)Math.Pow(EvolutionMultiplier, EvolutionLevel + 1);
+
+			m_componentHealth.AttackResilienceFactor = m_baseAttackResilienceFactor * multiplier;
+			m_componentMiner.AttackPower = m_baseAttackPower * multiplier;
 
 			float currentHealth = m_componentHealth.Health;
 			m_componentHealth.Health = MathUtils.Saturate(currentHealth + 0.2f);
 
 			EvolutionLevel++;
+
+			Log.Information($"[Aimep3Evolution] Evolución aplicada - Nivel: {EvolutionLevel}, Multiplicador: {multiplier:F2}, Nueva Resilience: {m_componentHealth.AttackResilienceFactor:F2}, Nuevo Attack: {m_componentMiner.AttackPower:F2}");
+
 			NotifyPlayers();
 			m_pendingEvolution = false;
 		}
@@ -164,17 +198,16 @@ namespace Game
 			if (m_componentHealth == null || m_componentMiner == null)
 				return;
 
+			// ===== FIX: Validar valores base antes de recalcular =====
+			EnsureValidBaseValues();
+
 			float multiplier = (float)Math.Pow(EvolutionMultiplier, EvolutionLevel);
 			m_componentHealth.AttackResilienceFactor = m_baseAttackResilienceFactor * multiplier;
 			m_componentMiner.AttackPower = m_baseAttackPower * multiplier;
+
+			Log.Information($"[Aimep3Evolution] Stats recalculados - Nivel: {EvolutionLevel}, Multiplicador: {multiplier:F2}");
 		}
 
-		/// <summary>
-		/// Ráfaga de fuego: quema criaturas dentro del radio único.
-		/// Si está fuera del área, no hace nada.
-		/// Usa cooldown de 30s. Suena el audio del fósforo si quemó al menos una.
-		/// La duración del fuego escala con el nivel de evolución.
-		/// </summary>
 		private void TryIgniteNearbyCreatures()
 		{
 			if (!HasFireAbility)
@@ -186,7 +219,6 @@ namespace Game
 			if (m_componentHealth.Health <= 0f)
 				return;
 
-			// Cooldown: no hacer nada si no pasó el tiempo
 			if (m_subsystemTime.GameTime - m_lastFireBurstTime < FireCooldown)
 				return;
 
@@ -197,24 +229,19 @@ namespace Game
 
 			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
 			{
-				// No quemarse a sí mismo
 				if (creature == m_componentCreature)
 					continue;
 
-				// Ignorar muertos
 				if (creature.ComponentHealth == null || creature.ComponentHealth.Health <= 0f)
 					continue;
 
-				// Fuera del área: no hacer nada
 				float distSq = Vector3.DistanceSquared(position, creature.ComponentBody.Position);
 				if (distSq > radiusSquared)
 					continue;
 
-				// No quemar a la propia manada
 				if (m_componentHerd != null && m_componentHerd.IsSameHerdOrGuardian(creature))
 					continue;
 
-				// No quemar a jugadores si somos guardian o aliado
 				if (creature.Entity.FindComponent<ComponentPlayer>() != null && m_componentHerd != null)
 				{
 					string herdName = m_componentHerd.HerdName;
@@ -226,11 +253,9 @@ namespace Game
 					}
 				}
 
-				// Probabilidad
 				if (m_random.Float(0f, 1f) > BurnProbability)
 					continue;
 
-				// Prender fuego con duración que escala con evolución
 				ComponentOnFire componentOnFire = creature.Entity.FindComponent<ComponentOnFire>();
 				if (componentOnFire != null)
 				{
@@ -239,13 +264,11 @@ namespace Game
 				}
 			}
 
-			// Sonido de fósforo original si quemó al menos una criatura
 			if (burnedAny && m_subsystemAudio != null)
 			{
 				m_subsystemAudio.PlaySound("Audio/Match", 1f, m_random.Float(-0.1f, 0.1f), position, 1f, true);
 			}
 
-			// Registrar el tiempo de esta ráfaga (inicia el cooldown)
 			m_lastFireBurstTime = m_subsystemTime.GameTime;
 		}
 
@@ -282,6 +305,9 @@ namespace Game
 			{
 				m_pendingStatRestoration = false;
 
+				// ===== FIX: Validar valores base antes de restaurar =====
+				EnsureValidBaseValues();
+
 				if (m_componentMiner != null)
 					m_componentMiner.AttackPower = m_baseAttackPower;
 				if (m_componentHealth != null)
@@ -314,7 +340,6 @@ namespace Game
 				}
 			}
 
-			// Ráfaga de fuego con cooldown
 			if (HasFireAbility && m_subsystemTime != null)
 			{
 				TryIgniteNearbyCreatures();
@@ -344,12 +369,25 @@ namespace Game
 			BurnProbability = valuesDictionary.GetValue<float>("BurnProbability", 0.5f);
 			FireCooldown = valuesDictionary.GetValue<float>("FireCooldown", 30f);
 
+			// ===== FIX PRINCIPAL EN LOAD =====
 			m_hasSavedBaseValues = valuesDictionary.GetValue<bool>("HasSavedBaseValues", false);
 
 			if (m_hasSavedBaseValues)
 			{
-				m_baseAttackResilienceFactor = valuesDictionary.GetValue<float>("BaseAttackResilienceFactor");
-				m_baseAttackPower = valuesDictionary.GetValue<float>("BaseAttackPower");
+				m_baseAttackResilienceFactor = valuesDictionary.GetValue<float>("BaseAttackResilienceFactor", 0f);
+				m_baseAttackPower = valuesDictionary.GetValue<float>("BaseAttackPower", 0f);
+
+				// ===== FIX: Validar que los valores cargados sean válidos =====
+				// Si son 0 o negativos, indica un save corrupto o de una versión anterior
+				if (m_baseAttackResilienceFactor <= 0f || m_baseAttackPower <= 0f)
+				{
+					Log.Warning($"[Aimep3Evolution] Valores base inválidos detectados al cargar (Resilience: {m_baseAttackResilienceFactor}, Attack: {m_baseAttackPower}). Recapturando...");
+
+					// Recapturar valores base reales de las estadísticas actuales
+					m_baseAttackResilienceFactor = m_componentHealth.AttackResilienceFactor;
+					m_baseAttackPower = m_componentMiner.AttackPower;
+					m_hasSavedBaseValues = true;
+				}
 
 				if (EvolutionLevel > 0)
 				{
@@ -358,8 +396,10 @@ namespace Game
 			}
 			else
 			{
+				// No hay valores base guardados, capturarlos ahora
 				m_baseAttackResilienceFactor = m_componentHealth.AttackResilienceFactor;
 				m_baseAttackPower = m_componentMiner.AttackPower;
+				m_hasSavedBaseValues = true;
 			}
 
 			if (EvolutionLevel > MaxEvolutionLevel)
@@ -375,9 +415,18 @@ namespace Game
 		{
 			valuesDictionary.SetValue("EvolutionLevel", EvolutionLevel);
 
-			valuesDictionary.SetValue("HasSavedBaseValues", true);
-			valuesDictionary.SetValue("BaseAttackResilienceFactor", m_baseAttackResilienceFactor);
-			valuesDictionary.SetValue("BaseAttackPower", m_baseAttackPower);
+			// ===== FIX PRINCIPAL EN SAVE: Solo guardar si realmente tenemos valores válidos =====
+			if (m_hasSavedBaseValues && m_baseAttackResilienceFactor > 0f && m_baseAttackPower > 0f)
+			{
+				valuesDictionary.SetValue("HasSavedBaseValues", true);
+				valuesDictionary.SetValue("BaseAttackResilienceFactor", m_baseAttackResilienceFactor);
+				valuesDictionary.SetValue("BaseAttackPower", m_baseAttackPower);
+			}
+			else
+			{
+				// No guardar valores base inválidos
+				valuesDictionary.SetValue("HasSavedBaseValues", false);
+			}
 		}
 
 		// ===== DISPOSE =====
