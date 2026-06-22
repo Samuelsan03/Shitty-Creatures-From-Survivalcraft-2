@@ -705,7 +705,7 @@ namespace Game
 			}
 
 			// ===== SPAWN DE INFECTED SPIDER (SOLO SI LA OPCIÓN ESTÁ ACTIVA) =====
-			if (ShittyCreaturesSettingsManager.SkeletonSpawnEnabled)
+			if (ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled)
 			{
 				if (m_skeletonNewSpawnChunks.Count > 0 && !isGreenNightActive)
 				{
@@ -762,7 +762,7 @@ namespace Game
 			// ===== FIN SPAWN DE INFECTED SPIDER =====
 
 			// ===== SPAWN DE ESQUELETOS NORMALES =====
-			if (ShittyCreaturesSettingsManager.SkeletonSpawnEnabled)
+			if (ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled)
 			{
 				if (m_skeletonNewSpawnChunks.Count > 0)
 				{
