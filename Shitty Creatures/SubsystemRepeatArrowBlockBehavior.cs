@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Game;
 using TemplatesDatabase;
@@ -17,12 +17,22 @@ namespace Game
 
 		public override void OnFiredAsProjectile(Projectile projectile)
 		{
-			if (RepeatArrowBlock.GetArrowType(Terrain.ExtractData(projectile.Value)) != RepeatArrowBlock.ArrowType.ExplosiveArrow)
+			RepeatArrowBlock.ArrowType arrowType = RepeatArrowBlock.GetArrowType(Terrain.ExtractData(projectile.Value));
+
+			// Virote explosivo - comportamiento existente
+			if (arrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow)
 			{
-				return;
+				this.m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 			}
-			this.m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
-			projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+			// Virote de diamante - vuela recto en agua (sin resistencia)
+			if (arrowType == RepeatArrowBlock.ArrowType.DiamondArrow)
+			{
+				// Establece el amortiguamiento en agua igual al amortiguamiento normal en aire
+				// Esto evita que la flecha se frene al entrar al agua
+				projectile.DampingInFluid = projectile.Damping;
+			}
 		}
 
 		public override bool OnHitAsProjectile(CellFace? cellFace, ComponentBody componentBody, WorldItem worldItem)
