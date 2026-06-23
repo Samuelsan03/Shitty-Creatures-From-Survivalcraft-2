@@ -1,4 +1,8 @@
 {
+  "ComponentAimep3Evolution": {
+    "0": "{0} evolucionó al nivel {1}. La pandemia solo empeora.",
+    "1": "{0} evolucionó al nivel {1}. Ya no hay vuelta atrás, es una máquina de matar."
+},
   "GreenNightWarConflictDialog": {
     "1": "¡ADVERTENCIA!",
     "2": "¡Has activado la Guerra contra Narcotraficantes durante\n la Noche Verde!\n\nEsto significa que los INFECTADOS y los NARCOTRAFICANTES\n te odian tanto\nque han decidido unir fuerzas para acabar contigo.\n\nVENTAJAS:\n• Subirás de nivel más rápido (si sobrevives).\n• Botín más valioso (totalmente innecesario si estás muerto).\n• Experiencia de combate extrema (para tu próxima vida).\n\nDESVENTAJAS:\n• Doble cantidad de enemigos.\n• Probabilidad de morir: ALTA.\n• Tus aliados probablemente también morirán.\n• El seguro de vida no cubre esto.\n\n¡Estás en dificultad {0}!\nLiteralmente has elegido la peor combinación posible.\nLos desarrolladores recomiendan rezar antes de continuar.\n\n¿Realmente quieres continuar o prefieres vivir para contarlo?",
@@ -173,7 +177,8 @@
     "4": "¡LOGROS COMPLETADOS!",
     "5": "¡Has desbloqueado todos los logros!\n Ahora relájate, que las criaturas también necesitan un descanso.\n ¡A bailar se ha dicho, coño!",
     "6": "Recorrido",
-    "7": "Trofeos"
+    "7": "Trofeos",
+    "8": "No. Simplemente no. Apaga eso y disfruta el espectáculo, que no todo el día hay fuegos artificiales cayendo del cielo."
 },
   "BaseWatermelonBlock": {
     "1": "Sandía",
@@ -291,7 +296,7 @@
     "FreeCameraDescription": "Activar/desactivar el modo de cámara libre (solo en modos no creativos)",
     "BleedingDescription": "Activar/desactivar sangrado en criaturas heridas",
     "HealthBarDescription": "Mostrar barras de salud en las criaturas",
-    "SkeletonSpawnDescription": "Generar esqueletos en noches normales",
+    "NightCreaturesSpawnEnabled": "Activar la aparición de esqueletos y arañas infectadas durante las noches normales",
     "FastMeleeDescription": "Permitir ataques cuerpo a cuerpo rápidos consecutivos al hacer clic/tocar rápidamente en el mismo objetivo",
     "InGameMusicDescription": "Muestra un botón en el juego para reproducir pistas de música aleatorias durante la partida."
   },
@@ -301,7 +306,9 @@
   "2": "Quotemante",
   "3": "Por su idea de añadir a Rayman como un nuevo personaje.",
   "4": "Richard Survivalcraft",
-  "5": "Por la idea de incluir personajes de Sonic The Hedgehog"
+  "5": "Por la idea de incluir personajes de Sonic The Hedgehog",
+  "6": "Heptagunn",
+  "7": "Por elegir la carátula de PlayStation 1 para la versión final de la carátula del mod"
 },
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!"
@@ -552,7 +559,7 @@
 "FrozenGhostBoomer": "La versión espectral y congelada del Boomer. Aparece desde la oleada 13. Al explotar libera una onda de frío espectral que congela a los enemigos. Su apariencia es fantasmal y semitransparente. Puede ser domesticado con un collar, transformándose en una versión dócil que protege a su dueño y puede ser montada. Durante la Noche Verde su agresividad aumenta, priorizando atacar jugadores. Resistente a la gripe y al veneno.",
       "FrozenGhost": "Una versión espectral y helada del infectado común. Aparece desde la oleada 1. Escupe proyectiles de hielo espectral desde distancia. Su cuerpo es semitransparente y fantasmal. Extremadamente agresivo, ataca sin importar la hora del día. Puede ser domesticado con un collar, transformándose en una versión dócil que protege a su dueño y puede ser montada. Durante la Noche Verde su agresividad aumenta, priorizando atacar jugadores. Es resistente al fuego y a la gripe. Al morir tiene una alta probabilidad de invocar a un fantasma normal.",
       "FirearmsDealer": "Un vendedor neutral de armas de fuego. Vende armas y munición a cambio de pago. Si estás cansado o prefieres ahorrar tiempo buscando materiales caros de conseguir, esta es la opción.",
-      "Aimep3": "Aimep3 es una creadora de contenido mexicana originaria de Ciudad Nezahualcóyotl, conocida en internet por sus videos en plataformas como YouTube, donde comparte recetas poco convencionales, momentos de su vida diaria y contenido espontáneo que con el tiempo se volvió viral. Su estilo directo, excéntrico y sin filtros la convirtió en una figura muy comentada dentro de la cultura de internet hispanohablante, generando tanto seguidores como críticas, y convirtiéndose en una fuente frecuente de memes y discusiones en redes sociales. En este mod, Aimep3 está representada como una aliada invocable que aparece exclusivamente en el día 3, sin importar la hora. Tiene un comportamiento de combate impredecible pero altamente efectivo: ataca y persigue constantemente a los enemigos, reaccionando de inmediato ante cualquier amenaza o contacto. Tiene la habilidad especial de invocar rayos al golpear a sus enemigos y puede destruir obstáculos si queda atrapada, e incluso puede colocar bloques para alcanzar objetivos ubicados en alturas elevadas, lo que le permite mantenerse constantemente activa en combate. Además, posee una probabilidad del 10% de teletransportarse cerca de los enemigos que está persiguiendo cuando estos se encuentran demasiado lejos, permitiéndole acortar distancias rápidamente y mantener la presión durante el combate. Coopera con el jugador como parte de su grupo, pudiendo pedir ayuda a criaturas cercanas y coordinar ataques sin dañar a sus aliados. Además, posee una resistencia excepcional a múltiples tipos de daño y una regeneración de salud muy alta, lo que la convierte en una compañera difícil de derrotar. También puede recolectar herramientas y armas, adaptándose fácilmente a diferentes situaciones durante la aventura. Asimismo, posee habilidades de curación, permitiéndole restaurar su propia salud, curar efectos negativos y también sanar a criaturas aliadas. Presenta un comportamiento único de paseo musical, moviéndose mientras emite sonidos característicos que añaden personalidad a su presencia. Finalmente, puede realizar ataques de vómito a distancia con múltiples efectos, haciéndola aún más impredecible y peligrosa en combate.",
+      "Aimep3": "Aimep3 es una creadora de contenido mexicana originaria de Ciudad Nezahualcóyotl, conocida en internet por sus videos en plataformas como YouTube, donde comparte recetas poco convencionales, momentos de su vida diaria y contenido espontáneo que con el tiempo se volvió viral. Su estilo directo, excéntrico y sin filtros la convirtió en una figura muy comentada dentro de la cultura de internet hispanohablante, generando tanto seguidores como críticas, y convirtiéndose en una fuente frecuente de memes y discusiones en redes sociales. En este mod, Aimep3 está representada como una aliada invocable que aparece exclusivamente en el día 3, sin importar la hora. Tiene un comportamiento de combate agresivo y altamente efectivo, atacando y persiguiendo constantemente a los enemigos mientras coopera con el jugador y sus aliados. Posee una resistencia excepcional y una gran capacidad de supervivencia, convirtiéndola en una compañera difícil de derrotar. También puede recolectar herramientas y armas para adaptarse mejor a diferentes situaciones. Además, cuenta con un sistema especial de evolución que se activa al consumir pan. Puede evolucionar hasta cuatro veces, aumentando enormemente su poder de ataque y resistencia con cada transformación, además de recuperar parte de su salud durante el proceso. Cada evolución está acompañada de efectos visuales especiales que anuncian su crecimiento. Desde su primera evolución desbloquea una habilidad de fuego que le permite incendiar periódicamente a criaturas hostiles cercanas, provocando daños prolongados y volviéndose más peligrosa conforme aumenta su nivel evolutivo. Esta habilidad respeta a los aliados, miembros de su propia manada y criaturas asociadas al jugador. Al alcanzar su evolución máxima desarrolla una poderosa resistencia antibalas, reduciendo considerablemente el daño recibido de armas de fuego y convirtiéndose en una combatiente aún más resistente en los enfrentamientos más peligrosos.",
       "InfectedFreezer": "Un infectado que exhala un frío penetrante. Aparece desde la oleada 1. Escupe proyectiles helados que ralentizan y dañan a sus enemigos a distancia. Extremadamente agresivo, ataca sin importar la hora del día. Puede ser domesticado con un collar, transformándose en una versión dócil que protege a su dueño y puede ser montada. Durante la Noche Verde su agresividad aumenta, priorizando atacar jugadores. Es vulnerable al fuego, pero resistente a la gripe. Al morir tiene una alta probabilidad de generar un fantasma. Puede destruir bloques de nieve, hielo y cristales.",
       "HumanoidSkeleton": "Un esqueleto errante que vaga en las noches normales (es el único infectado que aparece durante las noches comunes), apareciendo desde la oleada 1. Extremadamente agresivo, ataca a todo lo que se mueve sin importar la hora del día. Puede ser domesticado con un collar, transformándose en una versión dócil que protege a su dueño y puede ser montada. Durante la Noche Verde su agresividad aumenta, priorizando atacar jugadores. Su ataque principal cuerpo a cuerpo es con un garrote o machete. Puede equipar ropa y recoger objetos. Al morir tiene una alta probabilidad de invocar a un fantasma normal.",
       "PredatoryChameleon": "Un híbrido humanoide con rasgos de camaleón, resultado de una mutación que fusionó hombre y lagarto. Aparece desde la oleada 6. Aunque perdió su capacidad de camuflaje, su fuerza y agresividad se han potenciado. Extremadamente agresivo, ataca a todo lo que se mueve sin importar la hora del día. Puede ser domesticado con un collar, transformándose en una versión dócil que protege a su dueño. Durante la Noche Verde su agresividad aumenta, priorizando atacar jugadores. Destruye bloques de vidrio a su paso. Es resistente al veneno.",
@@ -1135,10 +1142,10 @@
       "CRDescription:1": "Virote de hierro reforzado para ballesta repetidora. Mayor daño y penetración que los virotes de hierro normales."
     },
     "RepeatArrowBlock:2": {
-      "DisplayName": "Virote de Diamante Repetidor",
-      "Description": "Virote de alto nivel con punta de diamante, diseñado para ballestas repetidoras avanzadas. Presenta altísima penetración de armadura y daño elevado sostenido. Optimizado para ráfagas rápidas.",
-      "CRDescription:2": "Virote de diamante para ballesta repetidora. Penetración de armadura excepcional y daño elevado en ráfagas."
-    },
+  "DisplayName": "Virote de Diamante Repetidor",
+  "Description": "Virote de alto nivel con punta de diamante, diseñado para ballestas repetidoras avanzadas. Presenta altísima penetración de armadura y daño elevado sostenido. Su estructura reforzada evita la ruptura al impactar y conserva gran parte de su velocidad al atravesar el agua.",
+  "CRDescription:2": "Virote de diamante para ballesta repetidora. No se rompe al impactar y mantiene su velocidad en el agua."
+},
     "RepeatArrowBlock:3": {
       "DisplayName": "Virote Explosivo Repetidor",
       "Description": "Virote explosivo para ballestas repetidoras. Genera pequeñas explosiones al impactar. Aunque su daño individual es menor que el virote explosivo estándar, permite explosiones en ráfaga, ideal para control de áreas y grupos.",
@@ -1552,13 +1559,14 @@
     "HelpText": "Autores\nFire Dragon\nKike\n----------\nEsta arma usa la primera ranura de la barra rápida o la primera ranura disponible con un objeto. Para guardar cambios, presiona 'Aceptar', o 'X' para cancelar. La configuración de dispersión y velocidad determinan la dirección y distancia de los proyectiles.\n\nPara usarlo, simplemente mantén presionado el clic derecho en PC o toca la pantalla en dispositivos móviles, y disparará automáticamente las veces por segundo que hayas configurado. Útil para lanzar huevos de criaturas y generar seres en grandes cantidades en poco tiempo.\n\nTambién puedes divertirte lanzando fuegos artificiales o cualquier otro objeto.\n\n\nCódigo robado por Samuelsan03, así que haz lo que quieras con él xd"
   },
     "CreatureInventoryWidget": {
-      "CreatureInventoryLabel": "Inventario de la Criatura",
-      "InventoryLabel": "Inventario"
+      "0": "Inventario de la Criatura",
+      "1": "Agricultor",
+      "2": "Agricultor (N/A)"
     },
     "FlameThrowerWidget": {
     "1": "Lanzallamas",
     "2": "Inventario",
-    "3": "Cargar munición",
+    "3": "Cargue balas de fuego o veneno para poder disparar.",
     "4": "Prepararse para rociar fuego {0}/15",
     "5": "Prepararse para rociar veneno {0}/15"
   },
@@ -1594,7 +1602,6 @@
     "CollarTamedGhostTankMessage": "¡Has domesticado un Fantasma Tank!\n¡El terror espectral de los jefes es ahora tu esclavo fantasma!\n¡Su fuerza bruta fantasmal te protegerá desde las sombras!",
     "CollarTamedGhostMessage": "¡Has domesticado a un Fantasma!\n ¡Su invisibilidad ahora está en tus manos!",
     "AntiTankCriticalHit": "Impacto crítico de bala Anti-Tank",
-    "TankChaseAlert": "¡ALERTA!\n ¡Apareció un Tank!\n ¡Refúgiate, busca buenas armas para matarlo o usa el collar zombie para calmar su rabia y convertirlo en aliado!",
     "CollarTamedChargerMessage": "¡Has domesticado un Charger!\n ¡Su fuerza bruta para empujar enemigos ahora será tu herramienta!\n ¡Úsalo bien y sabiamente!",
     "CollarTamedTankMessage": "¡Has domesticado al Tank!\n ¡El jefe de los jefes más temido es tu esclavo!\n Aprovecha su fuerza bruta como tu guardián!",
     "CollarTamedBoomerMessage": "¡Has domesticado a un Boomer!\nAhora puedes usarlo como un guardián explosivo esclavizado.\nÚsalo sabiamente en casos de emergencia.",
