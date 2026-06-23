@@ -48,14 +48,13 @@
     <Parameter Name="WalkSpeed" Guid="2e42a21a-c91a-4959-8011-88d0aca1cbb0" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="892339ff-f383-42d0-a97b-0238dda69152" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="c7ff22be-b261-4ea9-a88c-64ae043a6ed5" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="444" Type="int"/> <!-- Tiene puesto su desert eagle-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+    <MemberComponentTemplate Name="NewInventory" Guid="c7ff22be-b261-4ea9-a88c-64ae043a6ed5" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit1">
+          <Parameter Name="SWM500Block" Value="1" Type="int" /> <!-- Tiene puesto su desert eagle-->
         </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
+      </ParameterSet>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="4e739ae6-49fd-44b3-8973-63abaaf0ea39" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
@@ -177,13 +176,12 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="416816e5-f69f-4fd3-816b-bd085731f70f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="420" Type="int"/> <!-- Tiene puesto su M4-->
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
+    <MemberComponentTemplate Name="NewInventory" Guid="416816e5-f69f-4fd3-816b-bd085731f70f" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+  <ParameterSet Name="CreatureItems">
+    <ParameterSet Name="Bandit2">
+      <Parameter Name="M4Block" Value="1" Type="int" />
     </ParameterSet>
+  </ParameterSet>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="eac867f3-7451-445a-9db6-b627460abd57">
         <Parameter Name="Mass" Guid="548d2d30-772e-4152-ab3e-07937d5fa966" Value="999" Type="float"/>
@@ -322,13 +320,12 @@
             <MemberComponentTemplate Name="Miner" Guid="8d3d0c29-7412-4a26-a566-bfefed971891" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
               <Parameter Name="AttackPower" Guid="67a49ace-1064-419b-a640-b238837860fa" Value="3" Type="float" />
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Inventory" Guid="c8177148-4404-4815-9070-e3f898d649df" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="380" Type="int"/> <!-- Tiene puesto su AK 47-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+            <MemberComponentTemplate Name="NewInventory" Guid="c8177148-4404-4815-9070-e3f898d649df" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit3"> <!-- Tiene puesto su AK 47-->
+          <Parameter Name="AKBlock" Value="1" Type="int" />
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="d4732868-27cd-424d-844e-c48dea14658f" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -414,13 +411,12 @@
     <Parameter Name="WalkSpeed" Guid="17cb0041-6b84-4b53-aa67-c98ae4a846f7" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="095aa5c6-a2d7-426e-9032-124316c944d6" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="8e20ad8c-448b-4cc4-ba5c-be345b936e2c" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="385" Type="int"/> <!-- Tiene puesto su AUG-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+    <MemberComponentTemplate Name="NewInventory" Guid="8e20ad8c-448b-4cc4-ba5c-be345b936e2c" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit4">
+          <Parameter Name="AUGBlock" Value="1" Type="int" /> <!-- Tiene puesto su AUG-->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="51e9a598-f359-48e5-9c7d-f89b1ebbe533" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -544,13 +540,12 @@
     <Parameter Name="WalkSpeed" Guid="88afa244-0597-4262-904a-b358c524c968" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="aac9a925-c0f9-4c83-b204-10bf1465a37e" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="9cf1b1de-24c0-4035-a8dc-a501ad3b1a77" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="432" Type="int"/> <!-- Tiene puesto su Revolver-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+    <MemberComponentTemplate Name="NewInventory" Guid="9cf1b1de-24c0-4035-a8dc-a501ad3b1a77" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit5">
+          <Parameter Name="RevolverBlock" Value="1" Type="int" /> <!-- Tiene puesto su Revolver-->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="b3d07cc2-3e9b-4287-b03c-edbd0983f8d5" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -674,13 +669,12 @@
     <Parameter Name="WalkSpeed" Guid="618e3277-ba6a-4e28-8980-c2e743519c96" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="57583537-32bd-4571-ba05-7b6c9f954fd2" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="fdfddd8c-151b-4741-a515-cb36840652a2" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="417" Type="int"/> <!-- Tiene puesto su Izh-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+    <MemberComponentTemplate Name="NewInventory" Guid="fdfddd8c-151b-4741-a515-cb36840652a2" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit6">
+          <Parameter Name="Izh43Block" Value="1" Type="int" /> <!-- Tiene puesto su Izh-->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="6b4a8a92-5b66-4f71-8ae0-463e1ee35a0e" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -911,6 +905,7 @@
   <Parameter Name="MaxHelpChaseTime" Type="float" Value="60" Guid="9860e933-9353-425d-97ea-1b300c5be47b"/>
   <Parameter Name="AvoidAttackingSameHerd" Type="bool" Value="true" Guid="976dc238-74b9-4295-afce-05a5ba9d6617"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FarmerBehavior" Guid="37adb22c-be88-491f-a0d5-304364294d5c" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
     <ParameterSet Name="CreatureEggData" Guid="7384e8b9-2c18-48c7-a674-e7feef1b21de">
         <Parameter Name="Color" Guid="93948618-1146-4312-b7a8-81c9e6f415d9" Value="176,115,115" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="803c66f2-fab5-4f36-9f0a-b3802085010a" Value="170" Type="int"/>
@@ -954,15 +949,14 @@
     <Parameter Name="FlySpeed" Guid="402b17d4-ad08-400a-a8ca-893b51711b8b" Value="0" Type="float"/>
     <Parameter Name="TurnSpeed" Guid="9d6e8abf-8b04-418e-8e76-8d18cf1d82b1" Value="3" Type="float"/>
     <Parameter Name="WalkSpeed" Guid="b5f36cc1-5da0-455f-ab98-2d43eaa6af67" Value="4" Type="float"/>
-    <Parameter Name="LadderSpeed" Guid="4f40273d-e09d-4095-8290-21c8ae7bf453" Value="1.0" Type="float"/>
+    <Parameter Name="LadderSpeed" Guid="4f40273d-e09d-4095-8290-21c8ae7bf453" Value="0" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="a0b1e1c8-4d9a-48f1-a03b-e9d83b08dfd4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="429" Type="int"/> <!-- Tiene puesto su FN P90-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+    <MemberComponentTemplate Name="NewInventory" Guid="a0b1e1c8-4d9a-48f1-a03b-e9d83b08dfd4" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17"> 
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit8">
+          <Parameter Name="P90Block" Value="1" Type="int" /> <!-- Tiene puesto su FN P90-->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="0770a2ea-48b0-4c48-844b-02bc33066790" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -1086,13 +1080,12 @@
     <Parameter Name="WalkSpeed" Guid="d64d2d53-bc32-4749-9087-ed9f4e2e893c" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="83a7765d-9017-46a2-bb6b-2322b0c8820c" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="cbba0c4e-1359-47bd-afff-127ebb25c37c" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="420" Type="int"/> <!-- Tiene puesto su Mac 10-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+    <MemberComponentTemplate Name="NewInventory" Guid="cbba0c4e-1359-47bd-afff-127ebb25c37c" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit9">
+          <Parameter Name="Mac10Block" Value="1" Type="int" /> <!-- Tiene puesto su Mac 10-->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="b232f3bb-27c3-48f8-81f1-9458c3fa3113" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -1214,15 +1207,14 @@
     <Parameter Name="FlySpeed" Guid="ed62ecad-b03c-401f-bd93-1200d70e8c1b" Value="0" Type="float"/>
     <Parameter Name="TurnSpeed" Guid="525f65ac-03d9-4063-8af0-f79877360e50" Value="3" Type="float"/>
     <Parameter Name="WalkSpeed" Guid="47c22146-add4-4b3c-9883-8b9c9ae0529e" Value="4" Type="float"/>
-    <Parameter Name="LadderSpeed" Guid="9e9f54e3-c9bc-4a72-905e-564d6fbcca12" Value="1.0" Type="float"/>
+    <Parameter Name="LadderSpeed" Guid="9e9f54e3-c9bc-4a72-905e-564d6fbcca12" Value="0" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="b6f0640a-6e50-4773-9e0b-3ce3abffb7ed" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="447" Type="int"/> <!-- Tiene puesto su Uzi-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+    <MemberComponentTemplate Name="NewInventory" Guid="b6f0640a-6e50-4773-9e0b-3ce3abffb7ed" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit10">
+          <Parameter Name="UziBlock" Value="1" Type="int" /> <!-- Tiene puesto su Uzi-->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="e80aa648-2019-46ba-ab34-f89cbcd4c6de" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -1359,8 +1351,7 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="4be46f40-59c6-4d02-a2b2-b7a1ba2f6c7a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="4be46f40-59c6-4d02-a2b2-b7a1ba2f6c7a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
 <MemberComponentTemplate Name="CollectPickableBehavior" Guid="d35dff57-ae76-47ec-8d37-58a145cc98fd" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
               <ParameterSet Name="CollectFactors" Guid="cf621d49-549f-4db0-9d20-6d81eae34cc0">
                 <Parameter Name="Weapons" Guid="77a7b7f1-0326-492d-a8eb-858a5ae41285" Value="1" Type="float" />
@@ -1454,6 +1445,7 @@
   <Parameter Name="MaxHelpChaseTime" Type="float" Value="60" Guid="fa93ddc8-3deb-4415-9fe7-7154847d1675"/>
   <Parameter Name="AvoidAttackingSameHerd" Type="bool" Value="true" Guid="a6103e93-a93e-4597-a24b-852a6469f52c"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FarmerBehavior" Guid="c96b9385-7cdf-4cf2-8e62-6d62ad211134" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
     <ParameterSet Name="CreatureEggData" Guid="d8ec3947-b921-4929-9501-056a6762c888">
         <Parameter Name="Color" Guid="6560b311-57be-4006-adb1-65e294df34f4" Value="176,115,115" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d9041304-789b-4c93-a9c6-a9147bcc7b98" Value="170" Type="int"/>
@@ -1606,6 +1598,7 @@
   <Parameter Name="MaxHelpChaseTime" Type="float" Value="60" Guid="e3dd05a5-bc0e-4a59-b4c0-fab114cd6af3"/>
   <Parameter Name="AvoidAttackingSameHerd" Type="bool" Value="true" Guid="bf4d62fc-557d-472a-a79f-af9882a878ce"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FarmerBehavior" Guid="958b8372-980d-4a35-80e1-4d957cbd9735" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
     <ParameterSet Name="CreatureEggData" Guid="c65430fe-53cd-4bc6-b03d-c88fc6965681">
         <Parameter Name="Color" Guid="54764388-f484-44aa-acb2-f997086cbb07" Value="176,115,115" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="e3208582-1a96-45e7-a235-b6c9a36e1b5d" Value="170" Type="int"/>
@@ -1651,13 +1644,12 @@
     <Parameter Name="WalkSpeed" Guid="30c33009-90a1-4eef-a870-882ef4846270" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="2ebd8a76-eae3-4e23-a197-c1b49c3744fd" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="5c1d4b1b-dc08-4426-bd96-12d2bd30647a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="440" Type="int"/> <!-- Tiene puesto su SCAR-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+<MemberComponentTemplate Name="NewInventory" Guid="5c1d4b1b-dc08-4426-bd96-12d2bd30647a" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit13">
+          <Parameter Name="SCARBlock" Value="1" Type="int" /> <!-- Tiene puesto su SCAR-->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="f28daca9-dfdc-46fc-8ac4-6b493591fd05" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -1781,13 +1773,12 @@
     <Parameter Name="WalkSpeed" Guid="c21149e4-b53e-4ebb-875a-2a3b6df0d660" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="fde5916c-ada4-4c72-8344-17164288e6c3" Value="0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="a5e9b2d8-0cc9-4ecb-8f67-a8499e3aec82" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="424" Type="int"/> <!-- Tiene puesto su Mendoza-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+<MemberComponentTemplate Name="NewInventory" Guid="a5e9b2d8-0cc9-4ecb-8f67-a8499e3aec82" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit14">
+          <Parameter Name="MendozaBlock" Value="1" Type="int" /> <!-- Tiene puesto su Mendoza-->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="47d41234-c306-4732-9a2d-5bfe419167b5" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -1911,13 +1902,12 @@
     <Parameter Name="WalkSpeed" Guid="562e840c-b341-4815-a148-2006f83dffa9" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="aace6fac-1027-4dfc-a101-f2e4fb718c2d" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="8243b42e-acce-4613-b3f2-459e15ba4f5b" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="392" Type="int"/> <!-- Tiene puesto su BK 43-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+<MemberComponentTemplate Name="NewInventory" Guid="8243b42e-acce-4613-b3f2-459e15ba4f5b" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit15">
+          <Parameter Name="BK43Block" Value="1" Type="int" /> <!-- Tiene puesto su BK 43-->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="f7d0bead-de29-4e5b-bab5-013eb405ce1c" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
@@ -2160,18 +2150,14 @@
             <MemberComponentTemplate Name="Miner" Guid="759e80f0-8349-40bf-a42b-01ea7a31ca70" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
               <Parameter Name="AttackPower" Guid="27850a2f-ab80-436e-92f0-2bc58728f96c" Value="2.5" Type="float" />
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Inventory" Guid="71ad2d1c-13c6-447b-8ce4-69642f52a910" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="442" Type="int"/> <!-- Tiene puesto su francotirador-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+            <MemberComponentTemplate Name="NewInventory" Guid="71ad2d1c-13c6-447b-8ce4-69642f52a910" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+      <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Bandit16">
+          <Parameter Name="SniperBlock" Value="1" Type="int" />
+          <Parameter Name="CopperAxeBlock" Value="1" Type="int" />
         </ParameterSet>
-    <ParameterSet Name="Slot1">
-            <Parameter Name="Contents" Value="165" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
+      </ParameterSet>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="9c6ee1c3-e65e-4f21-aa71-cefa83bdcf22" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
@@ -2278,6 +2264,7 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="918d496e-fced-409c-8ebc-c1cdc41c8209"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="035e8b04-d97e-4eaa-93f7-b32b3ec95046"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FarmerBehavior" Guid="4dfe2006-5db4-41a5-9b52-906378d5319e" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="Health" Guid="bca1513e-cbcf-4b24-88d8-e2d96fd652a5">
               <Parameter Name="AttackResilience" Guid="de188dd6-3d9d-44d0-afcf-d30e7e1ca5c4" Value="455" Type="float" />
               <Parameter Name="FireResilience" Guid="764c8d8f-7f00-46eb-9605-44fa9102811c" Value="35" Type="float" />
