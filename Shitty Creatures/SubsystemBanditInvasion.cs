@@ -37,6 +37,19 @@ namespace Game
 		/// </summary>
 		private bool m_greenNightWasActiveDuringInvasion;
 
+		/// <summary>
+		/// Flag para sincronizar los bandidos en el primer Update después de cargar.
+		/// Necesario porque las entidades podrían no estar cargadas cuando Load() se ejecuta.
+		/// </summary>
+		private bool m_needsInitialSync;
+
+		/// <summary>
+		/// Flag para indicar que el estado fue restaurado desde un guardado.
+		/// Evita que la lógica de transición (wasEffective → !effective) se dispare
+		/// incorrectamente al cargar durante una doble guerra.
+		/// </summary>
+		private bool m_restoredFromSave;
+
 		public bool IsWarAccepted => m_acceptedWar;
 		public bool IsWarRejected => m_wasRejected;
 		public bool IsWarCompleted => m_invasionCompleted;
@@ -69,6 +82,7 @@ namespace Game
 				m_wasRejected = false;
 				m_spawnTimer = 0f;
 				m_greenNightWasActiveDuringInvasion = false;
+				m_restoredFromSave = false;
 				m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 				return;
 			}
@@ -79,6 +93,7 @@ namespace Game
 				m_acceptedWar = true;
 				m_wasRejected = false;
 				m_greenNightWasActiveDuringInvasion = false;
+				m_restoredFromSave = false;
 			}
 		}
 
@@ -127,23 +142,47 @@ namespace Game
 			m_wasRejected = valuesDictionary.GetValue<bool>("WasRejected", false);
 			m_greenNightWasActiveDuringInvasion = valuesDictionary.GetValue<bool>("GreenNightWasActiveDuringInvasion", false);
 
+			// =====================================================
+			// NUEVO: Restaurar estado activo directamente del guardado
+			// Esto evita depender del estado de SubsystemGreenNightSky
+			// que podría no haber cargado aún (problema de orden de carga)
+			// =====================================================
+			m_invasionActive = valuesDictionary.GetValue<bool>("InvasionActive", false);
+			m_invasionStarted = valuesDictionary.GetValue<bool>("InvasionStarted", false);
+
 			// Calcular tiempo efectivo de invasión (incluye noche verde)
 			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 
-			// Restaurar estado activo si corresponde
-			if (m_acceptedWar && !m_invasionCompleted && m_wasEffectiveInvasionTime)
+			// Marcar que restauramos desde guardado para evitar transiciones falsas
+			m_restoredFromSave = true;
+
+			// Lógica de restauración con compatibilidad hacia atrás
+			if (m_invasionCompleted)
 			{
+				// Si está completada, asegurar que no esté activa
+				m_invasionActive = false;
+				m_invasionStarted = false;
+				m_needsInitialSync = false;
+			}
+			else if (m_acceptedWar && !m_invasionActive && m_wasEffectiveInvasionTime)
+			{
+				// Caso de compatibilidad: guardados antiguos que no tenían InversionActive
+				// pero la guerra fue aceptada y es tiempo de invasión
 				m_invasionActive = true;
 				m_invasionStarted = true;
+				m_needsInitialSync = true;
 			}
 			else
 			{
-				m_invasionActive = false;
-				m_invasionStarted = false;
+				// Estado normal: usar lo que se guardó
+				m_needsInitialSync = m_invasionActive;
 			}
 
-			// Sincronizar TODOS los bandidos existentes con el estado actual de invasión
-			SyncBanditsDrugTraffickerMode();
+			// =====================================================
+			// IMPORTANTE: NO llamar SyncBanditsDrugTraffickerMode() aquí
+			// Las entidades podrían no estar cargadas aún.
+			// La sincronización se hace en el primer Update().
+			// =====================================================
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
@@ -152,6 +191,13 @@ namespace Game
 			valuesDictionary.SetValue("InvasionCompleted", m_invasionCompleted);
 			valuesDictionary.SetValue("WasRejected", m_wasRejected);
 			valuesDictionary.SetValue("GreenNightWasActiveDuringInvasion", m_greenNightWasActiveDuringInvasion);
+
+			// =====================================================
+			// NUEVO: Guardar estado activo explícitamente
+			// Esto es CRÍTICO para restaurar correctamente la doble guerra
+			// =====================================================
+			valuesDictionary.SetValue("InvasionActive", m_invasionActive);
+			valuesDictionary.SetValue("InvasionStarted", m_invasionStarted);
 		}
 
 		public void CancelWar()
@@ -161,6 +207,7 @@ namespace Game
 			m_acceptedWar = false;
 			m_wasRejected = true;
 			m_greenNightWasActiveDuringInvasion = false;
+			m_restoredFromSave = false;
 
 			// Si la invasión estaba activa, detenerla y restaurar bandidos a modo normal
 			if (m_invasionActive)
@@ -235,6 +282,17 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// =====================================================
+			// NUEVO: Sincronizar bandits en el primer Update después de cargar
+			// Para este punto, todas las entidades ya deberían estar cargadas
+			// =====================================================
+			if (m_needsInitialSync)
+			{
+				m_needsInitialSync = false;
+				SyncBanditsDrugTraffickerMode();
+				Log.Verbose($"[SubsystemBanditInvasion] Sincronización inicial completada. InvasionActive={m_invasionActive}, GreenNightActive={m_subsystemGreenNightSky?.IsGreenNightActive}");
+			}
+
 			if (m_invasionCompleted)
 				return;
 
@@ -249,6 +307,7 @@ namespace Game
 					SetAllBanditsDrugTraffickerMode(false);
 				}
 				m_wasEffectiveInvasionTime = effectiveInvasionTime;
+				m_restoredFromSave = false;
 				return;
 			}
 
@@ -271,17 +330,29 @@ namespace Game
 				m_greenNightWasActiveDuringInvasion = true;
 			}
 
-			// Manejar finalización: SOLO cuando el tiempo efectivo de invasión termina.
-			// Esto significa que AMBOS el invasion time normal (DawnStart) Y la Noche Verde
-			// han terminado. Si la Noche Verde sigue activa después de DawnStart,
-			// la invasión continúa hasta que la Noche Verde también termine.
-			if (m_wasEffectiveInvasionTime && !effectiveInvasionTime && m_invasionActive)
+			// =====================================================
+			// MANEJO DE FINALIZACIÓN - CORREGIDO
+			// 
+			// Solo finalizar la invasión cuando:
+			// 1. El tiempo efectivo pasa de true a false, Y
+			// 2. NO estamos en el primer frame después de restaurar desde guardado
+			//
+			// Esto evita que al cargar durante una doble guerra, si
+			// m_wasEffectiveInvasionTime era false (por orden de carga)
+			// y ahora effectiveInvasionTime es true, se produzca una
+			// transición falsa en el futuro.
+			// =====================================================
+			if (!m_restoredFromSave && m_wasEffectiveInvasionTime && !effectiveInvasionTime && m_invasionActive)
 			{
 				m_invasionActive = false;
 				m_invasionCompleted = true;
 				SetAllBanditsDrugTraffickerMode(false);
 				InvasionCompleted?.Invoke();
+				Log.Verbose("[SubsystemBanditInvasion] Invasión completada - transición de tiempo efectivo");
 			}
+
+			// Limpiar flag de restauración después del primer frame
+			m_restoredFromSave = false;
 
 			m_wasEffectiveInvasionTime = effectiveInvasionTime;
 
