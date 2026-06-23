@@ -238,8 +238,7 @@
                 <Parameter Name="Tools" Guid="6156d9f3-dbc7-4e66-a1ef-c249e60e7ab8" Value="1" Type="float" />
               </ParameterSet>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Inventory" Guid="f2312c70-9a02-4536-87c4-fe03575e01e4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Inventory" Guid="f2312c70-9a02-4536-87c4-fe03575e01e4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
 <MemberComponentTemplate Name="PoisonInfected" Guid="6acb7e3c-76ee-4d92-9ec1-7cb0dec33dd7">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -306,6 +305,7 @@
         <Parameter Name="AttackResilience" Guid="54333d0c-4f07-4a5e-992e-0a493ba08ba5" Value="55.5" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="9f8f8b22-b348-4c2a-b04f-002a0c67058a"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="ea21caf4-61e5-4852-a2ee-3521d0e19cbe" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b37c70cc-9fd7-4cd3-941d-2c8bd3853256" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="9b93868a-e03d-43c7-8c35-fe273774be77" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="3cbf9c6e-606b-42a2-b70c-5b874ee91657" Value="False" Type="bool"/>
@@ -618,6 +618,7 @@
         <Parameter Name="AttackResilience" Guid="eb32039e-a6e9-4ef8-9c03-b7a047fc8462" Value="55.5" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="5e3e516d-2141-4472-a1ac-e6e7ddf53a55"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="27e4ef54-831c-4226-a7a7-380d29351af4" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="7a39ca21-0553-480d-8874-2501cce5abce" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="3725d6cd-3443-47fa-b2e2-e7a750fb9f37" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="cd8765e7-baf7-45df-9be5-0addec674a35" Value="False" Type="bool"/>
@@ -3376,6 +3377,7 @@
         <Parameter Name="AttackResilience" Guid="c3ea90b3-df90-44cc-be56-f3afaf2e0d3d" Value="80" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="da204762-cc16-4576-8e98-4487c2d33d1f"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="7ce5c472-7c7c-4b4f-a9be-f7f2e2ea8930" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="0719a5c7-731a-4c95-b54b-9544cdba52e1" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="786283b6-646a-48f5-a094-c749e9cee613" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="39f4e156-e6cc-4b92-92eb-620b6b338490" Value="False" Type="bool"/>
@@ -3688,6 +3690,7 @@
         <Parameter Name="AttackResilience" Guid="2c94edb2-04ff-4655-b688-ccfb7526db8c" Value="80" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="6b26f08a-379d-438f-b80f-ebb1381f36c7"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="ab41b072-518e-4823-a3ed-d1f986c7ab71" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="1063e703-7b61-4bce-a28b-aea20f7b1eb1" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="2c81e4f4-cb80-43cd-8ad9-668cc10b70b3" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="36a535b3-4eda-45e0-8681-e3ee8ecd7e84" Value="False" Type="bool"/>
@@ -3986,6 +3989,7 @@
         <Parameter Name="AttackResilience" Guid="cc853820-b339-4459-8241-2f1573b52bb2" Value="80" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="8d2cc779-8e40-4672-bb7b-f58b7f3fbf75"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="d349faa9-a061-4fed-a1a4-f467752d98a3" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="aca26752-7950-4b1b-8bec-50c1c398f40c" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="1fae62b1-000b-4551-a45a-879d4ffd6a74" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="b525f4c6-e551-4d7a-b0b3-9b1b036551d6" Value="False" Type="bool"/>
@@ -5472,6 +5476,7 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="150c6335-24e0-4c92-b77b-e57df2d7c8bb"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="9a1528f5-609d-40d3-b12c-a6c2adcaf7d4"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FarmerBehavior" Guid="5136ed56-46f7-4e27-9968-bd8343c2e6eb" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="c4961720-5779-4cba-8e0a-db780d533b79" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f19427ae-d2f7-4074-871c-3c55b8a8b302" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="71bedf48-1163-4bed-a265-8acc137ff1a4" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -5941,6 +5946,7 @@
         <Parameter Name="AttackResilience" Guid="4b5b7f15-9269-4e2d-ab4a-6998c4a77915" Value="95" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="54fc27f8-70a5-4328-9c17-f6477eaf2f8a"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="a638bf66-c1a2-4566-af5a-61858bd5620f" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="64e23c06-4cac-4f9b-8802-de768ad9ba7b" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="5f52d1c7-a890-4d70-9713-9fe18ae472c4" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="18fed9a7-7ba4-4843-ad2b-20bb08e7aee9" Value="False" Type="bool"/>
@@ -8394,14 +8400,13 @@
   <Parameter Name="FleeDistance" Guid="d027f2b9-dd3b-421d-9a87-9408988bd8c1" Value="10" Type="float"/>
   <Parameter Name="ForceAttackDuringGreenNight" Guid="d6978edb-ecab-4c75-b91e-203dea7de179" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="77530c4a-d1b8-401e-8f55-49990df19a5f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="425" Type="int"/> <!-- Tiene puesto su Minigun-->
-            <Parameter Name="Count" Value="1" Type="int"/>
+<MemberComponentTemplate Name="NewInventory" Guid="04496867-cba2-46d5-9b2f-7aa5e7c729a1" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+      <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="MachineGunInfected">
+          <Parameter Name="MinigunBlock" Value="1" Type="int" /> <!-- Tiene su Minigun -->
         </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
+      </ParameterSet>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="f2f4635b-6651-4520-a0e0-529cbc94370f" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
@@ -10839,6 +10844,7 @@
         <Parameter Name="AttackResilience" Guid="788b0cc8-1b29-4d50-ac61-0aafdb3a406b" Value="55.5" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="45787c19-4225-4d76-bbae-e69fe53c61eb"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="f9a7e16f-4da4-46c3-912d-2425f8120409" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="09d9bb9e-533f-4bf6-9d64-42c3ffc96953" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="c77df6c0-37ce-4b83-96f4-1f88999f4da2" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="670f1ecf-6a53-4999-a3e1-11078d743235" Value="False" Type="bool"/>
@@ -11129,6 +11135,7 @@
         <Parameter Name="AttackResilience" Guid="8b40fa51-5bd5-4a57-ae01-edef821be092" Value="80" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="937ff337-5be4-4cdb-ba37-2fa0684d635c"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="a45139e9-3658-4a5d-8d95-51b315637a27" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="9c25fdc3-d625-4004-80d6-7ec3f93f060f" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="61418295-3560-4841-bada-d8665dd34585" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="0d0a4f72-2ece-494e-8679-6a362fb98ad5" Value="False" Type="bool"/>
@@ -11497,6 +11504,7 @@
         <Parameter Name="AttackResilience" Guid="1881c481-da6c-4df3-9419-36aea513746f" Value="55.5" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="d09efab0-1b2a-42f9-9717-0c2cc5a256f2"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="16b612aa-8f0c-49cb-b14b-5f5e8872e3a8" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="2113d8d0-ee01-4309-bfd7-f71e177c5360" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="dac371e6-e636-4990-a2ef-e7c0a3501634" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="f57737c9-f270-4093-a73b-bcb037379729" Value="False" Type="bool"/>
@@ -11693,6 +11701,7 @@
               <Parameter Name="GlowingEyesColor" Guid="404b72c2-ee16-4047-9be0-57b513753733" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="4b01c3a5-59fc-46bc-9822-97ee7d23ab17" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="17175815-6f0a-4781-b2fa-b50706f0e1de" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="RunAwayBehavior" Guid="c6611c74-af67-436a-868e-76119feb034b" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="2bcf54f7-f6bc-4e12-8381-1829d1011aad" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="476f25ee-267b-416e-b6dc-be9fe1dc1e1e" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -12569,6 +12578,9 @@
             <MemberComponentTemplate Name="DeathSpawner" Guid="27e7ca9f-7dc8-4ded-a7f9-af0dbff06e0c" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="fdab2037-ce78-4ddc-b5b1-067e521a0765"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedSpider" Type="string" Guid="96212929-5e60-41fd-9939-b54c67582bcc"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="Spawn" Guid="c61913e8-2ccd-4760-a82f-31c12f39e922">
+    <Parameter Name="AutoDespawn" Guid="b4f713f7-4c50-44b3-a286-17ce87a5b114" Value="False" Type="bool"/>
 </MemberComponentTemplate>
           </EntityTemplate>
         </Zombie>
