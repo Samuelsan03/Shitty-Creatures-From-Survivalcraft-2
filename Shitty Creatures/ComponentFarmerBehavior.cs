@@ -13,7 +13,7 @@ namespace Game
 	{
 		// Prioridades de tarea
 		private const int PRIORITY_HARVEST_MATURE = 0;
-		private const int PRIORITY_RAKE_TRAMPLED = 1;     // Rastrillar tierra pisoteada con planta encima
+		private const int PRIORITY_RAKE_TRAMPLED = 1;
 		private const int PRIORITY_PLANT = 2;
 		private const int PRIORITY_RAKE = 3;
 
@@ -38,7 +38,7 @@ namespace Game
 		private CellFace? m_targetCellFace;
 		private Vector3 m_targetPosition;
 		private int m_blockedCount;
-		private bool m_isActive;
+		private bool m_farmerEnabled;  // CAMBIADO: Controlado SOLO por el usuario
 		private double m_stateEnterTime;
 
 		private const float SCAN_RADIUS = 15f;
@@ -60,11 +60,59 @@ namespace Game
 		private int m_blueberryBushIndex;
 		private int m_watermelonBlockIndex;
 
+		private bool m_stateMachineBuilt;
+
 		public override float ImportanceLevel => m_importanceLevel;
+
+		/// <summary>
+		/// Controlado por el usuario desde el widget. No se desactiva automáticamente.
+		/// </summary>
+		public bool FarmerEnabled
+		{
+			get => m_farmerEnabled;
+			set
+			{
+				if (m_farmerEnabled != value)
+				{
+					m_farmerEnabled = value;
+
+					if (!value)
+					{
+						// Al desactivar: detener todo
+						if (m_stateMachineBuilt)
+						{
+							m_stateMachine.TransitionTo("Inactive");
+						}
+						if (m_componentPathfinding != null)
+						{
+							m_componentPathfinding.Stop();
+							m_componentPathfinding.IsStuck = false;
+						}
+						m_importanceLevel = 0f;
+					}
+					else
+					{
+						// Al activar: permitir que busque tareas
+						m_nextScanTime = 0;
+					}
+				}
+			}
+		}
+
+		// Override de IsActive para evitar que la clase base lo desactive
 		public override bool IsActive
 		{
-			get => m_isActive;
-			set => m_isActive = value;
+			get => m_farmerEnabled;
+			set
+			{
+				// Solo permitir activar, nunca desactivar automáticamente
+				if (value)
+				{
+					m_farmerEnabled = true;
+					m_nextScanTime = 0;
+				}
+				// Ignorar intentos de desactivar (la clase base podría intentar hacerlo)
+			}
 		}
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -96,9 +144,11 @@ namespace Game
 
 			m_watermelonBlockIndex = BlocksManager.GetBlockIndex("WatermelonBlock", false);
 
-			m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
-			IsActive = true;
+			// Cargar estado guardado
+			m_farmerEnabled = valuesDictionary.GetValue<bool>("FarmerEnabled", false);
+			m_importanceLevel = 0f;
 			BuildStateMachine();
+			m_stateMachineBuilt = true;
 			m_stateMachine.TransitionTo("Inactive");
 		}
 
@@ -112,7 +162,15 @@ namespace Game
 			m_stateMachine.AddState("Inactive",
 				enter: () =>
 				{
-					m_importanceLevel = HasFarmingTools() ? m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX) : 0f;
+					// Si está habilitado y tiene herramientas, mantener importancia baja para seguir buscando
+					if (m_farmerEnabled && HasFarmingTools())
+					{
+						m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
+					}
+					else
+					{
+						m_importanceLevel = 0f;
+					}
 					m_stateEnterTime = m_subsystemTime.GameTime;
 					if (m_componentPathfinding != null)
 					{
@@ -121,9 +179,17 @@ namespace Game
 				},
 				update: () =>
 				{
-					if (!HasFarmingTools())
+					// Si no está habilitado, no hacer nada
+					if (!m_farmerEnabled)
 					{
 						m_importanceLevel = 0f;
+						return;
+					}
+
+					if (!HasFarmingTools())
+					{
+						// Mantener importancia baja pero no cero, para reintentar cuando tenga herramientas
+						m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
 						return;
 					}
 
@@ -166,13 +232,22 @@ namespace Game
 				},
 				update: () =>
 				{
+					// Si se deshabilitó durante el movimiento, volver a inactivo (pero sigue habilitado)
+					if (!m_farmerEnabled)
+					{
+						if (m_componentPathfinding != null)
+							m_componentPathfinding.Stop();
+						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
 					if (m_subsystemTime.GameTime - m_stateEnterTime > STATE_TIMEOUT)
 					{
 						m_stateMachine.TransitionTo("Inactive");
 						return;
 					}
 
-					if (!IsActive || m_targetCellFace == null)
+					if (m_targetCellFace == null)
 					{
 						m_stateMachine.TransitionTo("Inactive");
 						return;
@@ -226,8 +301,6 @@ namespace Game
 				leave: null
 			);
 
-			// CORRECCIÓN: Usar DestroyCell con noDrop = true para cambiar DirtBlock/GrassBlock a SoilBlock.
-			// Esto evita bugs con ChangeCell y garantiza que el cambio se aplique correctamente.
 			m_stateMachine.AddState("RakeTrampled",
 				enter: () =>
 				{
@@ -246,11 +319,9 @@ namespace Game
 					int currentValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 					int currentContents = Terrain.ExtractContents(currentValue);
 
-					// Si es tierra pisoteada, destruirla (sin drops) y colocar SoilBlock
 					if (IsGrassOrDirt(currentContents) && m_soilBlockIndex >= 0)
 					{
 						int newValue = Terrain.MakeBlockValue(m_soilBlockIndex, 0, 0);
-						// noDrop = true para no botar tierra/siéntes
 						m_subsystemTerrain.DestroyCell(0, x, y, z, newValue, true, false, null);
 					}
 
@@ -488,9 +559,6 @@ namespace Game
 			);
 		}
 
-		/// <summary>
-		/// Verifica si hay cualquier bloque (planta) encima de la celda especificada.
-		/// </summary>
 		private bool HasPlantAbove(int x, int y, int z)
 		{
 			if (y + 1 > 255) return false;
@@ -598,7 +666,6 @@ namespace Game
 
 						int above = m_subsystemTerrain.Terrain.GetCellContents(x, y + 1, z);
 
-						// Si es tierra y tiene planta arriba, priorizar rastrillo para recuperar
 						if (IsGrassOrDirt(contents) && above != 0 && hasRake)
 						{
 							if (IsBetterTask(PRIORITY_RAKE_TRAMPLED, dist, bestPriority, bestCell, pos))
@@ -691,10 +758,6 @@ namespace Game
 				bool isDead = BaseWatermelonBlock.GetIsDead(data);
 				return size >= 7 && !isDead;
 			}
-			// ============================================
-			// AGREGADO: Arbusto de arándanos adulto
-			// Es cosechable cuando NO es pequeño (es adulto)
-			// ============================================
 			if (contents == m_blueberryBushIndex)
 			{
 				int data = Terrain.ExtractData(value);
@@ -806,6 +869,7 @@ namespace Game
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
 			base.Save(valuesDictionary, entityToIdMap);
+			valuesDictionary.SetValue<bool>("FarmerEnabled", m_farmerEnabled);
 		}
 	}
 }
