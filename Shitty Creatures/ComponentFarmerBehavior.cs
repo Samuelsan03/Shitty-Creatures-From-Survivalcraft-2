@@ -38,13 +38,20 @@ namespace Game
 		private CellFace? m_targetCellFace;
 		private Vector3 m_targetPosition;
 		private int m_blockedCount;
-		private bool m_farmerEnabled;  // CAMBIADO: Controlado SOLO por el usuario
+		private bool m_farmerEnabled;
 		private double m_stateEnterTime;
 
 		private const float SCAN_RADIUS = 15f;
 		private const double STATE_DELAY = 0.5;
 		private const float PICKUP_RADIUS = 2.5f;
 		private const double STATE_TIMEOUT = 10.0;
+
+		// Radio máximo permitido antes de volver al área (2.5 veces el radio de escaneo)
+		private const float MAX_DISTANCE_FROM_AREA = SCAN_RADIUS * 2.5f;
+
+		// Centro del área de cultivos
+		private Vector3 m_farmAreaCenter;
+		private bool m_hasFarmAreaCenter;
 
 		// Índices de bloques
 		private int m_grassBlockIndex;
@@ -78,7 +85,6 @@ namespace Game
 
 					if (!value)
 					{
-						// Al desactivar: detener todo
 						if (m_stateMachineBuilt)
 						{
 							m_stateMachine.TransitionTo("Inactive");
@@ -92,8 +98,13 @@ namespace Game
 					}
 					else
 					{
-						// Al activar: permitir que busque tareas
 						m_nextScanTime = 0;
+						// Al activar, establecer la posición actual como centro del área si no existe
+						if (!m_hasFarmAreaCenter)
+						{
+							m_farmAreaCenter = m_componentCreature.ComponentBody.Position;
+							m_hasFarmAreaCenter = true;
+						}
 					}
 				}
 			}
@@ -110,6 +121,11 @@ namespace Game
 				{
 					m_farmerEnabled = true;
 					m_nextScanTime = 0;
+					if (!m_hasFarmAreaCenter)
+					{
+						m_farmAreaCenter = m_componentCreature.ComponentBody.Position;
+						m_hasFarmAreaCenter = true;
+					}
 				}
 				// Ignorar intentos de desactivar (la clase base podría intentar hacerlo)
 			}
@@ -147,6 +163,14 @@ namespace Game
 			// Cargar estado guardado
 			m_farmerEnabled = valuesDictionary.GetValue<bool>("FarmerEnabled", false);
 			m_importanceLevel = 0f;
+
+			// Cargar centro del área si existe
+			m_hasFarmAreaCenter = valuesDictionary.GetValue<bool>("HasFarmAreaCenter", false);
+			if (m_hasFarmAreaCenter)
+			{
+				m_farmAreaCenter = valuesDictionary.GetValue<Vector3>("FarmAreaCenter");
+			}
+
 			BuildStateMachine();
 			m_stateMachineBuilt = true;
 			m_stateMachine.TransitionTo("Inactive");
@@ -155,6 +179,58 @@ namespace Game
 		private bool HasFarmingTools()
 		{
 			return HasTool(typeof(RakeBlock)) || HasTool(typeof(SeedsBlock));
+		}
+
+		/// <summary>
+		/// Verifica si la criatura está demasiado lejos del área de cultivos
+		/// </summary>
+		private bool IsTooFarFromArea()
+		{
+			if (!m_hasFarmAreaCenter) return false;
+
+			Vector3 pos = m_componentCreature.ComponentBody.Position;
+			// Solo comparar X y Z (distancia horizontal)
+			float dx = pos.X - m_farmAreaCenter.X;
+			float dz = pos.Z - m_farmAreaCenter.Z;
+			float horizontalDist = MathF.Sqrt(dx * dx + dz * dz);
+
+			return horizontalDist > MAX_DISTANCE_FROM_AREA;
+		}
+
+		/// <summary>
+		/// Obtiene la distancia horizontal al centro del área
+		/// </summary>
+		private float GetDistanceToAreaCenter()
+		{
+			if (!m_hasFarmAreaCenter) return 0f;
+
+			Vector3 pos = m_componentCreature.ComponentBody.Position;
+			float dx = pos.X - m_farmAreaCenter.X;
+			float dz = pos.Z - m_farmAreaCenter.Z;
+			return MathF.Sqrt(dx * dx + dz * dz);
+		}
+
+		/// <summary>
+		/// Obtiene un punto aleatorio dentro del área de cultivos
+		/// </summary>
+		private Vector3 GetRandomPointInArea()
+		{
+			float angle = m_random.Float(0, MathF.PI * 2);
+			float distance = m_random.Float(0, SCAN_RADIUS * 0.8f);
+			return new Vector3(
+				m_farmAreaCenter.X + MathF.Cos(angle) * distance,
+				m_farmAreaCenter.Y,
+				m_farmAreaCenter.Z + MathF.Sin(angle) * distance
+			);
+		}
+
+		/// <summary>
+		/// Actualiza el centro del área a la posición actual
+		/// </summary>
+		private void UpdateFarmAreaCenter()
+		{
+			m_farmAreaCenter = m_componentCreature.ComponentBody.Position;
+			m_hasFarmAreaCenter = true;
 		}
 
 		private void BuildStateMachine()
@@ -195,6 +271,13 @@ namespace Game
 
 					m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
 
+					// Si está muy lejos del área, volver primero
+					if (IsTooFarFromArea())
+					{
+						m_stateMachine.TransitionTo("ReturnToArea");
+						return;
+					}
+
 					if (m_subsystemTime.GameTime > m_nextScanTime)
 					{
 						m_nextScanTime = m_subsystemTime.GameTime + m_random.Float(0.5f, 2.0f);
@@ -203,8 +286,95 @@ namespace Game
 							m_targetCellFace = target;
 							m_targetPosition = new Vector3(target.X + 0.5f, target.Y + 0.5f, target.Z + 0.5f);
 							m_importanceLevel = m_random.Float(TASK_IMPORTANCE_MIN, TASK_IMPORTANCE_MAX);
+
+							// Establecer centro del área si no existe (primera tarea encontrada)
+							if (!m_hasFarmAreaCenter)
+							{
+								UpdateFarmAreaCenter();
+							}
+
 							m_stateMachine.TransitionTo("MoveToTarget");
 						}
+					}
+				},
+				leave: null
+			);
+
+			m_stateMachine.AddState("ReturnToArea",
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
+					m_blockedCount = 0;
+
+					if (m_componentPathfinding != null)
+					{
+						m_componentPathfinding.IsStuck = false;
+
+						// Intentar ir al centro del área
+						Vector3 returnTarget = m_farmAreaCenter;
+						m_componentPathfinding.SetDestination(
+							returnTarget,
+							speed: 1.0f,
+							range: 2.0f,
+							maxPathfindingPositions: 1000,
+							useRandomMovements: true,
+							ignoreHeightDifference: false,
+							raycastDestination: false,
+							doNotAvoidBody: null
+						);
+					}
+				},
+				update: () =>
+				{
+					// Si se deshabilitó durante el retorno
+					if (!m_farmerEnabled)
+					{
+						if (m_componentPathfinding != null)
+							m_componentPathfinding.Stop();
+						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
+					// Timeout por seguridad (30 segundos)
+					if (m_subsystemTime.GameTime - m_stateEnterTime > STATE_TIMEOUT * 3)
+					{
+						// Si no puede volver después de mucho tiempo, actualizar el centro a la posición actual
+						UpdateFarmAreaCenter();
+						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
+					// Verificar si ya llegó al área
+					if (!IsTooFarFromArea())
+					{
+						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
+					// Si está atascado, intentar un punto aleatorio del área
+					if (m_componentPathfinding != null && m_componentPathfinding.IsStuck)
+					{
+						m_blockedCount++;
+						if (m_blockedCount > 5)
+						{
+							// No puede volver, actualizar centro a posición actual y continuar
+							UpdateFarmAreaCenter();
+							m_stateMachine.TransitionTo("Inactive");
+							return;
+						}
+
+						m_componentPathfinding.IsStuck = false;
+						Vector3 newTarget = GetRandomPointInArea();
+						m_componentPathfinding.SetDestination(
+							newTarget,
+							1.0f,
+							2.0f,
+							1000,
+							true,
+							false,
+							false,
+							null
+						);
 					}
 				},
 				leave: null
@@ -232,12 +402,21 @@ namespace Game
 				},
 				update: () =>
 				{
-					// Si se deshabilitó durante el movimiento, volver a inactivo (pero sigue habilitado)
+					// Si se deshabilitó durante el movimiento
 					if (!m_farmerEnabled)
 					{
 						if (m_componentPathfinding != null)
 							m_componentPathfinding.Stop();
 						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
+					// VERIFICAR SI ESTÁ MUY LEJOS DEL ÁREA - VOLVER INMEDIATAMENTE
+					if (IsTooFarFromArea())
+					{
+						if (m_componentPathfinding != null)
+							m_componentPathfinding.Stop();
+						m_stateMachine.TransitionTo("ReturnToArea");
 						return;
 					}
 
@@ -870,6 +1049,11 @@ namespace Game
 		{
 			base.Save(valuesDictionary, entityToIdMap);
 			valuesDictionary.SetValue<bool>("FarmerEnabled", m_farmerEnabled);
+			valuesDictionary.SetValue<bool>("HasFarmAreaCenter", m_hasFarmAreaCenter);
+			if (m_hasFarmAreaCenter)
+			{
+				valuesDictionary.SetValue("FarmAreaCenter", m_farmAreaCenter);
+			}
 		}
 	}
 }
