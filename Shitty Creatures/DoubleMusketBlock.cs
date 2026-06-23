@@ -6,14 +6,13 @@ namespace Game
 {
 	public class DoubleMusketBlock : Block
 	{
-		public static int Index = 447;
+		public static int Index = 541;
 
 		public BlockMesh m_standaloneBlockMeshUnloaded;
 		public BlockMesh m_standaloneBlockMeshLoaded;
 
 		public override void Initialize()
 		{
-			// Usamos el modelo original de mosquete.
 			Model model = ContentManager.Get<Model>("Models/ShotGun2");
 			Matrix boneAbsoluteTransform = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh("Musket", true).ParentBone);
 			Matrix boneAbsoluteTransform2 = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh("Hammer", true).ParentBone);
@@ -56,26 +55,13 @@ namespace Game
 			return Terrain.ReplaceData(value, data);
 		}
 
-		// Estados de carga (SIMPLIFICADO: solo Empty o Loaded)
+		// Estado de carga
 		public static bool IsLoaded(int data) => (data & 1) != 0;
 		public static int SetLoaded(int data, bool loaded) => (data & ~1) | (loaded ? 1 : 0);
 
 		// Martillo
 		public static bool GetHammerState(int data) => (data & 2) != 0;
 		public static int SetHammerState(int data, bool state) => (data & ~2) | ((state ? 1 : 0) << 1);
-
-		// Tipo de bala (original)
-		public static BulletBlock.BulletType? GetBulletType(int data)
-		{
-			int val = (data >> 4) & 15;
-			if (val == 0) return null;
-			return (BulletBlock.BulletType)(val - 1);
-		}
-		public static int SetBulletType(int data, BulletBlock.BulletType? bulletType)
-		{
-			int val = bulletType.HasValue ? ((int)bulletType.Value + 1) : 0;
-			return (data & ~0xF0) | ((val & 15) << 4);
-		}
 
 		// Disparos restantes (0-2) -> bits 8-9
 		public static int GetShotsRemaining(int data) => (data >> 8) & 3;
