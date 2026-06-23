@@ -1282,7 +1282,6 @@ namespace Game
 			if (loaded && shots == 2 && isAntiTanks) return;
 			data = DoubleMusketBlock.SetLoaded(data, true);
 			data = DoubleMusketBlock.SetShotsRemaining(data, 2);
-			data = DoubleMusketBlock.SetBulletType(data, null);
 			data = DoubleMusketBlock.SetAntiTanksBullet(data, true);
 			int newValue = Terrain.MakeBlockValue(DoubleMusketBlock.Index, 0, data);
 			inventory.RemoveSlotItems(slotIndex, 1);
