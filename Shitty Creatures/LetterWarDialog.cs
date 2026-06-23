@@ -49,8 +49,9 @@ namespace Game
 				AcceptWithGreenNightCheck(invasion, () =>
 				{
 					invasion.AcceptWar();
-					ShowAcceptanceMessage(invasion);
+					// IMPORTANTE: Ocultar diálogos PRIMERO, luego mostrar mensaje
 					DialogsManager.HideDialog(this);
+					ShowAcceptanceMessage(invasion);
 				});
 				return;
 			}
@@ -66,8 +67,9 @@ namespace Game
 			AcceptWithGreenNightCheck(invasion, () =>
 			{
 				invasion.AcceptWar();
-				ShowAcceptanceMessage(invasion);
+				// IMPORTANTE: Ocultar diálogos PRIMERO, luego mostrar mensaje
 				DialogsManager.HideDialog(this);
+				ShowAcceptanceMessage(invasion);
 			});
 		}
 
@@ -90,7 +92,7 @@ namespace Game
 			}
 			else if (isGreenNightTonight)
 			{
-				// Noche Verde programada para esta noche → NUEVO MENSAJE
+				// Noche Verde programada para esta noche → mensaje específico
 				messageKey = "AcceptBeforeGreenNightMessage";
 				color = new Color(255, 200, 0);
 			}
