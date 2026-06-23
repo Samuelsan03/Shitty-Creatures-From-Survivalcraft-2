@@ -60,7 +60,6 @@ namespace Game
 		public SubsystemTimeOfDay m_subsystemTimeOfDay;
 		private Random m_random = new Random();
 
-		// Método auxiliar para obtener mensajes localizados
 		private string GetLocalizedMessage(string key)
 		{
 			return LanguageControl.Get("GreenNightSky", key);
@@ -71,6 +70,15 @@ namespace Game
 			if (!GreenNightEnabled) return;
 
 			if (m_subsystemGameInfo.WorldSettings.TimeOfDayMode != TimeOfDayMode.Changing)
+			{
+				if (IsGreenNightActive)
+				{
+					IsGreenNightActive = false;
+				}
+				return;
+			}
+
+			if (AchievementsManager.IsCelebrationActive)
 			{
 				if (IsGreenNightActive)
 				{
@@ -107,20 +115,24 @@ namespace Game
 				if (isStartMoment && !this.HasRolledTonight)
 				{
 					this.HasRolledTonight = true;
-					this.IsGreenNightActive = true;
 					this.DaysSinceLastGreenNight = 0;
 
-					GreenNightStarted?.Invoke();
-
-					SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
-					if (subsystemPlayers != null)
+					if (!AchievementsManager.IsCelebrationActive)
 					{
-						foreach (ComponentPlayer componentPlayer in subsystemPlayers.ComponentPlayers)
+						this.IsGreenNightActive = true;
+
+						GreenNightStarted?.Invoke();
+
+						SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+						if (subsystemPlayers != null)
 						{
-							if (componentPlayer?.ComponentGui != null)
+							foreach (ComponentPlayer componentPlayer in subsystemPlayers.ComponentPlayers)
 							{
-								string message = GetLocalizedMessage("GreenMoonBegins");
-								componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(5, 154, 0), false, true);
+								if (componentPlayer?.ComponentGui != null)
+								{
+									string message = GetLocalizedMessage("GreenMoonBegins");
+									componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(5, 154, 0), false, true);
+								}
 							}
 						}
 					}
@@ -166,6 +178,15 @@ namespace Game
 			this.GreenNightIntervalDays = valuesDictionary.GetValue<int>("GreenNightIntervalDays", 4);
 			this.DifficultyMode = (DifficultyMode)valuesDictionary.GetValue<int>("DifficultyMode", 2);
 
+			// Sincronizar LastCheckedDay con el día actual al cargar.
+			// Evita que el primer Update() detecte un cambio de día fantasma
+			// (por desfase de double o timing de carga) e incremente el contador.
+			double currentDay = this.m_subsystemTimeOfDay.Day;
+			if (Math.Floor(this.LastCheckedDay) < Math.Floor(currentDay))
+			{
+				this.LastCheckedDay = currentDay;
+			}
+
 			SubsystemGreenNightSky.Instance = this;
 		}
 
@@ -182,7 +203,6 @@ namespace Game
 
 		public static class DifficultyModifiers
 		{
-
 			public static float GetAggressionRangeMultiplier(DifficultyMode mode)
 			{
 				switch (mode)
@@ -200,13 +220,11 @@ namespace Game
 			public static bool ShouldUseFlanking(DifficultyMode mode)
 			{
 				return mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme;
-				// VeryEasy, Easy, Normal, Medium → sin flanqueo
 			}
 
 			public static bool ShouldAlwaysCallHelp(DifficultyMode mode)
 			{
 				return mode >= DifficultyMode.Medium;
-				// VeryEasy, Easy, Normal → no siempre llaman ayuda
 			}
 
 			public static float GetHelpCallRangeMultiplier(DifficultyMode mode)
@@ -226,7 +244,6 @@ namespace Game
 			public static bool IsChasePersistent(DifficultyMode mode)
 			{
 				return mode == DifficultyMode.Extreme;
-				// VeryEasy, Easy, Normal, Medium, Hard → no persistente
 			}
 		}
 	}
