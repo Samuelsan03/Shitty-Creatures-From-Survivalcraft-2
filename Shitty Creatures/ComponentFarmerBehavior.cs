@@ -69,6 +69,11 @@ namespace Game
 
 		private bool m_stateMachineBuilt;
 
+		// Para detectar cuando se cambió el slot activo externamente (ej. por combate)
+		private int m_lastKnownActiveSlotIndex = -1;
+		private double m_lastToolCheckTime;
+		private const double TOOL_CHECK_INTERVAL = 0.5;
+
 		public override float ImportanceLevel => m_importanceLevel;
 
 		/// <summary>
@@ -182,6 +187,170 @@ namespace Game
 		}
 
 		/// <summary>
+		/// Verifica si un contenido de bloque es una herramienta de agricultura
+		/// </summary>
+		private bool IsFarmingTool(int contents)
+		{
+			if (contents == m_saltpeterBlockIndex)
+				return true;
+
+			if (contents == m_blueberrySeedIndex || contents == m_watermelonSeedIndex)
+				return true;
+
+			if (contents <= 0 || contents >= BlocksManager.Blocks.Length)
+				return false;
+
+			Block block = BlocksManager.Blocks[contents];
+			if (block == null)
+				return false;
+
+			if (typeof(RakeBlock).IsAssignableFrom(block.GetType()))
+				return true;
+
+			if (typeof(SeedsBlock).IsAssignableFrom(block.GetType()))
+				return true;
+
+			return false;
+		}
+
+		/// <summary>
+		/// Asegura que una herramienta de agricultura esté equipada en el slot activo.
+		/// Retorna true si se pudo equipar una herramienta o ya tenía una.
+		/// </summary>
+		private bool EnsureFarmingToolEquipped()
+		{
+			if (m_inventory == null) return false;
+
+			int activeSlot = m_inventory.ActiveSlotIndex;
+			int activeValue = m_inventory.GetSlotValue(activeSlot);
+			int activeContents = Terrain.ExtractContents(activeValue);
+
+			// Ya tiene una herramienta de agricultura equipada
+			if (IsFarmingTool(activeContents))
+			{
+				m_lastKnownActiveSlotIndex = activeSlot;
+				return true;
+			}
+
+			// Prioridad: Rastrillo > Semillas > Fertilizante
+			int rakeSlot = FindSlotWithTool(typeof(RakeBlock));
+			if (rakeSlot >= 0)
+			{
+				m_inventory.ActiveSlotIndex = rakeSlot;
+				m_lastKnownActiveSlotIndex = rakeSlot;
+				return true;
+			}
+
+			int seedSlot = FindSlotWithSeed();
+			if (seedSlot >= 0)
+			{
+				m_inventory.ActiveSlotIndex = seedSlot;
+				m_lastKnownActiveSlotIndex = seedSlot;
+				return true;
+			}
+
+			int fertilizerSlot = FindSlotWithFertilizer();
+			if (fertilizerSlot >= 0)
+			{
+				m_inventory.ActiveSlotIndex = fertilizerSlot;
+				m_lastKnownActiveSlotIndex = fertilizerSlot;
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Verifica si el slot activo fue cambiado externamente (por combate u otro comportamiento)
+		/// y si es así, intenta volver a equipar herramientas de agricultura.
+		/// </summary>
+		private bool CheckAndRestoreFarmingTool()
+		{
+			if (m_inventory == null) return false;
+
+			int currentSlot = m_inventory.ActiveSlotIndex;
+			int currentValue = m_inventory.GetSlotValue(currentSlot);
+			int currentContents = Terrain.ExtractContents(currentValue);
+
+			// Si tiene una herramienta de agricultura, actualizar referencia y retornar
+			if (IsFarmingTool(currentContents))
+			{
+				m_lastKnownActiveSlotIndex = currentSlot;
+				return true;
+			}
+
+			// El slot cambió a algo que no es herramienta de agricultura
+			// Verificar si esto fue un cambio externo (no hecho por nosotros)
+			if (currentSlot != m_lastKnownActiveSlotIndex)
+			{
+				// Cambio externo detectado, intentar restaurar herramientas
+				return EnsureFarmingToolEquipped();
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Encuentra el slot que contiene una herramienta del tipo especificado
+		/// </summary>
+		private int FindSlotWithTool(Type toolType)
+		{
+			if (m_inventory == null) return -1;
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value == 0) continue;
+				int contents = Terrain.ExtractContents(value);
+				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
+				Block block = BlocksManager.Blocks[contents];
+				if (block != null && toolType.IsAssignableFrom(block.GetType()))
+					return i;
+			}
+			return -1;
+		}
+
+		/// <summary>
+		/// Encuentra el slot que contiene semillas
+		/// </summary>
+		private int FindSlotWithSeed()
+		{
+			if (m_inventory == null) return -1;
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value == 0) continue;
+				int contents = Terrain.ExtractContents(value);
+
+				if (contents == m_blueberrySeedIndex || contents == m_watermelonSeedIndex)
+					return i;
+
+				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
+				Block block = BlocksManager.Blocks[contents];
+				if (block != null && typeof(SeedsBlock).IsAssignableFrom(block.GetType()))
+					return i;
+			}
+			return -1;
+		}
+
+		/// <summary>
+		/// Encuentra el slot que contiene fertilizante
+		/// </summary>
+		private int FindSlotWithFertilizer()
+		{
+			if (m_inventory == null) return -1;
+			if (m_saltpeterBlockIndex < 0) return -1;
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value == 0) continue;
+				int contents = Terrain.ExtractContents(value);
+				if (contents == m_saltpeterBlockIndex)
+					return i;
+			}
+			return -1;
+		}
+
+		/// <summary>
 		/// Verifica si la criatura está demasiado lejos del área de cultivos
 		/// </summary>
 		private bool IsTooFarFromArea()
@@ -189,7 +358,6 @@ namespace Game
 			if (!m_hasFarmAreaCenter) return false;
 
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
-			// Solo comparar X y Z (distancia horizontal)
 			float dx = pos.X - m_farmAreaCenter.X;
 			float dz = pos.Z - m_farmAreaCenter.Z;
 			float horizontalDist = MathF.Sqrt(dx * dx + dz * dz);
@@ -242,6 +410,8 @@ namespace Game
 					if (m_farmerEnabled && HasFarmingTools())
 					{
 						m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
+						// Al entrar a Inactive, intentar restaurar herramientas de agricultura
+						EnsureFarmingToolEquipped();
 					}
 					else
 					{
@@ -264,9 +434,15 @@ namespace Game
 
 					if (!HasFarmingTools())
 					{
-						// Mantener importancia baja pero no cero, para reintentar cuando tenga herramientas
 						m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
 						return;
+					}
+
+					// VERIFICAR PERIÓDICAMENTE SI HAY QUE RESTAURAR HERRAMIENTAS DE AGRICULTURA
+					if (m_subsystemTime.GameTime - m_lastToolCheckTime > TOOL_CHECK_INTERVAL)
+					{
+						m_lastToolCheckTime = m_subsystemTime.GameTime;
+						CheckAndRestoreFarmingTool();
 					}
 
 					m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
@@ -306,11 +482,13 @@ namespace Game
 					m_stateEnterTime = m_subsystemTime.GameTime;
 					m_blockedCount = 0;
 
+					// Al volver al área, restaurar herramientas de agricultura
+					EnsureFarmingToolEquipped();
+
 					if (m_componentPathfinding != null)
 					{
 						m_componentPathfinding.IsStuck = false;
 
-						// Intentar ir al centro del área
 						Vector3 returnTarget = m_farmAreaCenter;
 						m_componentPathfinding.SetDestination(
 							returnTarget,
@@ -326,7 +504,6 @@ namespace Game
 				},
 				update: () =>
 				{
-					// Si se deshabilitó durante el retorno
 					if (!m_farmerEnabled)
 					{
 						if (m_componentPathfinding != null)
@@ -335,29 +512,24 @@ namespace Game
 						return;
 					}
 
-					// Timeout por seguridad (30 segundos)
 					if (m_subsystemTime.GameTime - m_stateEnterTime > STATE_TIMEOUT * 3)
 					{
-						// Si no puede volver después de mucho tiempo, actualizar el centro a la posición actual
 						UpdateFarmAreaCenter();
 						m_stateMachine.TransitionTo("Inactive");
 						return;
 					}
 
-					// Verificar si ya llegó al área
 					if (!IsTooFarFromArea())
 					{
 						m_stateMachine.TransitionTo("Inactive");
 						return;
 					}
 
-					// Si está atascado, intentar un punto aleatorio del área
 					if (m_componentPathfinding != null && m_componentPathfinding.IsStuck)
 					{
 						m_blockedCount++;
 						if (m_blockedCount > 5)
 						{
-							// No puede volver, actualizar centro a posición actual y continuar
 							UpdateFarmAreaCenter();
 							m_stateMachine.TransitionTo("Inactive");
 							return;
@@ -402,7 +574,6 @@ namespace Game
 				},
 				update: () =>
 				{
-					// Si se deshabilitó durante el movimiento
 					if (!m_farmerEnabled)
 					{
 						if (m_componentPathfinding != null)
@@ -411,7 +582,6 @@ namespace Game
 						return;
 					}
 
-					// VERIFICAR SI ESTÁ MUY LEJOS DEL ÁREA - VOLVER INMEDIATAMENTE
 					if (IsTooFarFromArea())
 					{
 						if (m_componentPathfinding != null)
@@ -521,6 +691,9 @@ namespace Game
 						return;
 					}
 
+					// Actualizar referencia del slot después de cambiar
+					m_lastKnownActiveSlotIndex = m_inventory.ActiveSlotIndex;
+
 					if (m_targetCellFace != null)
 					{
 						Ray3 ray = GetRayToBlock(m_targetCellFace.Value);
@@ -570,6 +743,9 @@ namespace Game
 						m_stateMachine.TransitionTo("Inactive");
 						return;
 					}
+
+					// Actualizar referencia del slot después de cambiar
+					m_lastKnownActiveSlotIndex = m_inventory.ActiveSlotIndex;
 
 					int above = m_subsystemTerrain.Terrain.GetCellContents(
 						m_targetCellFace.Value.X,
@@ -628,6 +804,9 @@ namespace Game
 						m_stateMachine.TransitionTo("Inactive");
 						return;
 					}
+
+					// Actualizar referencia del slot después de cambiar
+					m_lastKnownActiveSlotIndex = m_inventory.ActiveSlotIndex;
 
 					Ray3 fertilizeRay = GetRayToBlock(m_targetCellFace.Value);
 					m_componentMiner.Use(fertilizeRay);
@@ -948,88 +1127,36 @@ namespace Game
 
 		private bool HasTool(Type toolType)
 		{
-			if (m_inventory == null) return false;
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				int contents = Terrain.ExtractContents(value);
-				Block block = BlocksManager.Blocks[contents];
-				if (toolType.IsAssignableFrom(block.GetType()))
-					return true;
-			}
-			return false;
+			return FindSlotWithTool(toolType) >= 0;
 		}
 
 		private bool SwitchToTool(Type toolType)
 		{
-			if (m_inventory == null) return false;
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				int contents = Terrain.ExtractContents(value);
-				Block block = BlocksManager.Blocks[contents];
-				if (toolType.IsAssignableFrom(block.GetType()))
-				{
-					m_inventory.ActiveSlotIndex = i;
-					return true;
-				}
-			}
-			return false;
+			int slot = FindSlotWithTool(toolType);
+			if (slot < 0) return false;
+			m_inventory.ActiveSlotIndex = slot;
+			return true;
 		}
 
 		private bool SwitchToSeed()
 		{
-			if (m_inventory == null) return false;
-			List<int> seedSlots = new List<int>();
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				int contents = Terrain.ExtractContents(value);
-				Block block = BlocksManager.Blocks[contents];
-
-				if (typeof(SeedsBlock).IsAssignableFrom(block.GetType()) ||
-					contents == m_blueberrySeedIndex ||
-					contents == m_watermelonSeedIndex)
-				{
-					seedSlots.Add(i);
-				}
-			}
-			if (seedSlots.Count == 0)
-				return false;
-			int selectedSlot = seedSlots[m_random.Int(seedSlots.Count)];
-			m_inventory.ActiveSlotIndex = selectedSlot;
+			int slot = FindSlotWithSeed();
+			if (slot < 0) return false;
+			m_inventory.ActiveSlotIndex = slot;
 			return true;
 		}
 
 		private bool HasFertilizer()
 		{
-			if (m_inventory == null) return false;
-			if (m_saltpeterBlockIndex < 0) return false;
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				int contents = Terrain.ExtractContents(value);
-				if (contents == m_saltpeterBlockIndex)
-					return true;
-			}
-			return false;
+			return FindSlotWithFertilizer() >= 0;
 		}
 
 		private bool SwitchToFertilizer()
 		{
-			if (m_inventory == null) return false;
-			if (m_saltpeterBlockIndex < 0) return false;
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				int contents = Terrain.ExtractContents(value);
-				if (contents == m_saltpeterBlockIndex)
-				{
-					m_inventory.ActiveSlotIndex = i;
-					return true;
-				}
-			}
-			return false;
+			int slot = FindSlotWithFertilizer();
+			if (slot < 0) return false;
+			m_inventory.ActiveSlotIndex = slot;
+			return true;
 		}
 
 		private Ray3 GetRayToBlock(CellFace cell)
