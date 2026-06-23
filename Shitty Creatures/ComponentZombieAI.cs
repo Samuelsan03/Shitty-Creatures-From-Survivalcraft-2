@@ -1403,7 +1403,6 @@ namespace Game
 			data = DoubleMusketBlock.SetShotsRemaining(data, 2);
 			data = DoubleMusketBlock.SetAntiTanksBullet(data, true);
 			data = DoubleMusketBlock.SetHammerState(data, false);
-			data = DoubleMusketBlock.SetBulletType(data, BulletBlock.BulletType.MusketBall);
 
 			int newValue = Terrain.MakeBlockValue(DoubleMusketBlock.Index, 0, data);
 			m_inventory.AddSlotItems(activeSlot, newValue, 1);
