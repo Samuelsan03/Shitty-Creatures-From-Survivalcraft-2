@@ -11,6 +11,10 @@ namespace Game
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_componentChaseBehavior;
 		private ComponentInventory m_componentInventory;
+
+		// INTEGRACIÓN: Variable para acceder al nuevo diccionario por nombres si existe
+		private ComponentNewInventory m_componentNewInventory;
+
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
 		private SubsystemAudio m_subsystemAudio;
@@ -67,7 +71,13 @@ namespace Game
 
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+
+			// Carga el inventario original (si es NewInventory, lo detecta automáticamente por herencia)
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
+
+			// INTEGRACIÓN: Intenta obtener la referencia específica del NewInventory
+			m_componentNewInventory = base.Entity.FindComponent<ComponentNewInventory>(false);
+
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
@@ -78,6 +88,8 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			if (AchievementsManager.IsCelebrationActive) return;
+
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
