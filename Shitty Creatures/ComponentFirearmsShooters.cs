@@ -38,6 +38,10 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private ComponentCreature m_componentCreature;
 		private ComponentInventory m_componentInventory;
+
+		// INTEGRACIÓN: Variable para acceder al nuevo diccionario por nombres si existe
+		private ComponentNewInventory m_componentNewInventory;
+
 		private ComponentChaseBehavior m_componentChaseBehavior;
 		private ComponentNewChaseBehavior m_componentNewChaseBehavior;
 		private ComponentBanditChaseBehavior m_componentBanditChaseBehavior;
@@ -88,7 +92,14 @@ namespace Game
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
+
+			// INTEGRACIÓN: Carga el inventario. Si la entidad tiene "NewInventory", lo detectará aquí automáticamente 
+			// porque NewInventory hereda de Inventory. Por lo tanto, m_componentInventory tendrá los slots ya llenos.
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
+
+			// INTEGRACIÓN: Intenta obtener la referencia específica del NewInventory (no lanza error si no existe)
+			m_componentNewInventory = base.Entity.FindComponent<ComponentNewInventory>(false);
+
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(false);
 			m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>(false);
 			m_componentBanditChaseBehavior = base.Entity.FindComponent<ComponentBanditChaseBehavior>(false);
