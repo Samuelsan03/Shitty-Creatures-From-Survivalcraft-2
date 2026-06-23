@@ -188,8 +188,11 @@ namespace Game
 			if (m_continueButton.IsClicked)
 			{
 				AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
-				m_onContinue?.Invoke();
+				// IMPORTANTE: Ocultar ESTE diálogo PRIMERO
+				// Esto asegura que cuando onAccept ejecute ShowAcceptanceMessage(),
+				// no haya diálogos modales visibles que puedan bloquear el mensaje
 				DialogsManager.HideDialog(this);
+				m_onContinue?.Invoke();
 			}
 			else if (m_cancelButton.IsClicked || Input.Cancel)
 			{
