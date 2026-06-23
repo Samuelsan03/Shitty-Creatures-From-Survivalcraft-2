@@ -1,4 +1,8 @@
 {
+  "ComponentAimep3Evolution": {
+    "0": "{0} evolved to level {1}. The pandemic only makes things worse.",
+    "1": "{0} evolved to level {1}. There is no turning back now; it's a killing machine."
+},
   "GreenNightWarConflictDialog": {
     "1": "WARNING!",
     "2": "You have activated the War Against Drug Traffickers during\n Green Night!\n\nThis means that the INFECTED and the DRUG TRAFFICKERS\n hate you so much\nthat they have decided to join forces to take you down.\n\nADVANTAGES:\n• You will level up faster (if you survive).\n• More valuable loot (completely useless if you're dead).\n• Extreme combat experience (for your next life).\n\nDISADVANTAGES:\n• Double the number of enemies.\n• Chance of death: HIGH.\n• Your allies will probably die too.\n• Life insurance does not cover this.\n\nYou are on {0} difficulty!\nYou have literally chosen the worst possible combination.\nThe developers recommend praying before continuing.\n\nDo you really want to continue, or would you rather live to tell the tale?",
@@ -173,7 +177,8 @@
     "4": "ACHIEVEMENTS COMPLETED!",
     "5": "You've unlocked all achievements!\n Now relax—creatures need a break too.\n Time to dance, for fuck's sake!",
     "6": "Journey",
-    "7": "Trophies"
+    "7": "Trophies",
+    "8": "No. Simply no. Turn that off and enjoy the show; it's not every day that fireworks are falling from the sky."
   },
   "BaseWatermelonBlock": {
     "1": "Watermelon",
@@ -291,7 +296,7 @@
     "FreeCameraDescription": "Enable/disable free camera mode (only in non-creative modes)",
     "BleedingDescription": "Toggle bleeding on wounded creatures",
     "HealthBarDescription": "Show health bars on creatures",
-    "SkeletonSpawnDescription": "Spawn skeletons on normal nights",
+    "NightCreaturesSpawnEnabled": "Enable the spawning of skeletons and infected spiders during normal nights",
     "FastMeleeDescription": "Enable rapid consecutive melee attacks when clicking/tapping quickly on the same target",
     "InGameMusicDescription": "Show a button in-game to play random music tracks while playing"
 },
@@ -301,7 +306,9 @@
   "2": "Quotemante",
   "3": "With his idea of adding Rayman as a new character.",
   "4": "Richard Survivalcraft",
-  "5": "Because of the idea of ​​including characters from Sonic The Hedgehog"
+  "5": "Because of the idea of ​​including characters from Sonic The Hedgehog",
+  "6": "Heptagunn",
+  "7": "For choosing the PlayStation 1 cover for the final version of the mod's cover"
 },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!"
@@ -553,7 +560,7 @@
       "BoomerFrozen": "A frozen variant of the Boomer. It appears starting from Wave 13. When it explodes, it releases a wave of cold that freezes nearby enemies. It spits icy projectiles from a distance. It can be tamed with a collar, transforming into a docile version that protects its owner and can be ridden. During the Green Night, its aggressiveness increases, prioritizing attacks on players. It is resistant to flu and poison.",
       "FrozenGhost": "A spectral and frozen version of the common infected. It appears starting from Wave 1. It spits spectral ice projectiles from a distance. Its body is semi-transparent and ghostly. Extremely aggressive, it attacks regardless of the time of day. It can be tamed with a collar, transforming into a docile version that protects its owner and can be ridden. During the Green Night, its aggressiveness increases, prioritizing attacks on players. It is resistant to fire and flu. Upon death, it has a high chance of summoning a normal ghost.",
       "FirearmsDealer": "A neutral firearms dealer. Sells weapons and ammunition in exchange for payment. If you are tired or prefer to save time searching for expensive materials, this is the option.",
-      "Aimep3": "Aimep3 is a Mexican content creator from Ciudad Nezahualcóyotl, known on the internet for her videos on platforms such as YouTube, where she shares unconventional recipes, moments from her daily life, and spontaneous content that eventually became viral. Her direct, eccentric, and unfiltered style made her a highly discussed figure within Spanish-speaking internet culture, gaining both followers and critics while becoming a frequent source of memes and online discussions. In this mod, Aimep3 is represented as a summonable ally who appears exclusively on Day 3 regardless of the time. She has an unpredictable yet highly effective combat behavior: she constantly attacks and chases enemies, reacting immediately to any threat or contact. She has the special ability to summon lightning when hitting enemies and can destroy obstacles if she becomes stuck. She can also place blocks to reach targets located at higher elevations, allowing her to remain constantly active in combat. In addition, she has a 10% chance to teleport near the enemies she is pursuing when they are too far away, enabling her to quickly close the distance and maintain pressure during battle. She cooperates with the player as part of their group, being able to call nearby creatures for assistance and coordinate attacks without harming allies. She also possesses exceptional resistance to multiple types of damage and very high health regeneration, making her a difficult companion to defeat. Furthermore, she can collect tools and weapons, adapting easily to different situations throughout the adventure. She also possesses healing abilities, allowing her to restore her own health, cure negative effects, and heal allied creatures. She features a unique musical wandering behavior, moving around while emitting characteristic sounds that add personality to her presence. Finally, she can perform ranged vomiting attacks with multiple effects, making her even more unpredictable and dangerous in combat.",
+      "Aimep3": "Aimep3 is a Mexican content creator from Ciudad Nezahualcóyotl, known on the internet for her videos on platforms such as YouTube, where she shares unconventional recipes, moments from her daily life, and spontaneous content that eventually went viral. Her direct, eccentric, and unfiltered style made her a widely discussed figure within the Spanish-speaking internet community, attracting both followers and criticism while becoming a frequent source of memes and online discussions. In this mod, Aimep3 is represented as a summonable ally that appears exclusively on Day 3, regardless of the time. She has an aggressive and highly effective combat behavior, constantly attacking and pursuing enemies while cooperating with the player and allied creatures. She possesses exceptional durability and survivability, making her a difficult companion to defeat. She can also collect tools and weapons to better adapt to different situations. Additionally, she features a special evolution system activated by consuming bread. She can evolve up to four times, greatly increasing her attack power and resilience with each transformation while also recovering part of her health during the process. Each evolution is accompanied by special visual effects that showcase her growth. Starting from her first evolution, she unlocks a fire ability that periodically ignites nearby hostile creatures, dealing prolonged damage and becoming more dangerous as her evolution level increases. This ability does not affect allies, members of her own herd, or creatures associated with the player. Upon reaching her maximum evolution, she develops powerful bullet resistance, significantly reducing damage taken from firearms and making her an even more resilient fighter in the most dangerous battles.",
       "InfectedFreezer": "An infected creature that exhales a piercing cold. It appears starting from Wave 1. It spits icy projectiles that slow and damage its enemies from a distance. Extremely aggressive, it attacks regardless of the time of day. It can be tamed with a collar, transforming into a docile version that protects its owner and can be ridden. During the Green Night, its aggressiveness increases, prioritizing attacks on players. It is vulnerable to fire but resistant to flu. Upon death, it has a high chance of spawning a ghost. It can destroy snow, ice, and crystal blocks.",
       "HumanoidSkeleton": "A wandering skeleton that roams during normal nights (it is the only infected that appears during regular nights), spawning from wave 1 onward. Extremely aggressive, it attacks anything that moves regardless of the time of day. It can be tamed with a collar, transforming into a docile version that protects its owner and can be ridden. During the Green Night, its aggressiveness increases, prioritizing attacks on players. Its primary melee attack is performed with a club or machete. It can equip clothing and pick up items. Upon death, it has a high chance of summoning a normal ghost.",
       "PredatoryChameleon": "A humanoid hybrid with chameleon traits, the result of a mutation that fused a human and a lizard. It appears from wave 6 onward. Although it lost its camouflage ability, its strength and aggressiveness have been greatly enhanced. Extremely aggressive, it attacks anything that moves regardless of the time of day. It can be tamed with a collar, transforming into a docile version that protects its owner. During the Green Night, its aggressiveness increases, prioritizing attacks on players. It destroys glass blocks in its path. It is resistant to poison.",
@@ -1120,10 +1127,10 @@
       "CRDescription:1": "Iron bolt for repeating crossbows. Higher damage and better armor penetration."
     },
     "RepeatArrowBlock:2": {
-      "DisplayName": "Repeating Diamond Bolt",
-      "Description": "High-tier bolt with a diamond tip designed for advanced repeating crossbows. Offers exceptional armor penetration and high sustained damage. Optimized for rapid burst firing.",
-      "CRDescription:2": "Diamond bolt for repeating crossbows. Exceptional armor penetration and high sustained damage."
-    },
+  "DisplayName": "Repeating Diamond Bolt",
+  "Description": "A high-tier bolt tipped with diamond, designed for advanced repeating crossbows. It delivers exceptional armor penetration and consistently high damage. Its reinforced construction prevents breakage on impact and retains much of its velocity while traveling through water.",
+  "CRDescription:2": "Diamond bolt for repeating crossbows. Does not break on impact and retains its velocity in water."
+},
     "RepeatArrowBlock:3": {
       "DisplayName": "Repeating Explosive Bolt",
       "Description": "Explosive bolt for repeating crossbows. Creates small explosions on impact. While individual damage is lower than standard explosive bolts, it allows rapid explosive bursts, ideal for crowd control and area denial.",
@@ -1550,13 +1557,14 @@
     "HelpText": "Authors\nFire Dragon\nKike\n----------\nThis weapon uses the first slot of the hotbar or the first available slot with an object. To save any changes, you must press 'Accept', or 'X' to discard. The spread and velocity settings determine the direction and distance of the projectiles.\n\nTo use it, simply hold right click if you are on PC, or hold the screen if you are on a mobile device, and it will automatically fire the times per second you have configured. Useful for shooting spawn eggs and generating creatures in large quantities in a short time.\n\nYou can also have fun launching fireworks or any other object.\n\n\nShitty code stolen by Samuelsan03, so do whatever you want with this code xd"
   },
     "CreatureInventoryWidget": {
-      "CreatureInventoryLabel": "Creature Inventory",
-      "InventoryLabel": "Inventory"
+      "0": "Creature Inventory",
+      "1": "Farmer",
+      "2": "Farmer (N/A)"
     },
     "FlameThrowerWidget": {
     "1": "Flamethrower",
     "2": "Inventory",
-    "3": "Load ammunition",
+    "3": "Load fire or poison bullets to be able to shoot.",
     "4": "Prepare to spray fire {0}/15",
     "5": "Prepare to spray poison {0}/15"
 },
@@ -1592,7 +1600,6 @@
     "CollarTamedGhostTankMessage": "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!",
     "CollarTamedGhostMessage": "You have tamed a Ghost!\n Its invisibility is now in your hands!",
     "AntiTankCriticalHit": "Anti-Tank bullet critical hit",
-    "TankChaseAlert": "ALERT!\n A Tank has appeared!\n Take refuge, find good weapons to kill it or use the zombie collar to calm its rage and turn it into an ally!",
     "CollarTamedTankMessage": "You have tamed the Tank!\n The most feared boss of bosses is now your slave!\n Take advantage of its brute force as your guardian!",
     "CollarTamedChargerMessage": "You have tamed a Charger!\n Its brute force to push enemies strongly will now be your tool!\n Use it well and wisely!",
     "CollarTamedBoomerMessage": "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!",
