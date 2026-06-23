@@ -1034,6 +1034,14 @@ namespace Game
 			// --- CARTA DE GUERRA (LetterWarBlock) ---
 			if (activeBlock is LetterWarBlock)
 			{
+				// Durante celebración: impedir activar la guerra de narcos
+				if (AchievementsManager.IsCelebrationActive)
+				{
+					player.ComponentGui.DisplaySmallMessage(LanguageControl.Get("AchievementsMessages", 8), new Color(255, 200, 0), false, true);
+					playerOperated = true;
+					return;
+				}
+
 				LetterWarDialog dialog = new LetterWarDialog(player);
 				DialogsManager.ShowDialog(player.GuiWidget, dialog);
 				AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
