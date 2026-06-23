@@ -60,7 +60,6 @@ namespace Game
 			int newValue = slotValue;
 			int durabilityCost = 0;
 
-			// Aim timer
 			if (!m_aimStartTimes.TryGetValue(componentMiner, out double startTime))
 			{
 				startTime = m_subsystemTime.GameTime;
@@ -68,7 +67,6 @@ namespace Game
 			}
 			float aimDuration = (float)(m_subsystemTime.GameTime - startTime);
 
-			// Spread calculation
 			float noiseTime = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
 			float baseSway = componentMiner.ComponentCreature.ComponentBody.IsCrouching ? 0.01f : 0.03f;
 			float aimFactor = 0.2f * MathUtils.Saturate((aimDuration - 2.5f) / 6f);
@@ -120,36 +118,30 @@ namespace Game
 
 					if (DoubleMusketBlock.GetHammerState(data) && isLoaded && shotsRemaining > 0)
 					{
-						// SOLO dispara balas antitanque
 						int projectileValue = Terrain.MakeBlockValue(m_AntiTanksBulletBlockIndex, 0, 0);
-						int projectileCount = 1;
 						Vector3 spread = new Vector3(0.04f, 0.04f, 0f);
 						float speed = 180f;
 
 						Vector3 muzzlePos = componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition +
 											componentMiner.ComponentCreature.ComponentBody.Matrix.Right * 0.3f -
 											componentMiner.ComponentCreature.ComponentBody.Matrix.Up * 0.2f;
-						Vector3 dirNorm = Vector3.Normalize(muzzlePos + aim.Direction * 10f - muzzlePos);
+						Vector3 dirNorm = Vector3.Normalize(aim.Direction);
 						Vector3 right = Vector3.Normalize(Vector3.Cross(dirNorm, Vector3.UnitY));
 						Vector3 up = Vector3.Normalize(Vector3.Cross(dirNorm, right));
 
-						for (int i = 0; i < projectileCount; i++)
-						{
-							Vector3 offset = m_random.Float(-spread.X, spread.X) * right +
-											 m_random.Float(-spread.Y, spread.Y) * up +
-											 m_random.Float(-spread.Z, spread.Z) * dirNorm;
-							Vector3 velocity = componentMiner.ComponentCreature.ComponentBody.Velocity + speed * (dirNorm + offset);
-							Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, muzzlePos, velocity, Vector3.Zero, componentMiner.ComponentCreature);
-							if (projectile != null)
-								projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-						}
+						Vector3 offset = m_random.Float(-spread.X, spread.X) * right +
+										 m_random.Float(-spread.Y, spread.Y) * up +
+										 m_random.Float(-spread.Z, spread.Z) * dirNorm;
+						Vector3 velocity = componentMiner.ComponentCreature.ComponentBody.Velocity + speed * (dirNorm + offset);
+						Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, muzzlePos, velocity, Vector3.Zero, componentMiner.ComponentCreature);
+						if (projectile != null)
+							projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 
 						m_subsystemAudio.PlaySound("Audio/Items/GunShot Musket Remake", 1f, m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
 						m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(m_subsystemTerrain, muzzlePos + 0.3f * dirNorm, dirNorm), false);
 						m_subsystemNoise.MakeNoise(muzzlePos, 1f, 40f);
 						componentMiner.ComponentCreature.ComponentBody.ApplyImpulse(-4f * dirNorm);
 
-						// Reducir contador de disparos
 						shotsRemaining--;
 						if (shotsRemaining <= 0)
 						{
@@ -170,7 +162,6 @@ namespace Game
 							componentMiner.ComponentPlayer?.ComponentGui.DisplaySmallMessage(LanguageControl.Get("SubsystemDoubleMusketBlockBehavior", 0), Color.White, true, false);
 					}
 
-					// Soltar martillo
 					if (DoubleMusketBlock.GetHammerState(Terrain.ExtractData(newValue)))
 					{
 						newValue = Terrain.MakeBlockValue(Terrain.ExtractContents(newValue), 0, DoubleMusketBlock.SetHammerState(Terrain.ExtractData(newValue), false));
@@ -192,7 +183,6 @@ namespace Game
 			return false;
 		}
 
-		// Capacidad de proceso: SOLO BALAS ANTITANK (hasta 2)
 		public override int GetProcessInventoryItemCapacity(IInventory inventory, int slotIndex, int value)
 		{
 			int contents = Terrain.ExtractContents(value);
@@ -223,7 +213,6 @@ namespace Game
 
 				int newData = DoubleMusketBlock.SetLoaded(data, shotsRemaining > 0);
 				newData = DoubleMusketBlock.SetShotsRemaining(newData, shotsRemaining);
-				newData = DoubleMusketBlock.SetBulletType(newData, BulletBlock.BulletType.MusketBall);
 				newData = DoubleMusketBlock.SetAntiTanksBullet(newData, true);
 
 				processedValue = 0;
