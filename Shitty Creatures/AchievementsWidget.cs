@@ -212,7 +212,16 @@ namespace Game
 		// Añadir handler:
 		private void OnAnyAchievementUnlocked(int achievementNumber)
 		{
-			// Reordenar la lista cuando se desbloquea cualquier logro
+			if (m_achievementItems.TryGetValue(achievementNumber, out var itemData))
+			{
+				if (itemData.ProgressBar != null)
+					itemData.ProgressBar.Value = 1f;
+				if (itemData.StatusLabel != null)
+				{
+					itemData.StatusLabel.Text = LanguageControl.Get(fName, 2);
+					itemData.StatusLabel.Color = Color.Green;
+				}
+			}
 			m_needsReorder = true;
 		}
 
@@ -359,179 +368,122 @@ namespace Game
 		private void OnInfectedCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(16, out var item16) && !AchievementsManager.IsAchievementUnlocked(player, 16))
-				UpdateCounterDescription(16, currentKills, 10, item16.BaseDescription, item16.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(17, out var item17) && !AchievementsManager.IsAchievementUnlocked(player, 17))
-				UpdateCounterDescription(17, currentKills, 50, item17.BaseDescription, item17.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(18, out var item18) && !AchievementsManager.IsAchievementUnlocked(player, 18))
-				UpdateCounterDescription(18, currentKills, 100, item18.BaseDescription, item18.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(16, currentKills, 10);
+			UpdateProgressBarAndStatus(17, currentKills, 50);
+			UpdateProgressBarAndStatus(18, currentKills, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnBossCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(19, out var item19) && !AchievementsManager.IsAchievementUnlocked(player, 19))
-				UpdateCounterDescription(19, currentKills, 10, item19.BaseDescription, item19.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(20, out var item20) && !AchievementsManager.IsAchievementUnlocked(player, 20))
-				UpdateCounterDescription(20, currentKills, 50, item20.BaseDescription, item20.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(21, out var item21) && !AchievementsManager.IsAchievementUnlocked(player, 21))
-				UpdateCounterDescription(21, currentKills, 100, item21.BaseDescription, item21.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(19, currentKills, 10);
+			UpdateProgressBarAndStatus(20, currentKills, 50);
+			UpdateProgressBarAndStatus(21, currentKills, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnTankCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(22, out var item22) && !AchievementsManager.IsAchievementUnlocked(player, 22))
-				UpdateCounterDescription(22, currentKills, 10, item22.BaseDescription, item22.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(23, out var item23) && !AchievementsManager.IsAchievementUnlocked(player, 23))
-				UpdateCounterDescription(23, currentKills, 50, item23.BaseDescription, item23.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(24, out var item24) && !AchievementsManager.IsAchievementUnlocked(player, 24))
-				UpdateCounterDescription(24, currentKills, 100, item24.BaseDescription, item24.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(22, currentKills, 10);
+			UpdateProgressBarAndStatus(23, currentKills, 50);
+			UpdateProgressBarAndStatus(24, currentKills, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnGhostCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(25, out var item25) && !AchievementsManager.IsAchievementUnlocked(player, 25))
-				UpdateCounterDescription(25, currentKills, 10, item25.BaseDescription, item25.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(26, out var item26) && !AchievementsManager.IsAchievementUnlocked(player, 26))
-				UpdateCounterDescription(26, currentKills, 50, item26.BaseDescription, item26.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(27, out var item27) && !AchievementsManager.IsAchievementUnlocked(player, 27))
-				UpdateCounterDescription(27, currentKills, 100, item27.BaseDescription, item27.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(25, currentKills, 10);
+			UpdateProgressBarAndStatus(26, currentKills, 50);
+			UpdateProgressBarAndStatus(27, currentKills, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnGhostTankCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(28, out var item28) && !AchievementsManager.IsAchievementUnlocked(player, 28))
-				UpdateCounterDescription(28, currentKills, 10, item28.BaseDescription, item28.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(29, out var item29) && !AchievementsManager.IsAchievementUnlocked(player, 29))
-				UpdateCounterDescription(29, currentKills, 50, item29.BaseDescription, item29.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(30, out var item30) && !AchievementsManager.IsAchievementUnlocked(player, 30))
-				UpdateCounterDescription(30, currentKills, 100, item30.BaseDescription, item30.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(28, currentKills, 10);
+			UpdateProgressBarAndStatus(29, currentKills, 50);
+			UpdateProgressBarAndStatus(30, currentKills, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnBanditCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(31, out var item31) && !AchievementsManager.IsAchievementUnlocked(player, 31))
-				UpdateCounterDescription(31, currentKills, 10, item31.BaseDescription, item31.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(32, out var item32) && !AchievementsManager.IsAchievementUnlocked(player, 32))
-				UpdateCounterDescription(32, currentKills, 50, item32.BaseDescription, item32.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(33, out var item33) && !AchievementsManager.IsAchievementUnlocked(player, 33))
-				UpdateCounterDescription(33, currentKills, 100, item33.BaseDescription, item33.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(31, currentKills, 10);
+			UpdateProgressBarAndStatus(32, currentKills, 50);
+			UpdateProgressBarAndStatus(33, currentKills, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnHealCounterChanged(ComponentPlayer player, int currentHeals, int targetHeals)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(34, out var item34) && !AchievementsManager.IsAchievementUnlocked(player, 34))
-				UpdateCounterDescription(34, currentHeals, 10, item34.BaseDescription, item34.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(35, out var item35) && !AchievementsManager.IsAchievementUnlocked(player, 35))
-				UpdateCounterDescription(35, currentHeals, 50, item35.BaseDescription, item35.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(36, out var item36) && !AchievementsManager.IsAchievementUnlocked(player, 36))
-				UpdateCounterDescription(36, currentHeals, 100, item36.BaseDescription, item36.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(34, currentHeals, 10);
+			UpdateProgressBarAndStatus(35, currentHeals, 50);
+			UpdateProgressBarAndStatus(36, currentHeals, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnPirateCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(38, out var item38) && !AchievementsManager.IsAchievementUnlocked(player, 38))
-				UpdateCounterDescription(38, currentKills, 10, item38.BaseDescription, item38.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(39, out var item39) && !AchievementsManager.IsAchievementUnlocked(player, 39))
-				UpdateCounterDescription(39, currentKills, 50, item39.BaseDescription, item39.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(40, out var item40) && !AchievementsManager.IsAchievementUnlocked(player, 40))
-				UpdateCounterDescription(40, currentKills, 100, item40.BaseDescription, item40.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(38, currentKills, 10);
+			UpdateProgressBarAndStatus(39, currentKills, 50);
+			UpdateProgressBarAndStatus(40, currentKills, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnFlyingCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(44, out var item44) && !AchievementsManager.IsAchievementUnlocked(player, 44))
-				UpdateCounterDescription(44, currentKills, 10, item44.BaseDescription, item44.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(45, out var item45) && !AchievementsManager.IsAchievementUnlocked(player, 45))
-				UpdateCounterDescription(45, currentKills, 25, item45.BaseDescription, item45.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(46, out var item46) && !AchievementsManager.IsAchievementUnlocked(player, 46))
-				UpdateCounterDescription(46, currentKills, 50, item46.BaseDescription, item46.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(47, out var item47) && !AchievementsManager.IsAchievementUnlocked(player, 47))
-				UpdateCounterDescription(47, currentKills, 100, item47.BaseDescription, item47.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(44, currentKills, 10);
+			UpdateProgressBarAndStatus(45, currentKills, 25);
+			UpdateProgressBarAndStatus(46, currentKills, 50);
+			UpdateProgressBarAndStatus(47, currentKills, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnBoomerCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(48, out var item48) && !AchievementsManager.IsAchievementUnlocked(player, 48))
-				UpdateCounterDescription(48, currentKills, 10, item48.BaseDescription, item48.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(49, out var item49) && !AchievementsManager.IsAchievementUnlocked(player, 49))
-				UpdateCounterDescription(49, currentKills, 25, item49.BaseDescription, item49.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(50, out var item50) && !AchievementsManager.IsAchievementUnlocked(player, 50))
-				UpdateCounterDescription(50, currentKills, 55, item50.BaseDescription, item50.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(51, out var item51) && !AchievementsManager.IsAchievementUnlocked(player, 51))
-				UpdateCounterDescription(51, currentKills, 100, item51.BaseDescription, item51.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(48, currentKills, 10);
+			UpdateProgressBarAndStatus(49, currentKills, 25);
+			UpdateProgressBarAndStatus(50, currentKills, 55);
+			UpdateProgressBarAndStatus(51, currentKills, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnNormalTameCounterChanged(ComponentPlayer player, int current, int target)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(57, out var i57) && !AchievementsManager.IsAchievementUnlocked(player, 57))
-				UpdateCounterDescription(57, current, 10, i57.BaseDescription, i57.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(58, out var i58) && !AchievementsManager.IsAchievementUnlocked(player, 58))
-				UpdateCounterDescription(58, current, 25, i58.BaseDescription, i58.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(59, out var i59) && !AchievementsManager.IsAchievementUnlocked(player, 59))
-				UpdateCounterDescription(59, current, 50, i59.BaseDescription, i59.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(60, out var i60) && !AchievementsManager.IsAchievementUnlocked(player, 60))
-				UpdateCounterDescription(60, current, 100, i60.BaseDescription, i60.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(57, current, 10);
+			UpdateProgressBarAndStatus(58, current, 25);
+			UpdateProgressBarAndStatus(59, current, 50);
+			UpdateProgressBarAndStatus(60, current, 100);
 			m_needsReorder = true;
 		}
 
 		private void OnBossTameCounterChanged(ComponentPlayer player, int current, int target)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(61, out var i61) && !AchievementsManager.IsAchievementUnlocked(player, 61))
-				UpdateCounterDescription(61, current, 1, i61.BaseDescription, i61.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(62, out var i62) && !AchievementsManager.IsAchievementUnlocked(player, 62))
-				UpdateCounterDescription(62, current, 5, i62.BaseDescription, i62.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(63, out var i63) && !AchievementsManager.IsAchievementUnlocked(player, 63))
-				UpdateCounterDescription(63, current, 10, i63.BaseDescription, i63.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(64, out var i64) && !AchievementsManager.IsAchievementUnlocked(player, 64))
-				UpdateCounterDescription(64, current, 25, i64.BaseDescription, i64.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(61, current, 1);
+			UpdateProgressBarAndStatus(62, current, 5);
+			UpdateProgressBarAndStatus(63, current, 10);
+			UpdateProgressBarAndStatus(64, current, 25);
 			m_needsReorder = true;
 		}
 
 		private void OnGhostTameCounterChanged(ComponentPlayer player, int current, int target)
 		{
 			if (player != m_componentPlayer) return;
-			if (m_achievementItems.TryGetValue(65, out var i65) && !AchievementsManager.IsAchievementUnlocked(player, 65))
-				UpdateCounterDescription(65, current, 5, i65.BaseDescription, i65.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(66, out var i66) && !AchievementsManager.IsAchievementUnlocked(player, 66))
-				UpdateCounterDescription(66, current, 10, i66.BaseDescription, i66.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(67, out var i67) && !AchievementsManager.IsAchievementUnlocked(player, 67))
-				UpdateCounterDescription(67, current, 25, i67.BaseDescription, i67.DescriptionLabel);
-			if (m_achievementItems.TryGetValue(68, out var i68) && !AchievementsManager.IsAchievementUnlocked(player, 68))
-				UpdateCounterDescription(68, current, 50, i68.BaseDescription, i68.DescriptionLabel);
-
+			UpdateProgressBarAndStatus(65, current, 5);
+			UpdateProgressBarAndStatus(66, current, 10);
+			UpdateProgressBarAndStatus(67, current, 25);
+			UpdateProgressBarAndStatus(68, current, 50);
 			m_needsReorder = true;
 		}
 
@@ -552,17 +504,66 @@ namespace Game
 			};
 			achievementContainer.Children.Add(background);
 
+			// --- FILA SUPERIOR: Estado (izquierda) y Progreso (derecha) ---
+			var topRow = new CanvasWidget
+			{
+				Size = new Vector2(530, 25),
+				HorizontalAlignment = WidgetAlignment.Center,
+				VerticalAlignment = WidgetAlignment.Near,
+				Margin = new Vector2(0, 2)
+			};
+			achievementContainer.Children.Add(topRow);
+
+			// Estado
+			string statusText = unlocked ? LanguageControl.Get(fName, 2) : LanguageControl.Get(fName, 3);
+			Color statusColor = unlocked ? Color.Green : Color.Red;
 			var statusLabel = new LabelWidget
 			{
-				Text = unlocked ? LanguageControl.Get(fName, 2) : LanguageControl.Get(fName, 3),
-				Color = unlocked ? Color.Green : Color.Red,
+				Text = statusText,
+				Color = statusColor,
 				FontScale = 0.7f,
 				HorizontalAlignment = WidgetAlignment.Near,
-				VerticalAlignment = WidgetAlignment.Near,
-				Margin = new Vector2(10, 5)
+				VerticalAlignment = WidgetAlignment.Center,
+				Margin = new Vector2(10, 0)
 			};
-			achievementContainer.Children.Add(statusLabel);
+			topRow.Children.Add(statusLabel);
 
+			// Barra de progreso (solo si no está desbloqueado y es de contador)
+			ProgressBarWidget progressBar = null;
+			int currentKills = 0;
+			int target = 0;
+
+			if (!unlocked && IsProgressBarAchievement(achievementNumber))
+			{
+				GetCounterValues(achievementNumber, out currentKills, out target);
+
+				progressBar = new ProgressBarWidget
+				{
+					BarSize = new Vector2(100f, 12f),
+					BackgroundColor = new Color(60, 60, 60),
+					HorizontalAlignment = WidgetAlignment.Far,
+					VerticalAlignment = WidgetAlignment.Center,
+					Margin = new Vector2(0, 0),
+					Value = target > 0 ? Math.Clamp((float)currentKills / target, 0f, 1f) : 0f
+				};
+				topRow.Children.Add(progressBar);
+				// <-- Se eliminó el bloque que agregaba counterLabel -->
+			}
+			else if (unlocked)
+			{
+				progressBar = new ProgressBarWidget
+				{
+					BarSize = new Vector2(100f, 12f),
+					BackgroundColor = new Color(60, 60, 60),
+					HorizontalAlignment = WidgetAlignment.Far,
+					VerticalAlignment = WidgetAlignment.Center,
+					Margin = new Vector2(0, 0),
+					Value = 1f
+				};
+				topRow.Children.Add(progressBar);
+			}
+
+			// Título
 			var titleLabel = new LabelWidget
 			{
 				Text = title,
@@ -574,60 +575,11 @@ namespace Game
 			};
 			achievementContainer.Children.Add(titleLabel);
 
+			// Descripción
 			string finalDescription = baseDescription;
-			int currentKills = 0;
-			int target = 0;
-
-			if (!unlocked)
+			if (!unlocked && IsProgressBarAchievement(achievementNumber))
 			{
-				switch (achievementNumber)
-				{
-					case 16: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 10; break;
-					case 17: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 50; break;
-					case 18: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 100; break;
-					case 19: currentKills = AchievementsManager.GetBossKills(m_componentPlayer); target = 10; break;
-					case 20: currentKills = AchievementsManager.GetBossKills(m_componentPlayer); target = 50; break;
-					case 21: currentKills = AchievementsManager.GetBossKills(m_componentPlayer); target = 100; break;
-					case 22: currentKills = AchievementsManager.GetTankKills(m_componentPlayer); target = 10; break;
-					case 23: currentKills = AchievementsManager.GetTankKills(m_componentPlayer); target = 50; break;
-					case 24: currentKills = AchievementsManager.GetTankKills(m_componentPlayer); target = 100; break;
-					case 25: currentKills = AchievementsManager.GetGhostKills(m_componentPlayer); target = 10; break;
-					case 26: currentKills = AchievementsManager.GetGhostKills(m_componentPlayer); target = 50; break;
-					case 27: currentKills = AchievementsManager.GetGhostKills(m_componentPlayer); target = 100; break;
-					case 28: currentKills = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 10; break;
-					case 29: currentKills = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 50; break;
-					case 30: currentKills = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 100; break;
-					case 31: currentKills = AchievementsManager.GetBanditKills(m_componentPlayer); target = 10; break;
-					case 32: currentKills = AchievementsManager.GetBanditKills(m_componentPlayer); target = 50; break;
-					case 33: currentKills = AchievementsManager.GetBanditKills(m_componentPlayer); target = 100; break;
-					case 34: currentKills = AchievementsManager.GetHeals(m_componentPlayer); target = 10; break;
-					case 35: currentKills = AchievementsManager.GetHeals(m_componentPlayer); target = 50; break;
-					case 36: currentKills = AchievementsManager.GetHeals(m_componentPlayer); target = 100; break;
-					case 38: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 10; break;
-					case 39: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 50; break;
-					case 40: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 100; break;
-					case 44: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 10; break;
-					case 45: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 25; break;
-					case 46: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 50; break;
-					case 47: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 100; break;
-					case 48: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 10; break;
-					case 49: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 25; break;
-					case 50: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 55; break;
-					case 51: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 100; break;
-					case 57: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 10; break;
-					case 58: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 25; break;
-					case 59: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 50; break;
-					case 60: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 100; break;
-					case 61: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 10; break;
-					case 62: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 25; break;
-					case 63: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 50; break;
-					case 64: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 100; break;
-					case 65: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 10; break;
-					case 66: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 25; break;
-					case 67: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 50; break;
-					case 68: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 100; break;
-				}
-
+				GetCounterValues(achievementNumber, out currentKills, out target);
 				if (target > 0)
 				{
 					int displayKills = Math.Min(currentKills, target);
@@ -661,9 +613,9 @@ namespace Game
 				};
 				textStack.Children.Add(lineLabel);
 			}
-
 			achievementContainer.Children.Add(textStack);
 
+			// Fila inferior: Recompensa y botón
 			var bottomRow = new StackPanelWidget
 			{
 				Direction = LayoutDirection.Horizontal,
@@ -732,8 +684,8 @@ namespace Game
 				ClaimButton = claimButton
 			};
 
-			float statusHeight = 20f;
-			float titleHeight = 25f;
+			float statusHeight = 25f;
+			float titleHeight = 30f;
 			float textStackHeight = wrappedLines.Count * lineHeight + (wrappedLines.Count - 1) * 4f;
 			float bottomRowHeight = 40f;
 			float totalHeight = statusHeight + titleHeight + textStackHeight + bottomRowHeight + 20f;
@@ -751,8 +703,64 @@ namespace Game
 				BaseDescription = baseDescription,
 				TextStack = textStack,
 				WrappedLines = wrappedLines,
-				ClaimButton = claimButton  // <-- AGREGAR ESTO
+				ClaimButton = claimButton,
+				ProgressBar = progressBar,
+				StatusLabel = statusLabel
 			};
+		}
+
+		private void GetCounterValues(int achievementNumber, out int current, out int target)
+		{
+			current = 0;
+			target = 0;
+
+			switch (achievementNumber)
+			{
+				case 16: current = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 10; break;
+				case 17: current = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 50; break;
+				case 18: current = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 100; break;
+				case 19: current = AchievementsManager.GetBossKills(m_componentPlayer); target = 10; break;
+				case 20: current = AchievementsManager.GetBossKills(m_componentPlayer); target = 50; break;
+				case 21: current = AchievementsManager.GetBossKills(m_componentPlayer); target = 100; break;
+				case 22: current = AchievementsManager.GetTankKills(m_componentPlayer); target = 10; break;
+				case 23: current = AchievementsManager.GetTankKills(m_componentPlayer); target = 50; break;
+				case 24: current = AchievementsManager.GetTankKills(m_componentPlayer); target = 100; break;
+				case 25: current = AchievementsManager.GetGhostKills(m_componentPlayer); target = 10; break;
+				case 26: current = AchievementsManager.GetGhostKills(m_componentPlayer); target = 50; break;
+				case 27: current = AchievementsManager.GetGhostKills(m_componentPlayer); target = 100; break;
+				case 28: current = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 10; break;
+				case 29: current = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 50; break;
+				case 30: current = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 100; break;
+				case 31: current = AchievementsManager.GetBanditKills(m_componentPlayer); target = 10; break;
+				case 32: current = AchievementsManager.GetBanditKills(m_componentPlayer); target = 50; break;
+				case 33: current = AchievementsManager.GetBanditKills(m_componentPlayer); target = 100; break;
+				case 34: current = AchievementsManager.GetHeals(m_componentPlayer); target = 10; break;
+				case 35: current = AchievementsManager.GetHeals(m_componentPlayer); target = 50; break;
+				case 36: current = AchievementsManager.GetHeals(m_componentPlayer); target = 100; break;
+				case 38: current = AchievementsManager.GetPirateKills(m_componentPlayer); target = 10; break;
+				case 39: current = AchievementsManager.GetPirateKills(m_componentPlayer); target = 50; break;
+				case 40: current = AchievementsManager.GetPirateKills(m_componentPlayer); target = 100; break;
+				case 44: current = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 10; break;
+				case 45: current = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 25; break;
+				case 46: current = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 50; break;
+				case 47: current = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 100; break;
+				case 48: current = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 10; break;
+				case 49: current = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 25; break;
+				case 50: current = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 55; break;
+				case 51: current = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 100; break;
+				case 57: current = AchievementsManager.GetNormalTames(m_componentPlayer); target = 10; break;
+				case 58: current = AchievementsManager.GetNormalTames(m_componentPlayer); target = 25; break;
+				case 59: current = AchievementsManager.GetNormalTames(m_componentPlayer); target = 50; break;
+				case 60: current = AchievementsManager.GetNormalTames(m_componentPlayer); target = 100; break;
+				case 61: current = AchievementsManager.GetBossTames(m_componentPlayer); target = 10; break;
+				case 62: current = AchievementsManager.GetBossTames(m_componentPlayer); target = 25; break;
+				case 63: current = AchievementsManager.GetBossTames(m_componentPlayer); target = 50; break;
+				case 64: current = AchievementsManager.GetBossTames(m_componentPlayer); target = 100; break;
+				case 65: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 10; break;
+				case 66: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 25; break;
+				case 67: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 50; break;
+				case 68: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 100; break;
+			}
 		}
 
 		private List<string> WrapText(BitmapFont font, string text, float maxWidth, float fontScale)
@@ -916,7 +924,48 @@ namespace Game
 			public string BaseDescription;
 			public StackPanelWidget TextStack;
 			public List<string> WrappedLines;
-			public BevelledButtonWidget ClaimButton;  // <-- AGREGAR ESTO
+			public BevelledButtonWidget ClaimButton;
+			public ProgressBarWidget ProgressBar;
+			public LabelWidget StatusLabel;
+		}
+
+		private bool IsProgressBarAchievement(int number)
+		{
+			return (number >= 16 && number <= 68) ||
+				   (number >= 57 && number <= 68);
+		}
+
+		private void UpdateProgressBarAndStatus(int achievementNumber, int current, int target)
+		{
+			if (!m_achievementItems.TryGetValue(achievementNumber, out var itemData))
+				return;
+
+			bool unlocked = AchievementsManager.IsAchievementUnlocked(m_componentPlayer, achievementNumber);
+
+			if (itemData.ProgressBar != null)
+			{
+				float progress = unlocked ? 1f : (target > 0 ? Math.Clamp((float)current / target, 0f, 1f) : 0f);
+				itemData.ProgressBar.Value = progress;
+			}
+
+			if (itemData.StatusLabel != null)
+			{
+				if (unlocked)
+				{
+					itemData.StatusLabel.Text = LanguageControl.Get(fName, 2); // "Completado"
+					itemData.StatusLabel.Color = Color.Green;
+				}
+				else if (current > 0)
+				{
+					itemData.StatusLabel.Text = $"{current}/{target}";
+					itemData.StatusLabel.Color = Color.Yellow;
+				}
+				else
+				{
+					itemData.StatusLabel.Text = LanguageControl.Get(fName, 3); // "Pendiente"
+					itemData.StatusLabel.Color = Color.Red;
+				}
+			}
 		}
 
 		private class ImageWidgetSimple : Widget
