@@ -29,6 +29,12 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
+		// ===== SPAWN DE JEFES A MEDIANOCHE (OLEADAS NORMALES) =====
+		private bool m_midnightBossesSpawnedThisNight = false;
+		private float m_lastTimeOfDay = 0f;
+		private const float MidnightDetectionTolerance = 0.005f;
+		// ===== FIN SPAWN DE JEFES A MEDIANOCHE =====
+
 		private bool m_nightEndProcessed;
 
 		// ===== SPAWN DE ZOMBIS MONTADOS =====
@@ -217,6 +223,8 @@ namespace Game
 
 			m_letterWarSpawned = valuesDictionary.GetValue<bool>("LetterWarSpawned", false);
 			m_hasShownUnlockMessage = valuesDictionary.GetValue<bool>("HasShownUnlockMessage", false);
+			m_midnightBossesSpawnedThisNight = valuesDictionary.GetValue<bool>("MidnightBossesSpawnedThisNight", false);
+			m_lastTimeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 
 			if (m_subsystemSpawn != null)
 			{
@@ -637,6 +645,7 @@ namespace Game
 			valuesDictionary.SetValue("HasSpawnedBossThisNight", m_hasSpawnedBossThisNight);
 			valuesDictionary.SetValue("BossSpawnDelayed", m_bossSpawnDelayed);
 			valuesDictionary.SetValue("BossSpawnDelayTimer", m_bossSpawnDelayTimer);
+			valuesDictionary.SetValue("MidnightBossesSpawnedThisNight", m_midnightBossesSpawnedThisNight);
 
 			string bossQueueStr = m_bossQueue.Count > 0 ? string.Join(",", m_bossQueue) : "";
 			valuesDictionary.SetValue("BossQueue", bossQueueStr);
@@ -671,7 +680,6 @@ namespace Game
 			if (aliveBoss != null)
 			{
 				m_currentBossEntity = aliveBoss;
-				Log.Verbose($"[SubsystemZombiesSpawn] Jefe restaurado: {aliveBoss.ValuesDictionary.DatabaseObject?.Name}");
 				RebuildBossQueue();
 			}
 			else
@@ -682,12 +690,10 @@ namespace Game
 				{
 					m_bossSpawnDelayed = true;
 					m_bossSpawnDelayTimer = 0.5f;
-					Log.Verbose($"[SubsystemZombiesSpawn] No se encontró jefe vivo, preparando spawn de siguiente jefe. Pendientes: {m_bossQueue.Count}");
 				}
 				else
 				{
 					m_bossBattleActive = false;
-					Log.Verbose("[SubsystemZombiesSpawn] Batalla de jefes terminada (no hay jefes vivos ni pendientes)");
 				}
 			}
 		}
@@ -820,19 +826,22 @@ namespace Game
 			if (!wasGreenNightActive && isGreenNightActive)
 			{
 				m_nightEndProcessed = false;
+				m_midnightBossesSpawnedThisNight = false; // Resetear flag de jefes a medianoche
 				PlayEvilLaugh();
 				SendWaveMessage();
 
-				// Si hay jefes vivos, eliminarlos y resetear la batalla (para cualquier oleada)
+				// Si hay jefes vivos de noches anteriores, no hacer nada con ellos
 				Entity existingBoss = FindAliveBoss();
 				if (existingBoss != null)
 				{
+					// Jefe existente, no eliminar
 				}
 				else if (m_bossBattleActive)
 				{
+					// Batalla activa pero sin jefe, resetear
 				}
 
-				// Iniciar batalla si es la ola final y no se ha iniciado aún
+				// Iniciar batalla de jefes SOLO si es la ola final
 				if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
 				{
 					StartBossBattle();
@@ -852,8 +861,46 @@ namespace Game
 			// Actualizar el estado para la próxima iteración
 			m_wasGreenNightActive = isGreenNightActive;
 
+			// Guardar la hora anterior ANTES de retornar (para detectar medianoche)
+			float currentTimeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+
 			if (!isGreenNightActive)
+			{
+				m_lastTimeOfDay = currentTimeOfDay;
 				return;
+			}
+
+			// ===== SPAWN DE JEFES A MEDIANOCHE (EXCEPTO OLA FINAL) =====
+			if (!m_midnightBossesSpawnedThisNight && m_currentWave != maxWave)
+			{
+				float midnight = m_subsystemTimeOfDay.Midnight;
+				bool passedMidnight = false;
+
+				// Caso normal: pasamos de antes de medianoche a después
+				if (m_lastTimeOfDay < midnight && currentTimeOfDay >= midnight)
+				{
+					passedMidnight = true;
+				}
+				// Caso especial: medianoche cerca del 0.0 (cambio de día)
+				else if (m_lastTimeOfDay > 0.9f && currentTimeOfDay < 0.1f && midnight < 0.1f)
+				{
+					passedMidnight = true;
+				}
+				// Caso: estamos exactamente en medianoche (por si se perdió el momento exacto)
+				else if (Math.Abs(currentTimeOfDay - midnight) < MidnightDetectionTolerance)
+				{
+					passedMidnight = true;
+				}
+
+				if (passedMidnight)
+				{
+					SpawnMidnightBosses();
+					m_midnightBossesSpawnedThisNight = true;
+				}
+			}
+			// ===== FIN SPAWN DE JEFES A MEDIANOCHE =====
+
+			m_lastTimeOfDay = currentTimeOfDay;
 
 			// ===== GESTIONAR RETRASO DE SPAWN DE JEFE =====
 			if (m_bossSpawnDelayed)
@@ -2723,5 +2770,52 @@ namespace Game
 				   blockContents == 66 || blockContents == 67 || blockContents == 7;
 		}
 		// ===== FIN SPAWN CONSTANTE INFECTED SPIDER =====
+
+		/// <summary>
+		/// Spawnea los jefes definidos en la ola actual a medianoche.
+		/// Solo se usa para oleadas normales (no la final).
+		/// </summary>
+		private void SpawnMidnightBosses()
+		{
+			if (m_currentWaveEntries == null || m_currentWaveEntries.Count == 0)
+				return;
+
+			var bossEntries = m_currentWaveEntries
+				.Where(e => BossTemplates.Contains(e.TemplateName))
+				.ToList();
+
+			if (bossEntries.Count == 0)
+				return;
+
+			int bossesSpawned = 0;
+
+			foreach (var bossEntry in bossEntries)
+			{
+				Vector3 spawnPos = GetBossSpawnPoint(40f, 70f);
+				if (spawnPos == Vector3.Zero)
+				{
+					spawnPos = GetAlternativeBossSpawnPoint(20f, 100f);
+				}
+
+				if (spawnPos == Vector3.Zero)
+					continue;
+
+				if (!CanSpawnCreature(bossEntry.TemplateName, spawnPos))
+					continue;
+
+				Entity boss = m_subsystemCreatureSpawn.SpawnCreature(bossEntry.TemplateName, spawnPos, false);
+				if (boss != null)
+				{
+					bossesSpawned++;
+					string messageKey = GetBossMessageKey(bossEntry.TemplateName);
+					SendMessageToAllPlayers("ZombiesSpawn", messageKey, new Color(255, 50, 50));
+				}
+			}
+
+			if (bossesSpawned > 0 && m_subsystemAudio != null)
+			{
+				m_subsystemAudio.PlaySound("Audio/UI/Tank Warning Sound", 1f, 0f, 0f, 0f);
+			}
+		}
 	}
 }
