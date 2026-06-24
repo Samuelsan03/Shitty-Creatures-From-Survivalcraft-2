@@ -540,6 +540,18 @@ namespace Game
 			};
 			achievementContainer.Children.Add(titleLabel);
 
+			// --- CATEGORÍA (INDEPENDIENTE, PARA TODOS LOS LOGROS) ---
+			var categoryLabel = new LabelWidget
+			{
+				Text = LanguageControl.Get("TypesOfAchievements", 0) + ": " + AchievementCategoryHelper.GetCategoryName(achievementNumber),
+				Color = new Color(140, 140, 140),
+				FontScale = 0.8f,
+				HorizontalAlignment = WidgetAlignment.Center,
+				VerticalAlignment = WidgetAlignment.Near,
+				Margin = new Vector2(0, 40)
+			};
+			achievementContainer.Children.Add(categoryLabel);
+
 			// Descripción
 			string finalDescription = baseDescription;
 			int currentKills = 0;
@@ -582,7 +594,7 @@ namespace Game
 			}
 			achievementContainer.Children.Add(textStack);
 
-			// --- BARRA DE PROGRESO (EXACTAMENTE COMO ESTABA) ---
+			// --- BARRA DE PROGRESO (SOLO PARA LOGROS CON CONTADOR) ---
 			ProgressBarWidget progressBar = null;
 			LabelWidget percentLabel = null;
 			if (IsProgressBarAchievement(achievementNumber))
@@ -616,7 +628,7 @@ namespace Game
 				achievementContainer.Children.Add(progressBar);
 				CanvasWidget.SetPosition(progressBar, new Vector2(140f, 115f)); // Posición original
 
-				// --- PORCENTAJE (independiente, a la derecha de la barra) ---
+				// Porcentaje (independiente, a la derecha de la barra)
 				string percentText = unlocked ? "100%" : (target > 0 ? $"{Math.Min(currentKills, target)}%" : "0%");
 				percentLabel = new LabelWidget
 				{
@@ -706,10 +718,11 @@ namespace Game
 			// --- CÁLCULO DE ALTURA TOTAL ---
 			float statusHeight = 25f;
 			float titleHeight = 30f;
+			float categoryHeight = 20f; // Siempre presente
 			float textStackHeight = wrappedLines.Count * lineHeight + (wrappedLines.Count - 1) * 4f;
 			float bottomRowHeight = 40f;
 			float progressBarHeight = (progressBar != null) ? (progressBar.BarSize.Y + 8f) : 0f;
-			float totalHeight = statusHeight + titleHeight + textStackHeight + progressBarHeight + bottomRowHeight + 20f;
+			float totalHeight = statusHeight + titleHeight + categoryHeight + textStackHeight + progressBarHeight + bottomRowHeight + 20f;
 			totalHeight = Math.Max(120f, totalHeight);
 
 			achievementContainer.Size = new Vector2(530, totalHeight);
@@ -1192,5 +1205,67 @@ namespace Game
 		{
 			SubsystemAchievements.AchievementUnlocked -= OnAnyAchievementUnlocked;
 		}
-	}	
+
+		// Clase auxiliar para obtener la categoría de cada logro
+		private static class AchievementCategoryHelper
+		{
+			public static AchievementCategory GetCategory(int achievementNumber)
+			{
+				if ((achievementNumber >= 1 && achievementNumber <= 5) ||
+					achievementNumber == 15 ||
+					(achievementNumber >= 16 && achievementNumber <= 33) ||
+					(achievementNumber >= 38 && achievementNumber <= 40) ||
+					(achievementNumber >= 44 && achievementNumber <= 51))
+				{
+					return AchievementCategory.Combat;
+				}
+
+				if ((achievementNumber >= 6 && achievementNumber <= 14) ||
+					achievementNumber == 52 ||
+					achievementNumber == 70 ||
+					achievementNumber == 8)
+				{
+					return AchievementCategory.Survival;
+				}
+
+				if (achievementNumber >= 57 && achievementNumber <= 68)
+				{
+					return AchievementCategory.Taming;
+				}
+
+				if (achievementNumber >= 34 && achievementNumber <= 36)
+				{
+					return AchievementCategory.Healing;
+				}
+
+				if (achievementNumber == 37 || achievementNumber == 41 ||
+					achievementNumber == 42 || achievementNumber == 43)
+				{
+					return AchievementCategory.Trade;
+				}
+
+				if (achievementNumber == 69)
+				{
+					return AchievementCategory.Special;
+				}
+
+				return AchievementCategory.Combat;
+			}
+
+			public static string GetCategoryName(int achievementNumber)
+			{
+				AchievementCategory category = GetCategory(achievementNumber);
+				switch (category)
+				{
+					case AchievementCategory.Combat: return LanguageControl.Get("TypesOfAchievements", 1);
+					case AchievementCategory.Survival: return LanguageControl.Get("TypesOfAchievements", 2);
+					case AchievementCategory.Taming: return LanguageControl.Get("TypesOfAchievements", 3);
+					case AchievementCategory.Healing: return LanguageControl.Get("TypesOfAchievements", 4);
+					case AchievementCategory.Trade: return LanguageControl.Get("TypesOfAchievements", 5);
+					case AchievementCategory.Special: return LanguageControl.Get("TypesOfAchievements", 6);
+					default: return LanguageControl.Get("TypesOfAchievements", 1);
+				}
+			}
+		}
+	}
 }
