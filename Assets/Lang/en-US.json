@@ -167,7 +167,20 @@
   "134": "False God",
 "135": "Infinite believed he was invincible. Turns out all he needed was an urgent ego check.",
 "136": "Praying Worked",
-"137": "Survive a Drug Traffickers War during a Green Night. Right now, even the developers have no idea what happened."
+"137": "Survive a Drug Traffickers War during a Green Night. Right now, even the developers have no idea what happened.",
+"138": "The Dough Has Awakened",
+"139": "You fed Aimep3 some bread and something inexplicable happened. Scientists are still debating whether it was the gluten.",
+"140": "Error: God Detected",
+"141": "Aimep3 has reached its maximum power. It can now defeat any developer with a loaf of bread. Do not approach."
+  },
+  "TypesOfAchievements": {
+    "0": "Type",
+    "1": "Mass Murder",
+    "2": "Survival Is Victory",
+    "3": "Animal Slavery",
+    "4": "Nurse of the Poor",
+    "5": "Dirty Business",
+    "6": "The Chosen One"
   },
   "AchievementsMessages": {
     "0": "ACHIEVEMENT {0} UNLOCKED!",
