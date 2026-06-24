@@ -1271,8 +1271,6 @@ namespace Game
 						{
 							s_lastProhibitionMessageTime = now;
 							string smallMessage = LanguageControl.Get("UnlockedItems", "CraftingLocked");
-							if (string.IsNullOrEmpty(smallMessage))
-								smallMessage = "You must survive all waves first!";
 
 							var playersSubsystem = zombiesSpawn?.Project.FindSubsystem<SubsystemPlayers>(true);
 							if (playersSubsystem != null)
