@@ -504,7 +504,7 @@ namespace Game
 			};
 			achievementContainer.Children.Add(background);
 
-			// --- FILA SUPERIOR: Estado (izquierda) y Progreso (derecha) ---
+			// --- FILA SUPERIOR: Estado (izquierda) ---
 			var topRow = new CanvasWidget
 			{
 				Size = new Vector2(530, 25),
@@ -528,41 +528,6 @@ namespace Game
 			};
 			topRow.Children.Add(statusLabel);
 
-			// Barra de progreso (solo si no está desbloqueado y es de contador)
-			ProgressBarWidget progressBar = null;
-			int currentKills = 0;
-			int target = 0;
-
-			if (!unlocked && IsProgressBarAchievement(achievementNumber))
-			{
-				GetCounterValues(achievementNumber, out currentKills, out target);
-
-				progressBar = new ProgressBarWidget
-				{
-					BarSize = new Vector2(100f, 12f),
-					BackgroundColor = new Color(60, 60, 60),
-					HorizontalAlignment = WidgetAlignment.Far,
-					VerticalAlignment = WidgetAlignment.Center,
-					Margin = new Vector2(0, 0),
-					Value = target > 0 ? Math.Clamp((float)currentKills / target, 0f, 1f) : 0f
-				};
-				topRow.Children.Add(progressBar);
-				// <-- Se eliminó el bloque que agregaba counterLabel -->
-			}
-			else if (unlocked)
-			{
-				progressBar = new ProgressBarWidget
-				{
-					BarSize = new Vector2(100f, 12f),
-					BackgroundColor = new Color(60, 60, 60),
-					HorizontalAlignment = WidgetAlignment.Far,
-					VerticalAlignment = WidgetAlignment.Center,
-					Margin = new Vector2(0, 0),
-					Value = 1f
-				};
-				topRow.Children.Add(progressBar);
-			}
-
 			// Título
 			var titleLabel = new LabelWidget
 			{
@@ -577,6 +542,8 @@ namespace Game
 
 			// Descripción
 			string finalDescription = baseDescription;
+			int currentKills = 0;
+			int target = 0;
 			if (!unlocked && IsProgressBarAchievement(achievementNumber))
 			{
 				GetCounterValues(achievementNumber, out currentKills, out target);
@@ -615,7 +582,41 @@ namespace Game
 			}
 			achievementContainer.Children.Add(textStack);
 
-			// Fila inferior: Recompensa y botón
+			// --- BARRA DE PROGRESO centrada debajo de la descripción ---
+			ProgressBarWidget progressBar = null;
+			if (IsProgressBarAchievement(achievementNumber))
+			{
+				if (unlocked)
+				{
+					progressBar = new ProgressBarWidget
+					{
+						BarSize = new Vector2(250f, 14f),
+						BackgroundColor = new Color(60, 60, 60),
+						HorizontalAlignment = WidgetAlignment.Center,
+						VerticalAlignment = WidgetAlignment.Center,
+						Margin = new Vector2(0, 0),
+						Value = 1f
+					};
+				}
+				else
+				{
+					GetCounterValues(achievementNumber, out currentKills, out target);
+					progressBar = new ProgressBarWidget
+					{
+						BarSize = new Vector2(250f, 14f),
+						BackgroundColor = new Color(60, 60, 60),
+						HorizontalAlignment = WidgetAlignment.Center,
+						VerticalAlignment = WidgetAlignment.Center,
+						Margin = new Vector2(0, 0),
+						Value = target > 0 ? Math.Clamp((float)currentKills / target, 0f, 1f) : 0f
+					};
+				}
+				// FORZAR posición con CanvasWidget.SetPosition
+				achievementContainer.Children.Add(progressBar);
+				CanvasWidget.SetPosition(progressBar, new Vector2(140f, 115f)); // Centrar horizontalmente
+			}
+
+			// --- FILA INFERIOR: Recompensa y botón ---
 			var bottomRow = new StackPanelWidget
 			{
 				Direction = LayoutDirection.Horizontal,
@@ -684,12 +685,14 @@ namespace Game
 				ClaimButton = claimButton
 			};
 
+			// --- CÁLCULO DE ALTURA TOTAL ---
 			float statusHeight = 25f;
 			float titleHeight = 30f;
 			float textStackHeight = wrappedLines.Count * lineHeight + (wrappedLines.Count - 1) * 4f;
 			float bottomRowHeight = 40f;
-			float totalHeight = statusHeight + titleHeight + textStackHeight + bottomRowHeight + 20f;
-			totalHeight = Math.Max(95f, totalHeight);
+			float progressBarHeight = (progressBar != null) ? (progressBar.BarSize.Y + 8f) : 0f;
+			float totalHeight = statusHeight + titleHeight + textStackHeight + progressBarHeight + bottomRowHeight + 20f;
+			totalHeight = Math.Max(120f, totalHeight);
 
 			achievementContainer.Size = new Vector2(530, totalHeight);
 			background.Size = new Vector2(530, totalHeight);
