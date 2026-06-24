@@ -167,7 +167,11 @@
   "134": "Falso dios",
 "135": "Infinite se creía invencible. Resultó que solo necesitaba una revisión urgente de su ego.",
 "136": "Rezar funcionó",
-"137": "Sobrevive a una Guerra de Narcotraficantes durante una Noche Verde. Ahora mismo los desarrolladores tampoco entienden qué pasó."
+"137": "Sobrevive a una Guerra de Narcotraficantes durante una Noche Verde. Ahora mismo los desarrolladores tampoco entienden qué pasó.",
+"138": "La masa ha despertado",
+"139": "Alimentaste a Aimep3 con pan y ocurrió algo inexplicable. Los científicos todavía debaten si fue el gluten.",
+"140": "Error: dios detectado",
+"141": "Aimep3 alcanzó su máximo poder. Ahora puede derrotar a cualquier desarrollador con una barra de pan. No te acerques."
   },
   "AchievementsMessages": {
     "0": "¡LOGRO {0} DESBLOQUEADO!",
@@ -179,6 +183,15 @@
     "6": "Recorrido",
     "7": "Trofeos",
     "8": "No. Simplemente no. Apaga eso y disfruta el espectáculo, que no todo el día hay fuegos artificiales cayendo del cielo."
+},
+"TypesOfAchievements": {
+    "0": "Tipo",
+    "1": "Asesinato en masa",
+    "2": "Sobrevivir es ganar",
+    "3": "Esclavitud animal",
+    "4": "Enfermero de pobres",
+    "5": "Negocios sucios",
+    "6": "El elegido"
 },
   "BaseWatermelonBlock": {
     "1": "Sandía",
