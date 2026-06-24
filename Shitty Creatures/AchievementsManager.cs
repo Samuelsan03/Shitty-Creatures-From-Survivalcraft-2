@@ -622,6 +622,30 @@ namespace Game
 			}
 		}
 
+		public static void OnAimep3Evolution(Project project, int newLevel, int maxLevel)
+		{
+			if (s_subsystemAchievements == null || project == null) return;
+
+			var players = project.FindSubsystem<SubsystemPlayers>(true);
+			if (players == null) return;
+
+			// Primera evolución (nivel 1) - Logro #71
+			if (newLevel == 1 && !s_subsystemAchievements.IsAchievementUnlocked(71))
+			{
+				string title = LanguageControl.Get(AchievementsWidget.fName, 138);
+				foreach (var player in players.ComponentPlayers)
+					UnlockAchievement(player, 71, "Aimep3FirstEvolution", title);
+			}
+
+			// Máxima evolución - Logro #72
+			if (newLevel >= maxLevel && !s_subsystemAchievements.IsAchievementUnlocked(72))
+			{
+				string title = LanguageControl.Get(AchievementsWidget.fName, 140);
+				foreach (var player in players.ComponentPlayers)
+					UnlockAchievement(player, 72, "Aimep3MaxEvolution", title);
+			}
+		}
+
 		private static void UnlockAchievement(ComponentPlayer player, int achievementNumber, string achievementId, string displayName)
 		{
 			if (s_subsystemAchievements == null) return;
