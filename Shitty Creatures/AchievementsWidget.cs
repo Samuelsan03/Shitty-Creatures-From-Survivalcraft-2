@@ -582,10 +582,12 @@ namespace Game
 			}
 			achievementContainer.Children.Add(textStack);
 
-			// --- BARRA DE PROGRESO centrada debajo de la descripción ---
+			// --- BARRA DE PROGRESO (EXACTAMENTE COMO ESTABA) ---
 			ProgressBarWidget progressBar = null;
+			LabelWidget percentLabel = null;
 			if (IsProgressBarAchievement(achievementNumber))
 			{
+				// Barra de progreso (igual que antes)
 				if (unlocked)
 				{
 					progressBar = new ProgressBarWidget
@@ -611,9 +613,25 @@ namespace Game
 						Value = target > 0 ? Math.Clamp((float)currentKills / target, 0f, 1f) : 0f
 					};
 				}
-				// FORZAR posición con CanvasWidget.SetPosition
 				achievementContainer.Children.Add(progressBar);
-				CanvasWidget.SetPosition(progressBar, new Vector2(140f, 115f)); // Centrar horizontalmente
+				CanvasWidget.SetPosition(progressBar, new Vector2(140f, 115f)); // Posición original
+
+				// --- PORCENTAJE (independiente, a la derecha de la barra) ---
+				string percentText = unlocked ? "100%" : (target > 0 ? $"{Math.Min(currentKills, target)}%" : "0%");
+				percentLabel = new LabelWidget
+				{
+					Text = percentText,
+					Color = Color.White,
+					FontScale = 0.65f,
+					HorizontalAlignment = WidgetAlignment.Center,
+					VerticalAlignment = WidgetAlignment.Center,
+					Margin = new Vector2(0, 0)
+				};
+				achievementContainer.Children.Add(percentLabel);
+				// Ajusta la posición del porcentaje cambiando estos valores:
+				float percentPosX = 400f; // Ajusta horizontalmente (0 = izquierda, 530 = derecha)
+				float percentPosY = 115f; // Ajusta verticalmente (0 = arriba)
+				CanvasWidget.SetPosition(percentLabel, new Vector2(percentPosX, percentPosY));
 			}
 
 			// --- FILA INFERIOR: Recompensa y botón ---
@@ -708,7 +726,8 @@ namespace Game
 				WrappedLines = wrappedLines,
 				ClaimButton = claimButton,
 				ProgressBar = progressBar,
-				StatusLabel = statusLabel
+				StatusLabel = statusLabel,
+				PercentLabel = percentLabel
 			};
 		}
 
@@ -930,6 +949,7 @@ namespace Game
 			public BevelledButtonWidget ClaimButton;
 			public ProgressBarWidget ProgressBar;
 			public LabelWidget StatusLabel;
+			public LabelWidget PercentLabel;
 		}
 
 		private bool IsProgressBarAchievement(int number)
@@ -951,11 +971,17 @@ namespace Game
 				itemData.ProgressBar.Value = progress;
 			}
 
+			if (itemData.PercentLabel != null)
+			{
+				string percentText = unlocked ? "100%" : (target > 0 ? $"{Math.Min(current, target)}%" : "0%");
+				itemData.PercentLabel.Text = percentText;
+			}
+
 			if (itemData.StatusLabel != null)
 			{
 				if (unlocked)
 				{
-					itemData.StatusLabel.Text = LanguageControl.Get(fName, 2); // "Completado"
+					itemData.StatusLabel.Text = LanguageControl.Get(fName, 2);
 					itemData.StatusLabel.Color = Color.Green;
 				}
 				else if (current > 0)
@@ -965,7 +991,7 @@ namespace Game
 				}
 				else
 				{
-					itemData.StatusLabel.Text = LanguageControl.Get(fName, 3); // "Pendiente"
+					itemData.StatusLabel.Text = LanguageControl.Get(fName, 3);
 					itemData.StatusLabel.Color = Color.Red;
 				}
 			}
