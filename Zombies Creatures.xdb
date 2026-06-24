@@ -8584,14 +8584,7 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="b8c1a073-b4c3-4822-a3e8-9cabf4a9088a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="354" Type="int"/> <!-- Tiene puesto su Minigun-->
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="Inventory" Guid="b8c1a073-b4c3-4822-a3e8-9cabf4a9088a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a91c53cf-1aca-4732-a2c0-e7ebcecd4e29" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="aa8f250d-3ec2-447f-9cc5-500cbe73cc5b">
                 <Parameter Name="AccelerationFactor" Guid="86e18076-d2b6-4f44-a67d-713553a93a4d" Value="2.0" Type="float"/>
@@ -8655,6 +8648,7 @@
         <Parameter Name="AirLackResilience" Guid="a26ecd56-5db8-49d6-860d-07531b8b01b9" Value="120" Type="float"/> <!-- tiempo hasta morir sin aire -->
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="7f4e521f-2f2f-4286-9904-c10fa5c8928f"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="63a534cb-b11a-47a8-b4ef-90daef5a724f" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="81bf813b-cf52-4dca-81de-75d5fdc2c953" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="62fd5c47-a18d-45d5-ae61-e80c1292ff54" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="a280c616-68aa-4c38-bdf9-06eb9e2968f9" Value="False" Type="bool"/>
