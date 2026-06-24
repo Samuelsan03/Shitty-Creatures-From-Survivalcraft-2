@@ -552,13 +552,63 @@ namespace Game
 			};
 			achievementContainer.Children.Add(categoryLabel);
 
-			// Descripción
-			string finalDescription = baseDescription;
+			// --- BARRA DE PROGRESO Y PORCENTAJE (SOLO LOGROS CON CONTADOR) ---
+			bool hasProgressBar = IsProgressBarAchievement(achievementNumber);
+			ProgressBarWidget progressBar = null;
+			LabelWidget percentLabel = null;
 			int currentKills = 0;
 			int target = 0;
-			if (!unlocked && IsProgressBarAchievement(achievementNumber))
+
+			if (hasProgressBar)
 			{
 				GetCounterValues(achievementNumber, out currentKills, out target);
+
+				if (unlocked)
+				{
+					progressBar = new ProgressBarWidget
+					{
+						BarSize = new Vector2(250f, 14f),
+						BackgroundColor = new Color(60, 60, 60),
+						HorizontalAlignment = WidgetAlignment.Center,
+						VerticalAlignment = WidgetAlignment.Center,
+						Margin = new Vector2(0, 0),
+						Value = 1f
+					};
+				}
+				else
+				{
+					progressBar = new ProgressBarWidget
+					{
+						BarSize = new Vector2(250f, 14f),
+						BackgroundColor = new Color(60, 60, 60),
+						HorizontalAlignment = WidgetAlignment.Center,
+						VerticalAlignment = WidgetAlignment.Center,
+						Margin = new Vector2(0, 0),
+						Value = target > 0 ? Math.Clamp((float)currentKills / target, 0f, 1f) : 0f
+					};
+				}
+				achievementContainer.Children.Add(progressBar);
+				CanvasWidget.SetPosition(progressBar, new Vector2(140f, 82f));
+
+				// Porcentaje
+				string percentText = unlocked ? "100%" : (target > 0 ? $"{Math.Min(currentKills, target)}%" : "0%");
+				percentLabel = new LabelWidget
+				{
+					Text = percentText,
+					Color = Color.White,
+					FontScale = 0.65f,
+					HorizontalAlignment = WidgetAlignment.Center,
+					VerticalAlignment = WidgetAlignment.Center,
+					Margin = new Vector2(0, 0)
+				};
+				achievementContainer.Children.Add(percentLabel);
+				CanvasWidget.SetPosition(percentLabel, new Vector2(400f, 82f));
+			}
+
+			// Descripción
+			string finalDescription = baseDescription;
+			if (!unlocked && hasProgressBar)
+			{
 				if (target > 0)
 				{
 					int displayKills = Math.Min(currentKills, target);
@@ -570,8 +620,8 @@ namespace Game
 			{
 				Direction = LayoutDirection.Vertical,
 				HorizontalAlignment = WidgetAlignment.Center,
-				VerticalAlignment = WidgetAlignment.Center,
-				Margin = new Vector2(15, 0)
+				VerticalAlignment = hasProgressBar ? WidgetAlignment.Near : WidgetAlignment.Center,
+				Margin = hasProgressBar ? new Vector2(15, 110) : new Vector2(15, 0)
 			};
 
 			BitmapFont font = LabelWidget.BitmapFont;
@@ -593,58 +643,6 @@ namespace Game
 				textStack.Children.Add(lineLabel);
 			}
 			achievementContainer.Children.Add(textStack);
-
-			// --- BARRA DE PROGRESO (SOLO PARA LOGROS CON CONTADOR) ---
-			ProgressBarWidget progressBar = null;
-			LabelWidget percentLabel = null;
-			if (IsProgressBarAchievement(achievementNumber))
-			{
-				// Barra de progreso (igual que antes)
-				if (unlocked)
-				{
-					progressBar = new ProgressBarWidget
-					{
-						BarSize = new Vector2(250f, 14f),
-						BackgroundColor = new Color(60, 60, 60),
-						HorizontalAlignment = WidgetAlignment.Center,
-						VerticalAlignment = WidgetAlignment.Center,
-						Margin = new Vector2(0, 0),
-						Value = 1f
-					};
-				}
-				else
-				{
-					GetCounterValues(achievementNumber, out currentKills, out target);
-					progressBar = new ProgressBarWidget
-					{
-						BarSize = new Vector2(250f, 14f),
-						BackgroundColor = new Color(60, 60, 60),
-						HorizontalAlignment = WidgetAlignment.Center,
-						VerticalAlignment = WidgetAlignment.Center,
-						Margin = new Vector2(0, 0),
-						Value = target > 0 ? Math.Clamp((float)currentKills / target, 0f, 1f) : 0f
-					};
-				}
-				achievementContainer.Children.Add(progressBar);
-				CanvasWidget.SetPosition(progressBar, new Vector2(140f, 115f)); // Posición original
-
-				// Porcentaje (independiente, a la derecha de la barra)
-				string percentText = unlocked ? "100%" : (target > 0 ? $"{Math.Min(currentKills, target)}%" : "0%");
-				percentLabel = new LabelWidget
-				{
-					Text = percentText,
-					Color = Color.White,
-					FontScale = 0.65f,
-					HorizontalAlignment = WidgetAlignment.Center,
-					VerticalAlignment = WidgetAlignment.Center,
-					Margin = new Vector2(0, 0)
-				};
-				achievementContainer.Children.Add(percentLabel);
-				// Ajusta la posición del porcentaje cambiando estos valores:
-				float percentPosX = 400f; // Ajusta horizontalmente (0 = izquierda, 530 = derecha)
-				float percentPosY = 115f; // Ajusta verticalmente (0 = arriba)
-				CanvasWidget.SetPosition(percentLabel, new Vector2(percentPosX, percentPosY));
-			}
 
 			// --- FILA INFERIOR: Recompensa y botón ---
 			var bottomRow = new StackPanelWidget
@@ -718,11 +716,12 @@ namespace Game
 			// --- CÁLCULO DE ALTURA TOTAL ---
 			float statusHeight = 25f;
 			float titleHeight = 30f;
-			float categoryHeight = 20f; // Siempre presente
+			float categoryHeight = 20f;
 			float textStackHeight = wrappedLines.Count * lineHeight + (wrappedLines.Count - 1) * 4f;
 			float bottomRowHeight = 40f;
-			float progressBarHeight = (progressBar != null) ? (progressBar.BarSize.Y + 8f) : 0f;
-			float totalHeight = statusHeight + titleHeight + categoryHeight + textStackHeight + progressBarHeight + bottomRowHeight + 20f;
+			float progressBarHeight = hasProgressBar ? (14f + 8f) : 0f;
+			float topMargin = hasProgressBar ? 110f : 60f;
+			float totalHeight = topMargin + textStackHeight + bottomRowHeight + 20f;
 			totalHeight = Math.Max(120f, totalHeight);
 
 			achievementContainer.Size = new Vector2(530, totalHeight);
