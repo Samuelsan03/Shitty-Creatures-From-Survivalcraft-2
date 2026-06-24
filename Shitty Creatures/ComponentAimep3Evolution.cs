@@ -187,7 +187,8 @@ namespace Game
 
 			EvolutionLevel++;
 
-			Log.Information($"[Aimep3Evolution] Evolución aplicada - Nivel: {EvolutionLevel}, Multiplicador: {multiplier:F2}, Nueva Resilience: {m_componentHealth.AttackResilienceFactor:F2}, Nuevo Attack: {m_componentMiner.AttackPower:F2}");
+			// 🔁 Notificar logros
+			AchievementsManager.OnAimep3Evolution(Project, EvolutionLevel, MaxEvolutionLevel);
 
 			NotifyPlayers();
 			m_pendingEvolution = false;
@@ -213,7 +214,7 @@ namespace Game
 			if (!HasFireAbility)
 				return;
 
-			if (m_subsystemCreatureSpawn == null || m_componentCreature?.ComponentBody == null)
+			if (m_componentCreature?.ComponentBody == null)
 				return;
 
 			if (m_componentHealth.Health <= 0f)
@@ -222,51 +223,40 @@ namespace Game
 			if (m_subsystemTime.GameTime - m_lastFireBurstTime < FireCooldown)
 				return;
 
+			// Solo quemar si estamos persiguiendo a alguien
+			ComponentNewChaseBehavior chaseBehavior = Entity.FindComponent<ComponentNewChaseBehavior>();
+			if (chaseBehavior == null || chaseBehavior.Target == null)
+				return;
+
+			ComponentCreature target = chaseBehavior.Target;
+
+			// Verificar que el objetivo sigue vivo
+			if (target.ComponentHealth == null || target.ComponentHealth.Health <= 0f)
+				return;
+
+			// Verificar distancia
 			Vector3 position = m_componentCreature.ComponentBody.Position;
-			float radiusSquared = BurnRadius * BurnRadius;
-			float duration = EffectiveFireDuration;
-			bool burnedAny = false;
+			float distSq = Vector3.DistanceSquared(position, target.ComponentBody.Position);
+			if (distSq > BurnRadius * BurnRadius)
+				return;
 
-			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
+			// Verificar que no es aliado
+			if (m_componentHerd != null && m_componentHerd.IsSameHerdOrGuardian(target))
+				return;
+
+			// Probabilidad de quemar
+			if (m_random.Float(0f, 1f) > BurnProbability)
+				return;
+
+			ComponentOnFire componentOnFire = target.Entity.FindComponent<ComponentOnFire>();
+			if (componentOnFire != null)
 			{
-				if (creature == m_componentCreature)
-					continue;
+				componentOnFire.SetOnFire(m_componentCreature, EffectiveFireDuration);
 
-				if (creature.ComponentHealth == null || creature.ComponentHealth.Health <= 0f)
-					continue;
-
-				float distSq = Vector3.DistanceSquared(position, creature.ComponentBody.Position);
-				if (distSq > radiusSquared)
-					continue;
-
-				if (m_componentHerd != null && m_componentHerd.IsSameHerdOrGuardian(creature))
-					continue;
-
-				if (creature.Entity.FindComponent<ComponentPlayer>() != null && m_componentHerd != null)
+				if (m_subsystemAudio != null)
 				{
-					string herdName = m_componentHerd.HerdName;
-					if (!string.IsNullOrEmpty(herdName) &&
-						(herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
-						 herdName.ToLower().Contains("guardian")))
-					{
-						continue;
-					}
+					m_subsystemAudio.PlaySound("Audio/Match", 1f, m_random.Float(-0.1f, 0.1f), position, 1f, true);
 				}
-
-				if (m_random.Float(0f, 1f) > BurnProbability)
-					continue;
-
-				ComponentOnFire componentOnFire = creature.Entity.FindComponent<ComponentOnFire>();
-				if (componentOnFire != null)
-				{
-					componentOnFire.SetOnFire(m_componentCreature, duration);
-					burnedAny = true;
-				}
-			}
-
-			if (burnedAny && m_subsystemAudio != null)
-			{
-				m_subsystemAudio.PlaySound("Audio/Match", 1f, m_random.Float(-0.1f, 0.1f), position, 1f, true);
 			}
 
 			m_lastFireBurstTime = m_subsystemTime.GameTime;
