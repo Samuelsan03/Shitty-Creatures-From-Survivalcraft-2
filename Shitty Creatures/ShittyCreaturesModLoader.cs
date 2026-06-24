@@ -46,6 +46,8 @@ namespace Game
 																													  // Campos para celebración de logros
 		private bool m_celebrationActive = false;
 		private Dictionary<ComponentCreature, bool> m_originalSuppressedState = new Dictionary<ComponentCreature, bool>();
+		// NUEVO: Guardar el estado de invulnerabilidad original
+		private Dictionary<ComponentHealth, bool> m_originalInvulnerableState = new Dictionary<ComponentHealth, bool>();
 
 		// ShittyModLoader (original)
 		static FieldInfo m_cachesField;
@@ -175,7 +177,6 @@ namespace Game
 			ModsManager.RegisterHook("OnProjectileHitBody", this);
 			ModsManager.RegisterHook("SetHitInterval", this);
 			ModsManager.RegisterHook("OnChaseBehaviorAttacked", this);  // Prioridad alta para cancelar
-			ModsManager.RegisterHook("OnMinerHit", this);  // Para criaturas que usan ComponentMiner directamente
 
 			// Bloquear montura zombi para jugadores
 			ModsManager.RegisterHook("ScoreMount", this);
@@ -215,6 +216,7 @@ namespace Game
 					}
 				}
 				m_originalSuppressedState.Clear();
+				m_originalInvulnerableState.Clear(); // <--- AGREGAR ESTO
 				m_celebrationActive = false;
 			}
 			// ========== FIN LIMPIEZA ==========
@@ -822,6 +824,12 @@ namespace Game
 				if (m_celebrationActive)
 				{
 					MakeCreaturesDance(gameWidget);
+					// Obtener el Project a través del subsistema (GameWidget no tiene .Project)
+					var celebrationProject = m_subsystemGreenNightSky?.Project;
+					if (celebrationProject != null)
+					{
+						EnsureCelebrationInvulnerability(celebrationProject);
+					}
 				}
 
 				// ─── Coordenadas (solo si están activadas) ───
@@ -1503,6 +1511,15 @@ namespace Game
 		public override void OnMinerHit(ComponentMiner miner, ComponentBody targetBody, Vector3 hitPoint, Vector3 hitDirection, ref float attackPower, ref float hitProbability, ref float hitProbability2, out bool skipVanilla)
 		{
 			skipVanilla = false;
+
+			// ===== NUEVO: Cancelar golpes del JUGADOR durante la celebración =====
+			if (m_celebrationActive && miner.ComponentPlayer != null)
+			{
+				attackPower = 0f;
+				hitProbability = 0f;
+				hitProbability2 = 0f;
+				return;
+			}
 
 			// ===== NUEVO: Cancelar golpes de CRIATURAS durante la celebración =====
 			if (m_celebrationActive && miner.ComponentPlayer == null)
@@ -2794,6 +2811,87 @@ namespace Game
 			if (evolved)
 			{
 				result = true; // Marcar que ya se procesó
+			}
+		}
+
+		private void ApplyInvulnerability(Project project, bool makeInvulnerable)
+		{
+			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn != null)
+			{
+				foreach (var creature in creatureSpawn.Creatures)
+				{
+					if (creature?.ComponentHealth != null)
+					{
+						if (makeInvulnerable)
+						{
+							if (!m_originalInvulnerableState.ContainsKey(creature.ComponentHealth))
+								m_originalInvulnerableState[creature.ComponentHealth] = creature.ComponentHealth.IsInvulnerable;
+							creature.ComponentHealth.IsInvulnerable = true;
+						}
+						else
+						{
+							if (m_originalInvulnerableState.TryGetValue(creature.ComponentHealth, out bool originalState))
+								creature.ComponentHealth.IsInvulnerable = originalState;
+							else
+								creature.ComponentHealth.IsInvulnerable = false;
+						}
+					}
+				}
+			}
+
+			var players = project.FindSubsystem<SubsystemPlayers>(true);
+			if (players != null)
+			{
+				foreach (var player in players.ComponentPlayers)
+				{
+					if (player?.ComponentHealth != null)
+					{
+						if (makeInvulnerable)
+						{
+							if (!m_originalInvulnerableState.ContainsKey(player.ComponentHealth))
+								m_originalInvulnerableState[player.ComponentHealth] = player.ComponentHealth.IsInvulnerable;
+							player.ComponentHealth.IsInvulnerable = true;
+						}
+						else
+						{
+							if (m_originalInvulnerableState.TryGetValue(player.ComponentHealth, out bool originalState))
+								player.ComponentHealth.IsInvulnerable = originalState;
+							else
+								player.ComponentHealth.IsInvulnerable = false;
+						}
+					}
+				}
+			}
+		}
+
+		// Asegura que criaturas o jugadores que aparezcan DURANTE la celebración también sean inmortales
+		private void EnsureCelebrationInvulnerability(Project project)
+		{
+			if (project == null) return;
+			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn != null)
+			{
+				foreach (var creature in creatureSpawn.Creatures)
+				{
+					if (creature?.ComponentHealth != null && !creature.ComponentHealth.IsInvulnerable)
+					{
+						m_originalInvulnerableState[creature.ComponentHealth] = false;
+						creature.ComponentHealth.IsInvulnerable = true;
+					}
+				}
+			}
+			var players = project.FindSubsystem<SubsystemPlayers>(true);
+			if (players != null)
+			{
+				foreach (var player in players.ComponentPlayers)
+				{
+					if (player?.ComponentHealth != null && !player.ComponentHealth.IsInvulnerable)
+					{
+						m_originalInvulnerableState[player.ComponentHealth] = false;
+						player.ComponentHealth.IsInvulnerable = true;
+					}
+				}
 			}
 		}
 
