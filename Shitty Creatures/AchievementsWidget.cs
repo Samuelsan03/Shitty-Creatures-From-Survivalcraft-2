@@ -1227,7 +1227,7 @@ namespace Game
 					return AchievementCategory.Survival;
 				}
 
-				if (achievementNumber >= 57 && achievementNumber <= 68)
+				if ((achievementNumber >= 57 && achievementNumber <= 68) || achievementNumber == 71 || achievementNumber == 72)
 				{
 					return AchievementCategory.Taming;
 				}
