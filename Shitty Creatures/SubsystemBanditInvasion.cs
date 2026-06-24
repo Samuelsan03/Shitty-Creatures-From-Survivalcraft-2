@@ -212,9 +212,17 @@ namespace Game
 		/// </summary>
 		private bool CalculateEffectiveInvasionTime()
 		{
+			// Verificar si estamos en el momento de finalización (igual que GreenNightSky)
+			// Esto garantiza que ambos sistemas terminen al mismo tiempo
+			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+			float middawn = m_subsystemTimeOfDay.Middawn;
+			const float dawnTolerance = 0.005f;
+			bool isEndMoment = Math.Abs(timeOfDay - middawn) < dawnTolerance;
+
+			if (isEndMoment)
+				return false;
+
 			// Si la Noche Verde está activa, siempre es tiempo efectivo de invasión
-			// Esto maneja el caso donde BanditInvasion se actualiza antes que GreenNightSky
-			// en el frame de finalización
 			if (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
 				return true;
 
