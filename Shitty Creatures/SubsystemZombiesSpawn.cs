@@ -29,6 +29,8 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
+		private bool m_nightEndProcessed;
+
 		// ===== SPAWN DE ZOMBIS MONTADOS =====
 		private const bool MountedZombiesEnabled = false;
 		private float m_horseMountProbability = 0.1f;
@@ -191,6 +193,8 @@ namespace Game
 
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
+			m_nightEndProcessed = false;
+
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			if (m_subsystemGreenNightSky != null)
 			{
@@ -433,6 +437,7 @@ namespace Game
 
 		private void OnNaturalNightEnded()
 		{
+			m_nightEndProcessed = true;
 			int oldWave = m_currentWave;
 			int maxWave = m_waves.Keys.Max();
 			bool wasLastWave = (oldWave == maxWave);
@@ -808,57 +813,47 @@ namespace Game
 			// ===== FIN SPAWN DE ESQUELETOS NORMALES =====
 
 			// ===== LÓGICA DE NOCHE VERDE =====
-			if (!m_wasGreenNightActive && isGreenNightActive)
+			// Guardar el estado anterior antes de actualizar
+			bool wasGreenNightActive = m_wasGreenNightActive;
+
+			// Detectar INICIO de la noche verde (transición de inactivo a activo)
+			if (!wasGreenNightActive && isGreenNightActive)
 			{
+				m_nightEndProcessed = false;
 				PlayEvilLaugh();
 				SendWaveMessage();
 
+				// Si hay jefes vivos, eliminarlos y resetear la batalla (para cualquier oleada)
 				Entity existingBoss = FindAliveBoss();
 				if (existingBoss != null)
 				{
-					m_currentBossEntity = existingBoss;
-					m_bossBattleActive = true;
-					m_hasSpawnedBossThisNight = true;
-					RebuildBossQueue();
 				}
-				else if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
+				else if (m_bossBattleActive)
+				{
+				}
+
+				// Iniciar batalla si es la ola final y no se ha iniciado aún
+				if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
 				{
 					StartBossBattle();
 					m_bossSpawnDelayed = true;
 					m_bossSpawnDelayTimer = 0.5f;
 				}
 			}
+			// ===== FIN VERIFICACIÓN =====
+
+			// Detectar FIN de la noche verde (transición de activo a inactivo)
+			if (wasGreenNightActive && !isGreenNightActive && !m_nightEndProcessed)
+			{
+				// Solo resetear el estado de batalla (no eliminar entidades)
+				m_nightEndProcessed = true;
+			}
+
+			// Actualizar el estado para la próxima iteración
 			m_wasGreenNightActive = isGreenNightActive;
 
 			if (!isGreenNightActive)
 				return;
-
-			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-			float midnight = m_subsystemTimeOfDay.Midnight;
-			bool isMidnight = Math.Abs(timeOfDay - midnight) < 0.01f;
-
-			// ===== VERIFICAR SI HAY QUE INICIAR BATALLA =====
-			if (m_currentWave != maxWave)
-			{
-				if (!m_hasSpawnedBossThisNight && !m_bossBattleActive && !m_bossSpawnDelayed)
-				{
-					Entity existingBoss = FindAliveBoss();
-					if (existingBoss != null)
-					{
-						m_currentBossEntity = existingBoss;
-						m_bossBattleActive = true;
-						m_hasSpawnedBossThisNight = true;
-						RebuildBossQueue();
-					}
-					else if (isMidnight)
-					{
-						StartBossBattle();
-						m_bossSpawnDelayed = true;
-						m_bossSpawnDelayTimer = 0.5f;
-					}
-				}
-			}
-			// ===== FIN VERIFICACIÓN =====
 
 			// ===== GESTIONAR RETRASO DE SPAWN DE JEFE =====
 			if (m_bossSpawnDelayed)
@@ -1768,6 +1763,7 @@ namespace Game
 			m_isAdvancingWave = false;
 			return advanced;
 		}
+
 
 		private Vector3 GetValidSpawnPoint()
 		{
