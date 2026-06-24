@@ -2456,6 +2456,13 @@ namespace Game
 			var project = m_subsystemGreenNightSky?.Project;
 			if (project == null) return;
 
+			// Aplicar invulnerabilidad a todas las entidades existentes (guardando estado)
+			ApplyInvulnerability(project, true);
+
+			// Asegurar que cualquier entidad nueva también sea invulnerable (ya guarda estado)
+			// Esto se llama periódicamente en BeforeWidgetUpdate, pero lo dejamos aquí por si acaso.
+			EnsureCelebrationInvulnerability(project);
+
 			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			if (creatureSpawn == null) return;
 
@@ -2513,7 +2520,15 @@ namespace Game
 		private void OnCelebrationEnded()
 		{
 			m_celebrationActive = false;
-			RestoreCreaturesBehavior();
+
+			var project = m_subsystemGreenNightSky?.Project;
+			if (project != null)
+			{
+				// Restaurar invulnerabilidad a su estado original
+				ApplyInvulnerability(project, false);
+				// Restaurar comportamientos de persecución
+				RestoreCreaturesBehavior();
+			}
 		}
 
 		private void RestoreCreaturesBehavior()
@@ -2833,8 +2848,7 @@ namespace Game
 						{
 							if (m_originalInvulnerableState.TryGetValue(creature.ComponentHealth, out bool originalState))
 								creature.ComponentHealth.IsInvulnerable = originalState;
-							else
-								creature.ComponentHealth.IsInvulnerable = false;
+							// Si no tiene estado guardado, NO lo modificamos (mantiene el que tenía)
 						}
 					}
 				}
@@ -2857,11 +2871,16 @@ namespace Game
 						{
 							if (m_originalInvulnerableState.TryGetValue(player.ComponentHealth, out bool originalState))
 								player.ComponentHealth.IsInvulnerable = originalState;
-							else
-								player.ComponentHealth.IsInvulnerable = false;
+							// Si no tiene estado guardado, NO lo modificamos
 						}
 					}
 				}
+			}
+
+			// Limpiar el diccionario SOLO después de restaurar (makeInvulnerable == false)
+			if (!makeInvulnerable)
+			{
+				m_originalInvulnerableState.Clear();
 			}
 		}
 
@@ -2869,6 +2888,7 @@ namespace Game
 		private void EnsureCelebrationInvulnerability(Project project)
 		{
 			if (project == null) return;
+
 			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			if (creatureSpawn != null)
 			{
@@ -2876,11 +2896,14 @@ namespace Game
 				{
 					if (creature?.ComponentHealth != null && !creature.ComponentHealth.IsInvulnerable)
 					{
-						m_originalInvulnerableState[creature.ComponentHealth] = false;
+						// Guardar estado original si no existe
+						if (!m_originalInvulnerableState.ContainsKey(creature.ComponentHealth))
+							m_originalInvulnerableState[creature.ComponentHealth] = creature.ComponentHealth.IsInvulnerable;
 						creature.ComponentHealth.IsInvulnerable = true;
 					}
 				}
 			}
+
 			var players = project.FindSubsystem<SubsystemPlayers>(true);
 			if (players != null)
 			{
@@ -2888,7 +2911,8 @@ namespace Game
 				{
 					if (player?.ComponentHealth != null && !player.ComponentHealth.IsInvulnerable)
 					{
-						m_originalInvulnerableState[player.ComponentHealth] = false;
+						if (!m_originalInvulnerableState.ContainsKey(player.ComponentHealth))
+							m_originalInvulnerableState[player.ComponentHealth] = player.ComponentHealth.IsInvulnerable;
 						player.ComponentHealth.IsInvulnerable = true;
 					}
 				}
