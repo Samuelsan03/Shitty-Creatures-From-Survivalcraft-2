@@ -37,6 +37,8 @@ namespace Game
 	DifficultyMode.Impossible   // Nuevo
 };
 
+		private List<DifficultyMode> m_availableDifficultyModes; // ← NUEVO: lista filtrada
+
 		private readonly Color[] m_difficultyColors = {
 	new Color(136, 187, 255),   // VeryEasy
     new Color(100, 200, 100),   // Easy
@@ -75,6 +77,28 @@ namespace Game
 			m_onAccept = onAccept;
 			m_currentDisplayDifficulty = m_greenNightSky.DifficultyMode;
 			m_tempDifficulty = m_greenNightSky.DifficultyMode;
+
+			// Obtener estado de desbloqueo de Impossible
+			bool isImpossibleUnlocked = false;
+			var zombiesSpawn = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
+			if (zombiesSpawn != null)
+				isImpossibleUnlocked = zombiesSpawn.HasExtremeCompleted;
+
+			// Construir lista filtrada de dificultades
+			m_availableDifficultyModes = new List<DifficultyMode>();
+			foreach (var mode in m_difficultyModes)
+			{
+				if (mode == DifficultyMode.Impossible && !isImpossibleUnlocked)
+					continue;
+				m_availableDifficultyModes.Add(mode);
+			}
+
+			// Si la dificultad actual es Impossible pero no está desbloqueada, forzar a Normal
+			if (m_tempDifficulty == DifficultyMode.Impossible && !isImpossibleUnlocked)
+			{
+				m_tempDifficulty = DifficultyMode.Normal;
+				m_currentDisplayDifficulty = DifficultyMode.Normal;
+			}
 
 			XElement node = ContentManager.Get<XElement>("Dialogs/GreenNightIntervalDialog");
 			LoadContents(null, node);
@@ -117,16 +141,16 @@ namespace Game
 
 		private int GetDifficultyIndex(DifficultyMode mode)
 		{
-			for (int i = 0; i < m_difficultyModes.Length; i++)
-				if (m_difficultyModes[i] == mode) return i;
-			return 1;
+			for (int i = 0; i < m_availableDifficultyModes.Count; i++)
+				if (m_availableDifficultyModes[i] == mode) return i;
+			return 0;
 		}
 
 		private DifficultyMode GetNextDifficulty(DifficultyMode current)
 		{
 			int idx = GetDifficultyIndex(current);
-			idx = (idx + 1) % m_difficultyModes.Length;
-			return m_difficultyModes[idx];
+			idx = (idx + 1) % m_availableDifficultyModes.Count;
+			return m_availableDifficultyModes[idx];
 		}
 
 		private string GetDifficultyName(DifficultyMode mode)
@@ -217,6 +241,15 @@ namespace Game
 			if (m_isClosing) return;
 			m_isClosing = true;
 
+			// Verificar que la dificultad seleccionada sea válida
+			bool isImpossibleUnlocked = false;
+			var zombiesSpawn = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
+			if (zombiesSpawn != null)
+				isImpossibleUnlocked = zombiesSpawn.HasExtremeCompleted;
+
+			if (m_tempDifficulty == DifficultyMode.Impossible && !isImpossibleUnlocked)
+				m_tempDifficulty = DifficultyMode.Normal;
+
 			if (m_onAccept != null)
 			{
 				// En lugar de aplicar cambios directamente, pasamos los valores al callback
@@ -237,10 +270,10 @@ namespace Game
 				}
 
 				// Forzar actualización del label de dificultad en el HUD
-				var zombiesSpawn = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
-				if (zombiesSpawn != null)
+				var zombiesSpawn2 = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
+				if (zombiesSpawn2 != null)
 				{
-					zombiesSpawn.ForceUpdateDifficultyLabel();
+					zombiesSpawn2.ForceUpdateDifficultyLabel();
 				}
 			}
 
