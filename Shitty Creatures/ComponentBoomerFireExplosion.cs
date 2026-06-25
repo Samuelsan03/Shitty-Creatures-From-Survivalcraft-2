@@ -147,6 +147,12 @@ namespace Game
 					pressureMult = 2.0f; damageMult = 2.0f; forceMult = 2.0f; radiusMult = 1.5f;
 					fireChanceMult = 2.0f; fireDurationMult = 1.8f;
 					break;
+				case DifficultyMode.Impossible:
+					pressureMult = 3.0f;
+					damageMult = 3.0f;
+					forceMult = 2.5f;
+					radiusMult = 2.0f;
+					break;
 			}
 
 			float finalPressure = ExplosionPressure * pressureMult;
