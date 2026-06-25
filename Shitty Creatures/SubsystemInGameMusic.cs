@@ -34,7 +34,6 @@ namespace Game
 			("MenuMusic/FIELD OF VIEW 渇いた叫び - 捨てられた物。", 254),
 			("MenuMusic/Chrono Trigger Main Theme", 124),
 			("MenuMusic/Beat Hit! Ayumi Miyazaki", 262),
-			("MenuMusic/Mio Honda 本田未央 Step! ステップ", 260),
 			("MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone", 108),
 			("MenuMusic/Sonic The Hedgehog 1991 Marble Zone", 88),
 			("MenuMusic/Sonic The Hedgehog 1991 Spring Yard Zone", 98),
