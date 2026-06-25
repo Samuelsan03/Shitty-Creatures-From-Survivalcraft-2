@@ -23,7 +23,7 @@ namespace Game
 			// Obtener información de la Noche Verde
 			SubsystemGreenNightSky greenNight = player.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			DifficultyMode difficulty = greenNight != null ? greenNight.DifficultyMode : DifficultyMode.Normal;
-			bool isExtreme = difficulty == DifficultyMode.Extreme;
+			bool isExtreme = difficulty == DifficultyMode.Extreme || difficulty == DifficultyMode.Impossible;
 
 			// Obtener nombre de la dificultad desde el sistema de idioma
 			string difficultyName = GetDifficultyName(difficulty);
@@ -169,7 +169,6 @@ namespace Game
 
 		private string GetDifficultyName(DifficultyMode mode)
 		{
-			// Usa EXACTAMENTE las mismas claves que GreenNightIntervalDialog
 			string key = mode switch
 			{
 				DifficultyMode.VeryEasy => "VeryEasy_Name",
@@ -178,6 +177,7 @@ namespace Game
 				DifficultyMode.Medium => "Medium_Name",
 				DifficultyMode.Hard => "Hard_Name",
 				DifficultyMode.Extreme => "Extreme_Name",
+				DifficultyMode.Impossible => "Impossible_Name",   // <--- NUEVO
 				_ => "Normal_Name"
 			};
 			return LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
