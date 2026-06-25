@@ -29,6 +29,8 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
+		// Flag para indicar que el bloqueo de Impossible está desactivado para aliados
+		public bool ImpossibleBlockDisabledForAllies { get; set; } = false;
 		public bool HasExtremeCompleted => m_extremeCompletionDialogShown;
 
 		private bool m_extremeCompletionDialogShown = false;
@@ -237,6 +239,7 @@ namespace Game
 			m_letterWarSpawned = valuesDictionary.GetValue<bool>("LetterWarSpawned", false);
 			m_hasShownUnlockMessage = valuesDictionary.GetValue<bool>("HasShownUnlockMessage", false);
 			m_midnightBossesSpawnedThisNight = valuesDictionary.GetValue<bool>("MidnightBossesSpawnedThisNight", false);
+			ImpossibleBlockDisabledForAllies = valuesDictionary.GetValue<bool>("ImpossibleBlockDisabledForAllies", false);
 			m_lastTimeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 
 			if (m_subsystemSpawn != null)
@@ -481,18 +484,27 @@ namespace Game
 
 			WaveAdvanced?.Invoke(oldWave, newWave);
 
-			// ===== DESBLOQUEO EXTREME (INDEPENDIENTE Y SIN RETRASO) =====
-			// Se ejecuta al completar la última ola en Extremo, sin esperar mensajes ni temporizadores.
+			// ===== DESBLOQUEO EXTREME =====
 			if (oldWave == maxWave && m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme && !m_extremeCompletionDialogShown)
 			{
 				m_extremeCompletionDialogShown = true;
-
-				// Reproducir sonido de desbloqueo (solo una vez, de forma inmediata)
 				if (m_subsystemAudio != null)
 				{
 					m_subsystemAudio.PlaySound("Audio/Rocket Knight Adventures Stage Clear", 1f, 0f, 0f, 0f);
 				}
-				// NO mostrar el diálogo aquí; solo se activa el flag para el icono en el toggle
+			}
+
+			// ===== DESBLOQUEO IMPOSSIBLE (LOGRO #73) =====
+			if (oldWave == maxWave && m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Impossible)
+			{
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				{
+					if (!AchievementsManager.IsAchievementUnlocked(player, 73))
+					{
+						string title = LanguageControl.Get(AchievementsWidget.fName, 142);
+						AchievementsManager.UnlockAchievementStatic(player, 73, "AllWavesImpossible", title);
+					}
+				}
 			}
 
 			if (oldWave == 1 && newWave == 2)
@@ -517,6 +529,12 @@ namespace Game
 				{
 					AchievementsManager.UnlockAchievementStatic(player, 52, "ExtremeNightSurvived", LanguageControl.Get(AchievementsWidget.fName, 108));
 				}
+			}
+
+			// ===== NUEVO: Desactivar bloqueo de Impossible para aliados CADA VEZ que se complete la última ola =====
+			if (oldWave == maxWave)
+			{
+				ImpossibleBlockDisabledForAllies = true;
 			}
 
 			if (oldWave == maxWave && !m_hasShownUnlockMessage)
@@ -547,7 +565,6 @@ namespace Game
 									player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
 								}
 
-								// Mostrar el cofre con la carta (después de 5 segundos)
 								System.Timers.Timer timer2 = new System.Timers.Timer(5000);
 								timer2.Elapsed += (sender2, e2) =>
 								{
@@ -684,6 +701,7 @@ namespace Game
 			valuesDictionary.SetValue("MidnightBossesSpawnedThisNight", m_midnightBossesSpawnedThisNight);
 			valuesDictionary.SetValue("ExtremeCompletionDialogShown", m_extremeCompletionDialogShown);
 			valuesDictionary.SetValue("HasAcceptedImpossibleChallenge", m_hasAcceptedImpossibleChallenge);
+			valuesDictionary.SetValue("ImpossibleBlockDisabledForAllies", ImpossibleBlockDisabledForAllies);
 
 			string bossQueueStr = m_bossQueue.Count > 0 ? string.Join(",", m_bossQueue) : "";
 			valuesDictionary.SetValue("BossQueue", bossQueueStr);
@@ -864,11 +882,10 @@ namespace Game
 			if (!wasGreenNightActive && isGreenNightActive)
 			{
 				m_nightEndProcessed = false;
-				m_midnightBossesSpawnedThisNight = false; // Resetear flag de jefes a medianoche
+				m_midnightBossesSpawnedThisNight = false;
 				PlayEvilLaugh();
 				SendWaveMessage();
 
-				// Activar retraso de 5 segundos antes del spawn
 				m_greenNightSpawnDelayActive = true;
 				m_greenNightSpawnDelayTimer = GreenNightSpawnDelaySeconds;
 
