@@ -136,6 +136,11 @@ namespace Game
 					poisonIntensityMult = 2.0f;
 					poisonRadiusMult = 1.5f;
 					break;
+				case DifficultyMode.Impossible:
+					pressureMult = 3.0f;
+					poisonIntensityMult = 3.0f;
+					poisonRadiusMult = 2.0f;
+					break;
 			}
 
 			float finalPressure = ExplosionPressure * pressureMult;
