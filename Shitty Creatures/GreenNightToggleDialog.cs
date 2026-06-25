@@ -23,6 +23,9 @@ namespace Game
 		private DifficultyMode m_originalDifficulty;
 		private DifficultyMode m_tempDifficulty;
 
+		private PaintButton m_paintButton;
+		private bool m_hasExtremeUnlocked;
+
 		public GreenNightToggleDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player)
 		{
 			m_subsystemGreenNightSky = greenNightSky;
@@ -54,6 +57,40 @@ namespace Game
 			m_lastCheckState = m_checkbox.IsChecked;
 
 			UpdateExplanationText();
+
+			// ===== BOTÓN DE PINTURA (solo visible si se completó Extreme) =====
+			// Verificar si el jugador completó Extreme
+			var zombiesSpawn = m_subsystemGreenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
+			if (zombiesSpawn != null)
+			{
+				// Usar el flag ExtremeCompletionDialogShown del SubsystemZombiesSpawn
+				m_hasExtremeUnlocked = zombiesSpawn.HasExtremeCompleted;
+			}
+
+			if (m_hasExtremeUnlocked)
+			{
+				Subtexture paintTexture = ContentManager.Get<Subtexture>("Textures/Gui/pintura");
+				if (paintTexture != null)
+				{
+					m_paintButton = new PaintButton
+					{
+						Subtexture = paintTexture,
+						Size = new Vector2(32, 32),
+						HorizontalAlignment = WidgetAlignment.Far,
+						VerticalAlignment = WidgetAlignment.Near,
+						MarginLeft = 0,
+						MarginTop = 10,
+						MarginRight = 15,
+						MarginBottom = 0,
+						SoundName = "Audio/Click"
+					};
+					Children.Add(m_paintButton);
+				}
+				else
+				{
+					Log.Error("[GreenNightToggleDialog] No se encontró la textura 'Textures/Gui/pintura'");
+				}
+			}
 		}
 
 		private void UpdateExplanationText()
@@ -68,6 +105,35 @@ namespace Game
 			{
 				m_lastCheckState = m_checkbox.IsChecked;
 				UpdateExplanationText();
+			}
+
+			// ===== MANEJAR CLIC EN EL BOTÓN DE PINTURA =====
+			if (m_paintButton != null && m_paintButton.IsClicked)
+			{
+				// ELIMINADO: AudioManager.PlaySound("Audio/Rocket Knight Adventures Stage Clear", ...);
+
+				// Mostrar el diálogo de completado Extreme (sin sonido adicional)
+				var dialog = new ExtremeCompletionDialog(
+					m_subsystemGreenNightSky,
+					m_player,
+					() =>
+					{
+						// ACCIÓN AL ACEPTAR
+						m_subsystemGreenNightSky.DifficultyMode = DifficultyMode.Impossible;
+						ShittyCreaturesModLoader.NotifyDifficultyChanged(m_subsystemGreenNightSky);
+						var zombiesSpawn = m_subsystemGreenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
+						if (zombiesSpawn != null)
+						{
+							zombiesSpawn.ResetWaves();
+							zombiesSpawn.ForceUpdateDifficultyLabel();
+						}
+						m_player.ComponentGui.DisplaySmallMessage(
+							"Has aceptado el nuevo desafío. Las oleadas se han reiniciado.",
+							new Color(0, 255, 0), false, true);
+					},
+					showRejectMessage: true
+				);
+				DialogsManager.ShowDialog(m_player.GuiWidget, dialog);
 			}
 
 			if (m_daysButton.IsClicked)
@@ -155,12 +221,13 @@ namespace Game
 		{
 			string key = mode switch
 			{
-				DifficultyMode.VeryEasy => "VeryEasy_Name",   // <-- NUEVO
+				DifficultyMode.VeryEasy => "VeryEasy_Name",
 				DifficultyMode.Easy => "Easy_Name",
 				DifficultyMode.Normal => "Normal_Name",
 				DifficultyMode.Medium => "Medium_Name",
 				DifficultyMode.Hard => "Hard_Name",
 				DifficultyMode.Extreme => "Extreme_Name",
+				DifficultyMode.Impossible => "Impossible_Name",
 				_ => "Normal_Name"
 			};
 			return LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
@@ -169,6 +236,39 @@ namespace Game
 		private void Dismiss()
 		{
 			DialogsManager.HideDialog(this);
+		}
+
+		// ===== CLASE AUXILIAR PARA EL BOTÓN DE PINTURA =====
+		private class PaintButton : ClickableWidget
+		{
+			public Subtexture Subtexture;
+			private Vector2 m_size;
+			public Vector2 Size
+			{
+				get => m_size;
+				set { m_size = value; }
+			}
+			public string SoundName;
+
+			public override void MeasureOverride(Vector2 parentAvailableSize)
+			{
+				base.DesiredSize = m_size;
+				base.IsDrawRequired = true;
+				base.IsHitTestVisible = true;
+			}
+
+			public override void Draw(Widget.DrawContext dc)
+			{
+				if (Subtexture != null && Subtexture.Texture != null)
+				{
+					TexturedBatch2D batch = dc.PrimitivesRenderer2D.TexturedBatch(Subtexture.Texture, false, 0, DepthStencilState.None, null, BlendState.AlphaBlend, SamplerState.PointClamp);
+					int count = batch.TriangleVertices.Count;
+					Vector2 texCoord1 = Subtexture.TopLeft;
+					Vector2 texCoord2 = Subtexture.BottomRight;
+					batch.QueueQuad(Vector2.Zero, m_size, 0f, texCoord1, texCoord2, base.GlobalColorTransform);
+					batch.TransformTriangles(base.GlobalTransform, count, -1);
+				}
+			}
 		}
 	}
 }
