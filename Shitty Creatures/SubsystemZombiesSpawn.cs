@@ -1822,6 +1822,7 @@ namespace Game
 			if (m_bossQueue.Count == 0)
 			{
 				m_bossBattleActive = false;
+				// El flag se activa solo al final de la noche en OnNaturalNightEnded
 			}
 			else
 			{
@@ -2903,6 +2904,9 @@ namespace Game
 			m_bossQueue.Clear();
 			m_currentBossEntity = null;
 			// No reiniciamos m_hasShownUnlockMessage ni m_letterWarSpawned para que no se repitan
+
+			// ===== ACTIVAR BLOQUEO DE PROTECCIÓN PARA EL NUEVO RETO IMPOSSIBLE =====
+			ImpossibleBlockDisabledForAllies = false;
 		}
 
 		public void SetAcceptedImpossibleChallenge(bool accepted)
