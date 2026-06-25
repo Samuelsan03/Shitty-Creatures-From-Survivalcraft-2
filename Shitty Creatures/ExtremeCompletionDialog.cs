@@ -34,8 +34,8 @@ namespace Game
 			BevelledRectangleWidget background = new BevelledRectangleWidget
 			{
 				Size = mainContainer.Size,
-				BevelColor = Color.White,          // Borde blanco
-				CenterColor = new Color(0, 0, 0, 230), // Fondo negro semi-transparente
+				BevelColor = Color.White,
+				CenterColor = new Color(0, 0, 0, 230),
 				RoundingRadius = 14f,
 				BevelSize = 3f,
 				ShadowColor = new Color(0, 0, 0, 120),
@@ -74,7 +74,7 @@ namespace Game
 			// Título
 			LabelWidget titleLabel = new LabelWidget
 			{
-				Text = "¡Felicidades, Superviviente!",
+				Text = LanguageControl.Get("ExtremeCompletionDialog", 0),
 				FontScale = 1.4f,
 				Color = new Color(255, 215, 0),
 				HorizontalAlignment = WidgetAlignment.Center,
@@ -86,7 +86,7 @@ namespace Game
 			// Subtítulo
 			LabelWidget subTitleLabel = new LabelWidget
 			{
-				Text = "Has logrado superar la dificultad más alta conocida\n hasta ahora.",
+				Text = LanguageControl.Get("ExtremeCompletionDialog", 1),
 				FontScale = 0.9f,
 				Color = new Color(200, 200, 200),
 				HorizontalAlignment = WidgetAlignment.Center,
@@ -98,7 +98,7 @@ namespace Game
 			// Texto de felicitación
 			LabelWidget congratsText = new LabelWidget
 			{
-				Text = "Has demostrado ser un superviviente excepcional.\nTu esfuerzo y perseverancia te han llevado hasta aquí.",
+				Text = LanguageControl.Get("ExtremeCompletionDialog", 2),
 				FontScale = 0.85f,
 				Color = Color.White,
 				HorizontalAlignment = WidgetAlignment.Center,
@@ -120,7 +120,7 @@ namespace Game
 			// Título del nuevo desafío
 			LabelWidget challengeTitle = new LabelWidget
 			{
-				Text = "Un Nuevo Desafío te Espera",
+				Text = LanguageControl.Get("ExtremeCompletionDialog", 3),
 				FontScale = 1.1f,
 				Color = new Color(255, 200, 50),
 				HorizontalAlignment = WidgetAlignment.Center,
@@ -129,16 +129,10 @@ namespace Game
 			};
 			stackPanel.Children.Add(challengeTitle);
 
-			// Descripción del desafío (texto largo)
+			// Descripción del desafío
 			LabelWidget challengeDesc = new LabelWidget
 			{
-				Text = "Has desbloqueado un reto que pondrá a prueba todo lo que has\n aprendido.\n" +
-					   "Aquellos que te han visto sobrevivir te consideran una leyenda,\n" +
-					   "pero hay quienes dicen que aún no has visto la verdadera oscuridad.\n\n" +
-					   "Dicen que hay un nivel donde el más mínimo error tiene\n consecuencias\n" +
-					   "definitivas. Donde cada decisión cuenta y cada movimiento\n puede ser el último.\n\n" +
-					   "Si crees que estás preparado, acepta el desafío.\n" +
-					   "Pero tenlo claro: no hay vuelta atrás.",
+				Text = LanguageControl.Get("ExtremeCompletionDialog", 4),
 				FontScale = 0.78f,
 				Color = new Color(220, 220, 220),
 				HorizontalAlignment = WidgetAlignment.Center,
@@ -150,8 +144,7 @@ namespace Game
 			// Advertencia sobre reinicio de olas
 			LabelWidget warningText = new LabelWidget
 			{
-				Text = "Al aceptar, las oleadas de la noche verde se reiniciarán desde el\n principio\n" +
-					   "y deberás volver a demostrar tu valía.",
+				Text = LanguageControl.Get("ExtremeCompletionDialog", 5),
 				FontScale = 0.8f,
 				Color = new Color(255, 180, 80),
 				HorizontalAlignment = WidgetAlignment.Center,
@@ -173,7 +166,7 @@ namespace Game
 			// Botón Aceptar
 			m_acceptButton = new BevelledButtonWidget
 			{
-				Text = "Aceptar",
+				Text = LanguageControl.Get("ExtremeCompletionDialog", 6),
 				Size = new Vector2(200f, 50f),
 				BevelColor = new Color(0, 160, 0),
 				CenterColor = new Color(0, 160, 0),
@@ -186,7 +179,7 @@ namespace Game
 			// Botón Rechazar
 			m_rejectButton = new BevelledButtonWidget
 			{
-				Text = "Rechazar",
+				Text = LanguageControl.Get("ExtremeCompletionDialog", 7),
 				Size = new Vector2(200f, 50f),
 				BevelColor = new Color(120, 40, 40),
 				CenterColor = new Color(120, 40, 40),
@@ -235,7 +228,7 @@ namespace Game
 			if (m_showRejectMessage && m_player != null && m_player.ComponentGui != null)
 			{
 				m_player.ComponentGui.DisplaySmallMessage(
-					"Has rechazado el desafío. El modo permanece bloqueado.",
+					LanguageControl.Get("ExtremeCompletionDialog", 8),
 					new Color(200, 200, 200),
 					false,
 					true
