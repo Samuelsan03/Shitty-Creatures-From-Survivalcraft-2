@@ -93,7 +93,6 @@ namespace Game
 			"MenuMusic/Sonic The Hedgehog 1991 Spring Yard Zone",
 			"MenuMusic/Sonic The Hedgehog 1991 Marble Zone",
 			"MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone",
-			"MenuMusic/Mio Honda 本田未央 Step! ステップ",
 			"MenuMusic/Beat Hit! Ayumi Miyazaki",
 			"MenuMusic/Chrono Trigger Main Theme",
 			"MenuMusic/Twill STAND UP Digimon Xros Wars Hunters",
