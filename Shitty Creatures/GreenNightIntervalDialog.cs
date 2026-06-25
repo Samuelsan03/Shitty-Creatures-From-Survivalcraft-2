@@ -29,21 +29,23 @@ namespace Game
 
 		private readonly DifficultyMode[] m_difficultyModes = {
 	DifficultyMode.VeryEasy,
-    DifficultyMode.Easy,
+	DifficultyMode.Easy,
 	DifficultyMode.Normal,
 	DifficultyMode.Medium,
 	DifficultyMode.Hard,
-	DifficultyMode.Extreme
+	DifficultyMode.Extreme,
+	DifficultyMode.Impossible   // Nuevo
 };
 
 		private readonly Color[] m_difficultyColors = {
-	        new Color(136, 187, 255),
-			new Color(100, 200, 100),
-			new Color(100, 100, 255),
-			new Color(255, 200, 0),
-			new Color(255, 80, 80),
-			new Color(150, 0, 150)
-		};
+	new Color(136, 187, 255),   // VeryEasy
+    new Color(100, 200, 100),   // Easy
+    new Color(100, 100, 255),   // Normal
+    new Color(255, 200, 0),     // Medium
+    new Color(255, 80, 80),     // Hard
+    new Color(150, 0, 150),     // Extreme
+    new Color(0, 40, 90)        // Impossible
+};
 
 		private string GetText(int key) => LanguageControl.GetContentWidgets("GreenNightIntervalDialog", key.ToString());
 
@@ -137,6 +139,7 @@ namespace Game
 				DifficultyMode.Medium => "Medium_Name",
 				DifficultyMode.Hard => "Hard_Name",
 				DifficultyMode.Extreme => "Extreme_Name",
+				DifficultyMode.Impossible => "Impossible_Name",   // Nuevo
 				_ => "Normal_Name"
 			};
 			return LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
@@ -146,12 +149,13 @@ namespace Game
 		{
 			string key = mode switch
 			{
-				DifficultyMode.VeryEasy => "VeryEasy_Desc",   // <-- NUEVO
+				DifficultyMode.VeryEasy => "VeryEasy_Desc",
 				DifficultyMode.Easy => "Easy_Desc",
 				DifficultyMode.Normal => "Normal_Desc",
 				DifficultyMode.Medium => "Medium_Desc",
 				DifficultyMode.Hard => "Hard_Desc",
 				DifficultyMode.Extreme => "Extreme_Desc",
+				DifficultyMode.Impossible => "Impossible_Desc",   // Nuevo
 				_ => "Normal_Desc"
 			};
 			return LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
