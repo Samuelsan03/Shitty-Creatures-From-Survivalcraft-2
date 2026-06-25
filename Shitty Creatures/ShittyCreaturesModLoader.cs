@@ -1573,7 +1573,7 @@ namespace Game
 				var greenNight = playerTarget.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 				if (greenNight != null && greenNight.DifficultyMode == DifficultyMode.Impossible)
 				{
-					attackPower = 99999f;
+					attackPower = 999999f;
 					hitProbability = 1f;
 					hitProbability2 = 1f;
 				}
@@ -2175,32 +2175,6 @@ namespace Game
 			{
 				ComponentCreature attackerCreature = projectile.Owner;
 				CommandAlliesToAttack(hitPlayer, attackerCreature);
-			}
-
-			// ===== NUEVO: Daño letal en Impossible para proyectiles de criaturas =====
-			// Usar un nombre diferente para evitar conflicto con la variable hitPlayer de arriba
-			ComponentPlayer playerHit = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentPlayer>();
-			if (playerHit != null && projectile.Owner != null && playerHit != projectile.Owner)
-			{
-				var greenNight = playerHit.Project.FindSubsystem<SubsystemGreenNightSky>(true);
-				if (greenNight != null && greenNight.DifficultyMode == DifficultyMode.Impossible)
-				{
-					var projAttack = attackment as ProjectileAttackment;
-					if (projAttack != null)
-					{
-						var field = typeof(ProjectileAttackment).GetField("m_damage", BindingFlags.Instance | BindingFlags.NonPublic);
-						if (field != null)
-						{
-							field.SetValue(projAttack, 99999f);
-						}
-						else
-						{
-							var prop = typeof(ProjectileAttackment).GetProperty("Damage");
-							if (prop != null && prop.CanWrite)
-								prop.SetValue(projAttack, 99999f);
-						}
-					}
-				}
 			}
 		}
 
