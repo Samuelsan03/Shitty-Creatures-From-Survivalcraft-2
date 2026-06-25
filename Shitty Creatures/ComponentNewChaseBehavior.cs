@@ -1447,6 +1447,11 @@ namespace Game
 		{
 			if (!ShouldProtectPlayer) return false;
 			if (m_subsystemGreenNightSky == null) return false;
+
+			// === NUEVO: En Impossible, NO activar protección contra zombies ===
+			if (IsImpossibleModeActive())
+				return false;
+
 			return m_subsystemGreenNightSky.IsGreenNightActive;
 		}
 
