@@ -11,6 +11,18 @@
     "5": "Continuar",
     "6": "Cancelar"
 },
+"ExtremeCompletionDialog": {
+  "0": "¡Felicidades, Superviviente!",
+  "1": "Has logrado superar la dificultad más alta conocida\nhasta ahora.",
+  "2": "Has demostrado ser un superviviente excepcional.\nTu esfuerzo y perseverancia te han llevado hasta aquí.",
+  "3": "Un Nuevo Desafío te Espera",
+  "4": "Has desbloqueado un reto que pondrá a prueba todo lo que has\naprendido.\nAquellos que te han visto sobrevivir te consideran una leyenda,\npero hay quienes dicen que aún no has visto la verdadera oscuridad.\n\nDicen que hay un nivel donde el más mínimo error tiene\nconsecuencias\ndefinitivas. Donde cada decisión cuenta y cada movimiento\npuede ser el último.\n\nSi crees que estás preparado, acepta el desafío.\nPero tenlo claro: no hay vuelta atrás.",
+  "5": "Al aceptar, las oleadas de la noche verde se reiniciarán desde el\nprincipio\ny deberás volver a demostrar tu valía.",
+  "6": "Aceptar",
+  "7": "Rechazar",
+  "8": "Has rechazado el desafío. El modo permanece bloqueado.",
+  "9": "Has aceptado el nuevo desafío. Las oleadas se han reiniciado."
+},
   "InfiniteChallengeWidget": {
     "0": "Infinite el Chacal",
     "1": "Desafío",
@@ -171,7 +183,9 @@
 "138": "La masa ha despertado",
 "139": "Alimentaste a Aimep3 con pan y ocurrió algo inexplicable. Los científicos todavía debaten si fue el gluten.",
 "140": "Error: dios detectado",
-"141": "Aimep3 alcanzó su máximo poder. Ahora puede derrotar a cualquier desarrollador con una barra de pan. No te acerques."
+"141": "Aimep3 alcanzó su máximo poder. Ahora puede derrotar a cualquier desarrollador con una barra de pan. No te acerques.",
+"142": "El creador se arrepiente",
+"143": "Has demostrado que no hay límites para el sufrimiento humano. El desarrollador ya no sabe qué más inventar. Te mereces un premio por tu terquedad."
   },
   "AchievementsMessages": {
     "0": "¡LOGRO {0} DESBLOQUEADO!",
@@ -1517,7 +1531,9 @@
     "Hard_Name": "El Último Arquitecto",
     "Hard_Desc": "Tu base es una sugerencia, no una defensa.\nLos infectados flanquean, se coordinan y usan armas a distancia.\nNo huyen: luchan hasta la muerte.\n(Flanqueo activado, alta destrucción de bloques, agresividad extrema.)",
     "Extreme_Name": "Error al Cargar la Cordura",
-    "Extreme_Desc": "Los infectados son implacables, persistentes e inteligentes.\nTe perseguirán para siempre, destruirán todo y no sienten dolor.\nSobrevivir a esto desbloquea la línea directa de un terapeuta.\n(Persecución persistente, máximo número de apariciones, máxima destrucción de bloques, sin piedad.)"
+    "Extreme_Desc": "Los infectados son implacables, persistentes e inteligentes.\nTe perseguirán para siempre, destruirán todo y no sienten dolor.\nSobrevivir a esto desbloquea la línea directa de un terapeuta.\n(Persecución persistente, máximo número de apariciones, máxima destrucción de bloques, sin piedad.)",
+    "Impossible_Name": "No Hay Segunda Oportunidad",
+    "Impossible_Desc": "Cualquier infectado que te roce (sí, incluso ese que está cojeando) te enviará directo al menú de carga.\nLos infectados comunes son francotiradores, los jefes son tanques con misiles y los conejos te persiguen con motosierras.\nLa única estrategia: no te toquen. Ni un rasguño. Ni una caricia. Ni una mirada.\n(Un toque = muerte, persecución eterna, flanqueo total, ayuda infinita, agresividad de otro mundo.)\nTus 'amigos' han decidido hacer una huelga indefinida. Durante las noches verdes, olvídate de que te cubran las espaldas. Estás solo, con tus reflejos y la esperanza de que el día llegue pronto."
   },
     "VehicleInventoryWidget": {
   "1": "Vehículo",
