@@ -399,6 +399,10 @@ namespace Game
 			var zombiesSpawn = Project.FindSubsystem<SubsystemZombiesSpawn>(true);
 			if (zombiesSpawn != null && zombiesSpawn.IsAllWavesCompleted) return false;
 
+			// ===== NUEVO: Si el flag está activo, NO bloquear =====
+			if (zombiesSpawn != null && zombiesSpawn.ImpossibleBlockDisabledForAllies)
+				return false;
+
 			return true;
 		}
 
