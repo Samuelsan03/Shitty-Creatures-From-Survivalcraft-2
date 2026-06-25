@@ -110,9 +110,7 @@ namespace Game
 			// ===== MANEJAR CLIC EN EL BOTÓN DE PINTURA =====
 			if (m_paintButton != null && m_paintButton.IsClicked)
 			{
-				// ELIMINADO: AudioManager.PlaySound("Audio/Rocket Knight Adventures Stage Clear", ...);
-
-				// Mostrar el diálogo de completado Extreme (sin sonido adicional)
+				// Mostrar el diálogo de completado Extreme
 				var dialog = new ExtremeCompletionDialog(
 					m_subsystemGreenNightSky,
 					m_player,
@@ -128,7 +126,7 @@ namespace Game
 							zombiesSpawn.ForceUpdateDifficultyLabel();
 						}
 						m_player.ComponentGui.DisplaySmallMessage(
-							"Has aceptado el nuevo desafío. Las oleadas se han reiniciado.",
+							LanguageControl.Get("ExtremeCompletionDialog", 9),
 							new Color(0, 255, 0), false, true);
 					},
 					showRejectMessage: true
