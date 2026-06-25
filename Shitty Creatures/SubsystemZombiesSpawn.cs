@@ -29,6 +29,10 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
+		public bool HasExtremeCompleted => m_extremeCompletionDialogShown;
+
+		private bool m_extremeCompletionDialogShown = false;
+
 		// ===== RETRASO DE SPAWN AL INICIO DE NOCHE VERDE =====
 		private float m_greenNightSpawnDelayTimer = 0f;
 		private bool m_greenNightSpawnDelayActive = false;
@@ -247,6 +251,7 @@ namespace Game
 			m_hasSpawnedBossThisNight = valuesDictionary.GetValue<bool>("HasSpawnedBossThisNight", false);
 			m_bossSpawnDelayed = valuesDictionary.GetValue<bool>("BossSpawnDelayed", false);
 			m_bossSpawnDelayTimer = valuesDictionary.GetValue<float>("BossSpawnDelayTimer", 0f);
+			m_extremeCompletionDialogShown = valuesDictionary.GetValue<bool>("ExtremeCompletionDialogShown", false);
 
 			// Al cargar, si había un retraso de jefe pendiente, usar el tiempo normal (0.5f) y no los 5s iniciales
 			if (m_bossSpawnDelayed)
@@ -382,6 +387,7 @@ namespace Game
 				DifficultyMode.Medium => "Medium_Name",
 				DifficultyMode.Hard => "Hard_Name",
 				DifficultyMode.Extreme => "Extreme_Name",
+				DifficultyMode.Impossible => "Impossible_Name",
 				_ => "Normal_Name"
 			};
 			string difficultyName = LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
@@ -471,6 +477,20 @@ namespace Game
 
 			WaveAdvanced?.Invoke(oldWave, newWave);
 
+			// ===== DESBLOQUEO EXTREME (INDEPENDIENTE Y SIN RETRASO) =====
+			// Se ejecuta al completar la última ola en Extremo, sin esperar mensajes ni temporizadores.
+			if (oldWave == maxWave && m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme && !m_extremeCompletionDialogShown)
+			{
+				m_extremeCompletionDialogShown = true;
+
+				// Reproducir sonido de desbloqueo (solo una vez, de forma inmediata)
+				if (m_subsystemAudio != null)
+				{
+					m_subsystemAudio.PlaySound("Audio/Rocket Knight Adventures Stage Clear", 1f, 0f, 0f, 0f);
+				}
+				// NO mostrar el diálogo aquí; solo se activa el flag para el icono en el toggle
+			}
+
 			if (oldWave == 1 && newWave == 2)
 			{
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
@@ -523,6 +543,7 @@ namespace Game
 									player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
 								}
 
+								// Mostrar el cofre con la carta (después de 5 segundos)
 								System.Timers.Timer timer2 = new System.Timers.Timer(5000);
 								timer2.Elapsed += (sender2, e2) =>
 								{
@@ -657,6 +678,7 @@ namespace Game
 			valuesDictionary.SetValue("BossSpawnDelayed", m_bossSpawnDelayed);
 			valuesDictionary.SetValue("BossSpawnDelayTimer", m_bossSpawnDelayTimer);
 			valuesDictionary.SetValue("MidnightBossesSpawnedThisNight", m_midnightBossesSpawnedThisNight);
+			valuesDictionary.SetValue("ExtremeCompletionDialogShown", m_extremeCompletionDialogShown);
 
 			string bossQueueStr = m_bossQueue.Count > 0 ? string.Join(",", m_bossQueue) : "";
 			valuesDictionary.SetValue("BossQueue", bossQueueStr);
@@ -2846,6 +2868,19 @@ namespace Game
 			{
 				m_subsystemAudio.PlaySound("Audio/UI/Tank Warning Sound", 1f, 0f, 0f, 0f);
 			}
+		}
+
+		// Método para reiniciar las oleadas
+		public void ResetWaves()
+		{
+			m_currentWave = 1;
+			SetCurrentWave(1);
+			m_hasSpawnedBossThisNight = false;
+			m_bossBattleActive = false;
+			m_bossSpawnDelayed = false;
+			m_bossQueue.Clear();
+			m_currentBossEntity = null;
+			// No reiniciamos m_hasShownUnlockMessage ni m_letterWarSpawned para que no se repitan
 		}
 	}
 }
