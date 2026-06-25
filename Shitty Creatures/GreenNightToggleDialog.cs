@@ -63,11 +63,12 @@ namespace Game
 			var zombiesSpawn = m_subsystemGreenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
 			if (zombiesSpawn != null)
 			{
-				// Usar el flag ExtremeCompletionDialogShown del SubsystemZombiesSpawn
 				m_hasExtremeUnlocked = zombiesSpawn.HasExtremeCompleted;
 			}
 
-			if (m_hasExtremeUnlocked)
+			if (m_hasExtremeUnlocked &&
+				!zombiesSpawn.HasAcceptedImpossibleChallenge &&
+				m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme)
 			{
 				Subtexture paintTexture = ContentManager.Get<Subtexture>("Textures/Gui/pintura");
 				if (paintTexture != null)
@@ -110,6 +111,8 @@ namespace Game
 			// ===== MANEJAR CLIC EN EL BOTÓN DE PINTURA =====
 			if (m_paintButton != null && m_paintButton.IsClicked)
 			{
+				// Guardar referencia al toggle para cerrarlo después
+				var toggleDialog = this;
 				// Mostrar el diálogo de completado Extreme
 				var dialog = new ExtremeCompletionDialog(
 					m_subsystemGreenNightSky,
@@ -124,10 +127,14 @@ namespace Game
 						{
 							zombiesSpawn.ResetWaves();
 							zombiesSpawn.ForceUpdateDifficultyLabel();
+							// Marcar que el desafío ha sido aceptado
+							zombiesSpawn.SetAcceptedImpossibleChallenge(true);
 						}
 						m_player.ComponentGui.DisplaySmallMessage(
 							LanguageControl.Get("ExtremeCompletionDialog", 9),
 							new Color(0, 255, 0), false, true);
+						// Cerrar el toggle después de aceptar
+						DialogsManager.HideDialog(toggleDialog);
 					},
 					showRejectMessage: true
 				);
