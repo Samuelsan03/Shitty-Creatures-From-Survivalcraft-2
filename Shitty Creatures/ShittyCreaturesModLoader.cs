@@ -1528,7 +1528,7 @@ namespace Game
 				hitProbability = 0f;
 				hitProbability2 = 0f;
 				skipVanilla = true;
-				return;  // Salir inmediatamente, no ejecutar el resto
+				return;
 			}
 
 			// ===== Lógica original: defensa en modo Creativo =====
@@ -1550,6 +1550,20 @@ namespace Game
 			if (attackerCreature != null)
 			{
 				CommandAlliesToAttack(targetPlayer, attackerCreature);
+			}
+
+			// ===== NUEVO: Daño letal en dificultad Impossible para ataques de criaturas =====
+			// Usar un nombre diferente para evitar conflicto con la variable targetPlayer de arriba
+			ComponentPlayer playerTarget = targetBody.Entity.FindComponent<ComponentPlayer>();
+			if (miner.ComponentCreature != null && miner.ComponentPlayer == null && playerTarget != null)
+			{
+				var greenNight = playerTarget.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+				if (greenNight != null && greenNight.DifficultyMode == DifficultyMode.Impossible)
+				{
+					attackPower = 99999f;
+					hitProbability = 1f;
+					hitProbability2 = 1f;
+				}
 			}
 		}
 
@@ -2143,13 +2157,37 @@ namespace Game
 			}
 
 			// ----- NUEVO: Ordenar ataque de aliados cuando el jugador RECIBE un proyectil -----
-			// Si el cuerpo impactado es un jugador (y no es el propio atacante), ordenamos a sus aliados atacar al dueño del proyectil.
 			ComponentPlayer hitPlayer = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentPlayer>();
 			if (hitPlayer != null && projectile.Owner != null && hitPlayer != projectile.Owner)
 			{
 				ComponentCreature attackerCreature = projectile.Owner;
-				// Solo ordenamos ataque si el atacante es una criatura (puede ser otro jugador o un mob)
 				CommandAlliesToAttack(hitPlayer, attackerCreature);
+			}
+
+			// ===== NUEVO: Daño letal en Impossible para proyectiles de criaturas =====
+			// Usar un nombre diferente para evitar conflicto con la variable hitPlayer de arriba
+			ComponentPlayer playerHit = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentPlayer>();
+			if (playerHit != null && projectile.Owner != null && playerHit != projectile.Owner)
+			{
+				var greenNight = playerHit.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+				if (greenNight != null && greenNight.DifficultyMode == DifficultyMode.Impossible)
+				{
+					var projAttack = attackment as ProjectileAttackment;
+					if (projAttack != null)
+					{
+						var field = typeof(ProjectileAttackment).GetField("m_damage", BindingFlags.Instance | BindingFlags.NonPublic);
+						if (field != null)
+						{
+							field.SetValue(projAttack, 99999f);
+						}
+						else
+						{
+							var prop = typeof(ProjectileAttackment).GetProperty("Damage");
+							if (prop != null && prop.CanWrite)
+								prop.SetValue(projAttack, 99999f);
+						}
+					}
+				}
 			}
 		}
 
@@ -2197,13 +2235,14 @@ namespace Game
 			if (greenNight == null) return;
 
 			DifficultyMode mode = greenNight.DifficultyMode;
-			bool shouldBreak = (mode == DifficultyMode.Medium || mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme);
+			bool shouldBreak = (mode == DifficultyMode.Medium || mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme || mode == DifficultyMode.Impossible);
 			float probabilityMultiplier = 1f;
 			switch (mode)
 			{
 				case DifficultyMode.Medium: probabilityMultiplier = 0.3f; break;
 				case DifficultyMode.Hard: probabilityMultiplier = 0.7f; break;
 				case DifficultyMode.Extreme: probabilityMultiplier = 1.0f; break;
+				case DifficultyMode.Impossible: probabilityMultiplier = 1.5f; break;   // Nuevo: más destrucción
 				default: shouldBreak = false; break;
 			}
 
@@ -2289,6 +2328,11 @@ namespace Game
 					baseResilienceFactor = 2.0f; baseDamageMult = 2.0f; baseSpeedMult = 1.4f;
 					bossResilienceFactor = 3.0f; bossDamageMult = 2.5f; bossSpeedMult = 1.2f;
 					flyingResilienceFactor = 1.5f; flyingDamageMult = 1.6f; flyingSpeedMult = 1.6f;  // +60% velocidad de vuelo
+					break;
+				case DifficultyMode.Impossible:   // Nuevo
+					baseResilienceFactor = 3.0f; baseDamageMult = 3.0f; baseSpeedMult = 1.8f;
+					bossResilienceFactor = 4.0f; bossDamageMult = 3.5f; bossSpeedMult = 1.5f;
+					flyingResilienceFactor = 2.0f; flyingDamageMult = 2.5f; flyingSpeedMult = 2.0f;
 					break;
 			}
 
@@ -2917,6 +2961,22 @@ namespace Game
 					}
 				}
 			}
+		}
+
+		// ===== MÉTODO PÚBLICO PARA CONSULTAR MODO IMPOSSIBLE ACTIVO =====
+		public static bool IsImpossibleModeActive(Project project)
+		{
+			if (project == null) return false;
+			var greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
+			if (greenNight == null) return false;
+			if (greenNight.DifficultyMode != DifficultyMode.Impossible) return false;
+			if (!greenNight.IsGreenNightActive) return false;
+
+			// Si ya se completaron todas las oleadas, se desactiva el bloqueo
+			var zombiesSpawn = project.FindSubsystem<SubsystemZombiesSpawn>(true);
+			if (zombiesSpawn != null && zombiesSpawn.IsAllWavesCompleted) return false;
+
+			return true;
 		}
 
 		// ---------------------------------------------------------------------------------
