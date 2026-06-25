@@ -113,6 +113,10 @@ namespace Game
 					pressureMult = 2.0f;
 					fluDurationMult = 2.0f;
 					break;
+				case DifficultyMode.Impossible:
+					pressureMult = 3.0f;
+					fluDurationMult = 3.0f;
+					break;
 			}
 
 			float finalPressure = FreezePressure * pressureMult;
