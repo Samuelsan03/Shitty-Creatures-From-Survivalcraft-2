@@ -11,6 +11,18 @@
     "5": "Continue",
     "6": "Cancel"
   },
+  "ExtremeCompletionDialog": {
+    "0": "Congratulations, Survivor!",
+    "1": "You have managed to overcome the highest difficulty known\nso far.",
+    "2": "You have proven yourself to be an exceptional survivor.\nYour effort and perseverance have brought you this far.",
+    "3": "A New Challenge Awaits",
+    "4": "You have unlocked a challenge that will test everything you have\nlearned.\nThose who have seen you survive consider you a legend,\nbut some say you have not yet seen the true darkness.\n\nThey say there is a level where even the smallest mistake has\npermanent\nconsequences. Where every decision matters and every move\ncould be your last.\n\nIf you believe you are ready, accept the challenge.\nBut be warned: there is no turning back.",
+    "5": "By accepting, the Green Night waves will be reset from the\nbeginning,\nand you will have to prove your worth once again.",
+    "6": "Accept",
+    "7": "Decline",
+    "8": "You have declined the challenge. The mode remains locked.",
+    "9": "You have accepted the new challenge. The waves have been reset."
+  },
   "InfiniteChallengeWidget": {
     "0": "Infinite The Jackal",
     "1": "Challenge",
@@ -171,7 +183,9 @@
 "138": "The Dough Has Awakened",
 "139": "You fed Aimep3 some bread and something inexplicable happened. Scientists are still debating whether it was the gluten.",
 "140": "Error: God Detected",
-"141": "Aimep3 has reached its maximum power. It can now defeat any developer with a loaf of bread. Do not approach."
+"141": "Aimep3 has reached its maximum power. It can now defeat any developer with a loaf of bread. Do not approach.",
+"142": "The creator regrets it",
+"143": "You have proven that there are no limits to human suffering. The developer no longer knows what else to invent. You deserve an award for your stubbornness."
   },
   "TypesOfAchievements": {
     "0": "Type",
@@ -1515,7 +1529,9 @@
   "Hard_Name": "The Last Architect",
   "Hard_Desc": "Your base is a suggestion, not a defense.\nThe infected flank, coordinate their attacks, and use ranged weapons.\nThey do not flee—they fight to the death.\n(Flanking enabled, high block destruction, extreme aggression.)",
   "Extreme_Name": "Failed to Load Sanity",
-  "Extreme_Desc": "The infected are relentless, persistent, and smart.\nThey chase you forever, destroy everything, and feel no pain.\nSurviving this unlocks a therapist's direct line.\n(Persistent chase, max spawns, max block break, no mercy.)"
+  "Extreme_Desc": "The infected are relentless, persistent, and smart.\nThey chase you forever, destroy everything, and feel no pain.\nSurviving this unlocks a therapist's direct line.\n(Persistent chase, max spawns, max block break, no mercy.)",
+  "Impossible_Name": "No Second Chances",
+  "Impossible_Desc": "Any infected that brushes against you (yes, even that limping one) will send you straight to the loading screen.\nCommon infected are snipers, bosses are missile-launching tanks, and rabbits chase you with chainsaws.\nThe only strategy: don't get touched. Not a scratch. Not a pat. Not even a glance.\n(One touch = death, endless pursuit, complete flanking, infinite support, otherworldly aggression.)\nYour 'friends' have decided to go on an indefinite strike. During green nights, forget about having them watch your back. You're on your own, armed only with your reflexes and the hope that daylight arrives soon."
 },
         "VehicleInventoryWidget": {
           "1": "Vehicle",
