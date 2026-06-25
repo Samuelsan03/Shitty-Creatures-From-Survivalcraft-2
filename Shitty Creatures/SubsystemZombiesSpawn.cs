@@ -33,6 +33,9 @@ namespace Game
 
 		private bool m_extremeCompletionDialogShown = false;
 
+		public bool HasAcceptedImpossibleChallenge => m_hasAcceptedImpossibleChallenge;
+		private bool m_hasAcceptedImpossibleChallenge = false;
+
 		// ===== RETRASO DE SPAWN AL INICIO DE NOCHE VERDE =====
 		private float m_greenNightSpawnDelayTimer = 0f;
 		private bool m_greenNightSpawnDelayActive = false;
@@ -252,6 +255,7 @@ namespace Game
 			m_bossSpawnDelayed = valuesDictionary.GetValue<bool>("BossSpawnDelayed", false);
 			m_bossSpawnDelayTimer = valuesDictionary.GetValue<float>("BossSpawnDelayTimer", 0f);
 			m_extremeCompletionDialogShown = valuesDictionary.GetValue<bool>("ExtremeCompletionDialogShown", false);
+			m_hasAcceptedImpossibleChallenge = valuesDictionary.GetValue<bool>("HasAcceptedImpossibleChallenge", false);
 
 			// Al cargar, si había un retraso de jefe pendiente, usar el tiempo normal (0.5f) y no los 5s iniciales
 			if (m_bossSpawnDelayed)
@@ -679,6 +683,7 @@ namespace Game
 			valuesDictionary.SetValue("BossSpawnDelayTimer", m_bossSpawnDelayTimer);
 			valuesDictionary.SetValue("MidnightBossesSpawnedThisNight", m_midnightBossesSpawnedThisNight);
 			valuesDictionary.SetValue("ExtremeCompletionDialogShown", m_extremeCompletionDialogShown);
+			valuesDictionary.SetValue("HasAcceptedImpossibleChallenge", m_hasAcceptedImpossibleChallenge);
 
 			string bossQueueStr = m_bossQueue.Count > 0 ? string.Join(",", m_bossQueue) : "";
 			valuesDictionary.SetValue("BossQueue", bossQueueStr);
@@ -2881,6 +2886,11 @@ namespace Game
 			m_bossQueue.Clear();
 			m_currentBossEntity = null;
 			// No reiniciamos m_hasShownUnlockMessage ni m_letterWarSpawned para que no se repitan
+		}
+
+		public void SetAcceptedImpossibleChallenge(bool accepted)
+		{
+			m_hasAcceptedImpossibleChallenge = accepted;
 		}
 	}
 }
