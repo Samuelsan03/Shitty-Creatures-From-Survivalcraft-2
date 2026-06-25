@@ -263,6 +263,19 @@ namespace Game
 			// Suscribirse a eventos de celebración de logros
 			AchievementsManager.OnCelebrationStarted += OnCelebrationStarted;
 			AchievementsManager.OnCelebrationEnded += OnCelebrationEnded;
+
+			// Verificar y corregir dificultad Impossible sin desbloqueo
+			var greenNightSky = project.FindSubsystem<SubsystemGreenNightSky>(true);
+			var zombiesSpawn = project.FindSubsystem<SubsystemZombiesSpawn>(true);
+			if (greenNightSky != null && zombiesSpawn != null)
+			{
+				if (greenNightSky.DifficultyMode == DifficultyMode.Impossible && !zombiesSpawn.HasExtremeCompleted)
+				{
+					greenNightSky.DifficultyMode = DifficultyMode.Normal;
+					ShittyCreaturesModLoader.NotifyDifficultyChanged(greenNightSky);
+					zombiesSpawn.ForceUpdateDifficultyLabel();
+				}
+			}
 		}
 
 		private void AddAchievementButtonToPlayers(Project project)
