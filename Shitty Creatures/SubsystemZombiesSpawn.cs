@@ -29,6 +29,12 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
+		// ===== RETRASO DE SPAWN AL INICIO DE NOCHE VERDE =====
+		private float m_greenNightSpawnDelayTimer = 0f;
+		private bool m_greenNightSpawnDelayActive = false;
+		private const float GreenNightSpawnDelaySeconds = 5f;
+		// ===== FIN RETRASO DE SPAWN =====
+
 		// ===== SPAWN DE JEFES A MEDIANOCHE (OLEADAS NORMALES) =====
 		private bool m_midnightBossesSpawnedThisNight = false;
 		private float m_lastTimeOfDay = 0f;
@@ -242,7 +248,18 @@ namespace Game
 			m_bossSpawnDelayed = valuesDictionary.GetValue<bool>("BossSpawnDelayed", false);
 			m_bossSpawnDelayTimer = valuesDictionary.GetValue<float>("BossSpawnDelayTimer", 0f);
 
+			// Al cargar, si había un retraso de jefe pendiente, usar el tiempo normal (0.5f) y no los 5s iniciales
+			if (m_bossSpawnDelayed)
+			{
+				m_bossSpawnDelayTimer = BossSpawnDelay;
+			}
+
 			string bossQueueStr = valuesDictionary.GetValue<string>("BossQueue", "");
+
+			// Ignorar retraso guardado para que solo aplique en el inicio real de la noche verde, no al cargar
+			m_greenNightSpawnDelayActive = false;
+			m_greenNightSpawnDelayTimer = 0f;
+
 			m_bossQueue.Clear();
 			if (!string.IsNullOrEmpty(bossQueueStr))
 			{
@@ -416,7 +433,6 @@ namespace Game
 			if (m_difficultyLabel == null) return;
 			string difficultyText = GetDifficultyLocalizedName();
 			string format = LanguageControl.Get("ZombiesSpawn", "CurrentDifficulty");
-			if (string.IsNullOrEmpty(format)) format = "Difficulty: {0}";
 			m_difficultyLabel.Text = string.Format(format, difficultyText);
 		}
 
@@ -500,12 +516,7 @@ namespace Game
 								m_hasShownUnlockMessage = true;
 
 								string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
-								if (string.IsNullOrEmpty(largeMessage))
-									largeMessage = "Remote Control unlocked!";
-
 								string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
-								if (string.IsNullOrEmpty(smallMessage))
-									smallMessage = "You can now craft the Remote Control to manage the Green Nights.";
 
 								foreach (var player in m_subsystemPlayers.ComponentPlayers)
 								{
@@ -830,6 +841,10 @@ namespace Game
 				PlayEvilLaugh();
 				SendWaveMessage();
 
+				// Activar retraso de 5 segundos antes del spawn
+				m_greenNightSpawnDelayActive = true;
+				m_greenNightSpawnDelayTimer = GreenNightSpawnDelaySeconds;
+
 				// Si hay jefes vivos de noches anteriores, no hacer nada con ellos
 				Entity existingBoss = FindAliveBoss();
 				if (existingBoss != null)
@@ -846,7 +861,7 @@ namespace Game
 				{
 					StartBossBattle();
 					m_bossSpawnDelayed = true;
-					m_bossSpawnDelayTimer = 0.5f;
+					m_bossSpawnDelayTimer = GreenNightSpawnDelaySeconds; // 5 segundos de retraso
 				}
 			}
 			// ===== FIN VERIFICACIÓN =====
@@ -933,26 +948,41 @@ namespace Game
 			}
 			// ===== FIN VERIFICACIÓN MUERTE JEFE =====
 
-			// ===== SPAWN NORMAL DE CRIATURAS =====
-			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
-			float dynamicInterval = m_bossBattleActive ? m_spawnInterval * 2f : m_spawnInterval;
-			if (totalCreatures > MaxGlobalCreatures * 0.8f)
-				dynamicInterval *= 1.5f;
-			else if (totalCreatures < MaxGlobalCreatures * 0.3f)
-				dynamicInterval *= 0.8f;
-
-			m_spawnTimer += dt;
-			int spawnsThisFrame = 0;
-
-			while (m_spawnTimer >= dynamicInterval && spawnsThisFrame < MaxSpawnsPerFrame)
+			// ===== ACTUALIZAR RETRASO DE SPAWN (SOLO NOCHE VERDE) =====
+			if (m_greenNightSpawnDelayActive)
 			{
-				m_spawnTimer -= dynamicInterval;
+				m_greenNightSpawnDelayTimer -= dt;
+				if (m_greenNightSpawnDelayTimer <= 0f)
+				{
+					m_greenNightSpawnDelayActive = false;
+					m_greenNightSpawnDelayTimer = 0f;
+				}
+			}
+			// ===== FIN ACTUALIZAR RETRASO =====
 
-				int spawnedThisIteration = TrySpawnGroup();
-				spawnsThisFrame += spawnedThisIteration;
+			// ===== SPAWN NORMAL DE CRIATURAS (SOLO NOCHE VERDE, DESPUÉS DEL RETRASO) =====
+			if (!m_greenNightSpawnDelayActive)
+			{
+				int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
+				float dynamicInterval = m_bossBattleActive ? m_spawnInterval * 2f : m_spawnInterval;
+				if (totalCreatures > MaxGlobalCreatures * 0.8f)
+					dynamicInterval *= 1.5f;
+				else if (totalCreatures < MaxGlobalCreatures * 0.3f)
+					dynamicInterval *= 0.8f;
 
-				if (spawnedThisIteration == 0)
-					break;
+				m_spawnTimer += dt;
+				int spawnsThisFrame = 0;
+
+				while (m_spawnTimer >= dynamicInterval && spawnsThisFrame < MaxSpawnsPerFrame)
+				{
+					m_spawnTimer -= dynamicInterval;
+
+					int spawnedThisIteration = TrySpawnGroup();
+					spawnsThisFrame += spawnedThisIteration;
+
+					if (spawnedThisIteration == 0)
+						break;
+				}
 			}
 			// ===== FIN SPAWN NORMAL DE CRIATURAS =====
 		}
