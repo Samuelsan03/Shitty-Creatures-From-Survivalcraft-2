@@ -260,6 +260,11 @@ namespace Game
 				// Comportamiento original (cuando se usa directamente, sin toggle)
 				m_greenNightSky.GreenNightIntervalDays = m_selectedDays;
 				m_greenNightSky.DifficultyMode = m_tempDifficulty;
+
+				// ===== Resetear el flag para que el bloqueo se aplique según la nueva dificultad =====
+				if (zombiesSpawn != null)
+					zombiesSpawn.ImpossibleBlockDisabledForAllies = false;
+
 				ShittyCreaturesModLoader.NotifyDifficultyChanged(m_greenNightSky);
 
 				if (m_showMessageOnAccept)
@@ -270,10 +275,9 @@ namespace Game
 				}
 
 				// Forzar actualización del label de dificultad en el HUD
-				var zombiesSpawn2 = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
-				if (zombiesSpawn2 != null)
+				if (zombiesSpawn != null)
 				{
-					zombiesSpawn2.ForceUpdateDifficultyLabel();
+					zombiesSpawn.ForceUpdateDifficultyLabel();
 				}
 			}
 
