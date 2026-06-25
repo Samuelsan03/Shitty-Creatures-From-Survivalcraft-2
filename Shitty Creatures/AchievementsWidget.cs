@@ -129,6 +129,18 @@ namespace Game
 				int descKey = (int)elem.Attribute("DescriptionKey");
 				int reward = (int)elem.Attribute("Reward");
 
+				// --- NUEVO: Leer atributo Hidden ---
+				bool hidden = false;
+				XAttribute hiddenAttr = elem.Attribute("Hidden");
+				if (hiddenAttr != null && hiddenAttr.Value == "true")
+					hidden = true;
+
+				bool unlocked = AchievementsManager.IsAchievementUnlocked(m_componentPlayer, number);
+
+				// --- NUEVO: Si está oculto y no desbloqueado, omitir ---
+				if (hidden && !unlocked)
+					continue;
+
 				string title = LanguageControl.Get(fName, titleKey);
 				string description = LanguageControl.Get(fName, descKey);
 
@@ -137,7 +149,7 @@ namespace Game
 					baseDescription: description,
 					achievementNumber: number,
 					rewardAmount: reward,
-					unlocked: AchievementsManager.IsAchievementUnlocked(m_componentPlayer, number),
+					unlocked: unlocked,
 					rewardClaimed: AchievementsManager.IsRewardClaimed(m_componentPlayer, number)
 				);
 			}
@@ -966,8 +978,11 @@ namespace Game
 
 		private bool IsProgressBarAchievement(int number)
 		{
-			return (number >= 16 && number <= 68) ||
-				   (number >= 57 && number <= 68);
+			// Solo logros con contadores acumulativos (coincide con los rangos usados en GetCounterValues y en AchievementsManager)
+			return (number >= 16 && number <= 36) ||   // infectados (16-18), jefes (19-21), tanks (22-24), fantasmas (25-27), ghost tanks (28-30), bandidos (31-33), curaciones (34-36)
+				   (number >= 38 && number <= 40) ||   // piratas (38-40)
+				   (number >= 44 && number <= 51) ||   // voladores (44-47), boomers (48-51)
+				   (number >= 57 && number <= 68);     // domesticaciones normales (57-60), jefes (61-64), fantasmas (65-68)
 		}
 
 		private void UpdateProgressBarAndStatus(int achievementNumber, int current, int target)
@@ -1243,7 +1258,7 @@ namespace Game
 					return AchievementCategory.Trade;
 				}
 
-				if (achievementNumber == 69)
+				if (achievementNumber == 69 || achievementNumber == 73) // ← NUEVO
 				{
 					return AchievementCategory.Special;
 				}
