@@ -213,18 +213,19 @@ namespace Game
 					case DifficultyMode.Medium: return 1.2f;
 					case DifficultyMode.Hard: return 1.5f;
 					case DifficultyMode.Extreme: return 2.0f;
+					case DifficultyMode.Impossible: return 3.0f;   // Nuevo
 					default: return 1.0f;
 				}
 			}
 
 			public static bool ShouldUseFlanking(DifficultyMode mode)
 			{
-				return mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme;
+				return mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme || mode == DifficultyMode.Impossible;
 			}
 
 			public static bool ShouldAlwaysCallHelp(DifficultyMode mode)
 			{
-				return mode >= DifficultyMode.Medium;
+				return mode >= DifficultyMode.Medium;   // Impossible también cumple
 			}
 
 			public static float GetHelpCallRangeMultiplier(DifficultyMode mode)
@@ -237,13 +238,14 @@ namespace Game
 					case DifficultyMode.Medium: return 1.2f;
 					case DifficultyMode.Hard: return 1.5f;
 					case DifficultyMode.Extreme: return 2.0f;
+					case DifficultyMode.Impossible: return 3.0f;   // Nuevo
 					default: return 1.0f;
 				}
 			}
 
 			public static bool IsChasePersistent(DifficultyMode mode)
 			{
-				return mode == DifficultyMode.Extreme;
+				return mode == DifficultyMode.Extreme || mode == DifficultyMode.Impossible;
 			}
 		}
 	}
