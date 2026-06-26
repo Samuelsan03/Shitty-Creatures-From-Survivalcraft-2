@@ -101,9 +101,10 @@ namespace Game
 					int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
 					int aboveContents = Terrain.ExtractContents(aboveValue);
 
-					// Solo destruir si arriba NO hay hojas frutales
-					// NOTA: No destruir si es aire (0) porque podría ser durante el crecimiento
-					if (aboveContents != 0 && aboveContents != 20 && !IsLeavesBlock(aboveContents))
+					// CORRECCIÓN: Eliminada la condición "aboveContents != 0 &&"
+					// Ahora el fruto se destruye cuando arriba es aire (hoja destruida/quemada)
+					// o cuando arriba es cualquier bloque que no sea hoja válida
+					if (aboveContents != 20 && !IsLeavesBlock(aboveContents))
 					{
 						base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 					}
@@ -129,7 +130,6 @@ namespace Game
 					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 				}
 			}
-			// ELIMINADO: El bloque de hojas que destruía frutos incorrectamente
 		}
 
 		public override void OnPoll(int value, int x, int y, int z, int pollPass)
@@ -249,7 +249,7 @@ namespace Game
 			if (IsFruitBlock(contents))
 			{
 				int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
-				if (!IsLeavesBlock(Terrain.ExtractContents(aboveValue)))
+				if (!IsLeavesBlock(Terrain.ExtractContents(aboveValue)) && Terrain.ExtractContents(aboveValue) != 20)
 				{
 					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 				}
@@ -264,7 +264,8 @@ namespace Game
 			{
 				int aboveValue = base.SubsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
 				int aboveContents = Terrain.ExtractContents(aboveValue);
-				if (!IsLeavesBlock(aboveContents))
+				// CORRECCIÓN: También incluir hojas de roble (20) como válidas
+				if (aboveContents != 20 && !IsLeavesBlock(aboveContents))
 				{
 					base.SubsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
 				}
