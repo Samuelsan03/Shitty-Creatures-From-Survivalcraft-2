@@ -129,7 +129,10 @@ namespace Game
 				int descKey = (int)elem.Attribute("DescriptionKey");
 				int reward = (int)elem.Attribute("Reward");
 
-				// --- NUEVO: Leer atributo Hidden ---
+				// Leer TypeOfAchievement (debe ser uno de: Combat, Survival, Taming, Healing, Trade, Special)
+				string typeOfAchievement = elem.Attribute("TypeOfAchievement")?.Value ?? "Combat";
+
+				// Leer Hidden
 				bool hidden = false;
 				XAttribute hiddenAttr = elem.Attribute("Hidden");
 				if (hiddenAttr != null && hiddenAttr.Value == "true")
@@ -137,7 +140,7 @@ namespace Game
 
 				bool unlocked = AchievementsManager.IsAchievementUnlocked(m_componentPlayer, number);
 
-				// --- NUEVO: Si está oculto y no desbloqueado, omitir ---
+				// Si está oculto y no desbloqueado, omitir
 				if (hidden && !unlocked)
 					continue;
 
@@ -150,7 +153,8 @@ namespace Game
 					achievementNumber: number,
 					rewardAmount: reward,
 					unlocked: unlocked,
-					rewardClaimed: AchievementsManager.IsRewardClaimed(m_componentPlayer, number)
+					rewardClaimed: AchievementsManager.IsRewardClaimed(m_componentPlayer, number),
+					typeOfAchievement: typeOfAchievement
 				);
 			}
 
@@ -499,7 +503,7 @@ namespace Game
 			m_needsReorder = true;
 		}
 
-		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
+		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed, string typeOfAchievement)
 		{
 			var achievementContainer = new CanvasWidget
 			{
@@ -552,10 +556,11 @@ namespace Game
 			};
 			achievementContainer.Children.Add(titleLabel);
 
-			// --- CATEGORÍA (INDEPENDIENTE, PARA TODOS LOS LOGROS) ---
+			// --- CATEGORÍA (TypeOfAchievement) ---
+			string typeText = LanguageControl.Get("TypesOfAchievements", 0) + ": " + LanguageControl.Get("TypesOfAchievements", GetTypeKey(typeOfAchievement));
 			var categoryLabel = new LabelWidget
 			{
-				Text = LanguageControl.Get("TypesOfAchievements", 0) + ": " + AchievementCategoryHelper.GetCategoryName(achievementNumber),
+				Text = typeText,
 				Color = new Color(140, 140, 140),
 				FontScale = 0.8f,
 				HorizontalAlignment = WidgetAlignment.Center,
@@ -1220,65 +1225,17 @@ namespace Game
 			SubsystemAchievements.AchievementUnlocked -= OnAnyAchievementUnlocked;
 		}
 
-		// Clase auxiliar para obtener la categoría de cada logro
-		private static class AchievementCategoryHelper
+		private string GetTypeKey(string typeName)
 		{
-			public static AchievementCategory GetCategory(int achievementNumber)
+			switch (typeName)
 			{
-				if ((achievementNumber >= 1 && achievementNumber <= 5) ||
-					achievementNumber == 15 ||
-					(achievementNumber >= 16 && achievementNumber <= 33) ||
-					(achievementNumber >= 38 && achievementNumber <= 40) ||
-					(achievementNumber >= 44 && achievementNumber <= 51))
-				{
-					return AchievementCategory.Combat;
-				}
-
-				if ((achievementNumber >= 6 && achievementNumber <= 14) ||
-					achievementNumber == 52 ||
-					achievementNumber == 70 ||
-					achievementNumber == 8)
-				{
-					return AchievementCategory.Survival;
-				}
-
-				if ((achievementNumber >= 57 && achievementNumber <= 68) || achievementNumber == 71 || achievementNumber == 72)
-				{
-					return AchievementCategory.Taming;
-				}
-
-				if (achievementNumber >= 34 && achievementNumber <= 36)
-				{
-					return AchievementCategory.Healing;
-				}
-
-				if (achievementNumber == 37 || achievementNumber == 41 ||
-					achievementNumber == 42 || achievementNumber == 43)
-				{
-					return AchievementCategory.Trade;
-				}
-
-				if (achievementNumber == 69 || achievementNumber == 73) // ← NUEVO
-				{
-					return AchievementCategory.Special;
-				}
-
-				return AchievementCategory.Combat;
-			}
-
-			public static string GetCategoryName(int achievementNumber)
-			{
-				AchievementCategory category = GetCategory(achievementNumber);
-				switch (category)
-				{
-					case AchievementCategory.Combat: return LanguageControl.Get("TypesOfAchievements", 1);
-					case AchievementCategory.Survival: return LanguageControl.Get("TypesOfAchievements", 2);
-					case AchievementCategory.Taming: return LanguageControl.Get("TypesOfAchievements", 3);
-					case AchievementCategory.Healing: return LanguageControl.Get("TypesOfAchievements", 4);
-					case AchievementCategory.Trade: return LanguageControl.Get("TypesOfAchievements", 5);
-					case AchievementCategory.Special: return LanguageControl.Get("TypesOfAchievements", 6);
-					default: return LanguageControl.Get("TypesOfAchievements", 1);
-				}
+				case "Combat": return "1";
+				case "Survival": return "2";
+				case "Taming": return "3";
+				case "Healing": return "4";
+				case "Trade": return "5";
+				case "Special": return "6";
+				default: return "1";
 			}
 		}
 	}
