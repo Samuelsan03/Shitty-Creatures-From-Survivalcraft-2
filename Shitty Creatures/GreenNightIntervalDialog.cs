@@ -83,7 +83,7 @@ namespace Game
 			bool isImpossibleUnlocked = false;
 			var zombiesSpawn = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
 			if (zombiesSpawn != null)
-				isImpossibleUnlocked = zombiesSpawn.HasExtremeCompleted;
+				isImpossibleUnlocked = zombiesSpawn.HasAcceptedImpossibleChallenge;
 
 			// Construir lista filtrada de dificultades
 			m_availableDifficultyModes = new List<DifficultyMode>();
@@ -255,7 +255,7 @@ namespace Game
 			bool isImpossibleUnlocked = false;
 			var zombiesSpawn = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
 			if (zombiesSpawn != null)
-				isImpossibleUnlocked = zombiesSpawn.HasExtremeCompleted;
+				isImpossibleUnlocked = zombiesSpawn.HasAcceptedImpossibleChallenge;
 
 			if (m_tempDifficulty == DifficultyMode.Impossible && !isImpossibleUnlocked)
 				m_tempDifficulty = DifficultyMode.Normal;
