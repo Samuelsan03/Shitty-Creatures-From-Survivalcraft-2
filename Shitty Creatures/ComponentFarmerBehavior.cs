@@ -7,7 +7,9 @@ using TemplatesDatabase;
 namespace Game
 {
 	/// <summary>
-	/// Comportamiento de granjero: ara, siembra, cosecha, recolecta items/experiencia y vuelve a arar si la tierra se convierte en césped/tierra.
+	/// Comportamiento de granjero: ara, fertiliza (si tiene salitre), siembra, cosecha, recolecta items/experiencia y vuelve a arar si la tierra se convierte en césped/tierra.
+	/// Ciclo con salitre: 1. Rastrilleo → 2. Fertilizante (salitre) → 3. Semilla → repetir
+	/// Ciclo sin salitre: 1. Rastrilleo → 2. Semilla → repetir
 	/// </summary>
 	public class ComponentFarmerBehavior : ComponentBehavior, IUpdateable
 	{
@@ -625,7 +627,15 @@ namespace Game
 						}
 						else if (IsSoil(contents))
 						{
-							m_stateMachine.TransitionTo("Plant");
+							// Si tiene fertilizante, fertilizar primero antes de plantar
+							if (HasTool(typeof(SeedsBlock)) && HasFertilizer())
+							{
+								m_stateMachine.TransitionTo("FertilizeDelay");
+							}
+							else
+							{
+								m_stateMachine.TransitionTo("Plant");
+							}
 						}
 						else
 						{
@@ -711,63 +721,21 @@ namespace Game
 
 						if (IsSoil(contents) && HasTool(typeof(SeedsBlock)))
 						{
-							m_stateMachine.TransitionTo("Plant");
+							// Ciclo con salitre: Rastrilleo → Fertilizante → Semilla
+							if (HasFertilizer())
+							{
+								m_stateMachine.TransitionTo("FertilizeDelay");
+							}
+							else
+							{
+								// Ciclo sin salitre: Rastrilleo → Semilla
+								m_stateMachine.TransitionTo("Plant");
+							}
 						}
 						else
 						{
 							m_stateMachine.TransitionTo("Inactive");
 						}
-					}
-					else
-					{
-						m_stateMachine.TransitionTo("Inactive");
-					}
-				},
-				update: null,
-				leave: null
-			);
-
-			m_stateMachine.AddState("Plant",
-				enter: () =>
-				{
-					m_stateEnterTime = m_subsystemTime.GameTime;
-
-					if (m_targetCellFace == null)
-					{
-						m_stateMachine.TransitionTo("Inactive");
-						return;
-					}
-
-					if (!SwitchToSeed())
-					{
-						m_stateMachine.TransitionTo("Inactive");
-						return;
-					}
-
-					// Actualizar referencia del slot después de cambiar
-					m_lastKnownActiveSlotIndex = m_inventory.ActiveSlotIndex;
-
-					int above = m_subsystemTerrain.Terrain.GetCellContents(
-						m_targetCellFace.Value.X,
-						m_targetCellFace.Value.Y + 1,
-						m_targetCellFace.Value.Z
-					);
-					if (above != 0)
-					{
-						m_stateMachine.TransitionTo("Inactive");
-						return;
-					}
-
-					Ray3 plantRay = GetRayToBlock(m_targetCellFace.Value);
-					var result = m_componentMiner.Raycast<TerrainRaycastResult>(plantRay, RaycastMode.Interaction, true, true, true, null);
-					if (result != null && result.Value.CellFace.Face == 4 && IsSoil(Terrain.ExtractContents(result.Value.Value)))
-					{
-						m_componentMiner.Place(result.Value);
-					}
-
-					if (HasFertilizer())
-					{
-						m_stateMachine.TransitionTo("FertilizeDelay");
 					}
 					else
 					{
@@ -811,6 +779,69 @@ namespace Game
 					Ray3 fertilizeRay = GetRayToBlock(m_targetCellFace.Value);
 					m_componentMiner.Use(fertilizeRay);
 
+					// Después de fertilizar, plantar la semilla
+					if (HasTool(typeof(SeedsBlock)))
+					{
+						m_stateMachine.TransitionTo("PlantDelay");
+					}
+					else
+					{
+						m_stateMachine.TransitionTo("Inactive");
+					}
+				},
+				update: null,
+				leave: null
+			);
+
+			m_stateMachine.AddState("PlantDelay",
+				enter: () => { m_stateEnterTime = m_subsystemTime.GameTime; },
+				update: () =>
+				{
+					if (m_subsystemTime.GameTime - m_stateEnterTime > STATE_DELAY)
+						m_stateMachine.TransitionTo("Plant");
+				},
+				leave: null
+			);
+
+			m_stateMachine.AddState("Plant",
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
+
+					if (m_targetCellFace == null)
+					{
+						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
+					if (!SwitchToSeed())
+					{
+						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
+					// Actualizar referencia del slot después de cambiar
+					m_lastKnownActiveSlotIndex = m_inventory.ActiveSlotIndex;
+
+					int above = m_subsystemTerrain.Terrain.GetCellContents(
+						m_targetCellFace.Value.X,
+						m_targetCellFace.Value.Y + 1,
+						m_targetCellFace.Value.Z
+					);
+					if (above != 0)
+					{
+						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
+					Ray3 plantRay = GetRayToBlock(m_targetCellFace.Value);
+					var result = m_componentMiner.Raycast<TerrainRaycastResult>(plantRay, RaycastMode.Interaction, true, true, true, null);
+					if (result != null && result.Value.CellFace.Face == 4 && IsSoil(Terrain.ExtractContents(result.Value.Value)))
+					{
+						m_componentMiner.Place(result.Value);
+					}
+
+					// El fertilizante ya se colocó antes (si había), así que terminamos el ciclo
 					m_stateMachine.TransitionTo("Inactive");
 				},
 				update: null,
@@ -906,7 +937,15 @@ namespace Game
 						{
 							m_targetCellFace = new CellFace { X = x, Y = y - 1, Z = z, Face = 4 };
 							m_targetPosition = new Vector3(x + 0.5f, (y - 1) + 0.5f, z + 0.5f);
-							m_stateMachine.TransitionTo("Plant");
+							// Si tiene fertilizante, fertilizar el suelo antes de plantar
+							if (HasFertilizer())
+							{
+								m_stateMachine.TransitionTo("FertilizeDelay");
+							}
+							else
+							{
+								m_stateMachine.TransitionTo("Plant");
+							}
 							return;
 						}
 					}
