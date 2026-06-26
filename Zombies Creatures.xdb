@@ -10504,6 +10504,7 @@
                 <Parameter Name="WalkSpeed" Guid="a380503d-df7c-4634-b510-1ff43c972866" Value="4.2" Type="float"/>
                 <Parameter Name="LadderSpeed" Guid="f2001d24-eb64-490c-b93c-6fa7d2e7d1b2" Value="0" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="65762c48-8172-4edd-af96-d5863eae46f1" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="ec28dd44-5e9f-41d7-9a65-a77599624cda" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
             <MemberComponentTemplate Name="DeathSpawner" Guid="dba263a2-2c7f-49ad-99e2-c59b48cff3a7" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="9243affd-21be-47b4-9f71-29cf830117e2"/>
