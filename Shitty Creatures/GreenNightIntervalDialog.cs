@@ -22,6 +22,7 @@ namespace Game
 
 		private BevelledButtonWidget m_difficultyButton;
 		private LabelWidget m_difficultyDescLabel;
+		private ScrollPanelWidget m_difficultyDescScrollPanel;
 		private DifficultyMode m_currentDisplayDifficulty;
 		private DifficultyMode m_tempDifficulty;
 
@@ -111,6 +112,7 @@ namespace Game
 
 			m_difficultyButton = Children.Find<BevelledButtonWidget>("DifficultyButton", true);
 			m_difficultyDescLabel = Children.Find<LabelWidget>("DifficultyDescLabel", true);
+			m_difficultyDescScrollPanel = Children.Find<ScrollPanelWidget>("DifficultyDescScrollPanel", true);
 
 			if (m_daysButton != null)
 			{
@@ -136,6 +138,14 @@ namespace Game
 				m_difficultyButton.BevelColor = m_difficultyColors[idx];
 				m_difficultyButton.CenterColor = m_difficultyColors[idx];
 			}
+
+			// Resetear scroll al inicio cuando cambia la dificultad
+			if (m_difficultyDescScrollPanel != null)
+			{
+				m_difficultyDescScrollPanel.ScrollPosition = 0f;
+				m_difficultyDescScrollPanel.ScrollSpeed = 0f;
+			}
+
 			UpdateDifficultyDescription();
 		}
 
