@@ -321,6 +321,16 @@ namespace Game
 			m_stateMachine.AddState("Inactive",
 				enter: () =>
 				{
+					// REINICIAR TIEMPO DE ESCANEO: Evita que se quede inactivo tras perseguir/combatir
+					m_nextScanTime = 0;
+
+					if (m_componentPathfinding != null)
+					{
+						// DETENER PATHFINDING: Evita que se acerque al cuerpo muerto dejado por el comportamiento de persecución
+						m_componentPathfinding.Stop();
+						m_componentPathfinding.IsStuck = false;
+					}
+
 					if (m_farmerEnabled && HasFarmingTools())
 					{
 						m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
@@ -331,10 +341,6 @@ namespace Game
 						m_importanceLevel = 0f;
 					}
 					m_stateEnterTime = m_subsystemTime.GameTime;
-					if (m_componentPathfinding != null)
-					{
-						m_componentPathfinding.IsStuck = false;
-					}
 				},
 				update: () =>
 				{
