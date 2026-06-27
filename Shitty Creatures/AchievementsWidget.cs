@@ -39,31 +39,6 @@ namespace Game
 
 		public static string fName = "AchievementsWidget";
 
-		private static readonly HashSet<int> s_premiumAchievements = new HashSet<int>
-{
-    // Tanks y Tanks Fantasmas
-    1, 22, 23, 24,
-	5, 28, 29, 30,
-    
-    // Jefes especiales
-    15, 19, 20, 21,
-    
-    // Supervivencia extrema
-    14, 52,
-    
-    // Domesticación de jefes
-    61, 62, 63, 64,
-    
-    // Domesticación de fantasmas (acumulación épica)
-    65, 66, 67, 68,
-    
-    // Logros Special (ya marcados)
-    69, 73,
-    
-    // Evento combinado
-    70
-};
-
 		public AchievementsWidget(ComponentPlayer player)
 		{
 			m_componentPlayer = player;
@@ -153,19 +128,17 @@ namespace Game
 				int titleKey = (int)elem.Attribute("TitleKey");
 				int descKey = (int)elem.Attribute("DescriptionKey");
 				int reward = (int)elem.Attribute("Reward");
-
-				// Leer TypeOfAchievement
 				string typeOfAchievement = elem.Attribute("TypeOfAchievement")?.Value ?? "Combat";
 
-				// Leer Hidden
 				bool hidden = false;
 				XAttribute hiddenAttr = elem.Attribute("Hidden");
 				if (hiddenAttr != null && hiddenAttr.Value == "true")
 					hidden = true;
 
+				bool isPremium = elem.Attribute("IsTheAchievementPremium")?.Value == "true";
+
 				bool unlocked = AchievementsManager.IsAchievementUnlocked(m_componentPlayer, number);
 
-				// Si está oculto y no desbloqueado, omitir
 				if (hidden && !unlocked)
 					continue;
 
@@ -179,7 +152,8 @@ namespace Game
 					rewardAmount: reward,
 					unlocked: unlocked,
 					rewardClaimed: AchievementsManager.IsRewardClaimed(m_componentPlayer, number),
-					typeOfAchievement: typeOfAchievement
+					typeOfAchievement: typeOfAchievement,
+					isPremium: isPremium
 				);
 			}
 
@@ -528,7 +502,7 @@ namespace Game
 			m_needsReorder = true;
 		}
 
-		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed, string typeOfAchievement)
+		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed, string typeOfAchievement, bool isPremium)
 		{
 			var achievementContainer = new CanvasWidget
 			{
@@ -782,8 +756,8 @@ namespace Game
 				ProgressBar = progressBar,
 				StatusLabel = statusLabel,
 				PercentLabel = percentLabel,
-				TitleLabel = titleLabel,                        // <-- NUEVO
-				IsPremium = s_premiumAchievements.Contains(achievementNumber)  // <-- NUEVO
+				TitleLabel = titleLabel,
+				IsPremium = isPremium
 			};
 		}
 
