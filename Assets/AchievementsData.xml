@@ -51,8 +51,8 @@
   <Achievement Number="39" TitleKey="82" DescriptionKey="83" Reward="50"  TypeOfAchievement="Combat" />
   <Achievement Number="40" TitleKey="84" DescriptionKey="85" Reward="100" TypeOfAchievement="Combat" />
   <Achievement Number="41" TitleKey="86" DescriptionKey="87" Reward="50"  TypeOfAchievement="Trade" />
-  <Achievement Number="42" TitleKey="88" DescriptionKey="89" Reward="75"  TypeOfAchievement="Trade" />
-  <Achievement Number="43" TitleKey="90" DescriptionKey="91" Reward="150" TypeOfAchievement="Trade" />
+  <Achievement Number="42" TitleKey="88" DescriptionKey="89" Reward="75"  TypeOfAchievement="Combat" />
+  <Achievement Number="43" TitleKey="90" DescriptionKey="91" Reward="150" TypeOfAchievement="Combat" />
   <Achievement Number="44" TitleKey="92" DescriptionKey="93" Reward="15"  TypeOfAchievement="Combat" />
   <Achievement Number="45" TitleKey="94" DescriptionKey="95" Reward="30"  TypeOfAchievement="Combat" />
   <Achievement Number="46" TitleKey="96" DescriptionKey="97" Reward="60"  TypeOfAchievement="Combat" />
