@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using Engine;
 using Engine.Graphics;
 
@@ -9,36 +8,27 @@ namespace Game
 	{
 		public override void Initialize()
 		{
-			// Cargar el modelo del bate de béisbol
-			Model model = ContentManager.Get<Model>("Models/Armas De Porqueria/BaseballBat", null);
-			Matrix boneAbsoluteTransform = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh("Gun", true).ParentBone);
-
-			// Crear la malla del bloque con la transformación adecuada
-			this.m_standaloneBlockMesh.AppendModelMeshPart(
-				model.FindMesh("Gun", true).MeshParts[0],
-				boneAbsoluteTransform * Matrix.CreateTranslation(0f, -0.1f, 0f),
-				false, false, true, false, Color.White
-			);
+			int num = 47;
+			Model model = ContentManager.Get<Model>("Models/WoodenClub");
+			Matrix boneAbsoluteTransform = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh("Handle", true).ParentBone);
+			BlockMesh blockMesh = new BlockMesh();
+			blockMesh.AppendModelMeshPart(model.FindMesh("Handle", true).MeshParts[0], boneAbsoluteTransform * Matrix.CreateTranslation(0f, -0.5f, 0f), false, false, false, false, Color.White);
+			blockMesh.TransformTextureCoordinates(Matrix.CreateTranslation((float)(num % 16) / 16f, (float)(num / 16) / 16f, 0f), -1);
+			this.m_standaloneBlockMesh.AppendBlockMesh(blockMesh);
 			base.Initialize();
 		}
 
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
 		{
-			generator.GenerateShadedMeshVertices(this, x, y, z, this.m_standaloneBlockMesh, Color.White, null, null, geometry.SubsetOpaque);
 		}
 
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
-			// Dibujar el bate con un tamaño adecuado (ajustar la escala según necesidad)
-			BlocksManager.DrawMeshBlock(primitivesRenderer, this.m_standaloneBlockMesh, this.texture, color, 2.5f * size, ref matrix, environmentData);
+			BlocksManager.DrawMeshBlock(primitivesRenderer, this.m_standaloneBlockMesh, new Color(255,171,0), 2f * size, ref matrix, environmentData);
 		}
 
-		// Índice único para el bloque del bate (asegúrate de que no entre en conflicto con otros bloques)
-		public const int Index = 424;
+		public static int Index = 518;
 
-		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
-
-		// Cargar la textura del bate
-		public Texture2D texture = ContentManager.Get<Texture2D>("Textures/Armas De Mierda/BaseballBat", null);
+		public BlockMesh m_standaloneBlockMesh = new BlockMesh();
 	}
 }
