@@ -7,14 +7,14 @@
     DescriptionKey       = clave en el archivo de idioma para la descripción
     Reward               = cantidad de monedas nucleares como recompensa
     TypeOfAchievement    = tipo de logro (debe ser uno de: Combat, Survival, Taming, Healing, Trade, Special)
-                           según el enum AchievementCategory en AchievementCategory.cs
     Hidden               = (opcional) "true" para ocultar el logro hasta desbloquearlo
+    IsTheAchievementPremium = (opcional) "true" para efecto arcoíris en el título
   -->
-  <Achievement AchievementNumber="1"  TitleKey="6"  DescriptionKey="7"  Reward="50"  TypeOfAchievement="Combat" />
+  <Achievement AchievementNumber="1"  TitleKey="6"  DescriptionKey="7"  Reward="50"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
   <Achievement AchievementNumber="2"  TitleKey="8"  DescriptionKey="9"  Reward="25"  TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="3"  TitleKey="10" DescriptionKey="11" Reward="30"  TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="4"  TitleKey="12" DescriptionKey="13" Reward="30"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="5"  TitleKey="14" DescriptionKey="15" Reward="30"  TypeOfAchievement="Combat" />
+  <Achievement AchievementNumber="5"  TitleKey="14" DescriptionKey="15" Reward="30"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
   <Achievement AchievementNumber="6"  TitleKey="16" DescriptionKey="17" Reward="50"  TypeOfAchievement="Survival" />
   <Achievement AchievementNumber="7"  TitleKey="18" DescriptionKey="19" Reward="150" TypeOfAchievement="Survival" />
   <Achievement AchievementNumber="8"  TitleKey="20" DescriptionKey="21" Reward="100" TypeOfAchievement="Survival" />
@@ -23,23 +23,23 @@
   <Achievement AchievementNumber="11" TitleKey="26" DescriptionKey="27" Reward="50" TypeOfAchievement="Survival" />
   <Achievement AchievementNumber="12" TitleKey="28" DescriptionKey="29" Reward="100" TypeOfAchievement="Survival" />
   <Achievement AchievementNumber="13" TitleKey="30" DescriptionKey="31" Reward="150" TypeOfAchievement="Survival" />
-  <Achievement AchievementNumber="14" TitleKey="32" DescriptionKey="33" Reward="500" TypeOfAchievement="Survival" />
-  <Achievement AchievementNumber="15" TitleKey="34" DescriptionKey="35" Reward="75"  TypeOfAchievement="Combat" />
+  <Achievement AchievementNumber="14" TitleKey="32" DescriptionKey="33" Reward="500" TypeOfAchievement="Survival" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="15" TitleKey="34" DescriptionKey="35" Reward="75"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
   <Achievement AchievementNumber="16" TitleKey="36" DescriptionKey="37" Reward="15"  TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="17" TitleKey="38" DescriptionKey="39" Reward="30"  TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="18" TitleKey="40" DescriptionKey="41" Reward="60"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="19" TitleKey="42" DescriptionKey="43" Reward="20"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="20" TitleKey="44" DescriptionKey="45" Reward="40"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="21" TitleKey="46" DescriptionKey="47" Reward="80"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="22" TitleKey="48" DescriptionKey="49" Reward="20"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="23" TitleKey="50" DescriptionKey="51" Reward="40"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="24" TitleKey="52" DescriptionKey="53" Reward="80"  TypeOfAchievement="Combat" />
+  <Achievement AchievementNumber="19" TitleKey="42" DescriptionKey="43" Reward="20"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="20" TitleKey="44" DescriptionKey="45" Reward="40"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="21" TitleKey="46" DescriptionKey="47" Reward="80"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="22" TitleKey="48" DescriptionKey="49" Reward="20"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="23" TitleKey="50" DescriptionKey="51" Reward="40"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="24" TitleKey="52" DescriptionKey="53" Reward="80"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
   <Achievement AchievementNumber="25" TitleKey="54" DescriptionKey="55" Reward="15"  TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="26" TitleKey="56" DescriptionKey="57" Reward="30"  TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="27" TitleKey="58" DescriptionKey="59" Reward="60"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="28" TitleKey="60" DescriptionKey="61" Reward="25"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="29" TitleKey="62" DescriptionKey="63" Reward="50"  TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="30" TitleKey="64" DescriptionKey="65" Reward="100" TypeOfAchievement="Combat" />
+  <Achievement AchievementNumber="28" TitleKey="60" DescriptionKey="61" Reward="25"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="29" TitleKey="62" DescriptionKey="63" Reward="50"  TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="30" TitleKey="64" DescriptionKey="65" Reward="100" TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
   <Achievement AchievementNumber="31" TitleKey="66" DescriptionKey="67" Reward="20"  TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="32" TitleKey="68" DescriptionKey="69" Reward="40"  TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="33" TitleKey="70" DescriptionKey="71" Reward="80"  TypeOfAchievement="Combat" />
@@ -61,22 +61,22 @@
   <Achievement AchievementNumber="49" TitleKey="102" DescriptionKey="103" Reward="30" TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="50" TitleKey="104" DescriptionKey="105" Reward="60" TypeOfAchievement="Combat" />
   <Achievement AchievementNumber="51" TitleKey="106" DescriptionKey="107" Reward="100" TypeOfAchievement="Combat" />
-  <Achievement AchievementNumber="52" TitleKey="108" DescriptionKey="109" Reward="250" TypeOfAchievement="Survival" />
+  <Achievement AchievementNumber="52" TitleKey="108" DescriptionKey="109" Reward="250" TypeOfAchievement="Survival" IsTheAchievementPremium="true" />
   <Achievement AchievementNumber="57" TitleKey="110" DescriptionKey="111" Reward="25"  TypeOfAchievement="Taming" />
   <Achievement AchievementNumber="58" TitleKey="112" DescriptionKey="113" Reward="50"  TypeOfAchievement="Taming" />
   <Achievement AchievementNumber="59" TitleKey="114" DescriptionKey="115" Reward="100" TypeOfAchievement="Taming" />
   <Achievement AchievementNumber="60" TitleKey="116" DescriptionKey="117" Reward="200" TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="61" TitleKey="118" DescriptionKey="119" Reward="50"  TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="62" TitleKey="120" DescriptionKey="121" Reward="100" TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="63" TitleKey="122" DescriptionKey="123" Reward="200" TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="64" TitleKey="124" DescriptionKey="125" Reward="400" TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="65" TitleKey="126" DescriptionKey="127" Reward="30"  TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="66" TitleKey="128" DescriptionKey="129" Reward="60"  TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="67" TitleKey="130" DescriptionKey="131" Reward="120" TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="68" TitleKey="132" DescriptionKey="133" Reward="250" TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="69" TitleKey="134" DescriptionKey="135" Reward="1000" TypeOfAchievement="Special" />
-  <Achievement AchievementNumber="70" TitleKey="136" DescriptionKey="137" Reward="1000" TypeOfAchievement="Survival" />
+  <Achievement AchievementNumber="61" TitleKey="118" DescriptionKey="119" Reward="50"  TypeOfAchievement="Taming" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="62" TitleKey="120" DescriptionKey="121" Reward="100" TypeOfAchievement="Taming" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="63" TitleKey="122" DescriptionKey="123" Reward="200" TypeOfAchievement="Taming" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="64" TitleKey="124" DescriptionKey="125" Reward="400" TypeOfAchievement="Taming" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="65" TitleKey="126" DescriptionKey="127" Reward="30"  TypeOfAchievement="Taming" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="66" TitleKey="128" DescriptionKey="129" Reward="60"  TypeOfAchievement="Taming" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="67" TitleKey="130" DescriptionKey="131" Reward="120" TypeOfAchievement="Taming" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="68" TitleKey="132" DescriptionKey="133" Reward="250" TypeOfAchievement="Taming" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="69" TitleKey="134" DescriptionKey="135" Reward="1000" TypeOfAchievement="Special" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="70" TitleKey="136" DescriptionKey="137" Reward="1000" TypeOfAchievement="Survival" IsTheAchievementPremium="true" />
   <Achievement AchievementNumber="71" TitleKey="138" DescriptionKey="139" Reward="100"  TypeOfAchievement="Taming" />
   <Achievement AchievementNumber="72" TitleKey="140" DescriptionKey="141" Reward="500"  TypeOfAchievement="Taming" />
-  <Achievement AchievementNumber="73" TitleKey="142" DescriptionKey="143" Reward="500"  TypeOfAchievement="Special" Hidden="true" />
+  <Achievement AchievementNumber="73" TitleKey="142" DescriptionKey="143" Reward="500"  TypeOfAchievement="Special" Hidden="true" IsTheAchievementPremium="true" />
 </AchievementsData>
