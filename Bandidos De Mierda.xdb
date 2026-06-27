@@ -101,7 +101,7 @@
     <MemberComponentTemplate Name="Health" Guid="4c74a370-d94c-4b37-8b90-6ce93af9f2ca">
         <Parameter Name="AttackResilience" Guid="be596ee1-60e7-46c9-97d1-2418d27d8bb1" Value="300" Type="float"/>
         <Parameter Name="FireResilience" Guid="3e36fbc3-f527-4392-91a4-addf900581b9" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="d3586183-9262-47ce-a825-f7d13d4f507b" Value="300" Type="float"/>
+        <Parameter Name="FallResilience" Guid="d3586183-9262-47ce-a825-f7d13d4f507b" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="ff37106c-da69-47f7-a927-6cc22a623120">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -218,7 +218,7 @@
     <MemberComponentTemplate Name="Health" Guid="023e4070-8810-4a89-ba2a-99633849270b">
         <Parameter Name="AttackResilience" Guid="df55677f-f275-4d03-b267-48d98d8c26a4" Value="350" Type="float"/>
         <Parameter Name="FireResilience" Guid="948f89eb-3d59-43ff-bcf3-4918fe8c6746" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="8c73478b-8991-41c1-9753-3e52d2fa5c50" Value="300" Type="float"/>
+        <Parameter Name="FallResilience" Guid="8c73478b-8991-41c1-9753-3e52d2fa5c50" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="75e2c1dc-2c09-4096-9ca9-2101582fd8f2">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -289,7 +289,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="4658c243-8d1b-4a27-abb1-0809ac9262d7">
               <Parameter Name="AttackResilience" Guid="794c9c02-3d9c-40ec-bb4d-885a51947e4b" Value="400" Type="float" />
-              <Parameter Name="FallResilience" Guid="671e6616-1c0a-4639-b30e-c53db0fc7f16" Value="5.5" Type="float" />
+              <Parameter Name="FallResilience" Guid="671e6616-1c0a-4639-b30e-c53db0fc7f16" Value="5" Type="float" />
               <Parameter Name="FireResilience" Guid="acef797f-6827-48ec-8f60-ea1e6424c9fb" Value="15" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="8469ade4-2f31-4211-8495-2d9a553b287a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
@@ -464,7 +464,7 @@
     <MemberComponentTemplate Name="Health" Guid="640c370b-554f-482b-b2b0-1c5d4e6f20b9">
         <Parameter Name="AttackResilience" Guid="4b1c7aa5-b8b3-43f7-ad20-b7544d7d8119" Value="360" Type="float"/>
         <Parameter Name="FireResilience" Guid="bfeb00a6-c0db-4dc2-bdfc-2e3de059e191" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="b70226fa-57f8-4a34-bc46-d24ce4094425" Value="330" Type="float"/>
+        <Parameter Name="FallResilience" Guid="b70226fa-57f8-4a34-bc46-d24ce4094425" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="0b45a6f1-7139-4de5-9d71-9dcdff2fbccb">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -593,7 +593,7 @@
     <MemberComponentTemplate Name="Health" Guid="8e830bbc-2d8a-47b9-bc4e-5809cdd3dd44">
         <Parameter Name="AttackResilience" Guid="9bde8f9d-4b1d-4588-b951-d55999f6fa72" Value="460" Type="float"/>
         <Parameter Name="FireResilience" Guid="1487efba-1d90-4cd1-8d92-dacad8777370" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="71ccaec3-0430-4e2b-8dff-95b347db9d8f" Value="330" Type="float"/>
+        <Parameter Name="FallResilience" Guid="71ccaec3-0430-4e2b-8dff-95b347db9d8f" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="1348d75e-560c-4f19-ac9f-876784e06ed7">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -722,7 +722,7 @@
     <MemberComponentTemplate Name="Health" Guid="a0f32a59-202d-4816-9cdc-901f5090485a">
         <Parameter Name="AttackResilience" Guid="cd92cb17-79ac-4653-b990-c48d669f9ad2" Value="460" Type="float"/>
         <Parameter Name="FireResilience" Guid="8e2ea922-6aab-41a4-b6db-f92ed0c7575f" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="1e026992-8094-4a9b-a522-9d62e0e3f483" Value="330" Type="float"/>
+        <Parameter Name="FallResilience" Guid="1e026992-8094-4a9b-a522-9d62e0e3f483" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="1254dbcc-4947-4db3-873a-16ed67fc21f7">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -873,7 +873,7 @@
     <MemberComponentTemplate Name="Health" Guid="c322e6c0-c3b7-44a8-8544-c7415fa132c5">
         <Parameter Name="AttackResilience" Guid="85e20cb6-ee69-4672-8fef-19e4ff49863b" Value="490" Type="float"/>
         <Parameter Name="FireResilience" Guid="01455ec0-452f-49c4-86c0-0eaf8276faa1" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="195636fc-aac6-4aa0-9efa-7d04042bf052" Value="390" Type="float"/>
+        <Parameter Name="FallResilience" Guid="195636fc-aac6-4aa0-9efa-7d04042bf052" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="e7409728-39bd-4239-ba95-15aa00eaf091">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -905,7 +905,7 @@
   <Parameter Name="MaxHelpChaseTime" Type="float" Value="60" Guid="9860e933-9353-425d-97ea-1b300c5be47b"/>
   <Parameter Name="AvoidAttackingSameHerd" Type="bool" Value="true" Guid="976dc238-74b9-4295-afce-05a5ba9d6617"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FarmerBehavior" Guid="37adb22c-be88-491f-a0d5-304364294d5c" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
+<MemberComponentTemplate Name="FarmerBehavior" Guid="24fd8adf-c04d-4a49-aa2a-a6dffb1cbf30" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
     <ParameterSet Name="CreatureEggData" Guid="7384e8b9-2c18-48c7-a674-e7feef1b21de">
         <Parameter Name="Color" Guid="93948618-1146-4312-b7a8-81c9e6f415d9" Value="176,115,115" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="803c66f2-fab5-4f36-9f0a-b3802085010a" Value="170" Type="int"/>
@@ -1004,7 +1004,7 @@
     <MemberComponentTemplate Name="Health" Guid="c182f1dc-d7dc-4e58-af01-885d0df9abf0">
         <Parameter Name="AttackResilience" Guid="3ce84e94-741e-47ff-9cd0-ec07f36d7728" Value="450" Type="float"/>
         <Parameter Name="FireResilience" Guid="35ea764b-2e50-47e0-997b-d32e8e69145d" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="6135b338-89c9-48a8-bb3d-3380accbf58e" Value="300" Type="float"/>
+        <Parameter Name="FallResilience" Guid="6135b338-89c9-48a8-bb3d-3380accbf58e" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="96b0b8a5-afc1-445b-a123-3e495911e700">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1133,7 +1133,7 @@
     <MemberComponentTemplate Name="Health" Guid="c754c23f-558a-4f0a-82c1-20eac9a1b5ff">
         <Parameter Name="AttackResilience" Guid="2a5edd22-d2a2-426a-b2b8-b926c27c5ff7" Value="450" Type="float"/>
         <Parameter Name="FireResilience" Guid="29bcaa06-161d-4f95-863d-84ee09d465ef" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="54bf950f-3d41-4008-a04a-1bd9c4823754" Value="300" Type="float"/>
+        <Parameter Name="FallResilience" Guid="54bf950f-3d41-4008-a04a-1bd9c4823754" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="fd1c7492-dc55-469b-82b9-9c2d4fcbe0a1">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1262,7 +1262,7 @@
     <MemberComponentTemplate Name="Health" Guid="95c99e27-f599-42f9-b94a-699ac912f07f">
         <Parameter Name="AttackResilience" Guid="c50ea7fa-2f54-4e62-9894-274ecb9ca3d0" Value="450" Type="float"/>
         <Parameter Name="FireResilience" Guid="aea0e8f2-b64b-4ae0-98d2-0609fce42173" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="8e7cc441-fd69-4dfe-91bc-97644cd479d9" Value="300" Type="float"/>
+        <Parameter Name="FallResilience" Guid="8e7cc441-fd69-4dfe-91bc-97644cd479d9" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="47c0fd53-df3e-4352-a51c-3688b4b4835f">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1413,7 +1413,7 @@
     <MemberComponentTemplate Name="Health" Guid="546765c0-f2d6-4b5e-92de-3c5cdd1ae7b0">
         <Parameter Name="AttackResilience" Guid="11bb5ac5-1743-42bc-b7b8-5b1c70c835b8" Value="490" Type="float"/>
         <Parameter Name="FireResilience" Guid="1b831578-15e6-49dc-8844-778634339f42" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="636c6b2c-812f-4dda-94b2-7db8d6eef8a7" Value="390" Type="float"/>
+        <Parameter Name="FallResilience" Guid="636c6b2c-812f-4dda-94b2-7db8d6eef8a7" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="0311f32c-9885-40e7-a231-6d6d29249db0">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1566,7 +1566,7 @@
     <MemberComponentTemplate Name="Health" Guid="d86a9680-46ee-4083-ae70-cbbedead4322">
         <Parameter Name="AttackResilience" Guid="fcbfbcd5-97e4-407f-9cea-1878f8ccc94f" Value="490" Type="float"/>
         <Parameter Name="FireResilience" Guid="3afc4883-48dc-4a6e-932d-74fdca270411" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="8d88e377-a92a-4edf-b139-3530a9d3a48d" Value="390" Type="float"/>
+        <Parameter Name="FallResilience" Guid="8d88e377-a92a-4edf-b139-3530a9d3a48d" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="4b545a2b-3b5f-4633-a503-f1678bce68d7">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1697,7 +1697,7 @@
     <MemberComponentTemplate Name="Health" Guid="3c6e707b-15ec-4423-be83-e8824479ea25">
         <Parameter Name="AttackResilience" Guid="d6b63c74-b2aa-40e0-8602-66ff237ff8ea" Value="450" Type="float"/>
         <Parameter Name="FireResilience" Guid="455ce66e-419c-496f-b08a-c60549969200" Value="300" Type="float"/>
-        <Parameter Name="FallResilience" Guid="7860beb6-8c18-43ac-a5be-ded991dd3a41" Value="300" Type="float"/>
+        <Parameter Name="FallResilience" Guid="7860beb6-8c18-43ac-a5be-ded991dd3a41" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="38659b54-37a5-4d3d-bdb6-ce94054fedc5">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1826,7 +1826,7 @@
     <MemberComponentTemplate Name="Health" Guid="d24e09a7-df38-49f2-9115-67cf40ffe87f">
         <Parameter Name="AttackResilience" Guid="12430de8-b4a9-4853-849b-3c88ecad7023" Value="450" Type="float"/>
         <Parameter Name="FireResilience" Guid="c4c01d84-a28f-4f39-8115-923bf9af4b68" Value="300" Type="float"/>
-        <Parameter Name="FallResilience" Guid="03ee1cfc-ea20-4b8a-9798-71406e816311" Value="300" Type="float"/>
+        <Parameter Name="FallResilience" Guid="03ee1cfc-ea20-4b8a-9798-71406e816311" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="fbee40f1-ec3e-4364-bd8a-e25c43b6a4d3">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1906,6 +1906,7 @@
     <ParameterSet Name="CreatureItems">
         <ParameterSet Name="Bandit15">
           <Parameter Name="BK43Block" Value="1" Type="int" /> <!-- Tiene puesto su BK 43-->
+          <Parameter Name="BaseballBatBlock" Value="1" Type="int" />
         </ParameterSet>
       </ParameterSet>
 </MemberComponentTemplate>
@@ -1955,7 +1956,7 @@
     <MemberComponentTemplate Name="Health" Guid="831fa913-4be8-4daf-a7d0-e10b4f009c73">
         <Parameter Name="AttackResilience" Guid="af5db9c4-65d3-4716-ad6a-845ddcd5fd0f" Value="450" Type="float"/>
         <Parameter Name="FireResilience" Guid="ca9fb541-9198-4bbb-8644-c8ce62e42ac2" Value="300" Type="float"/>
-        <Parameter Name="FallResilience" Guid="811ac125-f7c7-4dd5-9d74-abee5d55c8cf" Value="300" Type="float"/>
+        <Parameter Name="FallResilience" Guid="811ac125-f7c7-4dd5-9d74-abee5d55c8cf" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="69957def-c702-41ab-b2a6-583535d5dbf7">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
