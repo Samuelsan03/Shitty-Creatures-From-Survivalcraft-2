@@ -1007,6 +1007,7 @@ namespace Game
 				Vector3 direction = Vector3.Normalize(targetPosition - shootPosition);
 				Vector3 rightVector = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
 				Vector3 upVector = Vector3.Normalize(Vector3.Cross(direction, rightVector));
+
 				for (int i = 0; i < config.ProjectilesPerShot; i++)
 				{
 					Vector3 spread = m_random.Float(-config.SpreadVector.X, config.SpreadVector.X) * rightVector +
@@ -1017,20 +1018,24 @@ namespace Game
 					m_subsystemProjectiles.FireProjectile(bulletValue, shootPosition, config.BulletSpeed * (direction + spread), Vector3.Zero, m_componentCreature);
 				}
 
-				// Partículas de fuego detrás del cuerpo (en la espalda/torso)
-				Vector3 bodyForward = m_componentCreature.ComponentBody.Matrix.Forward;
-				Vector3 bodyUp = m_componentCreature.ComponentBody.Matrix.Up;
-				float torsoHeight = m_componentCreature.ComponentBody.BoxSize.Y * 0.7f; // Altura aproximada del torso
+				// ============================================================
+				// 1. PARTÍCULAS DE LA ESPALDA - ELIMINADAS (ya no están aquí)
+				// ============================================================
 
-				Vector3 particlePosition = m_componentCreature.ComponentBody.Position + (bodyUp * torsoHeight) - (bodyForward * 0.3f);
+				// ============================================================
+				// 2. PARTÍCULAS DE LA BOCA DEL CAÑÓN - SE MANTIENEN
+				// ============================================================
 				if (m_subsystemParticles != null && m_subsystemTerrain != null)
 				{
-					m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(m_subsystemTerrain, particlePosition, -bodyForward), false);
+					m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(m_subsystemTerrain, muzzlePos + dirNorm * 0.5f, dirNorm), false);
 				}
+
+				// Ruido
 				if (m_subsystemNoise != null)
 				{
 					m_subsystemNoise.MakeNoise(shootPosition, 0.8f, config.NoiseRadius);
 				}
+
 				float pitchVariation = m_random.Float(-0.1f, 0.1f);
 				if (config.IsSniper)
 				{
@@ -1038,7 +1043,7 @@ namespace Game
 				}
 				m_subsystemAudio.PlaySound(config.ShootSound, SoundVolume, pitchVariation, shootPosition, SoundRange, true);
 
-				// Reproducir sonido de ataque/enojado al disparar
+				// Sonido de ataque
 				if (m_componentCreatureSounds != null)
 				{
 					m_componentCreatureSounds.PlayAttackSound();
