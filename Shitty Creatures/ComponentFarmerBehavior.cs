@@ -61,6 +61,7 @@ namespace Game
 		private bool m_hasFarmAreaCenter;
 
 		private bool m_stateMachineBuilt;
+		private bool m_initialized; // <--- NUEVO: indica si ya se puede usar ComponentPathfinding
 
 		// Para detectar cuando se cambió el slot activo externamente (ej. por combate)
 		private int m_lastKnownActiveSlotIndex = -1;
@@ -83,11 +84,12 @@ namespace Game
 
 					if (!value)
 					{
-						if (m_stateMachineBuilt)
+						// Solo transicionar si la máquina de estados ya está construida y estamos inicializados
+						if (m_stateMachineBuilt && m_initialized)
 						{
 							m_stateMachine.TransitionTo("Inactive");
 						}
-						if (m_componentPathfinding != null)
+						if (m_componentPathfinding != null && m_initialized)
 						{
 							m_componentPathfinding.Stop();
 							m_componentPathfinding.IsStuck = false;
@@ -151,7 +153,11 @@ namespace Game
 
 			BuildStateMachine();
 			m_stateMachineBuilt = true;
-			m_stateMachine.TransitionTo("Inactive");
+
+			// NO transicionar a "Inactive" aquí - esperar a que todos los componentes estén cargados
+			// m_stateMachine.TransitionTo("Inactive");  // <--- ELIMINADO
+
+			m_initialized = false; // <--- NUEVO: aún no estamos listos
 		}
 
 		private bool HasFarmingTools()
@@ -321,12 +327,12 @@ namespace Game
 			m_stateMachine.AddState("Inactive",
 				enter: () =>
 				{
-					// REINICIAR TIEMPO DE ESCANEO: Evita que se quede inactivo tras perseguir/combatir
+					// REINICIAR TIEMPO DE ESCANEO
 					m_nextScanTime = 0;
 
-					if (m_componentPathfinding != null)
+					// Detener pathfinding solo si estamos inicializados
+					if (m_componentPathfinding != null && m_initialized)
 					{
-						// DETENER PATHFINDING: Evita que se acerque al cuerpo muerto dejado por el comportamiento de persecución
 						m_componentPathfinding.Stop();
 						m_componentPathfinding.IsStuck = false;
 					}
@@ -400,7 +406,7 @@ namespace Game
 
 					EnsureFarmingToolEquipped();
 
-					if (m_componentPathfinding != null)
+					if (m_componentPathfinding != null && m_initialized)
 					{
 						m_componentPathfinding.IsStuck = false;
 
@@ -421,7 +427,7 @@ namespace Game
 				{
 					if (!m_farmerEnabled)
 					{
-						if (m_componentPathfinding != null)
+						if (m_componentPathfinding != null && m_initialized)
 							m_componentPathfinding.Stop();
 						m_stateMachine.TransitionTo("Inactive");
 						return;
@@ -440,7 +446,7 @@ namespace Game
 						return;
 					}
 
-					if (m_componentPathfinding != null && m_componentPathfinding.IsStuck)
+					if (m_componentPathfinding != null && m_initialized && m_componentPathfinding.IsStuck)
 					{
 						m_blockedCount++;
 						if (m_blockedCount > 5)
@@ -473,7 +479,7 @@ namespace Game
 					m_stateEnterTime = m_subsystemTime.GameTime;
 					m_blockedCount = 0;
 					m_importanceLevel = 10f;
-					if (m_componentPathfinding != null)
+					if (m_componentPathfinding != null && m_initialized)
 					{
 						m_componentPathfinding.IsStuck = false;
 						m_componentPathfinding.SetDestination(
@@ -492,7 +498,7 @@ namespace Game
 				{
 					if (!m_farmerEnabled)
 					{
-						if (m_componentPathfinding != null)
+						if (m_componentPathfinding != null && m_initialized)
 							m_componentPathfinding.Stop();
 						m_stateMachine.TransitionTo("Inactive");
 						return;
@@ -500,7 +506,7 @@ namespace Game
 
 					if (IsTooFarFromArea())
 					{
-						if (m_componentPathfinding != null)
+						if (m_componentPathfinding != null && m_initialized)
 							m_componentPathfinding.Stop();
 						m_stateMachine.TransitionTo("ReturnToArea");
 						return;
@@ -559,7 +565,7 @@ namespace Game
 							m_stateMachine.TransitionTo("Inactive");
 						}
 					}
-					else if (m_componentPathfinding != null && m_componentPathfinding.IsStuck)
+					else if (m_componentPathfinding != null && m_initialized && m_componentPathfinding.IsStuck)
 					{
 						m_blockedCount++;
 						if (m_blockedCount > 3)
@@ -1140,6 +1146,13 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			// Primera actualización: ahora todos los componentes están cargados, transicionamos a Inactive
+			if (!m_initialized && m_stateMachineBuilt)
+			{
+				m_initialized = true;
+				m_stateMachine.TransitionTo("Inactive");
+			}
+
 			m_stateMachine.Update();
 		}
 
