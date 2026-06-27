@@ -39,6 +39,31 @@ namespace Game
 
 		public static string fName = "AchievementsWidget";
 
+		private static readonly HashSet<int> s_premiumAchievements = new HashSet<int>
+{
+    // Tanks y Tanks Fantasmas
+    1, 22, 23, 24,
+	5, 28, 29, 30,
+    
+    // Jefes especiales
+    15, 19, 20, 21,
+    
+    // Supervivencia extrema
+    14, 52,
+    
+    // Domesticación de jefes
+    61, 62, 63, 64,
+    
+    // Domesticación de fantasmas (acumulación épica)
+    65, 66, 67, 68,
+    
+    // Logros Special (ya marcados)
+    69, 73,
+    
+    // Evento combinado
+    70
+};
+
 		public AchievementsWidget(ComponentPlayer player)
 		{
 			m_componentPlayer = player;
@@ -756,7 +781,9 @@ namespace Game
 				ClaimButton = claimButton,
 				ProgressBar = progressBar,
 				StatusLabel = statusLabel,
-				PercentLabel = percentLabel
+				PercentLabel = percentLabel,
+				TitleLabel = titleLabel,                        // <-- NUEVO
+				IsPremium = s_premiumAchievements.Contains(achievementNumber)  // <-- NUEVO
 			};
 		}
 
@@ -871,6 +898,21 @@ namespace Game
 				m_needsReorder = false;
 			}
 
+			// === EFECTO ARCOÍRIS PARA LOGROS PREMIUM ===
+			float hue = (float)((Time.RealTime * 30.0) % 360.0);
+			Vector3 rainbowRgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
+			Color rainbowColor = new Color(rainbowRgb);
+
+			foreach (var kvp in m_achievementItems)
+			{
+				var itemData = kvp.Value;
+				if (itemData.IsPremium && itemData.TitleLabel != null)
+				{
+					// El arcoíris se aplica SIEMPRE, esté desbloqueado o no
+					itemData.TitleLabel.Color = rainbowColor;
+				}
+			}
+
 			if (m_closeButton.IsClicked)
 			{
 				AchievementsManager.OnInfectedCounterChanged -= OnInfectedCounterChanged;
@@ -979,6 +1021,8 @@ namespace Game
 			public ProgressBarWidget ProgressBar;
 			public LabelWidget StatusLabel;
 			public LabelWidget PercentLabel;
+			public LabelWidget TitleLabel;          // <-- NUEVO
+			public bool IsPremium;                  // <-- NUEVO
 		}
 
 		private bool IsProgressBarAchievement(int number)
