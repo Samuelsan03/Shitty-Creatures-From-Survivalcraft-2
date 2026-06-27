@@ -59,7 +59,7 @@ namespace Game
 				}
 				foreach (XElement elem in achievementsXml.Elements("Achievement"))
 				{
-					int number = (int)elem.Attribute("Number");
+					int number = (int)elem.Attribute("AchievementNumber");
 					int reward = (int)elem.Attribute("Reward");
 					s_achievementRewards[number] = reward;
 				}
