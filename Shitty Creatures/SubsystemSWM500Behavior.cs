@@ -147,7 +147,7 @@ namespace Game
 								Vector3.Normalize(componentMiner.ComponentPlayer.GameWidget.ActiveCamera.ViewDirection);
 								componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
 								this.m_subsystemAudio.PlaySound(name, 1.5f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
-								this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(vector + 0.3f * vector2, vector2, 10f), false);
+								this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(this.m_subsystemTerrain, vector + 0.3f * vector2, vector2), false);
 								this.m_subsystemNoise.MakeNoise(vector, 1f, 40f);
 							}
 							else
