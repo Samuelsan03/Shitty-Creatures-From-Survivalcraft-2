@@ -23,6 +23,7 @@ namespace Game
 
 		private SubsystemTime m_subsystemTime;
 		private SubsystemPickables m_subsystemPickables;
+		private SubsystemAudio m_subsystemAudio;
 		private ComponentCreature m_componentCreature;
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentMiner m_componentMiner;
@@ -94,6 +95,7 @@ namespace Game
 
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemPickables = base.Project.FindSubsystem<SubsystemPickables>(true);
+			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
@@ -323,6 +325,9 @@ namespace Game
 				inventory.AddSlotItems(slotIndex, value, count);
 				pickable.ToRemove = true;
 
+				// Reproducir sonido de recolección (igual que ComponentPickableGathererPlayer)
+				m_subsystemAudio.PlaySound("Audio/PickableCollected", 3.0f, -0.4f, m_componentCreature.ComponentBody.Position, 2f, false);
+
 				if (m_componentCreature is ComponentPlayer player)
 				{
 					// player.PlayerStats.ItemsCollected++;
@@ -522,97 +527,127 @@ namespace Game
 				leave: null
 			);
 
-			m_stateMachine.AddState("Collect",
-				enter: () =>
-				{
-					m_collectTime = m_random.Float(0.5f, 0.5f);
-					m_blockedTime = 0f;
-				},
-				update: () =>
-				{
-					if (IsAnyChaseActive)
-					{
-						m_stateMachine.TransitionTo("Inactive");
-						m_importanceLevel = 0f;
-						return;
-					}
+			            m_stateMachine.AddState("Collect",
+                enter: () =>
+                {
+                    m_collectTime = m_random.Float(0.5f, 0.5f);
+                    m_blockedTime = 0f;
+                },
+                update: () =>
+                {
+                    if (IsAnyChaseActive)
+                    {
+                        m_stateMachine.TransitionTo("Inactive");
+                        m_importanceLevel = 0f;
+                        return;
+                    }
 
-					if (!IsActive)
-					{
-						m_stateMachine.TransitionTo("Inactive");
-						return;
-					}
+                    if (!IsActive)
+                    {
+                        m_stateMachine.TransitionTo("Inactive");
+                        return;
+                    }
 
-					if (m_targetPickable == null)
-					{
-						m_importanceLevel = 0f;
-						m_stateMachine.TransitionTo("Inactive");
-						return;
-					}
+                    if (m_targetPickable == null)
+                    {
+                        m_importanceLevel = 0f;
+                        m_stateMachine.TransitionTo("Inactive");
+                        return;
+                    }
 
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetPos = m_targetPickable.Position;
-					float distSq = Vector3.DistanceSquared(
-						new Vector3(eyePos.X, m_componentCreature.ComponentBody.Position.Y, eyePos.Z),
-						targetPos
-					);
+                    Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+                    Vector3 targetPos = m_targetPickable.Position;
+                    
+                    // Distancia horizontal ignorando la diferencia de altura exacta de los ojos
+                    float distSq = Vector3.DistanceSquared(
+                        new Vector3(eyePos.X, m_componentCreature.ComponentBody.Position.Y, eyePos.Z),
+                        targetPos
+                    );
 
-					if (distSq < 0.64f)
-					{
-						m_collectTime -= m_subsystemTime.GameTimeDelta;
-						m_blockedTime = 0f;
+					// === NUEVA LÓGICA DE MIRA (FIELD OF VIEW) ===
+					Vector3 forward = Vector3.Transform(-Vector3.UnitZ, m_componentCreature.ComponentCreatureModel.EyeRotation);
+					Vector3 toTarget = targetPos - eyePos;
+                    float distanceToTarget = MathF.Sqrt(distSq > 0f ? distSq : 0f);
+                    
+                    if (distanceToTarget > 0.001f)
+                    {
+                        toTarget /= distanceToTarget; // Normalizar
+                    }
+                    else
+                    {
+                        toTarget = forward; // Si está exactamente encima, asumir que mira hacia adelante
+                    }
 
-						if (m_collectTime <= 0f)
-						{
-							CollectPickable(m_targetPickable);
-							m_importanceLevel = 0f;
-							m_stateMachine.TransitionTo("Inactive");
-						}
-					}
-					else
-					{
-						float eyeOffset = Vector3.Distance(
-							m_componentCreature.ComponentCreatureModel.EyePosition,
-							m_componentCreature.ComponentBody.Position
-						);
+                    float dot = Vector3.Dot(forward, toTarget);
+                    float angle = MathF.Acos(MathUtils.Clamp(dot, -1f, 1f));
+                    float maxVisionAngle = MathUtils.DegToRad(60f); // 60 grados de visión
 
-						m_componentPathfinding.SetDestination(
-							new Vector3?(m_targetPickable.Position),
-							0.3f,
-							0.5f + eyeOffset,
-							0,
-							false, true, false, null
-						);
+                    // Si el objeto NO está en su mira, volver a moverse para girar
+                    if (angle > maxVisionAngle)
+                    {
+                        m_stateMachine.TransitionTo("Move");
+                        return;
+                    }
+                    // === FIN LÓGICA DE MIRA ===
 
-						m_blockedTime += m_subsystemTime.GameTimeDelta;
+                    // Si está en la mira Y lo suficientemente cerca, recolectar
+                    if (distSq < 0.64f) // ~0.8 bloques de distancia
+                    {
+                        m_collectTime -= m_subsystemTime.GameTimeDelta;
+                        m_blockedTime = 0f;
 
-						if (m_blockedTime > 3f)
-						{
-							m_blockedCount++;
-							if (m_blockedCount >= 3)
-							{
-								m_importanceLevel = 0f;
-								m_stateMachine.TransitionTo("Inactive");
-							}
-							else
-							{
-								m_stateMachine.TransitionTo("Move");
-							}
-						}
-					}
+                        if (m_collectTime <= 0f)
+                        {
+                            CollectPickable(m_targetPickable);
+                            m_importanceLevel = 0f;
+                            m_stateMachine.TransitionTo("Inactive");
+                        }
+                    }
+                    else
+                    {
+                        // Está en la mira pero demasiado lejos, dar un pasito más
+                        float eyeOffset = Vector3.Distance(
+                            m_componentCreature.ComponentCreatureModel.EyePosition,
+                            m_componentCreature.ComponentBody.Position
+                        );
 
-					if (m_targetPickable != null)
-					{
-						m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(m_targetPickable.Position);
-					}
+                        m_componentPathfinding.SetDestination(
+                            new Vector3?(m_targetPickable.Position),
+                            0.3f,
+                            0.5f + eyeOffset,
+                            0,
+                            false, true, false, null
+                        );
 
-					if (m_random.Float(0f, 1f) < 0.1f * m_subsystemTime.GameTimeDelta)
-					{
-						m_componentCreature.ComponentCreatureSounds?.PlayIdleSound(true);
-					}
-				},
-				leave: null
-			);
+                        m_blockedTime += m_subsystemTime.GameTimeDelta;
+
+                        if (m_blockedTime > 3f)
+                        {
+                            m_blockedCount++;
+                            if (m_blockedCount >= 3)
+                            {
+                                m_importanceLevel = 0f;
+                                m_stateMachine.TransitionTo("Inactive");
+                            }
+                            else
+                            {
+                                m_stateMachine.TransitionTo("Move");
+                            }
+                        }
+                    }
+
+                    if (m_targetPickable != null)
+                    {
+                        m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(m_targetPickable.Position);
+                    }
+
+                    if (m_random.Float(0f, 1f) < 0.1f * m_subsystemTime.GameTimeDelta)
+                    {
+                        m_componentCreature.ComponentCreatureSounds?.PlayIdleSound(true);
+                    }
+                },
+                leave: null
+            );
 		}
 
 		private bool IsActive => m_importanceLevel > 0f && m_targetPickable != null && !m_targetPickable.ToRemove;
