@@ -200,12 +200,12 @@
 },
 "TypesOfAchievements": {
     "0": "Tipo",
-    "1": "Asesinato en masa",
-    "2": "Sobrevivir es ganar",
-    "3": "Esclavitud animal",
-    "4": "Enfermero de pobres",
-    "5": "Negocios sucios",
-    "6": "El elegido"
+    "1": "Crímenes de Guerra",
+    "2": "Sobreviviente por Accidente",
+    "3": "Síndrome de Estocolmo Animal",
+    "4": "Médico sin Licencia",
+    "5": "Capitalismo Salvaje",
+    "6": "Problemas Psicológicos"
 },
   "BaseWatermelonBlock": {
     "1": "Sandía",
@@ -1521,19 +1521,19 @@
 },
 "GreenNightDifficulty": {
     "VeryEasy_Name": "Jubilación Anticipada",
-    "VeryEasy_Desc": "Los infectados pidieron la jubilación y nadie les dijo que no.\nLlegan tarde, se quejan del frío y rompen bloques por error.\nSu mayor agresividad es pedirte la hora.\n(Apenas aparecen, no rompen, huyen al verte, daño testimonial.)",
+    "VeryEasy_Desc": "Modo 'abuelo contra el mundo'. Los infectados te miran con lástima y sus ataques son más un masaje que un golpe. No tocan tus construcciones, no saben montar ni un potrillo y sus explosiones son tan decepcionantes como un petardo mojado. Puedes construir tu imperio sin miedo. Perfecto para los que quieren sentirse invencibles sin esforzarse.",
     "Easy_Name": "Lista de Espera para Terapia",
-    "Easy_Desc": "Los infectados traen flores, no balas.\nTropiezan con sus propios pies.\nTu mayor amenaza es el aburrimiento.\n(Todavía casi no rompen nada, apenas se multiplican y huyen rápido.)",
+    "Easy_Desc": "Un paseo por el parque, aunque el parque esté lleno de bichos con problemas de ira. Todavía respetan tus paredes, pero sus golpes ya empiezan a doler de verdad. Las explosiones se sienten pero no arrasan, y los infectados son tan torpes que ni recuerdan cómo se abren las puertas. Ideal para calentar antes de que la vida te golpee.",
     "Normal_Name": "Lunes por la Mañana",
-    "Normal_Desc": "Los infectados se han leído el manual.\nLlegan puntuales y devuelven los golpes.\nNada personal: simplemente odian tu sonrisa.\n(Apariciones estándar, agresividad normal, sin flanqueos.)",
+    "Normal_Desc": "La rutina del superviviente promedio. Golpes que duelen lo justo, resistencia normalita, sin roturas, sin monturas, sin sorpresas. Las explosiones son las de siempre: llamativas pero controlables. Tu base está a salvo… por ahora. Piensa que es un día cualquiera, antes de que tu jefe (el apocalipsis) te ponga a prueba.",
     "Medium_Name": "Daño Estructural",
-    "Medium_Desc": "¿Muros? ¿Qué muros?\nLos infectados ahora devoran tu base como termitas drogadas.\nLlaman refuerzos y se ríen de tus planos.\n(Los bloques pueden romperse, las llamadas de ayuda siempre ocurren, flanqueo desactivado.)",
+    "Medium_Desc": "Aquí empieza la verdadera fiesta. Los infectados aprenden a usar sus manos para derribar tus paredes y, por si fuera poco, también abren puertas. ¡No estás a salvo ni en el baño! Las explosiones ya no son para reírse y los golpes se sienten como si te hubiera atropellado un camión. La terapia ya no sirve.",
     "Hard_Name": "El Último Arquitecto",
-    "Hard_Desc": "Tu base es una sugerencia, no una defensa.\nLos infectados flanquean, se coordinan y usan armas a distancia.\nNo huyen: luchan hasta la muerte.\n(Flanqueo activado, alta destrucción de bloques, agresividad extrema.)",
+    "Hard_Desc": "Bienvenido al infierno. Los infectados van montados en bestias, te rodean por los flancos, usan armas a distancia y cuando deberían huir, mejor te atacan con más ganas. Tus construcciones son como castillos de naipes: una caricia y se derrumban. Las explosiones arrasan con todo a su paso. El que construyó tu refugio debería ir buscando otro trabajo. O un ataúd.",
     "Extreme_Name": "Error al Cargar la Cordura",
-    "Extreme_Desc": "Los infectados son implacables, persistentes e inteligentes.\nTe perseguirán para siempre, destruirán todo y no sienten dolor.\nSobrevivir a esto desbloquea la línea directa de un terapeuta.\n(Persecución persistente, máximo número de apariciones, máxima destrucción de bloques, sin piedad.)",
+    "Extreme_Desc": "Has perdido la cabeza. Los infectados son máquinas de matar: más rápidos, más fuertes, más hambrientos. Derriban todo lo que tocan, sus explosiones arrasan manzanas enteras, y si te descuidas te montan un cerco del que no sales. No hay rincón seguro, no hay plan que funcione. Supera esto y serás digno de la locura… o de una lápida con tu nombre.",
     "Impossible_Name": "No Hay Segunda Oportunidad",
-    "Impossible_Desc": "Cualquier infectado que te roce (sí, incluso ese que está cojeando) te enviará directo al menú de carga.\nLos infectados comunes son francotiradores, los jefes son tanques con misiles y los conejos te persiguen con motosierras.\nLa única estrategia: no te toquen. Ni un rasguño. Ni una caricia. Ni una mirada.\n(Un toque = muerte, persecución eterna, flanqueo total, ayuda infinita, agresividad de otro mundo.)\nTus 'amigos' han decidido hacer una huelga indefinida. Durante las noches verdes, olvídate de que te cubran las espaldas. Estás solo, con tus reflejos y la esperanza de que el día llegue pronto."
+    "Impossible_Desc": "¿Crees que has tocado fondo? No. Aquí no hay segundas oportunidades. Solo se desbloquea tras sobrevivir a la locura máxima. Los infectados son prácticamente dioses: ni el modo creativo te salva de un golpe, sus explosiones arrasan el paisaje y, para colmo, tus aliados se vuelven inútiles. No atacan a los infectados, no te ayudan si te atacan, ignoran tus órdenes y se hacen los locos cuando la noche verde cae. Estás completamente solo. Esto no es un juego. Es una sentencia de muerte. Y no, no hay vuelta atrás."
   },
     "VehicleInventoryWidget": {
   "1": "Vehículo",
