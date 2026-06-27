@@ -71,7 +71,8 @@ namespace Game
 
 				if (!foundTarget && m_subsystemCreatureSpawn != null)
 				{
-					float maxDistance = 8f;
+					// Definimos el rango de distancia con Vector2: X = mín, Y = máx
+					Vector2 distanceRange = new Vector2(2f, 15f);
 					float maxAngle = 45f;
 					ComponentCreature bestCreature = null;
 					float bestScore = 0f;
@@ -87,7 +88,8 @@ namespace Game
 						Vector3 targetPos = creature.ComponentBody.Position;
 						float distance = Vector3.Distance(targetPos, eyePosition);
 
-						if (distance > maxDistance)
+						// Filtro por rango: distancia entre mín y máx
+						if (distance < distanceRange.X || distance > distanceRange.Y)
 							continue;
 
 						Vector3 directionToCreature = Vector3.Normalize(targetPos - eyePosition);
@@ -97,7 +99,8 @@ namespace Game
 						if (angle > maxAngle)
 							continue;
 
-						float score = (maxDistance - distance) * (maxAngle - angle) * 100f;
+						// Puntuación: se usa distanceRange.Y como distancia máxima de referencia
+						float score = (distanceRange.Y - distance) * (maxAngle - angle) * 100f;
 
 						if (score > bestScore)
 						{
