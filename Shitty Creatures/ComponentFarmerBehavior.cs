@@ -19,10 +19,10 @@ namespace Game
 		private const int PRIORITY_PLANT = 2;
 		private const int PRIORITY_RAKE = 3;
 
-		private const float BASE_IMPORTANCE_MIN = 0.01f;
-		private const float BASE_IMPORTANCE_MAX = 0.5f;
-		private const float TASK_IMPORTANCE_MIN = 5f;
-		private const float TASK_IMPORTANCE_MAX = 10f;
+		private const float BASE_IMPORTANCE_MIN = 5f;
+		private const float BASE_IMPORTANCE_MAX = 10f;
+		private const float TASK_IMPORTANCE_MIN = 10f;
+		private const float TASK_IMPORTANCE_MAX = 15f;
 
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemTime m_subsystemTime;
@@ -372,7 +372,7 @@ namespace Game
 
 					if (m_subsystemTime.GameTime > m_nextScanTime)
 					{
-						m_nextScanTime = m_subsystemTime.GameTime + m_random.Float(0.5f, 2.0f);
+						m_nextScanTime = m_subsystemTime.GameTime + m_random.Float(0.2f, 0.5f);
 						if (FindBestTask(out CellFace target, out int priority))
 						{
 							m_targetCellFace = target;
@@ -396,6 +396,7 @@ namespace Game
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
 					m_blockedCount = 0;
+					m_importanceLevel = 10f;
 
 					EnsureFarmingToolEquipped();
 
@@ -471,6 +472,7 @@ namespace Game
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
 					m_blockedCount = 0;
+					m_importanceLevel = 10f;
 					if (m_componentPathfinding != null)
 					{
 						m_componentPathfinding.IsStuck = false;
