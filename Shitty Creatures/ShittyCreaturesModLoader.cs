@@ -2407,7 +2407,7 @@ namespace Game
 				if (locomotion != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 				{
 					locomotion.WalkSpeed = baseStats.walkSpeed * speedMult;
-					if (isFlying || isBoss)
+					if (isFlying)
 					{
 						locomotion.FlySpeed = baseStats.flySpeed * flySpeedMult;
 					}
@@ -2493,7 +2493,8 @@ namespace Game
 			if (locomotion != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 			{
 				locomotion.WalkSpeed = baseStats.walkSpeed * speedMult;
-				if (isFlying || isBoss)
+				// ✅ SOLO voladores modifican FlySpeed
+				if (isFlying)
 				{
 					locomotion.FlySpeed = baseStats.flySpeed * flySpeedMult;
 				}
