@@ -980,14 +980,13 @@
     <MemberComponentTemplate Name="Spawn" Guid="a66d43c4-260f-4ba6-8a5a-4852591ab74a">
     <Parameter Name="AutoDespawn" Guid="84adae60-0829-4721-869b-e12bcb7c58b2" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="f1c0c8e7-ec5c-42d9-a12f-5cbd6ec1a8a4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="348" Type="int"/> <!-- Lanzallamas -->
-            <Parameter Name="Count" Value="1" Type="int"/>
+<MemberComponentTemplate Name="NewInventory" Guid="5851a9f8-e3a9-4be7-b8be-74aa20e116f2" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+      <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="FumadorQuimico">
+          <Parameter Name="FlameThrowerBlock" Value="1" Type="int" />
         </ParameterSet>
-    </ParameterSet>   
-</MemberComponentTemplate>
+      </ParameterSet>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="FlameThrowerShooterBehavior" Guid="4d8a136c-0050-400c-9784-82d98ed218ff" InheritanceParent="b3bc9331-ad8a-4454-9a3a-fec7a52d85f2"/>
     <MemberComponentTemplate Name="CreatureSounds" Guid="af01f5d9-3b84-4fb2-a842-e823f9521d4e">
         <Parameter Name="PainSound" Guid="759694c1-e8c1-4773-9f65-105764c01895" Value="Audio/Creatures/FumadorQuimico/Pain" Type="string"/>
@@ -1648,13 +1647,12 @@
         <Parameter Name="WalkSpeed" Guid="f8a9b0c1-d2e3-6456-1234-6789a0000123" Value="3.8" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="a9b0c1d2-e3f4-6567-2345-789a00001234" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="6257b4be-1cb8-4a41-82ee-6e03c70d8dd9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="375" Type="int"/> <!-- Guadaña -->
-            <Parameter Name="Count" Value="1" Type="int"/>
+    <MemberComponentTemplate Name="NewInventory" Guid="6257b4be-1cb8-4a41-82ee-6e03c70d8dd9" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="ElSenorDeLasTumbasMoradas">
+          <Parameter Name="ScyteBlock" Value="1" Type="int" /> <!-- Tiene su Guadaña -->
         </ParameterSet>
-    </ParameterSet>
+      </ParameterSet>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="c1d2e3f4-a5b6-7012-789a-000123456789">
         <Parameter Name="Mass" Guid="d2e3f4a5-b6c7-7123-8901-001234567890" Value="65" Type="float"/>
@@ -3810,14 +3808,13 @@
     <Parameter Name="WalkSpeed" Guid="a1b2c3d4-e5f6-6012-def0-123456789abc" Value="2.8" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="b2c3d4e5-f6a7-6123-ef01-23456789abcd" Value="1.5" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="c1d2e3f4-a5b6-6678-3456-89abcdef0125" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="353" Type="int"/> <!-- Cañon De Objetos -->
-            <Parameter Name="Count" Value="1" Type="int"/>
+    <MemberComponentTemplate Name="NewInventory" Guid="e47da2c7-01fe-4ac6-b4e3-d8382fca51cb" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+      <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="CarlJohnson">
+          <Parameter Name="ItemsLauncherBlock" Value="1" Type="int" />
         </ParameterSet>
-    </ParameterSet> 
-</MemberComponentTemplate>
+      </ParameterSet>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="ItemsLauncherShooterBehavior" Guid="b7c8d9e0-f1a2-4b3c-8d5e-6f7a8b9c0d1e" InheritanceParent="36981492-9288-4f1a-a0ae-46ef5f5b9b90">
     <Parameter Name="MaxDistance" Guid="d2e3f4g5-h6i7-8901-cdef-234567890123" Value="100" Type="float"/>
     <Parameter Name="ReloadTime" Guid="e3f4g5h6-i7j8-9012-defg-345678901234" Value="1.2" Type="float"/>
@@ -4398,13 +4395,12 @@
         <Parameter Name="IdleSound" Guid="fa3b4ab8-e4e3-4fbe-a401-5c2186575e07" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="60079426-e7e0-47a1-9c69-299e5afb1672" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="80f33ca3-3fe9-4134-b9a4-a1b48c804a9f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-        <ParameterSet Name="Slots">
-            <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="382" Type="int"/>
-                <Parameter Name="Count" Value="1" Type="int"/>
-            </ParameterSet>
+    <MemberComponentTemplate Name="NewInventory" Guid="56175088-a48e-4e68-b6e7-78c64fb52199" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+      <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="ZombieRepetidor">
+          <Parameter Name="RepeatCrossbowBlock" Value="1" Type="int" />
         </ParameterSet>
+      </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="13db5ca4-3b92-4cb5-b4b1-c07943116e62" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2"/>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="2d9409a2-11db-47fa-a987-501d3dbfc18c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
@@ -5051,13 +5047,12 @@
                 <Parameter Name="IdleSound" Guid="e6aa6b4b-afb6-4759-84d8-066fff802a91" Value="Audio/Creatures/Richard/Idie" Type="string"/>
                 <Parameter Name="AttackSound" Guid="b62a8814-2565-47ad-a844-930ca90a8d0a" Value="Audio/Creatures/Richard/Attack" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Inventory" Guid="df1f32f4-80a2-43d3-a430-362d68f42e37" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-        <ParameterSet Name="Slots">
-            <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="382" Type="int"/>
-                <Parameter Name="Count" Value="1" Type="int"/>
-            </ParameterSet>
+            <MemberComponentTemplate Name="NewInventory" Guid="60eebdfd-ca60-4729-b880-4af76dc4e5cb" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+      <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="Richard">
+          <Parameter Name="RepeatCrossbowBlock" Value="1" Type="int" />
         </ParameterSet>
+      </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="52fb86b1-57cd-4a25-b9ce-7b4c14ae8d8c" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2"/>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="660f0fa3-11d8-47fc-b0a0-8cec8821b149" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
