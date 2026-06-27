@@ -122,7 +122,7 @@ namespace Game
 				m_hasSavedBaseValues = true;
 
 				// Log de debug (puedes comentarlo después)
-				Log.Information($"[Aimep3Evolution] Valores base capturados - Resilience: {m_baseAttackResilienceFactor}, Attack: {m_baseAttackPower}");
+				// Log.Information($"[Aimep3Evolution] Valores base capturados - Resilience: {m_baseAttackResilienceFactor}, Attack: {m_baseAttackPower}");
 			}
 
 			m_isEvolving = true;
@@ -206,7 +206,7 @@ namespace Game
 			m_componentHealth.AttackResilienceFactor = m_baseAttackResilienceFactor * multiplier;
 			m_componentMiner.AttackPower = m_baseAttackPower * multiplier;
 
-			Log.Information($"[Aimep3Evolution] Stats recalculados - Nivel: {EvolutionLevel}, Multiplicador: {multiplier:F2}");
+			// Log.Information($"[Aimep3Evolution] Stats recalculados - Nivel: {EvolutionLevel}, Multiplicador: {multiplier:F2}");
 		}
 
 		private void TryIgniteNearbyCreatures()
