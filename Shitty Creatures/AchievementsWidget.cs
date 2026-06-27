@@ -1227,6 +1227,25 @@ namespace Game
 
 		private string GetTypeKey(string typeName)
 		{
+			// Intentar parsear el string al enum AchievementCategory
+			if (Enum.TryParse<AchievementCategory>(typeName, true, out var category))
+			{
+				// Mapear el enum a la clave de idioma
+				switch (category)
+				{
+					case AchievementCategory.Combat: return "1";
+					case AchievementCategory.Survival: return "2";
+					case AchievementCategory.Taming: return "3";
+					case AchievementCategory.Healing: return "4";
+					case AchievementCategory.Trade: return "5";
+					case AchievementCategory.Special: return "6";
+					default: return "1";
+				}
+			}
+
+			// Si no se pudo parsear, intentar con el método antiguo como fallback
+			Log.Warning($"[AchievementsWidget] Tipo de logro desconocido: '{typeName}', usando fallback a Combat");
+
 			switch (typeName)
 			{
 				case "Combat": return "1";
