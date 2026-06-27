@@ -6,6 +6,8 @@ namespace Game
 {
 	public class SubsystemTargetStickBlockBehavior : SubsystemBlockBehavior
 	{
+		public ComponentCreature MarkedTarget { get; private set; }
+
 		public override int[] HandledBlocks
 		{
 			get
@@ -54,6 +56,7 @@ namespace Game
 				ComponentCreature targetCreature = null;
 				bool foundTarget = false;
 
+				// 1. Intenta golpear directamente a una criatura
 				BodyRaycastResult? bodyRaycast = componentMiner.Raycast<BodyRaycastResult>(
 					ray, RaycastMode.Interaction, true, true, true, null);
 
@@ -69,9 +72,9 @@ namespace Game
 					}
 				}
 
+				// 2. Si no golpeó directamente, busca en el área
 				if (!foundTarget && m_subsystemCreatureSpawn != null)
 				{
-					// Definimos el rango de distancia con Vector2: X = mín, Y = máx
 					Vector2 distanceRange = new Vector2(2f, 15f);
 					float maxAngle = 45f;
 					ComponentCreature bestCreature = null;
@@ -88,7 +91,6 @@ namespace Game
 						Vector3 targetPos = creature.ComponentBody.Position;
 						float distance = Vector3.Distance(targetPos, eyePosition);
 
-						// Filtro por rango: distancia entre mín y máx
 						if (distance < distanceRange.X || distance > distanceRange.Y)
 							continue;
 
@@ -99,7 +101,6 @@ namespace Game
 						if (angle > maxAngle)
 							continue;
 
-						// Puntuación: se usa distanceRange.Y como distancia máxima de referencia
 						float score = (distanceRange.Y - distance) * (maxAngle - angle) * 100f;
 
 						if (score > bestScore)
@@ -118,13 +119,13 @@ namespace Game
 
 				if (foundTarget && targetCreature != null)
 				{
+					MarkedTarget = targetCreature;
 					m_subsystemAudio.PlaySound("Audio/UI/Attack", 1f, 0f, 0f, 0f);
 
 					if (m_subsystemCreatureSpawn != null)
 					{
 						Vector3 playerPosition = componentMiner.ComponentCreature.ComponentBody.Position;
 						float callRange = 30f;
-						float chaseTime = 45f;
 
 						foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
 						{
@@ -137,20 +138,28 @@ namespace Game
 							if (distanceToPlayer > callRange)
 								continue;
 
+							// ===== SOLO ComponentNewChaseBehavior recibe el comando =====
+							// Zombies y bandidos ya no responden al bastón de objetivo
+
 							ComponentNewChaseBehavior newChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
 							if (newChase != null && !newChase.Suppressed)
 							{
 								newChase.RespondToCommandImmediately(targetCreature);
 							}
+
+							// ===== ELIMINADOS: ComponentBanditChaseBehavior y ComponentZombieChaseBehavior =====
+							// Ya no responden al comando
 						}
 					}
 					return true;
 				}
 
+				MarkedTarget = null;
 				return false;
 			}
 			catch (Exception)
 			{
+				MarkedTarget = null;
 				return false;
 			}
 		}
