@@ -61,7 +61,9 @@ namespace Game
 		private int m_collarBlockIndex = -1;
 		private float m_autoTameCooldown = 0f;
 		private const float AutoTameCooldownTime = 1.5f;
-		private const float AutoTameMaxDistance = 3f;
+
+		// Rango de distancia para domesticar criaturas (X = distancia mínima, Y = distancia máxima)
+		public Vector2 AutoTameDistance = new Vector2(0f, 3f);
 
 		private enum MountState { None, Searching, Mounting }
 		private MountState m_mountState = MountState.None;
@@ -280,7 +282,7 @@ namespace Game
 			if (string.IsNullOrEmpty(tamedName)) return false;
 
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
-			if (distance > AutoTameMaxDistance) return false;
+			if (distance < AutoTameDistance.X || distance > AutoTameDistance.Y) return false;
 
 			int collarSlot = FindCollarInInventory();
 			if (collarSlot < 0) return false;
