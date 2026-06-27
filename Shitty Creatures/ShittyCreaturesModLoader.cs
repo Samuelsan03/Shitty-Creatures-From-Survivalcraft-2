@@ -39,11 +39,9 @@ namespace Game
 		private SubsystemPlayers m_healthBarPlayers;
 		public float HealthBarVisibilityRadius = 50f;
 
-		// Diccionarios para almacenar valores base de cada criatura (evita acumular multiplicadores)
-		private Dictionary<ComponentCreature, float> m_originalAttackPower = new Dictionary<ComponentCreature, float>();
-		private Dictionary<ComponentCreature, float> m_originalWalkSpeed = new Dictionary<ComponentCreature, float>();
-		private Dictionary<ComponentCreature, float> m_originalFlySpeed = new Dictionary<ComponentCreature, float>(); // ← NUEVO
-																													  // Campos para celebración de logros
+		private static Dictionary<string, (float AttackPower, float WalkSpeed, float FlySpeed)> m_baseStatsCache = new Dictionary<string, (float, float, float)>();
+
+		// Campos para celebración de logros
 		private bool m_celebrationActive = false;
 		private Dictionary<ComponentCreature, bool> m_originalSuppressedState = new Dictionary<ComponentCreature, bool>();
 		// NUEVO: Guardar el estado de invulnerabilidad original
@@ -190,12 +188,12 @@ namespace Game
 
 		public override void OnProjectLoaded(Project project)
 		{
+			// Limpiar caché de stats base al cargar un mundo nuevo
+			m_baseStatsCache.Clear();
+
 			// ========== LIMPIAR ESTADO DE CELEBRACIÓN DE MUNDOS ANTERIORES ==========
-			// Esto debe hacerse ANTES de suscribirse a eventos y ANTES de inicializar el manager
-			// para evitar que las criaturas sigan bailando o la música siga sonando en un mundo nuevo
 			if (m_celebrationActive)
 			{
-				// Intentar restaurar estado original de las criaturas del mundo anterior
 				foreach (var kvp in m_originalSuppressedState)
 				{
 					if (kvp.Key != null)
@@ -215,7 +213,7 @@ namespace Game
 					}
 				}
 				m_originalSuppressedState.Clear();
-				m_originalInvulnerableState.Clear(); // <--- AGREGAR ESTO
+				m_originalInvulnerableState.Clear();
 				m_celebrationActive = false;
 			}
 			// ========== FIN LIMPIEZA ==========
@@ -246,24 +244,27 @@ namespace Game
 				}
 			}
 
-			// Inicializar el manager de logros
+			// ===== SUSCRIBIRSE A ENTIDADES NUEVAS PARA APLICAR DIFICULTAD =====
+			// 1. Suscribirse al evento estático de Project (cuando se añade una entidad al proyecto)
+			Project.EntityAdded += Project_EntityAdded;
+
+			// 2. Suscribirse a las entidades ya existentes
+			foreach (var entity in project.Entities)
+			{
+				entity.EntityAdded += Entity_EntityAdded;
+			}
+			// ===== FIN SUSCRIPCIÓN =====
+
 			AchievementsManager.Initialize(project);
-
-			// Añadir botones de logro a todos los jugadores
 			AddAchievementButtonToPlayers(project);
-
-			// Forzar configuración de ruptura según dificultad actual
 			EnforceBlockBreakingByDifficulty(project);
-			// Ajustar salud, daño y velocidad según dificultad
 			EnforceCombatStatsByDifficulty(project);
 
 			m_subsystemGreenNightSky = project.FindSubsystem<SubsystemGreenNightSky>(true);
 
-			// Suscribirse a eventos de celebración de logros
 			AchievementsManager.OnCelebrationStarted += OnCelebrationStarted;
 			AchievementsManager.OnCelebrationEnded += OnCelebrationEnded;
 
-			// Verificar y corregir dificultad Impossible sin desbloqueo
 			var greenNightSky = project.FindSubsystem<SubsystemGreenNightSky>(true);
 			var zombiesSpawn = project.FindSubsystem<SubsystemZombiesSpawn>(true);
 			if (greenNightSky != null && zombiesSpawn != null)
@@ -1693,6 +1694,41 @@ namespace Game
 			return 0;
 		}
 
+		private (float attackPower, float walkSpeed, float flySpeed) GetBaseStatsForTemplate(string templateName)
+		{
+			if (string.IsNullOrEmpty(templateName))
+				return (1f, 1f, 1f);
+
+			if (m_baseStatsCache.TryGetValue(templateName, out var stats))
+				return stats;
+
+			try
+			{
+				var dict = DatabaseManager.FindEntityValuesDictionary(templateName, true);
+				float attackPower = 1f, walkSpeed = 1f, flySpeed = 1f;
+
+				var minerDict = dict?.GetValue<ValuesDictionary>("ComponentMiner", null);
+				if (minerDict != null)
+					attackPower = minerDict.GetValue<float>("AttackPower", 1f);
+
+				var locomotionDict = dict?.GetValue<ValuesDictionary>("ComponentLocomotion", null);
+				if (locomotionDict != null)
+				{
+					walkSpeed = locomotionDict.GetValue<float>("WalkSpeed", 1f);
+					flySpeed = locomotionDict.GetValue<float>("FlySpeed", 1f);
+				}
+
+				stats = (attackPower, walkSpeed, flySpeed);
+				m_baseStatsCache[templateName] = stats;
+				return stats;
+			}
+			catch (Exception ex)
+			{
+				Log.Warning($"[ShittyCreatures] Error obteniendo stats base para {templateName}: {ex.Message}");
+				return (1f, 1f, 1f);
+			}
+		}
+
 		// Método auxiliar para dar ítems al jugador (busca slot disponible y añade)
 		private void GiveItemToPlayer(IInventory inventory, int value, int count)
 		{
@@ -2202,15 +2238,12 @@ namespace Game
 			foreach (ComponentCreature creature in creatureSpawn.Creatures)
 			{
 				if (creature == null) continue;
-
-				// SOLO aplicar a las criaturas de la lista
 				if (!modLoader.IsDifficultyAffectedCreature(creature)) continue;
 
 				var pathBreaker = creature.Entity.FindComponent<ComponentPathBreaker>();
 				pathBreaker?.ApplyDifficultyToPathBreaker();
 			}
 
-			// Reaplicar stats de combate (ya filtrado internamente)
 			modLoader.EnforceCombatStatsByDifficulty(project);
 		}
 
@@ -2268,20 +2301,17 @@ namespace Game
 
 			DifficultyMode mode = greenNight.DifficultyMode;
 
-			// Factores BASE genéricos
 			float baseResilienceFactor = 1f;
 			float baseDamageMult = 1f;
 			float baseSpeedMult = 1f;
 
-			// Factores para JEFES (más resistencia, más daño, menos velocidad)
 			float bossResilienceFactor = 1f;
 			float bossDamageMult = 1f;
 			float bossSpeedMult = 1f;
 
-			// Factores para VOLADORES (menos resistencia, menos daño, MÁS VELOCIDAD DE VUELO)
 			float flyingResilienceFactor = 1f;
 			float flyingDamageMult = 1f;
-			float flyingSpeedMult = 1f;      // ← Este se aplicará a FlySpeed, NO a WalkSpeed
+			float flyingSpeedMult = 1f;
 
 			switch (mode)
 			{
@@ -2303,19 +2333,19 @@ namespace Game
 				case DifficultyMode.Medium:
 					baseResilienceFactor = 1.2f; baseDamageMult = 1.2f; baseSpeedMult = 1.1f;
 					bossResilienceFactor = 1.5f; bossDamageMult = 1.4f; bossSpeedMult = 1.05f;
-					flyingResilienceFactor = 1.0f; flyingDamageMult = 1.1f; flyingSpeedMult = 1.2f;  // +20% velocidad de vuelo
+					flyingResilienceFactor = 1.0f; flyingDamageMult = 1.1f; flyingSpeedMult = 1.2f;
 					break;
 				case DifficultyMode.Hard:
 					baseResilienceFactor = 1.5f; baseDamageMult = 1.5f; baseSpeedMult = 1.2f;
 					bossResilienceFactor = 2.0f; bossDamageMult = 1.8f; bossSpeedMult = 1.1f;
-					flyingResilienceFactor = 1.2f; flyingDamageMult = 1.3f; flyingSpeedMult = 1.4f;  // +40% velocidad de vuelo
+					flyingResilienceFactor = 1.2f; flyingDamageMult = 1.3f; flyingSpeedMult = 1.4f;
 					break;
 				case DifficultyMode.Extreme:
 					baseResilienceFactor = 2.0f; baseDamageMult = 2.0f; baseSpeedMult = 1.4f;
 					bossResilienceFactor = 3.0f; bossDamageMult = 2.5f; bossSpeedMult = 1.2f;
-					flyingResilienceFactor = 1.5f; flyingDamageMult = 1.6f; flyingSpeedMult = 1.6f;  // +60% velocidad de vuelo
+					flyingResilienceFactor = 1.5f; flyingDamageMult = 1.6f; flyingSpeedMult = 1.6f;
 					break;
-				case DifficultyMode.Impossible:   // Nuevo
+				case DifficultyMode.Impossible:
 					baseResilienceFactor = 3.0f; baseDamageMult = 3.0f; baseSpeedMult = 1.8f;
 					bossResilienceFactor = 4.0f; bossDamageMult = 3.5f; bossSpeedMult = 1.5f;
 					flyingResilienceFactor = 2.0f; flyingDamageMult = 2.5f; flyingSpeedMult = 2.0f;
@@ -2332,11 +2362,10 @@ namespace Game
 				string templateName = creature.Entity.ValuesDictionary?.DatabaseObject?.Name;
 				if (string.IsNullOrEmpty(templateName)) continue;
 
-				// Determinar qué factores usar
 				float resilienceFactor = baseResilienceFactor;
 				float damageMult = baseDamageMult;
-				float speedMult = baseSpeedMult;     // WalkSpeed para terrestres
-				float flySpeedMult = baseSpeedMult;  // FlySpeed para voladores (por defecto igual que walk)
+				float speedMult = baseSpeedMult;
+				float flySpeedMult = baseSpeedMult;
 
 				bool isFlying = m_flyingTemplates.Contains(templateName);
 				bool isBoss = m_bossTemplates.Contains(templateName);
@@ -2352,50 +2381,121 @@ namespace Game
 				{
 					resilienceFactor = flyingResilienceFactor;
 					damageMult = flyingDamageMult;
-					// Los voladores NO modifican WalkSpeed (no la usan para volar)
-					// speedMult se mantiene en 1f para no afectar caminata terrestre accidental
 					speedMult = 1f;
-					flySpeedMult = flyingSpeedMult;  // ← Aplicar a FlySpeed
+					flySpeedMult = flyingSpeedMult;
 				}
 				else if (!m_difficultyAffectedCreatures.Contains(templateName))
 				{
-					continue; // No afectado
+					continue;
 				}
 
-				// Aplicar resistencia (vida efectiva)
+				var baseStats = GetBaseStatsForTemplate(templateName);
+
 				var health = creature.ComponentHealth;
 				if (health != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 				{
 					health.AttackResilienceFactor = resilienceFactor;
 				}
 
-				// Aplicar daño de ataque
 				var miner = creature.Entity.FindComponent<ComponentMiner>();
 				if (miner != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 				{
-					if (!m_originalAttackPower.ContainsKey(creature))
-						m_originalAttackPower[creature] = miner.AttackPower;
-					miner.AttackPower = m_originalAttackPower[creature] * damageMult;
+					miner.AttackPower = baseStats.attackPower * damageMult;
 				}
 
-				// Aplicar velocidad - diferenciando WalkSpeed vs FlySpeed
 				var locomotion = creature.Entity.FindComponent<ComponentLocomotion>();
 				if (locomotion != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 				{
-					// Guardar valores originales si no existen
-					if (!m_originalWalkSpeed.ContainsKey(creature))
-						m_originalWalkSpeed[creature] = locomotion.WalkSpeed;
-					if (!m_originalFlySpeed.ContainsKey(creature))
-						m_originalFlySpeed[creature] = locomotion.FlySpeed;
-
-					// Aplicar multiplicadores según corresponda
-					locomotion.WalkSpeed = m_originalWalkSpeed[creature] * speedMult;
-
-					// Para voladores, modificar FlySpeed; para no voladores, dejarlo igual
-					if (isFlying || isBoss)  // Los bosses también pueden volar (FlyingInfectedBoss)
+					locomotion.WalkSpeed = baseStats.walkSpeed * speedMult;
+					if (isFlying || isBoss)
 					{
-						locomotion.FlySpeed = m_originalFlySpeed[creature] * flySpeedMult;
+						locomotion.FlySpeed = baseStats.flySpeed * flySpeedMult;
 					}
+				}
+			}
+		}
+
+		private void ApplyDifficultyToSingleCreature(ComponentCreature creature, DifficultyMode mode)
+		{
+			if (creature == null) return;
+
+			string templateName = creature.Entity.ValuesDictionary?.DatabaseObject?.Name;
+			if (string.IsNullOrEmpty(templateName)) return;
+
+			float resilienceFactor = 1f, damageMult = 1f, speedMult = 1f, flySpeedMult = 1f;
+
+			bool isFlying = m_flyingTemplates.Contains(templateName);
+			bool isBoss = m_bossTemplates.Contains(templateName);
+
+			switch (mode)
+			{
+				case DifficultyMode.VeryEasy:
+					resilienceFactor = isBoss ? 0.6f : (isFlying ? 0.4f : 0.5f);
+					damageMult = isBoss ? 0.4f : (isFlying ? 0.3f : 0.3f);
+					speedMult = isBoss ? 0.9f : 1f;
+					flySpeedMult = isBoss ? 0.9f : 0.9f;
+					break;
+				case DifficultyMode.Easy:
+					resilienceFactor = isBoss ? 0.8f : (isFlying ? 0.5f : 0.7f);
+					damageMult = isBoss ? 0.6f : (isFlying ? 0.4f : 0.5f);
+					speedMult = isBoss ? 0.95f : 1f;
+					flySpeedMult = isBoss ? 0.95f : 1.0f;
+					break;
+				case DifficultyMode.Normal:
+					resilienceFactor = isBoss ? 1.0f : (isFlying ? 1.0f : 1.0f);
+					damageMult = isBoss ? 1.0f : (isFlying ? 1.0f : 1.0f);
+					speedMult = isBoss ? 1.0f : 1f;
+					flySpeedMult = isBoss ? 1.0f : 1.0f;
+					break;
+				case DifficultyMode.Medium:
+					resilienceFactor = isBoss ? 1.5f : (isFlying ? 1.0f : 1.2f);
+					damageMult = isBoss ? 1.4f : (isFlying ? 1.1f : 1.2f);
+					speedMult = isBoss ? 1.05f : 1f;
+					flySpeedMult = isBoss ? 1.05f : 1.2f;
+					break;
+				case DifficultyMode.Hard:
+					resilienceFactor = isBoss ? 2.0f : (isFlying ? 1.2f : 1.5f);
+					damageMult = isBoss ? 1.8f : (isFlying ? 1.3f : 1.5f);
+					speedMult = isBoss ? 1.1f : 1f;
+					flySpeedMult = isBoss ? 1.1f : 1.4f;
+					break;
+				case DifficultyMode.Extreme:
+					resilienceFactor = isBoss ? 3.0f : (isFlying ? 1.5f : 2.0f);
+					damageMult = isBoss ? 2.5f : (isFlying ? 1.6f : 2.0f);
+					speedMult = isBoss ? 1.2f : 1f;
+					flySpeedMult = isBoss ? 1.2f : 1.6f;
+					break;
+				case DifficultyMode.Impossible:
+					resilienceFactor = isBoss ? 4.0f : (isFlying ? 2.0f : 3.0f);
+					damageMult = isBoss ? 3.5f : (isFlying ? 2.5f : 3.0f);
+					speedMult = isBoss ? 1.5f : 1f;
+					flySpeedMult = isBoss ? 1.5f : 2.0f;
+					break;
+				default:
+					return;
+			}
+
+			var baseStats = GetBaseStatsForTemplate(templateName);
+
+			var health = creature.ComponentHealth;
+			if (health != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
+			{
+				health.AttackResilienceFactor = resilienceFactor;
+			}
+
+			var miner = creature.Entity.FindComponent<ComponentMiner>();
+			if (miner != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
+			{
+				miner.AttackPower = baseStats.attackPower * damageMult;
+			}
+
+			var locomotion = creature.Entity.FindComponent<ComponentLocomotion>();
+			if (locomotion != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
+			{
+				locomotion.WalkSpeed = baseStats.walkSpeed * speedMult;
+				if (isFlying || isBoss)
+				{
+					locomotion.FlySpeed = baseStats.flySpeed * flySpeedMult;
 				}
 			}
 		}
@@ -2475,6 +2575,9 @@ namespace Game
 			// Desuscribirse de eventos de celebración
 			AchievementsManager.OnCelebrationStarted -= OnCelebrationStarted;
 			AchievementsManager.OnCelebrationEnded -= OnCelebrationEnded;
+
+			// Limpiar caché al descargar el mundo
+			m_baseStatsCache.Clear();
 
 			// Restaurar comportamiento de criaturas
 			RestoreCreaturesBehavior();
@@ -2963,6 +3066,44 @@ namespace Game
 			if (zombiesSpawn != null && zombiesSpawn.IsAllWavesCompleted) return false;
 
 			return true;
+		}
+
+		private void OnEntityAddedToProject(Entity entity)
+		{
+			var creature = entity.FindComponent<ComponentCreature>();
+			if (creature != null && IsDifficultyAffectedCreature(creature))
+			{
+				var project = creature.Project;
+				if (project != null)
+				{
+					var greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
+					if (greenNight != null)
+					{
+						ApplyDifficultyToSingleCreature(creature, greenNight.DifficultyMode);
+					}
+				}
+			}
+		}
+
+		// Manejador para el evento estático Project.EntityAdded
+		private void Project_EntityAdded(object sender, EntityAddRemoveEventArgs e)
+		{
+			if (e?.Entity != null)
+			{
+				// Suscribirse al evento de instancia de esa entidad
+				e.Entity.EntityAdded += Entity_EntityAdded;
+				// Procesar la entidad recién añadida
+				OnEntityAddedToProject(e.Entity);
+			}
+		}
+
+		// Manejador para el evento de instancia Entity.EntityAdded
+		private void Entity_EntityAdded(object sender, EventArgs e)
+		{
+			if (sender is Entity entity)
+			{
+				OnEntityAddedToProject(entity);
+			}
 		}
 
 		// ---------------------------------------------------------------------------------
