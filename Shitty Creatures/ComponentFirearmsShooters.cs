@@ -1027,7 +1027,10 @@ namespace Game
 				// ============================================================
 				if (m_subsystemParticles != null && m_subsystemTerrain != null)
 				{
-					m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(m_subsystemTerrain, muzzlePos + dirNorm * 0.5f, dirNorm), false);
+					m_subsystemParticles.AddParticleSystem(
+						new GunFireParticleSystem(m_subsystemTerrain, shootPosition + 0.5f * direction, direction),
+						false
+					);
 				}
 
 				// Ruido
