@@ -50,10 +50,42 @@ namespace Game
 		/// </summary>
 		private bool m_restoredFromSave;
 
+		// =====================================================
+		// TEMPORIZADOR INICIAL DE SPAWN
+		// =====================================================
+
+		/// <summary>
+		/// Tiempo de retraso antes de que comience el spawn (en segundos).
+		/// </summary>
+		private const float InitialSpawnDelay = 5.0f;
+
+		/// <summary>
+		/// Indica si estamos en el período de retraso inicial antes del primer spawn.
+		/// </summary>
+		private bool m_inInitialDelay;
+
+		/// <summary>
+		/// Temporizador que cuenta el tiempo transcurrido durante el retraso inicial.
+		/// </summary>
+		private float m_initialDelayTimer;
+
+		// =====================================================
+
 		public bool IsWarAccepted => m_acceptedWar;
 		public bool IsWarRejected => m_wasRejected;
 		public bool IsWarCompleted => m_invasionCompleted;
 		public bool WasGreenNightActiveDuringInvasion => m_greenNightWasActiveDuringInvasion;
+
+		/// <summary>
+		/// Indica si estamos en el período de retraso inicial.
+		/// Útil para mostrar un mensaje en la UI como "Los narcos llegarán en X segundos..."
+		/// </summary>
+		public bool IsInInitialDelay => m_inInitialDelay;
+
+		/// <summary>
+		/// Tiempo restante del retraso inicial en segundos.
+		/// </summary>
+		public float RemainingInitialDelay => m_inInitialDelay ? Math.Max(0f, InitialSpawnDelay - m_initialDelayTimer) : 0f;
 
 		private float m_spawnTimer;
 		private float m_spawnInterval = 3.0f;
@@ -84,6 +116,11 @@ namespace Game
 				m_greenNightWasActiveDuringInvasion = false;
 				m_restoredFromSave = false;
 				m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
+
+				// Reiniciar temporizador inicial
+				m_inInitialDelay = false;
+				m_initialDelayTimer = 0f;
+
 				return;
 			}
 
@@ -94,6 +131,10 @@ namespace Game
 				m_wasRejected = false;
 				m_greenNightWasActiveDuringInvasion = false;
 				m_restoredFromSave = false;
+
+				// Reiniciar temporizador inicial (se activará cuando la invasión empiece)
+				m_inInitialDelay = false;
+				m_initialDelayTimer = 0f;
 			}
 		}
 
@@ -146,6 +187,10 @@ namespace Game
 			m_invasionActive = valuesDictionary.GetValue<bool>("InvasionActive", false);
 			m_invasionStarted = valuesDictionary.GetValue<bool>("InvasionStarted", false);
 
+			// Restaurar temporizador inicial
+			m_inInitialDelay = valuesDictionary.GetValue<bool>("InInitialDelay", false);
+			m_initialDelayTimer = valuesDictionary.GetValue<float>("InitialDelayTimer", 0f);
+
 			// Calcular tiempo efectivo de invasión (incluye noche verde)
 			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 
@@ -157,6 +202,8 @@ namespace Game
 			{
 				m_invasionActive = false;
 				m_invasionStarted = false;
+				m_inInitialDelay = false;
+				m_initialDelayTimer = 0f;
 				m_needsInitialSync = false;
 			}
 			else if (m_acceptedWar && !m_invasionActive && m_wasEffectiveInvasionTime)
@@ -164,6 +211,9 @@ namespace Game
 				// Caso de compatibilidad: guardados antiguos que no tenían InvasionActive
 				m_invasionActive = true;
 				m_invasionStarted = true;
+				// Para guardados antiguos, no aplicar retraso (ya estaba en progreso)
+				m_inInitialDelay = false;
+				m_initialDelayTimer = 0f;
 				m_needsInitialSync = true;
 			}
 			else
@@ -180,6 +230,8 @@ namespace Game
 			valuesDictionary.SetValue("GreenNightWasActiveDuringInvasion", m_greenNightWasActiveDuringInvasion);
 			valuesDictionary.SetValue("InvasionActive", m_invasionActive);
 			valuesDictionary.SetValue("InvasionStarted", m_invasionStarted);
+			valuesDictionary.SetValue("InInitialDelay", m_inInitialDelay);
+			valuesDictionary.SetValue("InitialDelayTimer", m_initialDelayTimer);
 		}
 
 		public void CancelWar()
@@ -196,6 +248,8 @@ namespace Game
 				m_invasionActive = false;
 				m_invasionStarted = false;
 				m_spawnTimer = 0f;
+				m_inInitialDelay = false;
+				m_initialDelayTimer = 0f;
 				SetAllBanditsDrugTraffickerMode(false);
 			}
 
@@ -289,6 +343,8 @@ namespace Game
 				if (m_invasionActive)
 				{
 					m_invasionActive = false;
+					m_inInitialDelay = false;
+					m_initialDelayTimer = 0f;
 					SetAllBanditsDrugTraffickerMode(false);
 				}
 				m_wasEffectiveInvasionTime = effectiveInvasionTime;
@@ -305,6 +361,10 @@ namespace Game
 					m_invasionStarted = true;
 					m_spawnTimer = 0f;
 					SetAllBanditsDrugTraffickerMode(true);
+
+					// Iniciar el temporizador de retraso inicial
+					m_inInitialDelay = true;
+					m_initialDelayTimer = 0f;
 				}
 			}
 
@@ -328,6 +388,8 @@ namespace Game
 			{
 				m_invasionActive = false;
 				m_invasionCompleted = true;
+				m_inInitialDelay = false;
+				m_initialDelayTimer = 0f;
 				SetAllBanditsDrugTraffickerMode(false);
 				InvasionCompleted?.Invoke();
 			}
@@ -339,6 +401,28 @@ namespace Game
 
 			if (!m_invasionActive)
 				return;
+
+			// =====================================================
+			// TEMPORIZADOR INICIAL DE SPAWN
+			// Durante este período, no se spawnean bandidos
+			// =====================================================
+			if (m_inInitialDelay)
+			{
+				m_initialDelayTimer += dt;
+
+				if (m_initialDelayTimer >= InitialSpawnDelay)
+				{
+					// El retraso ha terminado, ahora se puede spawnear
+					m_inInitialDelay = false;
+					m_initialDelayTimer = 0f;
+					m_spawnTimer = 0f; // Reiniciar el timer de spawn
+				}
+				else
+				{
+					// Aún en retraso, no spawnear
+					return;
+				}
+			}
 
 			// Resto del código de spawn
 			int totalBandits = CountBandits();
