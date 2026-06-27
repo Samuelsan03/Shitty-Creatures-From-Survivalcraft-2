@@ -149,12 +149,12 @@ namespace Game
 			foreach (XElement elem in achievementsXml.Elements("Achievement"))
 			{
 				m_totalAchievements++;
-				int number = (int)elem.Attribute("Number");
+				int number = (int)elem.Attribute("AchievementNumber");
 				int titleKey = (int)elem.Attribute("TitleKey");
 				int descKey = (int)elem.Attribute("DescriptionKey");
 				int reward = (int)elem.Attribute("Reward");
 
-				// Leer TypeOfAchievement (debe ser uno de: Combat, Survival, Taming, Healing, Trade, Special)
+				// Leer TypeOfAchievement
 				string typeOfAchievement = elem.Attribute("TypeOfAchievement")?.Value ?? "Combat";
 
 				// Leer Hidden
