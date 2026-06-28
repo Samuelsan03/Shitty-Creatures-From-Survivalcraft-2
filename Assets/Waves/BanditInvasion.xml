@@ -13,5 +13,4 @@
   <Bandit name="Bandit14" count="1" probability="0.10"/>
   <Bandit name="Bandit15" count="1" probability="0.10"/>
   <Bandit name="Bandit16" count="1" probability="0.08"/>
-  <Bandit name="Bandit17" count="1" probability="0.05"/>
 </BanditInvasion>
