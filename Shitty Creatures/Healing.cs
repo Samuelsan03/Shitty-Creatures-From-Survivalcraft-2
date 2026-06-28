@@ -123,6 +123,18 @@ namespace Game
 			return isHurt || isDiseased;
 		}
 
+		/// <summary>
+		/// Verifica si una criatura está contratada (solo se curan NPCs contratados)
+		/// </summary>
+		private bool IsCreatureHired(ComponentCreature creature)
+		{
+			if (creature == null)
+				return false;
+
+			var hireable = creature.Entity.FindComponent<ComponentHireableNPC>();
+			return hireable != null && hireable.IsHired;
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
@@ -158,7 +170,6 @@ namespace Game
 					m_dt = m_random.Float(0.25f, 0.35f);
 					m_nextUpdateTime = m_subsystemTime.GameTime + m_dt;
 
-					// *** CORRECCIÓN PRINCIPAL: Ahora verifica si necesita curación (herida O enferma) ***
 					if (SelfHealing && NeedsSelfHealing() && m_random.Float(0f, 1f) < Probability)
 					{
 						m_stateMachine.TransitionTo("SelfHealing");
@@ -242,11 +253,9 @@ namespace Game
 						return;
 					}
 
-					// *** CURAR ENFERMEDADES PRIMERO ***
 					if (CureDiseases)
 						CureCreatureDiseases(m_componentCreature, null);
 
-					// *** CORRECCIÓN: Solo restaurar salud completa si estaba herida ***
 					if (m_componentHealth.Health < 1f)
 					{
 						m_componentHealth.Health = 1f;
@@ -303,6 +312,10 @@ namespace Game
 					if (!IsCreatureAliveAndHealable(ally))
 						continue;
 
+					// *** VERIFICACIÓN ADICIONAL: Solo curar si está contratada ***
+					if (!IsCreatureHired(ally))
+						continue;
+
 					var allyParticles = new HealingParticleSystem();
 					m_allyHealParticles.Add(allyParticles);
 					m_subsystemParticles.AddParticleSystem(allyParticles, false);
@@ -327,7 +340,7 @@ namespace Game
 					return;
 				}
 
-				m_healTargets.RemoveAll(c => !IsCreatureAliveAndHealable(c));
+				m_healTargets.RemoveAll(c => !IsCreatureAliveAndHealable(c) || !IsCreatureHired(c));
 
 				if (m_healTargets.Count == 0)
 				{
@@ -356,10 +369,13 @@ namespace Game
 						if (!IsCreatureAliveAndHealable(ally))
 							continue;
 
+						// *** VERIFICACIÓN ADICIONAL: Solo curar si está contratada ***
+						if (!IsCreatureHired(ally))
+							continue;
+
 						if (ally.ComponentHealth.Health <= 0f || ally.ComponentHealth.DeathTime.HasValue)
 							continue;
 
-						// Curar enfermedades primero
 						bool diseaseCured = false;
 						if (CureDiseases)
 							diseaseCured = CureCreatureDiseases(ally, m_componentCreature);
@@ -370,12 +386,10 @@ namespace Game
 						if (!IsCreatureAliveAndHealable(ally))
 							continue;
 
-						// Restaurar salud si estaba herida
 						if (ally.ComponentHealth.Health > 0f && ally.ComponentHealth.Health < 1f)
 						{
 							ally.ComponentHealth.Health = 1f;
 
-							// Mostrar mensaje solo si NO se curó enfermedad y es jugador
 							if (!diseaseCured && ally is ComponentPlayer player)
 							{
 								string healMsg = LanguageControl.Get("Healing", "0");
@@ -387,7 +401,6 @@ namespace Game
 								}
 							}
 						}
-						// Si solo estaba enfermo (no herido), mostrar mensaje de cura de enfermedad para jugador
 						else if (diseaseCured && ally is ComponentPlayer player)
 						{
 							// El mensaje ya se muestra en CureCreatureDiseases
@@ -465,13 +478,15 @@ namespace Game
 				if (herd == null || !m_componentHerd.IsSameHerdOrGuardian(creature))
 					continue;
 
-				// *** CORRECCIÓN: Verificar si está herido O enfermo ***
+				// *** CORRECCIÓN PRINCIPAL: Solo curar criaturas contratadas ***
+				if (!IsCreatureHired(creature))
+					continue;
+
 				bool isHurt = creature.ComponentHealth.Health < 0.2f;
 				bool isDiseased = false;
 
 				if (CureDiseases)
 				{
-					// Excluir jugadores en creativo
 					if (creature is ComponentPlayer)
 					{
 						if (gameInfo.WorldSettings.GameMode == GameMode.Creative ||
@@ -521,7 +536,6 @@ namespace Game
 			bool hadFlu = false;
 			bool hadPoison = false;
 
-			// Curar ComponentFluInfected (para criaturas no-jugador)
 			var fluInfected = creature.Entity.FindComponent<ComponentFluInfected>();
 			if (fluInfected != null && fluInfected.IsInfected)
 			{
@@ -529,7 +543,6 @@ namespace Game
 				hadFlu = true;
 			}
 
-			// Curar ComponentPoisonInfected (para criaturas no-jugador)
 			var poisonInfected = creature.Entity.FindComponent<ComponentPoisonInfected>();
 			if (poisonInfected != null && poisonInfected.IsInfected)
 			{
@@ -537,7 +550,6 @@ namespace Game
 				hadPoison = true;
 			}
 
-			// Curar ComponentFlu (para jugadores)
 			var playerFlu = creature.Entity.FindComponent<ComponentFlu>();
 			if (playerFlu != null && playerFlu.HasFlu)
 			{
@@ -548,7 +560,6 @@ namespace Game
 					vitalStats.Temperature = 12f;
 			}
 
-			// Curar ComponentSickness (para jugadores)
 			var playerSickness = creature.Entity.FindComponent<ComponentSickness>();
 			if (playerSickness != null && playerSickness.IsSick)
 			{
@@ -556,7 +567,6 @@ namespace Game
 				hadPoison = true;
 			}
 
-			// Mostrar mensajes solo si hay un sanador y el objetivo es jugador
 			if (healer != null && creature is ComponentPlayer player)
 			{
 				if (hadFlu)
