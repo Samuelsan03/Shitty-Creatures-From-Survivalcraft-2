@@ -50,6 +50,19 @@ namespace Game
 		// ShittyModLoader (original)
 		static FieldInfo m_cachesField;
 
+		private static readonly HashSet<int> m_banditArmorClothes = new HashSet<int>
+{
+	2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 18, 19, 20, 21, 22, 23, 27, 28, 29, 31, 33, 34, 35, 36
+};
+
+		// Lista de bandidos que se verán afectados por la dificultad
+		private static readonly HashSet<string> m_banditTemplates = new HashSet<string>
+{
+	"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
+	"Bandit6", "Bandit8", "Bandit9", "Bandit10",
+	"Bandit11", "Bandit13", "Bandit14", "Bandit15", "Bandit16"
+};
+
 		// Índices de ropa sin protección (para dificultades bajas)
 		private static readonly HashSet<int> m_lowTierClothes = new HashSet<int>
 {
@@ -2340,42 +2353,54 @@ namespace Game
 			float flyingDamageMult = 1f;
 			float flyingSpeedMult = 1f;
 
+			// Factores para bandidos (se aplican igual que las criaturas base)
+			float banditResilienceFactor = 1f;
+			float banditDamageMult = 1f;
+			float banditSpeedMult = 1f;
+
 			switch (mode)
 			{
 				case DifficultyMode.VeryEasy:
 					baseResilienceFactor = 0.5f; baseDamageMult = 0.3f; baseSpeedMult = 0.8f;
 					bossResilienceFactor = 0.6f; bossDamageMult = 0.4f; bossSpeedMult = 0.9f;
 					flyingResilienceFactor = 0.4f; flyingDamageMult = 0.3f; flyingSpeedMult = 0.9f;
+					banditResilienceFactor = 0.6f; banditDamageMult = 0.4f; banditSpeedMult = 0.8f;
 					break;
 				case DifficultyMode.Easy:
 					baseResilienceFactor = 0.7f; baseDamageMult = 0.5f; baseSpeedMult = 0.9f;
 					bossResilienceFactor = 0.8f; bossDamageMult = 0.6f; bossSpeedMult = 0.95f;
 					flyingResilienceFactor = 0.5f; flyingDamageMult = 0.4f; flyingSpeedMult = 1.0f;
+					banditResilienceFactor = 0.8f; banditDamageMult = 0.6f; banditSpeedMult = 0.9f;
 					break;
 				case DifficultyMode.Normal:
 					baseResilienceFactor = 1.0f; baseDamageMult = 1.0f; baseSpeedMult = 1.0f;
 					bossResilienceFactor = 1.0f; bossDamageMult = 1.0f; bossSpeedMult = 1.0f;
 					flyingResilienceFactor = 1.0f; flyingDamageMult = 1.0f; flyingSpeedMult = 1.0f;
+					banditResilienceFactor = 1.0f; banditDamageMult = 1.0f; banditSpeedMult = 1.0f;
 					break;
 				case DifficultyMode.Medium:
 					baseResilienceFactor = 1.2f; baseDamageMult = 1.2f; baseSpeedMult = 1.1f;
 					bossResilienceFactor = 1.5f; bossDamageMult = 1.4f; bossSpeedMult = 1.05f;
 					flyingResilienceFactor = 1.0f; flyingDamageMult = 1.1f; flyingSpeedMult = 1.2f;
+					banditResilienceFactor = 1.3f; banditDamageMult = 1.3f; banditSpeedMult = 1.1f;
 					break;
 				case DifficultyMode.Hard:
 					baseResilienceFactor = 1.5f; baseDamageMult = 1.5f; baseSpeedMult = 1.2f;
 					bossResilienceFactor = 2.0f; bossDamageMult = 1.8f; bossSpeedMult = 1.1f;
 					flyingResilienceFactor = 1.2f; flyingDamageMult = 1.3f; flyingSpeedMult = 1.4f;
+					banditResilienceFactor = 1.6f; banditDamageMult = 1.6f; banditSpeedMult = 1.2f;
 					break;
 				case DifficultyMode.Extreme:
 					baseResilienceFactor = 2.0f; baseDamageMult = 2.0f; baseSpeedMult = 1.4f;
 					bossResilienceFactor = 3.0f; bossDamageMult = 2.5f; bossSpeedMult = 1.2f;
 					flyingResilienceFactor = 1.5f; flyingDamageMult = 1.6f; flyingSpeedMult = 1.6f;
+					banditResilienceFactor = 2.0f; banditDamageMult = 2.0f; banditSpeedMult = 1.4f;
 					break;
 				case DifficultyMode.Impossible:
 					baseResilienceFactor = 3.0f; baseDamageMult = 3.0f; baseSpeedMult = 1.8f;
 					bossResilienceFactor = 4.0f; bossDamageMult = 3.5f; bossSpeedMult = 1.5f;
 					flyingResilienceFactor = 2.0f; flyingDamageMult = 2.5f; flyingSpeedMult = 2.0f;
+					banditResilienceFactor = 3.0f; banditDamageMult = 3.0f; banditSpeedMult = 1.8f;
 					break;
 			}
 
@@ -2396,6 +2421,7 @@ namespace Game
 
 				bool isFlying = m_flyingTemplates.Contains(templateName);
 				bool isBoss = m_bossTemplates.Contains(templateName);
+				bool isBandit = m_banditTemplates.Contains(templateName);
 
 				if (isBoss)
 				{
@@ -2410,6 +2436,13 @@ namespace Game
 					damageMult = flyingDamageMult;
 					speedMult = 1f;
 					flySpeedMult = flyingSpeedMult;
+				}
+				else if (isBandit)
+				{
+					resilienceFactor = banditResilienceFactor;
+					damageMult = banditDamageMult;
+					speedMult = banditSpeedMult;
+					flySpeedMult = banditSpeedMult;
 				}
 				else if (!m_difficultyAffectedCreatures.Contains(templateName))
 				{
@@ -2453,50 +2486,51 @@ namespace Game
 
 			bool isFlying = m_flyingTemplates.Contains(templateName);
 			bool isBoss = m_bossTemplates.Contains(templateName);
+			bool isBandit = m_banditTemplates.Contains(templateName);
 
 			switch (mode)
 			{
 				case DifficultyMode.VeryEasy:
-					resilienceFactor = isBoss ? 0.6f : (isFlying ? 0.4f : 0.5f);
-					damageMult = isBoss ? 0.4f : (isFlying ? 0.3f : 0.3f);
-					speedMult = isBoss ? 0.9f : 1f;
-					flySpeedMult = isBoss ? 0.9f : 0.9f;
+					resilienceFactor = isBoss ? 0.6f : (isBandit ? 0.6f : (isFlying ? 0.4f : 0.5f));
+					damageMult = isBoss ? 0.4f : (isBandit ? 0.4f : (isFlying ? 0.3f : 0.3f));
+					speedMult = isBoss ? 0.9f : (isBandit ? 0.8f : 1f);
+					flySpeedMult = isBoss ? 0.9f : (isBandit ? 0.8f : 0.9f);
 					break;
 				case DifficultyMode.Easy:
-					resilienceFactor = isBoss ? 0.8f : (isFlying ? 0.5f : 0.7f);
-					damageMult = isBoss ? 0.6f : (isFlying ? 0.4f : 0.5f);
-					speedMult = isBoss ? 0.95f : 1f;
-					flySpeedMult = isBoss ? 0.95f : 1.0f;
+					resilienceFactor = isBoss ? 0.8f : (isBandit ? 0.8f : (isFlying ? 0.5f : 0.7f));
+					damageMult = isBoss ? 0.6f : (isBandit ? 0.6f : (isFlying ? 0.4f : 0.5f));
+					speedMult = isBoss ? 0.95f : (isBandit ? 0.9f : 1f);
+					flySpeedMult = isBoss ? 0.95f : (isBandit ? 0.9f : 1.0f);
 					break;
 				case DifficultyMode.Normal:
-					resilienceFactor = isBoss ? 1.0f : (isFlying ? 1.0f : 1.0f);
-					damageMult = isBoss ? 1.0f : (isFlying ? 1.0f : 1.0f);
-					speedMult = isBoss ? 1.0f : 1f;
-					flySpeedMult = isBoss ? 1.0f : 1.0f;
+					resilienceFactor = isBoss ? 1.0f : (isBandit ? 1.0f : (isFlying ? 1.0f : 1.0f));
+					damageMult = isBoss ? 1.0f : (isBandit ? 1.0f : (isFlying ? 1.0f : 1.0f));
+					speedMult = isBoss ? 1.0f : (isBandit ? 1.0f : 1f);
+					flySpeedMult = isBoss ? 1.0f : (isBandit ? 1.0f : 1.0f);
 					break;
 				case DifficultyMode.Medium:
-					resilienceFactor = isBoss ? 1.5f : (isFlying ? 1.0f : 1.2f);
-					damageMult = isBoss ? 1.4f : (isFlying ? 1.1f : 1.2f);
-					speedMult = isBoss ? 1.05f : 1f;
-					flySpeedMult = isBoss ? 1.05f : 1.2f;
+					resilienceFactor = isBoss ? 1.5f : (isBandit ? 1.3f : (isFlying ? 1.0f : 1.2f));
+					damageMult = isBoss ? 1.4f : (isBandit ? 1.3f : (isFlying ? 1.1f : 1.2f));
+					speedMult = isBoss ? 1.05f : (isBandit ? 1.1f : 1f);
+					flySpeedMult = isBoss ? 1.05f : (isBandit ? 1.1f : 1.2f);
 					break;
 				case DifficultyMode.Hard:
-					resilienceFactor = isBoss ? 2.0f : (isFlying ? 1.2f : 1.5f);
-					damageMult = isBoss ? 1.8f : (isFlying ? 1.3f : 1.5f);
-					speedMult = isBoss ? 1.1f : 1f;
-					flySpeedMult = isBoss ? 1.1f : 1.4f;
+					resilienceFactor = isBoss ? 2.0f : (isBandit ? 1.6f : (isFlying ? 1.2f : 1.5f));
+					damageMult = isBoss ? 1.8f : (isBandit ? 1.6f : (isFlying ? 1.3f : 1.5f));
+					speedMult = isBoss ? 1.1f : (isBandit ? 1.2f : 1f);
+					flySpeedMult = isBoss ? 1.1f : (isBandit ? 1.2f : 1.4f);
 					break;
 				case DifficultyMode.Extreme:
-					resilienceFactor = isBoss ? 3.0f : (isFlying ? 1.5f : 2.0f);
-					damageMult = isBoss ? 2.5f : (isFlying ? 1.6f : 2.0f);
-					speedMult = isBoss ? 1.2f : 1f;
-					flySpeedMult = isBoss ? 1.2f : 1.6f;
+					resilienceFactor = isBoss ? 3.0f : (isBandit ? 2.0f : (isFlying ? 1.5f : 2.0f));
+					damageMult = isBoss ? 2.5f : (isBandit ? 2.0f : (isFlying ? 1.6f : 2.0f));
+					speedMult = isBoss ? 1.2f : (isBandit ? 1.4f : 1f);
+					flySpeedMult = isBoss ? 1.2f : (isBandit ? 1.4f : 1.6f);
 					break;
 				case DifficultyMode.Impossible:
-					resilienceFactor = isBoss ? 4.0f : (isFlying ? 2.0f : 3.0f);
-					damageMult = isBoss ? 3.5f : (isFlying ? 2.5f : 3.0f);
-					speedMult = isBoss ? 1.5f : 1f;
-					flySpeedMult = isBoss ? 1.5f : 2.0f;
+					resilienceFactor = isBoss ? 4.0f : (isBandit ? 3.0f : (isFlying ? 2.0f : 3.0f));
+					damageMult = isBoss ? 3.5f : (isBandit ? 3.0f : (isFlying ? 2.5f : 3.0f));
+					speedMult = isBoss ? 1.5f : (isBandit ? 1.8f : 1f);
+					flySpeedMult = isBoss ? 1.5f : (isBandit ? 1.8f : 2.0f);
 					break;
 				default:
 					return;
@@ -2520,7 +2554,6 @@ namespace Game
 			if (locomotion != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 			{
 				locomotion.WalkSpeed = baseStats.walkSpeed * speedMult;
-				// ✅ SOLO voladores modifican FlySpeed
 				if (isFlying)
 				{
 					locomotion.FlySpeed = baseStats.flySpeed * flySpeedMult;
@@ -2592,10 +2625,11 @@ namespace Game
 			string templateName = creature.Entity.ValuesDictionary?.DatabaseObject?.Name;
 			if (string.IsNullOrEmpty(templateName)) return false;
 
-			// Verificar si está en alguna de las listas
+			// Verificar si está en alguna de las listas (incluyendo bandidos)
 			return m_difficultyAffectedCreatures.Contains(templateName) ||
 				   m_bossTemplates.Contains(templateName) ||
-				   m_flyingTemplates.Contains(templateName);
+				   m_flyingTemplates.Contains(templateName) ||
+				   m_banditTemplates.Contains(templateName);
 		}
 
 		public override void OnProjectDisposed()
@@ -3112,11 +3146,11 @@ namespace Game
 				}
 			}
 
-			// Asignar ropa a criaturas infectadas (solo si tienen ComponentCreatureClothing)
+			// Asignar ropa/armadura a criaturas que tengan ComponentCreatureClothing
 			if (creature != null)
 			{
 				string templateName = entity.ValuesDictionary?.DatabaseObject?.Name;
-				if (!string.IsNullOrEmpty(templateName) && m_infectedWithClothes.Contains(templateName))
+				if (!string.IsNullOrEmpty(templateName))
 				{
 					var project = creature.Project;
 					if (project != null)
@@ -3124,7 +3158,23 @@ namespace Game
 						var greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
 						if (greenNight != null)
 						{
-							AssignClothesToCreature(creature, greenNight.DifficultyMode);
+							DifficultyMode difficulty = greenNight.DifficultyMode;
+
+							// ============================================================
+							// IMPORTANTE: LOS BANDIDOS NUNCA USAN ROPA NORMAL
+							// SOLO ARMADURAS EN DIFICULTADES ALTAS
+							// ============================================================
+
+							// Para infectados: ropa normal en todas las dificultades, armadura en altas
+							if (m_infectedWithClothes.Contains(templateName))
+							{
+								AssignClothesToCreature(creature, difficulty);
+							}
+							// Para bandidos: SOLO ARMADURA en dificultades altas, NADA en bajas
+							else if (m_banditTemplates.Contains(templateName))
+							{
+								AssignBanditClothes(creature, difficulty);
+							}
 						}
 					}
 				}
@@ -3218,6 +3268,94 @@ namespace Game
 			if (availableClothes.Count == 0) availableClothes = m_lowTierClothes;
 
 			// Asignar una prenda a cada slot seleccionado
+			foreach (var slot in selectedSlots)
+			{
+				int index = availableClothes.ElementAt(rand.Int(0, availableClothes.Count - 1));
+				int value = MakeClothingValue(clothingBlock, index);
+				clothing.SetClothes(slot, new[] { value });
+			}
+		}
+
+		private void AssignBanditClothes(ComponentCreature creature, DifficultyMode difficulty)
+		{
+			if (creature == null) return;
+			var clothing = creature.Entity.FindComponent<ComponentCreatureClothing>();
+			if (clothing == null) return;
+
+			// ============================================================
+			// SIEMPRE LIMPIAR TODA LA ROPA DE LOS SLOTS PRINCIPALES
+			// ============================================================
+			foreach (var slot in new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs })
+			{
+				if (clothing.GetClothes(slot).Count > 0)
+				{
+					clothing.SetClothes(slot, new List<int>());
+				}
+			}
+
+			// ============================================================
+			// EN DIFICULTADES BAJAS: NO ASIGNAR NADA (YA LIMPIO)
+			// ============================================================
+			if (difficulty < DifficultyMode.Medium)
+			{
+				return;
+			}
+
+			// ============================================================
+			// EN DIFICULTADES ALTAS: INTENTAR ASIGNAR ARMADURAS
+			// ============================================================
+
+			var clothingBlock = BlocksManager.GetBlock<ClothingBlock>();
+			if (clothingBlock == null) return;
+
+			var rand = new Random();
+
+			// Probabilidad de tener armadura según dificultad
+			float armorChance = 0f;
+			switch (difficulty)
+			{
+				case DifficultyMode.Medium: armorChance = 0.3f; break;
+				case DifficultyMode.Hard: armorChance = 0.5f; break;
+				case DifficultyMode.Extreme: armorChance = 0.7f; break;
+				case DifficultyMode.Impossible: armorChance = 0.9f; break;
+				default: return;
+			}
+
+			// Si NO sale armadura, ya se limpió todo, así que queda sin ropa
+			if (rand.Float() >= armorChance)
+			{
+				return;
+			}
+
+			// Decidir cuántas piezas de armadura
+			float r = rand.Float();
+			int numPieces;
+			if (r < 0.2f)      // 20% 1 pieza
+				numPieces = 1;
+			else if (r < 0.6f) // 40% 2 piezas
+				numPieces = 2;
+			else               // 40% 3 piezas (completo)
+				numPieces = 3;
+
+			// Seleccionar slots aleatorios
+			var slots = new List<ClothingSlot> { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs };
+			for (int i = slots.Count - 1; i > 0; i--)
+			{
+				int j = rand.Int(0, i);
+				var temp = slots[i];
+				slots[i] = slots[j];
+				slots[j] = temp;
+			}
+			var selectedSlots = slots.Take(numPieces).ToList();
+
+			// ============================================================
+			// USAR SOLO EL HASHSET DE ARMADURAS PARA BANDIDOS
+			// NUNCA ROPA NORMAL
+			// ============================================================
+			var availableClothes = m_banditArmorClothes;
+			if (availableClothes.Count == 0) return;
+
+			// Asignar SOLO ARMADURAS a los slots seleccionados
 			foreach (var slot in selectedSlots)
 			{
 				int index = availableClothes.ElementAt(rand.Int(0, availableClothes.Count - 1));
