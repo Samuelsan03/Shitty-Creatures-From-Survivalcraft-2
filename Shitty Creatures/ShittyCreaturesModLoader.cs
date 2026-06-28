@@ -50,6 +50,29 @@ namespace Game
 		// ShittyModLoader (original)
 		static FieldInfo m_cachesField;
 
+		// Índices de ropa sin protección (para dificultades bajas)
+		private static readonly HashSet<int> m_lowTierClothes = new HashSet<int>
+{
+	0, 1, 13, 14, 15, 16, 17, 24, 25, 26, 30, 32, 37
+};
+
+		// Índices de armaduras (para dificultades altas)
+		private static readonly HashSet<int> m_highTierClothes = new HashSet<int>
+{
+	2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 18, 19, 20, 21, 22, 23, 27, 28, 29, 31, 33, 34, 35, 36
+};
+
+		private static readonly HashSet<string> m_infectedWithClothes = new HashSet<string>
+{
+	"InfectedNormal1",
+	"InfectedNormal2",
+	"GhostNormal",
+	"GhostFast",
+	"HumanoidSkeleton",
+	"InfectedFreezer",
+	"FrozenGhost"
+};
+
 		private static readonly HashSet<string> s_bossNames = new HashSet<string>
 {
 	"Tank1", "Tank2", "Tank3",
@@ -2184,7 +2207,11 @@ namespace Game
 				blockName == "NuevaBala3" ||
 				blockName == "NuevaBala4" ||
 				blockName == "NuevaBala5" ||
-				blockName == "NuevaBala6")
+				blockName == "NuevaBala6" ||
+				blockName == "BigStoneChunkBlock" ||
+				blockName == "BigStoneFlameChunkBlock" ||
+				blockName == "BigStoneFrozenChunkBlock" ||
+				blockName == "BigStonePoisonChunkBlock")
 			{
 				attackment.ImpulseFactor = 0f;
 				attackment.StunTimeSet = 0f;
@@ -3084,6 +3111,24 @@ namespace Game
 					}
 				}
 			}
+
+			// Asignar ropa a criaturas infectadas (solo si tienen ComponentCreatureClothing)
+			if (creature != null)
+			{
+				string templateName = entity.ValuesDictionary?.DatabaseObject?.Name;
+				if (!string.IsNullOrEmpty(templateName) && m_infectedWithClothes.Contains(templateName))
+				{
+					var project = creature.Project;
+					if (project != null)
+					{
+						var greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
+						if (greenNight != null)
+						{
+							AssignClothesToCreature(creature, greenNight.DifficultyMode);
+						}
+					}
+				}
+			}
 		}
 
 		// Manejador para el evento estático Project.EntityAdded
@@ -3105,6 +3150,86 @@ namespace Game
 			{
 				OnEntityAddedToProject(entity);
 			}
+		}
+
+		private void AssignClothesToCreature(ComponentCreature creature, DifficultyMode difficulty)
+		{
+			if (creature == null) return;
+			var clothing = creature.Entity.FindComponent<ComponentCreatureClothing>();
+			if (clothing == null) return;
+
+			// No sobreescribir si ya tiene ropa
+			bool hasClothes = false;
+			foreach (var slot in new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs })
+			{
+				if (clothing.GetClothes(slot).Count > 0) { hasClothes = true; break; }
+			}
+			if (hasClothes) return;
+
+			var clothingBlock = BlocksManager.GetBlock<ClothingBlock>();
+			if (clothingBlock == null) return;
+
+			var rand = new Random();
+
+			// Probabilidades fijas (NO dependen de la dificultad)
+			// - Media: sin ropa (~35%)
+			// - Media: ropa incompleta (1-2 piezas) (~50%)
+			// - Baja: ropa completa (3 piezas) (~15%)
+			float r = rand.Float();
+			int numPieces;
+			if (r < 0.35f)
+				numPieces = 0;           // Sin ropa
+			else if (r < 0.85f)
+				numPieces = 1 + rand.Int(0, 1); // 1 o 2 piezas
+			else
+				numPieces = 3;           // Ropa completa
+
+			if (numPieces == 0) return;
+
+			// Seleccionar aleatoriamente qué slots se llenarán
+			var slots = new List<ClothingSlot> { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs };
+			for (int i = slots.Count - 1; i > 0; i--)
+			{
+				int j = rand.Int(0, i);
+				var temp = slots[i];
+				slots[i] = slots[j];
+				slots[j] = temp;
+			}
+			var selectedSlots = slots.Take(numPieces).ToList();
+
+			// Decidir si se usan armaduras (solo en dificultades >= Medium)
+			bool useArmor = false;
+			if (difficulty >= DifficultyMode.Medium)
+			{
+				float armorChance = 0f;
+				switch (difficulty)
+				{
+					case DifficultyMode.Medium: armorChance = 0.3f; break;
+					case DifficultyMode.Hard: armorChance = 0.5f; break;
+					case DifficultyMode.Extreme: armorChance = 0.7f; break;
+					case DifficultyMode.Impossible: armorChance = 0.9f; break;
+					default: armorChance = 0f; break;
+				}
+				useArmor = rand.Float() < armorChance;
+			}
+
+			// Conjunto de prendas disponibles
+			HashSet<int> availableClothes = useArmor ? m_highTierClothes : m_lowTierClothes;
+			if (availableClothes.Count == 0) availableClothes = m_lowTierClothes;
+
+			// Asignar una prenda a cada slot seleccionado
+			foreach (var slot in selectedSlots)
+			{
+				int index = availableClothes.ElementAt(rand.Int(0, availableClothes.Count - 1));
+				int value = MakeClothingValue(clothingBlock, index);
+				clothing.SetClothes(slot, new[] { value });
+			}
+		}
+
+		private int MakeClothingValue(ClothingBlock clothingBlock, int clothingIndex)
+		{
+			int data = ClothingBlock.SetClothingIndex(0, clothingIndex);
+			return Terrain.MakeBlockValue(clothingBlock.BlockIndex, 0, data);
 		}
 
 		// ---------------------------------------------------------------------------------
