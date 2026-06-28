@@ -43,6 +43,10 @@ namespace Game
 		private bool m_farmerEnabled;
 		private double m_stateEnterTime;
 
+		// Contador y límite para intentos de rastrillado
+		private int m_rakeAttempts;
+		private const int MAX_RAKE_ATTEMPTS = 5;
+
 		private const float SCAN_RADIUS = 15f;
 		private const double STATE_DELAY = 0.5;
 		private const float PICKUP_RADIUS = 2.5f;
@@ -61,7 +65,7 @@ namespace Game
 		private bool m_hasFarmAreaCenter;
 
 		private bool m_stateMachineBuilt;
-		private bool m_initialized; // <--- NUEVO: indica si ya se puede usar ComponentPathfinding
+		private bool m_initialized;
 
 		// Para detectar cuando se cambió el slot activo externamente (ej. por combate)
 		private int m_lastKnownActiveSlotIndex = -1;
@@ -70,9 +74,6 @@ namespace Game
 
 		public override float ImportanceLevel => m_importanceLevel;
 
-		/// <summary>
-		/// Controlado por el usuario desde el widget. No se desactiva automáticamente.
-		/// </summary>
 		public bool FarmerEnabled
 		{
 			get => m_farmerEnabled;
@@ -84,7 +85,6 @@ namespace Game
 
 					if (!value)
 					{
-						// Solo transicionar si la máquina de estados ya está construida y estamos inicializados
 						if (m_stateMachineBuilt && m_initialized)
 						{
 							m_stateMachine.TransitionTo("Inactive");
@@ -154,10 +154,7 @@ namespace Game
 			BuildStateMachine();
 			m_stateMachineBuilt = true;
 
-			// NO transicionar a "Inactive" aquí - esperar a que todos los componentes estén cargados
-			// m_stateMachine.TransitionTo("Inactive");  // <--- ELIMINADO
-
-			m_initialized = false; // <--- NUEVO: aún no estamos listos
+			m_initialized = false;
 		}
 
 		private bool HasFarmingTools()
@@ -327,10 +324,8 @@ namespace Game
 			m_stateMachine.AddState("Inactive",
 				enter: () =>
 				{
-					// REINICIAR TIEMPO DE ESCANEO
 					m_nextScanTime = 0;
 
-					// Detener pathfinding solo si estamos inicializados
 					if (m_componentPathfinding != null && m_initialized)
 					{
 						m_componentPathfinding.Stop();
@@ -543,6 +538,8 @@ namespace Game
 						}
 						else if (IsGrassOrDirt(contents))
 						{
+							// Iniciamos el arado, reiniciamos contador de intentos
+							m_rakeAttempts = 0;
 							m_stateMachine.TransitionTo("Rake");
 						}
 						else if (IsSoil(contents))
@@ -632,6 +629,7 @@ namespace Game
 				leave: null
 			);
 
+			// Estado Rake modificado: solo usa el rastrillo y pasa a RakeCheck
 			m_stateMachine.AddState("Rake",
 				enter: () =>
 				{
@@ -651,16 +649,40 @@ namespace Game
 						m_componentMiner.Use(ray);
 					}
 
-					if (m_targetCellFace != null)
-					{
-						int value = m_subsystemTerrain.Terrain.GetCellValue(
-							m_targetCellFace.Value.X,
-							m_targetCellFace.Value.Y,
-							m_targetCellFace.Value.Z
-						);
-						int contents = Terrain.ExtractContents(value);
+					// Pasamos a verificación con retardo
+					m_stateMachine.TransitionTo("RakeCheck");
+				},
+				update: null,
+				leave: null
+			);
 
-						if (IsSoil(contents) && HasTool(typeof(SeedsBlock)))
+			// Nuevo estado: verifica si el bloque se convirtió en Soil después de rastrillar
+			m_stateMachine.AddState("RakeCheck",
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
+				},
+				update: () =>
+				{
+					if (m_subsystemTime.GameTime - m_stateEnterTime < STATE_DELAY)
+						return;
+
+					if (m_targetCellFace == null)
+					{
+						m_stateMachine.TransitionTo("Inactive");
+						return;
+					}
+
+					int x = m_targetCellFace.Value.X;
+					int y = m_targetCellFace.Value.Y;
+					int z = m_targetCellFace.Value.Z;
+					int value = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+					int contents = Terrain.ExtractContents(value);
+
+					if (IsSoil(contents))
+					{
+						// El suelo ya está arado
+						if (HasTool(typeof(SeedsBlock)))
 						{
 							if (HasFertilizer())
 							{
@@ -678,10 +700,20 @@ namespace Game
 					}
 					else
 					{
-						m_stateMachine.TransitionTo("Inactive");
+						// Todavía no es Soil, repetir si no hemos superado el límite
+						m_rakeAttempts++;
+						if (m_rakeAttempts < MAX_RAKE_ATTEMPTS)
+						{
+							// Volver a Rake (sin reiniciar contador)
+							m_stateMachine.TransitionTo("Rake");
+						}
+						else
+						{
+							// Demasiados intentos, abandonar
+							m_stateMachine.TransitionTo("Inactive");
+						}
 					}
 				},
-				update: null,
 				leave: null
 			);
 
@@ -861,6 +893,8 @@ namespace Game
 						{
 							m_targetCellFace = new CellFace { X = x, Y = y - 1, Z = z, Face = 4 };
 							m_targetPosition = new Vector3(x + 0.5f, (y - 1) + 0.5f, z + 0.5f);
+							// Reiniciamos contador de arado
+							m_rakeAttempts = 0;
 							m_stateMachine.TransitionTo("Rake");
 							return;
 						}
@@ -1146,7 +1180,6 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
-			// Primera actualización: ahora todos los componentes están cargados, transicionamos a Inactive
 			if (!m_initialized && m_stateMachineBuilt)
 			{
 				m_initialized = true;
