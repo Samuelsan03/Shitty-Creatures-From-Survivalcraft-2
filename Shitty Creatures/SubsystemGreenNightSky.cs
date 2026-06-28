@@ -25,18 +25,29 @@ namespace Game
 					if (!m_greenNightEnabled)
 					{
 						IsGreenNightActive = false;
+						HasRolledTonight = false;
 					}
 					else
 					{
-						if (m_subsystemTimeOfDay != null)
+						// FORZAR activación inmediata al habilitar
+						IsGreenNightActive = true;
+						HasRolledTonight = true;
+						DaysSinceLastGreenNight = 0;
+
+						// Disparar evento de inicio
+						GreenNightStarted?.Invoke();
+
+						// Notificar a los jugadores
+						SubsystemPlayers subsystemPlayers = base.Project?.FindSubsystem<SubsystemPlayers>(true);
+						if (subsystemPlayers != null)
 						{
-							float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-							bool isNight = timeOfDay >= m_subsystemTimeOfDay.DuskStart || timeOfDay < m_subsystemTimeOfDay.DawnStart;
-							if (isNight && this.DaysSinceLastGreenNight >= this.GreenNightIntervalDays)
+							foreach (ComponentPlayer componentPlayer in subsystemPlayers.ComponentPlayers)
 							{
-								IsGreenNightActive = true;
-								HasRolledTonight = true;
-								DaysSinceLastGreenNight = 0;
+								if (componentPlayer?.ComponentGui != null)
+								{
+									string message = GetLocalizedMessage("GreenMoonBegins");
+									componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(5, 154, 0), false, true);
+								}
 							}
 						}
 					}
@@ -178,9 +189,6 @@ namespace Game
 			this.GreenNightIntervalDays = valuesDictionary.GetValue<int>("GreenNightIntervalDays", 4);
 			this.DifficultyMode = (DifficultyMode)valuesDictionary.GetValue<int>("DifficultyMode", 2);
 
-			// Sincronizar LastCheckedDay con el día actual al cargar.
-			// Evita que el primer Update() detecte un cambio de día fantasma
-			// (por desfase de double o timing de carga) e incremente el contador.
 			double currentDay = this.m_subsystemTimeOfDay.Day;
 			if (Math.Floor(this.LastCheckedDay) < Math.Floor(currentDay))
 			{
@@ -213,7 +221,7 @@ namespace Game
 					case DifficultyMode.Medium: return 1.2f;
 					case DifficultyMode.Hard: return 1.5f;
 					case DifficultyMode.Extreme: return 2.0f;
-					case DifficultyMode.Impossible: return 3.0f;   // Nuevo
+					case DifficultyMode.Impossible: return 3.0f;
 					default: return 1.0f;
 				}
 			}
@@ -225,7 +233,7 @@ namespace Game
 
 			public static bool ShouldAlwaysCallHelp(DifficultyMode mode)
 			{
-				return mode >= DifficultyMode.Medium;   // Impossible también cumple
+				return mode >= DifficultyMode.Medium;
 			}
 
 			public static float GetHelpCallRangeMultiplier(DifficultyMode mode)
@@ -238,7 +246,7 @@ namespace Game
 					case DifficultyMode.Medium: return 1.2f;
 					case DifficultyMode.Hard: return 1.5f;
 					case DifficultyMode.Extreme: return 2.0f;
-					case DifficultyMode.Impossible: return 3.0f;   // Nuevo
+					case DifficultyMode.Impossible: return 3.0f;
 					default: return 1.0f;
 				}
 			}
