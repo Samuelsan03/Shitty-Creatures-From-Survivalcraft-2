@@ -756,6 +756,17 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// ===== NUEVO BLOQUE: si la noche verde está desactivada, reseteamos el estado de sincronización =====
+			if (!m_subsystemGreenNightSky.GreenNightEnabled)
+			{
+				m_wasGreenNightActive = false;
+				m_nightEndProcessed = false;
+				m_midnightBossesSpawnedThisNight = false;
+				m_greenNightSpawnDelayActive = false;
+				m_greenNightSpawnDelayTimer = 0f;
+				// No reseteamos la batalla de jefes ni el progreso de oleadas para preservar el avance.
+			}
+
 			UpdateCountdownLabel();
 
 			bool isGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
