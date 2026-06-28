@@ -6893,7 +6893,7 @@
                 <Parameter Name="BoxSize" Guid="75570ca8-34ea-45f9-a8d0-b06f0b57fd15" Value="0.8,1.8,0.8" Type="Vector3"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="7fb4f7ce-08bb-4563-bdc1-6b6666f0ea99">
-                <Parameter Name="DisplayName" Guid="880a2121-ead7-4658-83b3-079173aa25a8" Value="[DisplayName:GhostBoomer2]" Type="string"/>
+                <Parameter Name="DisplayName" Guid="880a2121-ead7-4658-83b3-079173aa25a8" Value="[DisplayName:GhostBoomerTamed2]" Type="string"/>
                 <Parameter Name="Category" Guid="d25fa006-698c-4213-8878-1de057176c91" Value="LandPredator" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="478e8871-fc93-4715-b5f3-4c2dc2919fbb" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="f5e40aa7-3bbe-409e-ab91-e444b1478a01" Value="eaten" Type="string"/>
