@@ -1329,6 +1329,7 @@
               <Parameter Name="GlowingEyesColor" Guid="f4a9ae31-c1a1-4061-9ae3-8c0295c477b7" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="bf9b0f90-d31a-4a9a-bdea-77605ea95045" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="e845291b-4367-44f3-a51f-5bc4d0de4578" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="1beff999-274d-46e9-97c6-15083f1cd26d" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="2ef41635-8330-496a-b443-866bc720ad10" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="5a2ff1e3-de37-4640-8d8d-edfb56cfd33d" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1695,6 +1696,7 @@
         <Parameter Name="AttackResilience" Guid="e92a04a7-055b-410a-a400-e4f28039cbf8" Value="100" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="02f8805b-7d03-45be-a8af-17c3d9ea78c2"/>
+            <MemberComponentTemplate Name="FarmerBehavior" Guid="8c0f221d-0b50-4fe8-a07d-70eb88fb4430" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="eddc8079-24d8-4c29-81f5-d72705d27d1f" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="c90489b0-3ec2-4ebe-8c10-83cc7fe44139" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="c832ece1-a513-4d78-8d48-0154af50a215" Value="False" Type="bool"/>
