@@ -110,6 +110,11 @@
     <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="f2146e06-5eee-4b88-ab10-b13cd0cd525a" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="555ed2d8-ca0b-435e-b2d6-e12f33df8d6b"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="06dc8672-e663-42b1-8069-b28272c03136" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="ef378f42-f202-4024-8b4c-b3d842235ed5" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -226,6 +231,11 @@
     <Parameter Name="LoadOrder" Value="111" Type="int"/>
     <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="8a9158d7-dc91-44bf-9cbc-314dc1a01732" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="54cce4b6-bfe1-449e-8200-e798684d1624"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="abc020c1-8a93-4d1c-84c2-037d0ec9f72f" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="cc45d99c-fdce-4474-937d-3a8bf5c543a8" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -287,6 +297,17 @@
                 <Parameter Name="2" Guid="10f05df9-9838-4f4e-b267-7251907967cb" Value="RottenMeatBlock;1;1" Type="string" />
               </ParameterSet>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FluInfected" Guid="a3f3c239-777b-4a17-81d4-2b6138026be1" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="278f3708-26cd-40a0-9c84-86781048e06d">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="4658c243-8d1b-4a27-abb1-0809ac9262d7">
               <Parameter Name="AttackResilience" Guid="794c9c02-3d9c-40ec-bb4d-885a51947e4b" Value="400" Type="float" />
               <Parameter Name="FallResilience" Guid="671e6616-1c0a-4639-b30e-c53db0fc7f16" Value="5" Type="float" />
@@ -473,6 +494,11 @@
     <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="42a6ec47-0703-4205-b863-2c6abc680069" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="5ab809e2-c1b5-47b4-a6ba-ade8ddfe6b9e"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c89fbce4-d9da-482f-9f6e-99aa1f4f2090" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="6fb3a247-8cea-4ef4-9a87-5f082705cbe9" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -602,6 +628,11 @@
     <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="c56878fb-961f-468c-8c79-0a39eec0d455" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="be03a822-7e82-464a-b602-3e58513eb882"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="1efc3ae9-15d7-41df-a5d1-17a94341fafe" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="d18f0958-1fdb-4178-b3b0-6fbb05f86a27" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -731,6 +762,11 @@
     <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="8240d2a3-0e27-46b9-8a87-0596a09ef8fc" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="dfb3ad58-4fda-4862-822a-a8eef228fb9b"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="39c590de-1596-4d6f-8841-25e01e017b01" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="4b9c8fca-820b-4d3e-a9ef-4cde012ae482" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -879,9 +915,14 @@
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
     <Parameter Name="LoadOrder" Value="111" Type="int"/>
-    <Parameter Name="PoisonResistance" Value="100" Type="float"/>
+    <Parameter Name="PoisonResistance" Value="10" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="0cc83ebd-7a93-4a1c-84d1-2b1085804aa6" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/FemaleSneeze/FemaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="c2c576f0-b66f-4bae-b562-55131df39cec"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="82043486-c2dd-441d-aed8-0838553f0a0e" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="cbc54b0a-4580-45ff-b285-5056c7731d67" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -1013,6 +1054,11 @@
     <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="72b53e88-9c90-44ad-9d59-40a1c28dc91a" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="c58849e2-82ad-4395-b393-d81660db0ee3"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="48f3a23e-5945-466c-8657-c7670e9cddbc" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="bf2d4817-563d-4b9f-b2ce-7f607e67cb42" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -1142,6 +1188,11 @@
     <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="2371828b-e063-4300-b430-68f31aa95291" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/FemaleSneeze/FemaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="2ef99c6d-13f1-45f9-b2d8-6b5b9364142c"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ac62427e-4d11-4589-9b18-3c5940052cbf" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="81000fcd-1f89-4d15-9231-918c155c6f47" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -1271,6 +1322,11 @@
     <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="fb5bce51-f61e-4897-b474-4f6229a3b204" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="20b81493-8f73-450a-80be-3a2c055162c7"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="71eaa0f2-6be7-4c2d-a346-9b83c29fb7c5" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="260e63fa-eef0-4d90-9c61-6acb0751c5c1" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -1422,6 +1478,11 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="2a4333d9-5059-4e9b-bc84-58498380b8e3" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="961ca174-70ab-4115-b3ac-21649f9b3b0c"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="80ceff4b-ef5d-4769-8b2a-6c2ec1edbda1" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="75ff5733-9fc4-44e3-a59e-524f40578912" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -1575,6 +1636,11 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="d86e3fba-8510-4186-8c9f-0aae0f2f5f3f" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="03c791fd-e4fc-4932-bd47-1f00295e0872"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="55986af2-b4ec-4810-98e3-7ec334efca8e" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="e386f7de-6ba5-47bf-9120-2e9564dfbdae" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -1706,6 +1772,11 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="8eae2bf6-7a9f-4d87-9171-46ad030e0a6e" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditHerdBehavior" Guid="c89a38c8-fe03-4de5-be03-9ad1c891c7e1" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
@@ -1835,6 +1906,11 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="36e5bb33-bc63-439c-a942-760ce9d12444" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/FemaleSneeze/FemaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditHerdBehavior" Guid="0270fed6-b495-4163-bbe3-3c0de72225a8" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
@@ -1965,6 +2041,11 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="fab040c9-89d6-4000-9c0a-107a79b4bd16" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/FemaleSneeze/FemaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditHerdBehavior" Guid="3aadbf82-32ea-4b5e-90bf-06dd690abd39" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
@@ -2072,9 +2153,16 @@
         <Parameter Name="FireResilience" Guid="7610ac0e-af48-4509-8bf8-abf56081a985" Value="30" Type="float"/>
         <Parameter Name="FallResilience" Guid="672441f3-4bde-4a36-9830-e80c644cf44b" Value="10" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfected" Guid="02868b4f-2c9d-4f72-9917-03334f84f603" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
-    <Parameter Name="PoisonResistance" Value="100" Type="float"/>
-    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+    <MemberComponentTemplate Name="FluInfected" Guid="e4fba975-2501-4cb9-8103-664b226297c0" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="92ba02c3-29aa-4a57-943b-14c90d3be8f2">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-300" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="da0a44db-a9dc-46d7-8bae-961d578cda99"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="81bf2605-ad2e-4369-9474-215b0cf9ffa5" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2128,6 +2216,11 @@
     <Parameter Name="PoisonResistance" Value="-10" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="af80c7e5-cee0-42ea-9840-e4220a28dfa9" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="3196ec8a-3a5f-4602-825a-1c1d32f62143">
               <Parameter Name="AttackResilience" Guid="8d10f8bc-3141-4211-98df-753045c196f0" Value="500" Type="float" />
               <Parameter Name="FireResilience" Guid="4fc51c50-1eb4-4061-8d55-b84075f411bb" Value="15" Type="float" />
@@ -2337,6 +2430,11 @@
 <MemberComponentTemplate Name="HireableNPC" Guid="d3e05e20-b7a7-43e8-8302-3bd5e7cc2ccf" InheritanceParent="4582a365-6082-4260-a7ba-35d141cddbbd">
     <Parameter Name="HirePrice" Guid="c02017e5-c8be-4619-b24e-e8b8fdb3d07c" Value="45" Type="int"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="dca7dfb3-4db7-4ec5-804b-0f34d623b4d3" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="-5" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="2d6d687d-932f-4ce6-969e-4857780cc5c4" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
             <ParameterSet Name="CreatureEggData" Guid="a8ae4b4c-cd5e-4533-8669-2b9e19bb21a0">
               <Parameter Name="TextureSlot" Guid="6526334d-06ca-443c-bf6a-1ea106e406b2" Value="170" Type="int" />
