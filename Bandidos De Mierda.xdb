@@ -3,6 +3,20 @@
     <EntityTemplate Name="Bandit1" Guid="ec68ffdc-d006-4583-aac7-109738d19121" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="51ec403f-1081-4285-84b4-dcb469d09bd1" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="ca90b631-cf08-4ac1-a03e-f2fee10586c6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="8299daca-9bf0-4a5e-b022-944fcbc1ac60" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="b98307d6-b19e-4210-9546-9e69d274db16" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="ce07e5c3-950a-4745-a9df-edf88d44b962" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="71388e10-1702-465a-9eaf-c18a5e08fe9b">
+    <Parameter Name="Head" Guid="16bf8f73-eb25-4d95-83b7-dabaca7bfd0e" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="4ae24908-ab5a-455a-9edd-15fbfa2f7093" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="3612bec3-ae2d-4278-bbf3-df1af09d2ed7" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="1f104416-3e5b-4eb3-a4ac-15bec2caa9df" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="bf41deec-7877-410c-876c-4b08fe4f3a38" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="98f89dbc-7390-4754-b0f3-307b769cd0dd" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="DeathSpawner" Guid="3afb48fb-279d-40d9-9502-ff5cd4768b8d" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="dc4bd13b-99d1-47c5-9dfe-e280924c44d5"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="6d17b67d-113c-4b15-92ef-0e27966035b8"/>
@@ -100,8 +114,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="4c74a370-d94c-4b37-8b90-6ce93af9f2ca">
         <Parameter Name="AttackResilience" Guid="be596ee1-60e7-46c9-97d1-2418d27d8bb1" Value="300" Type="float"/>
-        <Parameter Name="FireResilience" Guid="3e36fbc3-f527-4392-91a4-addf900581b9" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="d3586183-9262-47ce-a825-f7d13d4f507b" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="3e36fbc3-f527-4392-91a4-addf900581b9" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="ff37106c-da69-47f7-a927-6cc22a623120">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -139,6 +152,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a680c1f9-7d5b-42fc-9ac6-9a98cf6e0e24"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="e0ce2870-ab72-4b4c-84f4-a7271b0ba235"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="a3a33ab0-e9d9-4f05-9f71-4e28481b8565" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="118c8818-7c06-4f6a-8303-6c9644ca26b0" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="b4c2bcdb-43a5-4235-92f5-f1b009a9ecc5" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="2a66d6a6-0c41-4f9e-bf57-88f0fe7fc75d">
+    <Parameter Name="Head" Guid="85eae6c5-b492-4ce4-bf31-004e340ef4c8" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="ae54f65c-d171-4837-86b5-de50827e41fa" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="2c7e3612-1058-4daa-82ef-757c8171da23" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="581437d1-700e-4325-884f-cb71a7291269" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="4665ff24-9894-4ff3-bc3f-641ba0225f24" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="66ef6c2f-be29-41e6-a4b4-795c124750d3" Value="Models/OuterClothingFemale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="777e7e24-6efc-4005-8708-0e7033549198" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="d788a3c4-098e-4f85-8c14-a5619dcd19cb" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="b9f15d17-6dca-4a25-ae37-cd7d3b7c89e2" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -222,8 +249,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="023e4070-8810-4a89-ba2a-99633849270b">
         <Parameter Name="AttackResilience" Guid="df55677f-f275-4d03-b267-48d98d8c26a4" Value="350" Type="float"/>
-        <Parameter Name="FireResilience" Guid="948f89eb-3d59-43ff-bcf3-4918fe8c6746" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="8c73478b-8991-41c1-9753-3e52d2fa5c50" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="948f89eb-3d59-43ff-bcf3-4918fe8c6746" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="75e2c1dc-2c09-4096-9ca9-2101582fd8f2">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -274,6 +300,20 @@
         <Parameter Name="Meat" Guid="e8d38c0a-8fe9-4458-afa6-289bc5da9953" Value="1" Type="float"/>
     </ParameterSet>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="e734e3ed-6f5d-435a-97a8-623a250ac6c8" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="97557efa-6c11-4857-8353-b812b8fef246" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="d204176f-5cec-4ac1-a0af-b11d5242ea61" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="4a6adcd7-9cba-476b-b75c-973605dcf844">
+    <Parameter Name="Head" Guid="fb887e8f-dced-48de-965c-c7997eac5130" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="860cb431-75cc-4dd2-8404-084ef8d33751" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="c2694d4a-f1fc-418b-a1b3-8d7fbbdbcea0" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="1560798a-d8e0-409a-85ee-a407c7b60858" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="802621ae-d272-4a71-8651-ae023ccda8ef" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="85da9bc6-c93f-48d9-97cd-0aa41509e5ec" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="edbe5125-55dd-4138-8915-dad057d0c09b">
         <Parameter Name="DisplayName" Guid="b5da94b4-3797-48de-85db-b1e84a7d4b23" Value="[DisplayName:Bandit3]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="d2ebfd80-33cf-47fe-9214-4201b27269a8" Value="True" Type="bool"/>
@@ -310,8 +350,7 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="4658c243-8d1b-4a27-abb1-0809ac9262d7">
               <Parameter Name="AttackResilience" Guid="794c9c02-3d9c-40ec-bb4d-885a51947e4b" Value="400" Type="float" />
-              <Parameter Name="FallResilience" Guid="671e6616-1c0a-4639-b30e-c53db0fc7f16" Value="5" Type="float" />
-              <Parameter Name="FireResilience" Guid="acef797f-6827-48ec-8f60-ea1e6424c9fb" Value="15" Type="float" />
+              <Parameter Name="FireResilience" Guid="acef797f-6827-48ec-8f60-ea1e6424c9fb" Value="5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="8469ade4-2f31-4211-8495-2d9a553b287a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="fb730b38-2531-4cd0-b37c-d7a5d6e9d9a6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
@@ -401,6 +440,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="ecb0a0c0-84b9-40c0-b1f6-83a9838a63dc"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="3d12d0a8-7724-4cef-80bf-b7bbf8e75310"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="dc094991-e4b0-4a47-82ea-475b61e29972" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="73c9c89b-aa70-49f0-a9aa-bca1ed33475c" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="ef32c979-ce7b-496e-911c-6b18f74b270b" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="6c3aa260-d51d-4554-9343-1cc1d69fe68b">
+    <Parameter Name="Head" Guid="78ff4f05-912c-4371-b1a4-0c9f4540cfdc" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="d0ec73ce-b079-4625-ac49-93310db49aa3" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="47553dd6-5368-4f29-8e4b-6baeb137d00b" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="6bdee36f-381c-4f7d-9d56-1eefc1def743" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="dc8604a1-71ff-43b5-b6f2-0c8294d126e6" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="77111863-0b97-4410-9d93-b873d1059f16" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="df01ace7-f0c9-479f-a0a1-128f12eaf16a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="8c0410e7-7474-4752-8148-ee334cb26c7c" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="8f0ea958-bcd9-4cce-b2f5-5df1f77c89fd" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -484,8 +537,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="640c370b-554f-482b-b2b0-1c5d4e6f20b9">
         <Parameter Name="AttackResilience" Guid="4b1c7aa5-b8b3-43f7-ad20-b7544d7d8119" Value="360" Type="float"/>
-        <Parameter Name="FireResilience" Guid="bfeb00a6-c0db-4dc2-bdfc-2e3de059e191" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="b70226fa-57f8-4a34-bc46-d24ce4094425" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="bfeb00a6-c0db-4dc2-bdfc-2e3de059e191" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="0b45a6f1-7139-4de5-9d71-9dcdff2fbccb">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -535,6 +587,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c87e3611-dbf1-4c2e-836d-b3a126878f2f"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="3bce7b01-dd4b-487b-9e05-8231a2066356"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="58eff8dd-9a0a-4dad-bec2-b4c461b14086" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="666c333f-87ca-4c65-a7b6-ac48433cbc65" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="6832c700-abcc-42f1-8790-1dc034fbd0b8" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="43e09935-18b8-4f20-bd26-5079ccfe3709">
+    <Parameter Name="Head" Guid="8e820aec-f5db-4323-919d-342c4106350c" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="e07f98ac-9160-4df2-8689-528f67821201" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="15c47131-1ef2-4122-9543-a1875f58b928" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="e4b14a05-4af2-4faa-877a-d37134da2aea" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="87691c1d-a35f-4663-916e-d84e539f7d62" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="2e6948d3-ea2c-48de-9468-eb0454b2c273" Value="Models/OuterClothingFemale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="7f366fc4-c97c-4062-8a58-f2e6f6b9509b" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="02ca1076-7840-40c4-b654-ca2c0a75998c" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="193559e3-e097-47af-928b-7cfd515e7796" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -618,8 +684,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="8e830bbc-2d8a-47b9-bc4e-5809cdd3dd44">
         <Parameter Name="AttackResilience" Guid="9bde8f9d-4b1d-4588-b951-d55999f6fa72" Value="460" Type="float"/>
-        <Parameter Name="FireResilience" Guid="1487efba-1d90-4cd1-8d92-dacad8777370" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="71ccaec3-0430-4e2b-8dff-95b347db9d8f" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="1487efba-1d90-4cd1-8d92-dacad8777370" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="1348d75e-560c-4f19-ac9f-876784e06ed7">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -669,6 +734,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="82e91cd9-9098-4fd4-a3c2-30fe079ff6a2"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="0f0df2c7-ae05-4dbd-a3b8-bc103ad09ae3"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="b43d7c95-3578-4134-bac9-bd5ee53b2aae" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="df58f8b2-a8ee-482a-966f-b7430ea94850" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="cf98e11d-a17d-4d6f-a2e9-8201aedd524f" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="11a6bd7a-e80d-460c-9fff-05d512dbaf82">
+    <Parameter Name="Head" Guid="80590a14-3c21-47ec-8ff7-54a6625cc78c" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="b9c3697c-a402-49eb-98bd-60ae650e14a5" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="7c3ae8b7-69ff-4606-9731-87e94115d12d" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="33793ea8-73af-4d94-a469-b6bc7dd5b8a4" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="039c6907-73ea-415a-995a-d9d0be98525b" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="08a1a573-3336-482d-8a24-a1b734a6e9d2" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="cb6f1f54-22fb-46e8-b413-22d4c96d34e6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="6be22db7-2741-49b4-b1b7-a18a7da0e061" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="a993288b-71d7-4b4a-a431-e0a5b00c22de" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -752,8 +831,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a0f32a59-202d-4816-9cdc-901f5090485a">
         <Parameter Name="AttackResilience" Guid="cd92cb17-79ac-4653-b990-c48d669f9ad2" Value="460" Type="float"/>
-        <Parameter Name="FireResilience" Guid="8e2ea922-6aab-41a4-b6db-f92ed0c7575f" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="1e026992-8094-4a9b-a522-9d62e0e3f483" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="8e2ea922-6aab-41a4-b6db-f92ed0c7575f" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="1254dbcc-4947-4db3-873a-16ed67fc21f7">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -908,8 +986,8 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c322e6c0-c3b7-44a8-8544-c7415fa132c5">
         <Parameter Name="AttackResilience" Guid="85e20cb6-ee69-4672-8fef-19e4ff49863b" Value="490" Type="float"/>
-        <Parameter Name="FireResilience" Guid="01455ec0-452f-49c4-86c0-0eaf8276faa1" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="195636fc-aac6-4aa0-9efa-7d04042bf052" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="01455ec0-452f-49c4-86c0-0eaf8276faa1" Value="5.5" Type="float"/>
+        <Parameter Name="FallResilience" Guid="195636fc-aac6-4aa0-9efa-7d04042bf052" Value="5.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="e7409728-39bd-4239-ba95-15aa00eaf091">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -961,6 +1039,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="f79c671d-f57a-4c35-8cac-2ee398fef629"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="c41bc5d9-6976-4712-9b3f-5404fc8f80ee"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="3b754b09-13e4-4b65-82f0-c72a4bd6fa83" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="93ad6842-cedc-4a48-bf78-8a9b6ded47b1" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="910a4ed7-9088-4e45-b750-0949a1126303" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="c68d9a24-90ff-4cb2-b233-94c0203326a0">
+    <Parameter Name="Head" Guid="6daccffe-4d99-498e-baa7-b5e416726dad" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="f0d7daba-5b48-437a-9331-74daccc527cb" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="6c733296-bf3a-41e8-94dc-3e5ef3dc9c74" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="cb966968-a90c-4611-98fb-f84129c0d34b" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="cb7b94ab-81ea-4b23-99ba-193622fd6d3e" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="24843601-0422-43f1-ba61-8c396ad28641" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="0b718af3-f358-4043-af93-9e73a48ee29a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="9c6fd0c9-18a6-452d-ab4d-777ba17d3277" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="1922f0b9-6fee-4c9b-816a-cd257a4773b1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -1044,8 +1136,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c182f1dc-d7dc-4e58-af01-885d0df9abf0">
         <Parameter Name="AttackResilience" Guid="3ce84e94-741e-47ff-9cd0-ec07f36d7728" Value="450" Type="float"/>
-        <Parameter Name="FireResilience" Guid="35ea764b-2e50-47e0-997b-d32e8e69145d" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="6135b338-89c9-48a8-bb3d-3380accbf58e" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="35ea764b-2e50-47e0-997b-d32e8e69145d" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="96b0b8a5-afc1-445b-a123-3e495911e700">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1095,6 +1186,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="845d4515-cb2b-430e-9255-8101c585b0bd"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="c898defb-7693-4177-b99b-6030cb185ab3"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="bd2e80c2-a861-4777-8d02-d9fa0f1720e8" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="3977a799-4973-4e51-80d4-cf49baff1219" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="5bf6b26f-3a04-4266-b058-29e2371b5f8c" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="a21de972-8372-4529-8d09-11492cd04825">
+    <Parameter Name="Head" Guid="22c55a2d-8056-4ae9-9a70-046e4796b29b" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="06578bdf-2f3a-4a22-bc08-efca0525cdba" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="e1280272-f6d5-4903-9c95-2ceec061df6f" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="1a512a06-765c-46f6-ae87-aeb86fc03751" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="34c57619-04b9-4ab7-a817-80a21fc6a7b1" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="37fd8d15-617b-45d9-afd8-79cef1225dca" Value="Models/OuterClothingFemale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="04be7f62-3fc3-4f3e-851e-af06f912301c" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="c38d5e2b-c447-4586-b73f-e6825f563435" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="648c638f-6662-4b1d-ab55-b83db3b5c71f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -1178,8 +1283,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c754c23f-558a-4f0a-82c1-20eac9a1b5ff">
         <Parameter Name="AttackResilience" Guid="2a5edd22-d2a2-426a-b2b8-b926c27c5ff7" Value="450" Type="float"/>
-        <Parameter Name="FireResilience" Guid="29bcaa06-161d-4f95-863d-84ee09d465ef" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="54bf950f-3d41-4008-a04a-1bd9c4823754" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="29bcaa06-161d-4f95-863d-84ee09d465ef" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="fd1c7492-dc55-469b-82b9-9c2d4fcbe0a1">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1229,6 +1333,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a20d0003-9ad4-439d-bacd-a07edb703b12"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="9dfc7869-c4fb-4d33-a9bf-dbc795e356d5"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="3820a774-0478-497b-86bd-08b2ef164a70" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="9bd3a78e-7fc6-46c1-aeb8-5c041e59edbc" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="2796cc33-2029-4ddd-a939-22e88d06da63" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="f7bd087a-99d5-45f1-bbf0-22458d3d357d">
+    <Parameter Name="Head" Guid="a2b8276b-8bf9-407b-92b7-9a5e19e04a19" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="b097430e-e95b-4205-9ca8-f11a12fd9f42" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="ab1b0071-3051-4a8f-a8d4-2f2c3c8ff9cc" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="d6a7f423-dd0c-4893-a914-8fecb4137724" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="b1cb6a91-ca72-4713-b65f-d1cd461329b3" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="08699679-c79b-49c6-994a-3f08935c0e26" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="977b3393-aed2-4acf-b6c7-6e077f938bcb" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="462c0bd4-6f5d-4490-a1ff-287e7d7f4ab6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="45bc145d-3ced-4982-8094-7d0951e69558" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -1312,8 +1430,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="95c99e27-f599-42f9-b94a-699ac912f07f">
         <Parameter Name="AttackResilience" Guid="c50ea7fa-2f54-4e62-9894-274ecb9ca3d0" Value="450" Type="float"/>
-        <Parameter Name="FireResilience" Guid="aea0e8f2-b64b-4ae0-98d2-0609fce42173" Value="220" Type="float"/>
-        <Parameter Name="FallResilience" Guid="8e7cc441-fd69-4dfe-91bc-97644cd479d9" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="aea0e8f2-b64b-4ae0-98d2-0609fce42173" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="47c0fd53-df3e-4352-a51c-3688b4b4835f">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1468,8 +1585,8 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="546765c0-f2d6-4b5e-92de-3c5cdd1ae7b0">
         <Parameter Name="AttackResilience" Guid="11bb5ac5-1743-42bc-b7b8-5b1c70c835b8" Value="490" Type="float"/>
-        <Parameter Name="FireResilience" Guid="1b831578-15e6-49dc-8844-778634339f42" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="636c6b2c-812f-4dda-94b2-7db8d6eef8a7" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="1b831578-15e6-49dc-8844-778634339f42" Value="5.5" Type="float"/>
+        <Parameter Name="FallResilience" Guid="636c6b2c-812f-4dda-94b2-7db8d6eef8a7" Value="5.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="0311f32c-9885-40e7-a231-6d6d29249db0">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1626,8 +1743,8 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d86a9680-46ee-4083-ae70-cbbedead4322">
         <Parameter Name="AttackResilience" Guid="fcbfbcd5-97e4-407f-9cea-1878f8ccc94f" Value="490" Type="float"/>
-        <Parameter Name="FireResilience" Guid="3afc4883-48dc-4a6e-932d-74fdca270411" Value="320" Type="float"/>
-        <Parameter Name="FallResilience" Guid="8d88e377-a92a-4edf-b139-3530a9d3a48d" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="3afc4883-48dc-4a6e-932d-74fdca270411" Value="5.5" Type="float"/>
+        <Parameter Name="FallResilience" Guid="8d88e377-a92a-4edf-b139-3530a9d3a48d" Value="5.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="4b545a2b-3b5f-4633-a503-f1678bce68d7">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1679,6 +1796,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="fb620094-0dbb-4e35-800a-ba03362c8f34"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="a576cfda-7ca7-483b-b0fa-3922bac73725"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="eef5c1fe-5342-4bb2-be7a-99a43b34cc2e" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="452b9341-d6da-417e-b637-3e78a6486d03" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="d1459d5d-38c7-4954-9e05-5996ed737f8c" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="99482be6-ac48-4102-a807-8abdbbf540e9">
+    <Parameter Name="Head" Guid="8d0caeac-b50a-40d7-b483-95f1cdeff953" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="d3615648-339e-4b58-bcba-4ca744d16754" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="e3119d38-68e2-4aeb-8570-3e57b04d9d6e" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="a594856d-b47c-4f66-ab6a-a9a4e86e11ae" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="9162754b-334d-4998-9b82-6727b045bc97" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="f99ead4e-1ed9-4e74-85e0-685aaf3d578a" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="65542d01-0e15-4d55-bc46-298e86b96c3b" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="76f8aafa-9734-4221-877a-c5c684135307" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="8952cd8c-850c-452c-a17c-43475974c903" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -1762,8 +1893,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="3c6e707b-15ec-4423-be83-e8824479ea25">
         <Parameter Name="AttackResilience" Guid="d6b63c74-b2aa-40e0-8602-66ff237ff8ea" Value="450" Type="float"/>
-        <Parameter Name="FireResilience" Guid="455ce66e-419c-496f-b08a-c60549969200" Value="300" Type="float"/>
-        <Parameter Name="FallResilience" Guid="7860beb6-8c18-43ac-a5be-ded991dd3a41" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="455ce66e-419c-496f-b08a-c60549969200" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="38659b54-37a5-4d3d-bdb6-ce94054fedc5">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1813,6 +1943,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="7bb2eec6-5c94-43af-ac8d-2b5b2fce5c57"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="d43ebad1-b576-459a-9f90-39e506efdb25"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="a65e141e-d64f-43d1-8032-ef4fb4606a02" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="b4d69369-1158-47ec-9874-e34ec72f13d3" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="860fce28-1087-46c5-83dc-456cc09f2226" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="4a5254d5-6591-4d5d-bd47-58c40d5579e9">
+    <Parameter Name="Head" Guid="241d9715-8cb7-4fcd-8c4a-46d2d3ae8962" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="ec2be2bc-1d49-4ae9-83db-d95c6965413f" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="c3fd87b4-0efb-4c59-9285-3f5baffa6bb9" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="295636c3-1695-49db-8796-7d6f91f5c411" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="350c797d-33ae-4444-8ced-35cfe9e28271" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="feb85025-5c7f-47dd-98f8-9f9388a30f2e" Value="Models/OuterClothingFemale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="d29e017e-137d-4411-a400-d9489792d0cf" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="762bc059-ab9d-4928-b670-8c9077d82a3a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="191dc464-e59b-4344-a034-21ac028fc668" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -1896,8 +2040,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d24e09a7-df38-49f2-9115-67cf40ffe87f">
         <Parameter Name="AttackResilience" Guid="12430de8-b4a9-4853-849b-3c88ecad7023" Value="450" Type="float"/>
-        <Parameter Name="FireResilience" Guid="c4c01d84-a28f-4f39-8115-923bf9af4b68" Value="300" Type="float"/>
-        <Parameter Name="FallResilience" Guid="03ee1cfc-ea20-4b8a-9798-71406e816311" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="c4c01d84-a28f-4f39-8115-923bf9af4b68" Value="5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="fbee40f1-ec3e-4364-bd8a-e25c43b6a4d3">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1947,6 +2090,20 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="f4baca47-fdc4-4b86-b130-7c526feeebe7"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="77ab5595-5e69-499e-9703-5da985a6b89d"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="e0d38da1-eb8f-4619-91e5-8c1a9e2a8d19" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="ef82d85c-0b59-40c0-a978-cdaf377637a5" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="252ecbdf-4bbe-4613-843b-8a7c827118c1" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="756b023e-fefa-4de3-a733-81ccd2f24a23">
+    <Parameter Name="Head" Guid="00b3a1b5-c497-40cf-96ce-5e2bd9b357dc" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="7d9d9790-fbd4-411e-9761-7b3b48dab7b8" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="c2493d6b-0885-4c27-a33a-48f4cbbd72ec" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="018bd930-32e6-4085-99cb-cc657bd8c8c6" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="0ec0f38f-c2d6-4b8b-aac3-868c722d4432" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="5f6d790c-ecc4-41de-b04a-2c14760749b7" Value="Models/OuterClothingFemale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="73705e4a-6647-4225-968f-c8359d7c6b8a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="63c10b09-0dfc-4049-bd6c-00531c292f4f" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="da8d9c7e-feaf-4080-b03d-1b31b9405b86" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
@@ -2031,8 +2188,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="831fa913-4be8-4daf-a7d0-e10b4f009c73">
         <Parameter Name="AttackResilience" Guid="af5db9c4-65d3-4716-ad6a-845ddcd5fd0f" Value="450" Type="float"/>
-        <Parameter Name="FireResilience" Guid="ca9fb541-9198-4bbb-8644-c8ce62e42ac2" Value="300" Type="float"/>
-        <Parameter Name="FallResilience" Guid="811ac125-f7c7-4dd5-9d74-abee5d55c8cf" Value="10" Type="float"/>
+        <Parameter Name="FireResilience" Guid="ca9fb541-9198-4bbb-8644-c8ce62e42ac2" Value="5.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="69957def-c702-41ab-b2a6-583535d5dbf7">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -2150,7 +2306,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="32da1e7c-915a-4856-ad54-51e4079ce06d">
         <Parameter Name="AttackResilience" Guid="76bedcc4-b716-40e1-8c15-499a329b1b00" Value="50" Type="float"/>
-        <Parameter Name="FireResilience" Guid="7610ac0e-af48-4509-8bf8-abf56081a985" Value="30" Type="float"/>
+        <Parameter Name="FireResilience" Guid="7610ac0e-af48-4509-8bf8-abf56081a985" Value="10" Type="float"/>
         <Parameter Name="FallResilience" Guid="672441f3-4bde-4a36-9830-e80c644cf44b" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FluInfected" Guid="e4fba975-2501-4cb9-8103-664b226297c0" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
@@ -2252,6 +2408,20 @@
         </ParameterSet>
       </ParameterSet>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureAI" Guid="3f601712-4d5d-4a21-8f0f-a6e9f3c3c97d" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="ee724282-afaf-4368-8e3f-79bf6b6e5495" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="afe18504-d1d0-423a-9bb6-ce0a968b984c" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="08d24a4a-27c8-474b-ae16-389f25761975">
+    <Parameter Name="Head" Guid="02e60a75-dace-4662-9bc9-0f3ad7966bfb" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="2253bd1e-f37b-4e90-be80-1752c94418a6" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="0321b0f2-ba9b-47fd-a6ea-f80b6c361976" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="6e6d866a-d5f5-4a55-bba6-ab071afbda88" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="c823aab2-10b6-4cd6-abf9-5530a5a1f741" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="44b307bd-08cc-4937-8b94-4f840266fd77" Value="Models/OuterClothingFemale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="9c6ee1c3-e65e-4f21-aa71-cefa83bdcf22" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
@@ -2361,7 +2531,8 @@
     <MemberComponentTemplate Name="FarmerBehavior" Guid="4dfe2006-5db4-41a5-9b52-906378d5319e" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
             <MemberComponentTemplate Name="Health" Guid="bca1513e-cbcf-4b24-88d8-e2d96fd652a5">
               <Parameter Name="AttackResilience" Guid="de188dd6-3d9d-44d0-afcf-d30e7e1ca5c4" Value="455" Type="float" />
-              <Parameter Name="FireResilience" Guid="764c8d8f-7f00-46eb-9605-44fa9102811c" Value="35" Type="float" />
+              <Parameter Name="FallResilience" Guid="0305d704-5866-4c2a-9e28-eb30de459c8f" Value="5.5" Type="float" />
+              <Parameter Name="FireResilience" Guid="2e9ecb7a-dc47-4b58-b607-33eb99bf99a0" Value="5.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="HumanModel" Guid="b6693c75-aa9c-4ede-9cfc-aac12d96a693" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="e74e86a7-5021-4d02-b09c-a1c8947fef47" Value="Models/HumanFemale" Type="string"/>
@@ -2442,6 +2613,136 @@
               <Parameter Name="SwapUV" Guid="cbce6183-247e-4e0d-a309-719d06ffc149" Value="False" Type="bool" />
               <Parameter Name="DisplayName" Guid="7312500a-0b31-4344-9423-717e4c800ef9" Value="[DisplayName:Bandit17]" Type="string" />
               <Parameter Name="EggTypeIndex" Guid="e416a920-a399-472c-b323-f59deb1082d5" Value="2019" Type="int" />
+            </ParameterSet>
+          </EntityTemplate>
+
+          <EntityTemplate Name="LaBandida" Guid="0e27164e-0e9f-458f-9463-4832bd09409d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+            <MemberComponentTemplate Name="Creature" Guid="495c8fa4-5e52-4777-98c7-dcab68832650">
+              <Parameter Name="Description" Guid="301fa593-7a1a-4ea5-a915-7006881ae173" Value="[Description:LaBandida]" Type="string" />
+              <Parameter Name="Category" Guid="3d5c1a06-b988-4607-9286-682544d5b04c" Value="LandPredator" Type="Game.CreatureCategory" />
+              <Parameter Name="DisplayName" Guid="aed2a51d-216d-4e74-804c-7042280f0f6c" Value="[DisplayName:LaBandida]" Type="string" />
+              <Parameter Name="ConstantSpawn" Guid="d7940f42-06df-4268-822d-b02210a815a4" Value="True" Type="bool" />
+              <Parameter Name="KillVerbs" Guid="bd2646bc-8bde-49e5-b29a-fdaaa324927b" Value="massacred" Type="string" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FluInfected" Guid="5a95f1e0-faac-4f39-ad60-7435f7967c52" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
+        <Parameter Name="FluResistance" Value="50" Type="float"/>
+        <Parameter Name="CoughSound" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
+        <Parameter Name="SneezeSound" Value="Audio/Creatures/FemaleCoughSneeze/FemaleSneeze1" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="4176ec2f-458b-4992-af5a-00dcb5db65b5">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="50" Type="float"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="Body" Guid="0b361a35-0f66-4541-bc2d-123c1e5d7a5d">
+              <Parameter Name="BoxSize" Guid="483e5c2b-50d3-4e51-962f-9a0011afd0a4" Value="0.7,1.8,0.7" Type="Vector3" />
+              <Parameter Name="Mass" Guid="5a134fb6-8d51-453a-a43a-7a2cfb0246df" Value="120" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="WalkAroundBehavior" Guid="332d364a-2f5f-42bb-b0fc-2e365e937126" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71" />
+            <MemberComponentTemplate Name="CreatureSounds" Guid="d580143e-1cab-47b7-bf18-0b817ad1ac23">
+    <Parameter Name="PainSound" Guid="84574b0f-2669-4057-9bbc-bbb4ea50cba5" Value="Audio/Creatures/Mujeres/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="fc02dfe3-be80-4258-a321-e3c8fa687a65" Value="Audio/Creatures/Mujeres/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="24e13b58-7ca5-49c1-885e-e63d13d5927a" Value="Audio/Creatures/Mujeres/Attack" Type="string"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="Loot" Guid="77e197f0-d87f-41a5-a119-d347f7c4b6ba">
+              <ParameterSet Name="Loot" Guid="6b0a0f1f-af2d-4714-a8cc-40c23ee849a9">
+                <Parameter Name="1" Guid="9572bbd7-ee02-4e3b-ad64-c12d596e2d88" Value="RottenMeatBlock;1;1" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Health" Guid="305cbf0b-2399-4789-9217-bb5d9a4ddbbf">
+              <Parameter Name="AttackResilience" Guid="bfa4c389-d816-4fb9-86b1-8a21755747ee" Value="1445" Type="float" />
+              <Parameter Name="FallResilience" Guid="c8a12252-08d6-425e-bef3-2249bcf5361f" Value="35" Type="float" />
+              <Parameter Name="FireResilience" Guid="de82219b-370e-455c-8622-0287180dbb32" Value="55" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="HumanModel" Guid="516d362d-9d5a-4493-8a56-357aba2d42cc" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+              <Parameter Name="ModelName" Guid="c11c2a65-7d84-4a74-bf2b-d5da1f92859e" Value="Models/HumanFemale" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="1260cc30-1867-4b8f-96cd-34d8e50867c2" Value="Textures/Bandidos/La Bandida" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="ec73cb53-e0b0-4745-85f6-082544b80bca" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="a6559683-7f73-4f5e-9ab6-01915414b8d2" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="26570c37-1b20-4ffc-a42e-90b73c94562b" Value="0.75" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="0791f03e-1bc0-43be-a00c-52fed1bb5b65" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="68d2b5d8-859a-4c73-9569-602d9c82d11b" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="297db745-a0b9-4303-a1f4-3392be0b3121" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="8c2624bb-c370-4684-8351-9cceb6bdd4e5" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="dc7fea62-b6b3-4130-a8e6-58d64a4abb78" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="7e083d8a-d056-4bb1-ad0d-4440bbe771d2" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="73e44a4d-cf1b-4e9c-9bfc-8514ff0ecd41" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="700a441a-280c-4d89-8e14-fe96f0566a69" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="59f7abb2-6c89-42a7-8420-319b4d284958" Value="false" Type="bool"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Miner" Guid="566b9f12-99a9-4dc1-ae1f-2aa6eb910539" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+              <Parameter Name="AttackPower" Guid="7610e4a5-f45e-4d03-a638-3cd22fb135af" Value="2.5" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="NewInventory" Guid="f74abf02-feb0-48f9-93c5-d58c02b09599" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
+    <ParameterSet Name="CreatureItems">
+        <ParameterSet Name="LaBandida">
+          <Parameter Name="KABlock" Value="1" Type="int" /> <!-- Tiene puesto su KA-->
+        </ParameterSet>
+      </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="4279b925-4fed-450a-b158-58b6f713a0c2" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
+    <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
+    <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
+    <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
+    <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
+    <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
+    <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
+    <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
+    <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="BanditHerdBehavior" Guid="f40c5d9a-49a4-4540-8277-6306cf7aeabc" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
+    <Parameter Name="HerdName" Value="bandits" Type="string"/>
+    <Parameter Name="HerdingRange" Value="30" Type="float"/>
+    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="8856ddc3-3a9f-4824-be1b-ee4a836a6779" InheritanceParent="d07a37f7-7cef-4bb2-88e6-ac3c4b502264">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="00439a40-215c-4a7f-aa52-c4ed79bf8d79" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Guid="1baee999-d97a-4e89-b544-37744bb343d5" Value="999" Type="float" />
+  <Parameter Name="DayChaseRange" Guid="af3b8336-e0bd-4d0a-96ac-141322942028" Value="999" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Guid="08f8e032-a1df-4bd2-95fe-9dbf0cdaa79a" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Guid="e636a53f-ae1d-46d2-b59e-949ce89dda71" Value="999" Type="float" />
+  <Parameter Name="NightChaseRange" Guid="16a679fa-b886-49eb-99df-1f30e3bdc76b" Value="999" Type="float" />
+  <Parameter Name="AutoChaseMask" Guid="9873e730-1126-4e08-bb7c-a99b6e3b9558" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="4714d9c3-754a-4e28-8a54-b8f0e6f16483" Value="1" Type="float" />
+  <Parameter Name="IsDrugTraffickerMode" Guid="833703ce-95ce-44df-b2b0-28cb7690bfdc" Value="true" Type="bool" />
+  <Parameter Name="AttackAllCreatures" Guid="c2092268-d46e-402e-a14b-f89d541649d6" Value="true" Type="bool" />
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="Locomotion" Guid="68be8f8f-6700-42c8-a693-0f8ab08b6b1d">
+              <Parameter Name="FlySpeed" Guid="bce6d8b0-2c0a-4c86-b527-144c9f187822" Value="0" Type="float" />
+              <Parameter Name="AccelerationFactor" Guid="b6170703-58d7-4eb8-9045-d9f425690626" Value="1.5" Type="float" />
+              <Parameter Name="LadderSpeed" Guid="71ebae78-c57e-4923-ae8c-5afdb7d1f19b" Value="0" Type="float" />
+              <Parameter Name="WalkSpeed" Guid="ac673cdb-4779-4569-af19-002cb906c3e6" Value="4.5" Type="float" />
+              <Parameter Name="TurnSpeed" Guid="fdc38a4f-9baf-48e2-af07-df699f11bf10" Value="8" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f0a9d963-b3aa-4601-94ae-aea4d095b7ba" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
+            <MemberComponentTemplate Name="DeathSpawner" Guid="b47af038-a2c6-4e34-883b-98df41ddec8b" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="ddd7ccb5-41f4-42b6-a18d-7d73fea56e32"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="3a4694df-ee63-4384-b1de-a91dce035490"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="a05421f7-d895-4ae4-b486-b8ac34f84b5b" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="710dab3f-897b-43ef-8070-8c5316ba92b7" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="30cdbfb5-f70c-423e-8e3c-9bbc93aa708a" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="fbb94475-5af5-45eb-a85b-3cbb72844067" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="4d8b15a2-df45-41f2-a9f4-3741eea784a8" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="cb8e905c-e7b7-41c7-834e-c64fa2a18967">
+    <Parameter Name="Head" Guid="c630124d-b305-4bac-8298-341f740d2d52" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="f1bd2d10-bdc6-43a9-bc13-55c3380eac6e" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="72d4aa44-ee6e-4a23-8dd9-e8ad77339c96" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="abf18cf5-3b06-4dd2-8db1-58da435b7b17" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="7f100134-041a-4116-b449-0432c5722e37" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="8b482dbc-ff32-40ef-9eb8-bf00df4ef5e9" Value="Models/OuterClothingFemale" Type="string"/>
+            </MemberComponentTemplate>
+            <ParameterSet Name="CreatureEggData" Guid="f4e48ad6-c3ca-4b54-b77a-d8de7eade3a8">
+              <Parameter Name="TextureSlot" Guid="33a2fe95-93d9-4451-b40f-2902f0adce48" Value="160" Type="int" />
+              <Parameter Name="Color" Guid="2a164f3b-efea-402e-8013-ffc07d74922f" Value="255,255,0" Type="Color" />
+              <Parameter Name="SwapUV" Guid="028ad43c-4f59-480a-9a75-b34fc57545be" Value="False" Type="bool" />
+              <Parameter Name="DisplayName" Guid="eaa0b7d6-66aa-4975-acfe-8b0faf324c3a" Value="[DisplayName:LaBandida]" Type="string" />
+              <Parameter Name="EggTypeIndex" Guid="2923e5eb-801a-4f8e-a0bf-3bc1d771bf3e" Value="2020" Type="int" />
             </ParameterSet>
           </EntityTemplate>
 </BandidosDeMierda>
