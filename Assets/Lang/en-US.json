@@ -1518,21 +1518,21 @@
   "DifficultyPlaceholder": "Choose how bad you're doing"
 },
 "GreenNightDifficulty": {
-    "VeryEasy_Name": "Early Retirement",
-    "VeryEasy_Desc": "\"Grandpa vs. the World\" mode. The infected look at you with pity, and their attacks feel more like a massage than a hit. They don't touch your structures, can't even ride a foal, and their explosions are as disappointing as a damp firecracker. Build your empire without fear. Perfect for anyone who wants to feel invincible without breaking a sweat.",
-    "Easy_Name": "Therapy Waiting List",
-    "Easy_Desc": "A walk in the park, even if the park is full of angry infected. They still respect your walls, but their punches are starting to hurt. Explosions are noticeable but won't level everything, and the infected are so clumsy they can't even remember how to open doors. Great for warming up before life really starts hitting back.",
-    "Normal_Name": "Monday Morning",
-    "Normal_Desc": "The average survivor's daily routine. Hits that hurt just enough, normal toughness, no structure damage, no mounts, no surprises. Explosions are the usual: flashy but manageable. Your base is safe... for now. Think of it as an ordinary day before your boss (the apocalypse) decides to test you.",
-    "Medium_Name": "Structural Damage",
-    "Medium_Desc": "Now the real party begins. The infected learn how to use their hands to tear down your walls, and as if that wasn't enough, they can open doors too. You're not even safe in the bathroom! Explosions are no longer a joke, and every hit feels like getting run over by a truck. Therapy won't help anymore.",
-    "Hard_Name": "The Last Architect",
-    "Hard_Desc": "Welcome to hell. The infected ride beasts, flank you from every side, use ranged weapons, and instead of retreating, they charge even harder. Your buildings are like houses of cards: one gentle touch and they're gone. Explosions wipe out everything in their path. Whoever built your shelter should probably start looking for a new job... or a coffin.",
-    "Extreme_Name": "Sanity Load Error",
-    "Extreme_Desc": "You've lost your mind. The infected are killing machines: faster, stronger, hungrier. They tear down everything they touch, their explosions flatten entire city blocks, and if you're not careful, they'll surround you with no escape. There's no safe corner, no plan that works. Beat this, and you'll earn either madness... or a gravestone with your name on it.",
-    "Impossible_Name": "No Second Chances",
-    "Impossible_Desc": "Think you've hit rock bottom? Think again. There are no second chances here. This mode only unlocks after surviving absolute insanity. The infected are practically gods: not even Creative Mode can save you from a single hit. Their explosions erase the landscape, and to make matters worse, your allies become completely useless. They won't attack the infected, won't help you when you're under attack, ignore your orders, and pretend nothing's happening when the Green Night falls. You're completely alone. This isn't a game. It's a death sentence. And no, there's no going back."
-  },
+  "VeryEasy_Name": "Early Retirement",
+  "VeryEasy_Desc": "\"Grandpa vs. the World\" mode. The infected look at you with pity, and their attacks feel more like a massage than a hit. They don't touch your structures, can't even ride a foal, and their explosions are as disappointing as a damp firecracker. They wander around so carefree that it never even occurs to them to protect themselves (no armor). Build your empire without fear. Perfect for anyone who wants to feel invincible without breaking a sweat.",
+  "Easy_Name": "Therapy Waiting List",
+  "Easy_Desc": "A walk in the park, even if the park is full of angry infected. They still respect your walls, but their punches are starting to hurt for real. Explosions are noticeable but won't level everything, and the infected are so clumsy they can't even remember how to open doors. Their protection is practically nonexistent (they almost never wear armor). Great for warming up before life really starts hitting back.",
+  "Normal_Name": "Monday Morning",
+  "Normal_Desc": "The average survivor's daily routine. Hits that hurt just enough, normal toughness, no structure damage, no mounts, no surprises. Explosions are the usual: flashy but manageable. The infected wear no protection, so they go down fairly easily. Your base is safe... for now. Think of it as an ordinary day before your boss (the apocalypse) decides to test you.",
+  "Medium_Name": "Structural Damage",
+  "Medium_Desc": "Now the real party begins. The infected learn how to use their hands to tear down your walls, and as if that wasn't enough, they can open doors too. You're not even safe in the bathroom! Explosions are no longer a joke, and every hit feels like getting run over by a truck. Some of them have even had the brilliant idea of putting on armor (medium chance), making them much tougher. Therapy won't help anymore.",
+  "Hard_Name": "The Last Architect",
+  "Hard_Desc": "Welcome to hell. The infected ride beasts, flank you from every side, use ranged weapons, and instead of retreating, they charge even harder. Your buildings are like houses of cards: one gentle touch and they're gone. Explosions wipe out everything in their path. Most of them now wear armor (high chance), making them much harder to kill. Whoever built your shelter should probably start looking for a new job... or a coffin.",
+  "Extreme_Name": "Sanity Load Error",
+  "Extreme_Desc": "You've lost your mind. The infected are killing machines: faster, stronger, hungrier. They tear down everything they touch, their explosions flatten entire city blocks, and if you're not careful, they'll surround you with no escape. Almost all of them wear full armor (very high chance), turning them into walking tanks. There's no safe corner, no plan that works. Beat this, and you'll earn either madness... or a gravestone with your name on it.",
+  "Impossible_Name": "No Second Chances",
+  "Impossible_Desc": "Think you've hit rock bottom? Think again. There are no second chances here. This mode only unlocks after surviving absolute insanity. The infected are practically gods: not even Creative Mode can save you from a single hit. Their explosions erase the landscape, and to make matters worse, your allies become completely useless. They won't attack the infected, won't help you when you're under attack, ignore your orders, and pretend nothing's happening when the Green Night falls. Nearly all of the infected wear the best armor available, making every blow you land feel like punching solid rock. You're completely alone. This isn't a game. It's a death sentence. And no, there's no going back."
+},
         "VehicleInventoryWidget": {
           "1": "Vehicle",
           "2": "Inventory"
