@@ -1477,6 +1477,22 @@
     "DisplayName": "Anti-Tanks Bullet",
     "Description": "A special ammunition that will help us later. Use it wisely and only in emergencies if musket or shotgun bullets are ineffective in applying the necessary damage.",
     "CRDescription:0": "Use it wisely if powerful heavy bosses have you surrounded and musket balls are ineffective."
+},
+"ClothingBlock:51": {
+  "DisplayName": "Bulletproof Military Helmet",
+  "Description": "A state-of-the-art ballistic military helmet. It cannot be crafted and can only be obtained by defeating La Bandida."
+},
+"ClothingBlock:52": {
+  "DisplayName": "Military Bulletproof Vest",
+  "Description": "Military-grade ballistic vest. Cannot be crafted; can only be obtained by defeating La Bandida."
+},
+"ClothingBlock:53": {
+  "DisplayName": "Military Bulletproof Pants",
+  "Description": "Military pants with ballistic protection. Cannot be crafted; can only be obtained by defeating La Bandida."
+},
+"ClothingBlock:54": {
+  "DisplayName": "Military Bulletproof Boots",
+  "Description": "Reinforced tactical boots with ballistic protection. Cannot be crafted; can only be obtained by defeating La Bandida."
 }
 },
       "ContentWidgets": {
