@@ -1479,7 +1479,23 @@
       "DisplayName": "Jean Normal",
       "Description": "Un pantalón simple y cómodo. No ofrece grandes ventajas, pero cumple su función básica para la supervivencia diaria.",
       "CRDescription:0": "Un pantalón simple y cómodo. No ofrece grandes ventajas, pero cumple su función básica para la supervivencia diaria."
-    }
+    },
+    "ClothingBlock:51": {
+  "DisplayName": "Casco Militar Antibalas",
+  "Description": "Casco balístico de última generación. No se puede fabricar; solo puede obtenerse derrotando a La Bandida."
+},
+"ClothingBlock:52": {
+  "DisplayName": "Chaleco Antibalas Militar",
+  "Description": "Chaleco balístico de grado militar. No se puede fabricar; solo puede obtenerse derrotando a La Bandida."
+},
+"ClothingBlock:53": {
+  "DisplayName": "Pantalón Antibalas Militar",
+  "Description": "Pantalón militar con protección balística. No se puede fabricar; solo puede obtenerse derrotando a La Bandida."
+},
+"ClothingBlock:54": {
+  "DisplayName": "Botas Militares Antibalas",
+  "Description": "Botas tácticas reforzadas con protección balística. No se pueden fabricar; solo pueden obtenerse derrotando a La Bandida."
+}
 },
   "ContentWidgets": {
     "LetterWarDialog": {
