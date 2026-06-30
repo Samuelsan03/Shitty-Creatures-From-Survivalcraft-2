@@ -26,7 +26,7 @@
 
                             <LabelWidget Name="CreatorName" Text="[ShittyCreaturesAbout:CreatorName]" Color="220,220,220" HorizontalAlignment="Center" FontScale="1.0" Margin="0,5" DropShadow="true"/>
 
-                            <LabelWidget Name="SocialTitle" Text="[ShittyCreaturesAbout:SocialTitle]" Color="255,255,0" HorizontalAlignment="Center" FontScale="1.2" Margin="0,5"/>
+                            <LabelWidget Name="SocialTitle" Text="[ShittyCreaturesAbout:SocialTitle]" Color="255,0,0" HorizontalAlignment="Center" FontScale="1.2" Margin="0,5"/>
 
                             <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,2">
                                 <LabelWidget Name="YoutubeLabel" Text="[ShittyCreaturesAbout:YoutubeLabel]" Color="200,200,200" FontScale="0.9"/>
@@ -63,9 +63,9 @@
 
             <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <CanvasWidget Size="160, 50">
-                    <BevelledButtonWidget Name="OkButton" Size="160, 50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0, 3" IsVisible="false">
-                        <RectangleWidget FillColor="100, 100, 100, 255" OutlineColor="120, 120, 120, 255" IsVisible="true"/>
-                        <LabelWidget Name="ButtonLabel" Text="[ShittyCreaturesAbout:ExitButton]" Font="{Fonts/Pericles}" HorizontalAlignment="Center" VerticalAlignment="Center" Color="255, 255, 255, 255" IsVisible="true"/>
+                    <BevelledButtonWidget Name="OkButton" Size="160, 50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0, 3">
+                        <RectangleWidget FillColor="100, 100, 100, 255" OutlineColor="120, 120, 120, 255"/>
+                        <LabelWidget Name="ButtonLabel" Text="[ShittyCreaturesAbout:ExitButton]" Font="{Fonts/Pericles}" HorizontalAlignment="Center" VerticalAlignment="Center" Color="255, 255, 255, 255"/>
                     </BevelledButtonWidget>
                 </CanvasWidget>
             </StackPanelWidget>
