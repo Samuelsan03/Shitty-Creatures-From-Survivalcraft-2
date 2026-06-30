@@ -729,12 +729,8 @@ namespace Game
 				ComponentPlayer firstPlayer = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
 				if (firstPlayer != null)
 				{
-					firstPlayer.ComponentGui.DisplayLargeMessage(
-						"¡La líder del Cartel ha llegado!\n ¡Prepárate para la pelea final!",
-						"",
-						5f,
-						0f
-					);
+					string bossMessage = LanguageControl.Get("SubsystemBanditInvasion", 0);
+					firstPlayer.ComponentGui.DisplayLargeMessage(bossMessage, "", 5f, 0f);
 				}
 			}
 		}
