@@ -2616,7 +2616,7 @@
             </ParameterSet>
           </EntityTemplate>
 
-          <EntityTemplate Name="LaBandida" Guid="0e27164e-0e9f-458f-9463-4832bd09409d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <EntityTemplate Name="LaBandida" Guid="0e27164e-0e9f-458f-9463-4832bd09409d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d"> <!-- La temida jefa del Cartel De Los Bandidos y unica jefe final a diferencia de otros narcotraficantes -->
             <MemberComponentTemplate Name="Creature" Guid="495c8fa4-5e52-4777-98c7-dcab68832650">
               <Parameter Name="Description" Guid="301fa593-7a1a-4ea5-a915-7006881ae173" Value="[Description:LaBandida]" Type="string" />
               <Parameter Name="Category" Guid="3d5c1a06-b988-4607-9286-682544d5b04c" Value="LandPredator" Type="Game.CreatureCategory" />
@@ -2677,7 +2677,7 @@
             <MemberComponentTemplate Name="NewInventory" Guid="f74abf02-feb0-48f9-93c5-d58c02b09599" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
     <ParameterSet Name="CreatureItems">
         <ParameterSet Name="LaBandida">
-          <Parameter Name="KABlock" Value="1" Type="int" /> <!-- Tiene puesto su KA-->
+          <Parameter Name="AK48Block" Value="1" Type="int" /> <!-- Tiene puesto su AK 48-->
         </ParameterSet>
       </ParameterSet>
 </MemberComponentTemplate>
@@ -2709,12 +2709,12 @@
   <Parameter Name="IsDrugTraffickerMode" Guid="833703ce-95ce-44df-b2b0-28cb7690bfdc" Value="true" Type="bool" />
   <Parameter Name="AttackAllCreatures" Guid="c2092268-d46e-402e-a14b-f89d541649d6" Value="true" Type="bool" />
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Locomotion" Guid="68be8f8f-6700-42c8-a693-0f8ab08b6b1d">
-              <Parameter Name="FlySpeed" Guid="bce6d8b0-2c0a-4c86-b527-144c9f187822" Value="0" Type="float" />
-              <Parameter Name="AccelerationFactor" Guid="b6170703-58d7-4eb8-9045-d9f425690626" Value="1.5" Type="float" />
-              <Parameter Name="LadderSpeed" Guid="71ebae78-c57e-4923-ae8c-5afdb7d1f19b" Value="0" Type="float" />
-              <Parameter Name="WalkSpeed" Guid="ac673cdb-4779-4569-af19-002cb906c3e6" Value="4.5" Type="float" />
-              <Parameter Name="TurnSpeed" Guid="fdc38a4f-9baf-48e2-af07-df699f11bf10" Value="8" Type="float" />
+            <MemberComponentTemplate Name="Locomotion" Guid="1f46d221-824e-4894-8b2b-feea5385c02f">
+                <Parameter Name="AccelerationFactor" Guid="0faecc6b-5a78-442c-b388-3887daa93b45" Value="1.5" Type="float"/>
+                <Parameter Name="FlySpeed" Guid="8609b4db-fbd4-4648-ab54-6b749bfd1291" Value="0" Type="float"/>
+                <Parameter Name="TurnSpeed" Guid="f19f281c-c05a-4db9-b668-0c7c360341be" Value="10" Type="float"/>
+                <Parameter Name="WalkSpeed" Guid="22d2ebca-7f7f-4d1f-b593-093726e27534" Value="4.65" Type="float"/>
+                <Parameter Name="LadderSpeed" Guid="4d937339-773e-480b-9440-1cacde06ba92" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f0a9d963-b3aa-4601-94ae-aea4d095b7ba" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
             <MemberComponentTemplate Name="DeathSpawner" Guid="b47af038-a2c6-4e34-883b-98df41ddec8b" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
