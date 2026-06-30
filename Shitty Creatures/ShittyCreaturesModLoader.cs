@@ -1466,6 +1466,8 @@ namespace Game
 		// Manejador del evento Injured del jugador
 		private void OnPlayerInjuredForAllies(Injury injury)
 		{
+			if (!ShittyCreaturesSettingsManager.PunchCommandEnabled) return;
+
 			ComponentHealth health = injury.ComponentHealth;
 			if (health == null)
 				return;
@@ -3132,7 +3134,17 @@ namespace Game
 
 		private void OnEntityAddedToProject(Entity entity)
 		{
+			// Obtener templateName UNA SOLA VEZ al inicio
+			string templateName = entity.ValuesDictionary?.DatabaseObject?.Name;
+
 			var creature = entity.FindComponent<ComponentCreature>();
+
+			// ===== NUEVO: Detectar La Bandida y aplicar armadura antibalas =====
+			if (templateName == "LaBandida")
+			{
+				ApplyBulletproofArmorToLaBandida(entity);
+			}
+
 			if (creature != null && IsDifficultyAffectedCreature(creature))
 			{
 				var project = creature.Project;
@@ -3149,7 +3161,6 @@ namespace Game
 			// Asignar ropa/armadura a criaturas que tengan ComponentCreatureClothing
 			if (creature != null)
 			{
-				string templateName = entity.ValuesDictionary?.DatabaseObject?.Name;
 				if (!string.IsNullOrEmpty(templateName))
 				{
 					var project = creature.Project;
@@ -3159,11 +3170,6 @@ namespace Game
 						if (greenNight != null)
 						{
 							DifficultyMode difficulty = greenNight.DifficultyMode;
-
-							// ============================================================
-							// IMPORTANTE: LOS BANDIDOS NUNCA USAN ROPA NORMAL
-							// SOLO ARMADURAS EN DIFICULTADES ALTAS
-							// ============================================================
 
 							// Para infectados: ropa normal en todas las dificultades, armadura en altas
 							if (m_infectedWithClothes.Contains(templateName))
@@ -3368,6 +3374,26 @@ namespace Game
 		{
 			int data = ClothingBlock.SetClothingIndex(0, clothingIndex);
 			return Terrain.MakeBlockValue(clothingBlock.BlockIndex, 0, data);
+		}
+
+		private void ApplyBulletproofArmorToLaBandida(Entity entity)
+		{
+			ComponentCreatureClothing clothing = entity.FindComponent<ComponentCreatureClothing>();
+			if (clothing == null) return;
+
+			ClothingBlock clothingBlock = BlocksManager.GetBlock<ClothingBlock>();
+			if (clothingBlock == null) return;
+
+			// Índices de armadura antibalas: 51, 52 53, 54
+			int headValue = MakeClothingValue(clothingBlock, 51);
+			int torsoValue = MakeClothingValue(clothingBlock, 52);
+			int legsValue = MakeClothingValue(clothingBlock, 53);
+			int feetValue = MakeClothingValue(clothingBlock, 54);
+
+			clothing.SetClothes(ClothingSlot.Head, new[] { headValue });
+			clothing.SetClothes(ClothingSlot.Torso, new[] { torsoValue });
+			clothing.SetClothes(ClothingSlot.Legs, new[] { legsValue });
+			clothing.SetClothes(ClothingSlot.Feet, new[] { feetValue });
 		}
 
 		// ---------------------------------------------------------------------------------
