@@ -38,23 +38,26 @@ namespace Game
 
 		private void UpdateColors()
 		{
-			ProgressState state = GetState(Value);
-			switch (state)
+			switch (GetState(Value))
 			{
 				case ProgressState.Start:
-					BarColor = new Color(70, 130, 180);   // SteelBlue
+					// 0% - 33%
+					BarColor = new Color(220, 53, 69);      // Rojo
 					break;
+
 				case ProgressState.Progress:
-					BarColor = new Color(64, 224, 208);   // Turquoise
+					// 34% - 66%
+					BarColor = new Color(255, 140, 0);      // Naranja
 					break;
+
 				case ProgressState.Almost:
-					BarColor = new Color(218, 165, 32);   // Goldenrod
+					// 67% - 99%
+					BarColor = new Color(255, 215, 0);      // Amarillo
 					break;
+
 				case ProgressState.Complete:
-					BarColor = new Color(60, 179, 113);   // MediumSeaGreen
-					break;
-				default:
-					BarColor = new Color(70, 130, 180);
+					// 100%
+					BarColor = new Color(46, 204, 113);     // Verde
 					break;
 			}
 		}
