@@ -1479,8 +1479,24 @@
       "DisplayName": "普通牛仔裤",
       "Description": "简单又舒适的裤子。没有特殊加成，但足以应付日常生存需求。",
       "CRDescription:0": "简单又舒适的裤子。没有特殊加成，但足以应付日常生存需求。"
-    }
-  },
+    },
+    "ClothingBlock:51": {
+  "DisplayName": "防弹军用头盔",
+  "Description": "先进的军用防弹头盔。无法制作，只能通过击败土匪女首领（La Bandida）获得。"
+},
+"ClothingBlock:52": {
+  "DisplayName": "军用防弹背心",
+  "Description": "军用级防弹背心。无法制作；只能通过击败 La Bandida 获得。"
+},
+"ClothingBlock:53": {
+  "DisplayName": "军用防弹裤",
+  "Description": "配备防弹防护的军用裤。无法制作；只能通过击败 La Bandida 获得。"
+},
+"ClothingBlock:54": {
+  "DisplayName": "军用防弹靴",
+  "Description": "配备防弹防护的强化战术靴。无法制作；只能通过击败 La Bandida 获得。"
+}
+},
   "ContentWidgets": {
     "LetterWarDialog": {
     "Title": "战争信",
