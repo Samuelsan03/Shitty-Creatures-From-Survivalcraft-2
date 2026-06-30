@@ -21,7 +21,8 @@ namespace Game
 		public static bool CreativeDefenseEnabled { get; set; } = true;
 		public static bool BleedingEnabled { get; set; } = true;
 		public static bool HealthBarEnabled { get; set; } = true;
-		public static bool NightCreaturesSpawnEnabled { get; set; } = true;
+		public static bool SkeletonSpawnEnabled { get; set; } = true;
+		public static bool SpiderSpawnEnabled { get; set; } = true;
 		public static bool FastMeleeEnabled { get; set; } = false;
 		public static bool InGameMusicButtonEnabled { get; set; } = true;
 
@@ -76,8 +77,11 @@ namespace Game
 							case "HealthBarEnabled":
 								HealthBarEnabled = value;
 								break;
-							case "NightCreaturesSpawnEnabled":
-								NightCreaturesSpawnEnabled = value;
+							case "SkeletonSpawnEnabled":
+								SkeletonSpawnEnabled = value;
+								break;
+							case "SpiderSpawnEnabled":
+								SpiderSpawnEnabled = value;
 								break;
 							case "FastMeleeEnabled":
 								FastMeleeEnabled = value;
@@ -152,22 +156,29 @@ namespace Game
 						new XAttribute("Value", BleedingEnabled)));
 
 					root.Add(new XElement("Value",
-				        new XAttribute("Name", "HealthBarEnabled"),
-				        new XAttribute("Type", "bool"),
-				        new XAttribute("Value", HealthBarEnabled)));
+						new XAttribute("Name", "HealthBarEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", HealthBarEnabled)));
 
 					root.Add(new XElement("Value",
-                        new XAttribute("Name", "NightCreaturesSpawnEnabled"),
-                        new XAttribute("Type", "bool"),
-                        new XAttribute("Value", NightCreaturesSpawnEnabled)));
+						new XAttribute("Name", "SkeletonSpawnEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", SkeletonSpawnEnabled)));
+
 					root.Add(new XElement("Value",
-                        new XAttribute("Name", "FastMeleeEnabled"),
-                        new XAttribute("Type", "bool"),
-                        new XAttribute("Value", FastMeleeEnabled)));
+						new XAttribute("Name", "SpiderSpawnEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", SpiderSpawnEnabled)));
+
 					root.Add(new XElement("Value",
-	new XAttribute("Name", "InGameMusicButtonEnabled"),
-	new XAttribute("Type", "bool"),
-	new XAttribute("Value", InGameMusicButtonEnabled)));
+						new XAttribute("Name", "FastMeleeEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", FastMeleeEnabled)));
+
+					root.Add(new XElement("Value",
+						new XAttribute("Name", "InGameMusicButtonEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", InGameMusicButtonEnabled)));
 
 					XmlUtils.SaveXmlToStream(root, stream, null, true);
 				}
