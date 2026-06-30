@@ -328,7 +328,8 @@
     "FreeCameraDescription": "Activar/desactivar el modo de cámara libre (solo en modos no creativos)",
     "BleedingDescription": "Activar/desactivar sangrado en criaturas heridas",
     "HealthBarDescription": "Mostrar barras de salud en las criaturas",
-    "NightCreaturesSpawnEnabled": "Activar la aparición de esqueletos y arañas infectadas durante las noches normales",
+    "SkeletonSpawnDescription": "Permite la aparición de esqueletos en noches normales.",
+    "SpiderSpawnDescription": "Permite la aparición de arañas infectadas en noches normales (incluye cuevas).",
     "FastMeleeDescription": "Permitir ataques cuerpo a cuerpo rápidos consecutivos al hacer clic/tocar rápidamente en el mismo objetivo",
     "InGameMusicDescription": "Muestra un botón en el juego para reproducir pistas de música aleatorias durante la partida."
   },
