@@ -79,4 +79,5 @@
   <Achievement AchievementNumber="71" TitleKey="138" DescriptionKey="139" Reward="100"  TypeOfAchievement="Taming" />
   <Achievement AchievementNumber="72" TitleKey="140" DescriptionKey="141" Reward="500"  TypeOfAchievement="Taming" />
   <Achievement AchievementNumber="73" TitleKey="142" DescriptionKey="143" Reward="500"  TypeOfAchievement="Special" Hidden="true" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="74" TitleKey="144" DescriptionKey="145" Reward="250" TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
 </AchievementsData>
