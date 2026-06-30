@@ -328,7 +328,8 @@
     "FreeCameraDescription": "启用/禁用自由相机模式（仅在非创造模式下）",
     "BleedingDescription": "开启/关闭受伤生物的流血效果",
     "HealthBarDescription": "在生物上显示生命值条",
-    "NightCreaturesSpawnEnabled": "在普通夜晚启用骷髅和感染蜘蛛的生成",
+    "SkeletonSpawnDescription": "允许骷髅在普通夜晚生成。",
+    "SpiderSpawnDescription": "允许感染蜘蛛在普通夜晚生成（包括洞穴）。",
     "FastMeleeDescription": "当快速点击/触摸同一目标时，允许连续快速的近战攻击",
     "InGameMusicDescription": "在游戏内显示一个按钮，以便在游玩时播放随机的音乐曲目。"
   },
