@@ -17,7 +17,8 @@ namespace Game
 		private BevelledButtonWidget m_freeCameraButton;
 		private BevelledButtonWidget m_bleedingButton;
 		private BevelledButtonWidget m_healthBarButton;
-		private BevelledButtonWidget m_nightcreaturesSpawnButton;
+		private BevelledButtonWidget m_skeletonSpawnButton;
+		private BevelledButtonWidget m_spiderSpawnButton;
 		private BevelledButtonWidget m_fastMeleeButton;
 		private BevelledButtonWidget m_musicButton;
 		private StackPanelWidget m_contentPanel;
@@ -43,12 +44,12 @@ namespace Game
 			CreateOptionRow("ShittyCreaturesSettings", "FreeCameraDescription", out m_freeCameraButton, GetFreeCameraButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "BleedingDescription", out m_bleedingButton, GetBleedingButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "HealthBarDescription", out m_healthBarButton, GetHealthBarButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "NightCreaturesSpawnEnabled", out m_nightcreaturesSpawnButton, GetNightCreaturesSpawnButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "SkeletonSpawnDescription", out m_skeletonSpawnButton, GetSkeletonSpawnButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "SpiderSpawnDescription", out m_spiderSpawnButton, GetSpiderSpawnButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "FastMeleeDescription", out m_fastMeleeButton, GetFastMeleeButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "InGameMusicDescription", out m_musicButton, GetMusicButtonText);
 		}
 
-		// Sobrecarga CON color (para Ghost, Tank, Spawn)
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
 		{
 			var rowPanel = new UniformSpacingPanelWidget
@@ -125,7 +126,8 @@ namespace Game
 		private string GetFreeCameraButtonText() => ShittyCreaturesSettingsManager.FreeCameraEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetBleedingButtonText() => ShittyCreaturesSettingsManager.BleedingEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetHealthBarButtonText() => ShittyCreaturesSettingsManager.HealthBarEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetNightCreaturesSpawnButtonText() => ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetSkeletonSpawnButtonText() => ShittyCreaturesSettingsManager.SkeletonSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetSpiderSpawnButtonText() => ShittyCreaturesSettingsManager.SpiderSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetFastMeleeButtonText() => ShittyCreaturesSettingsManager.FastMeleeEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetMusicButtonText() => ShittyCreaturesSettingsManager.InGameMusicButtonEnabled ? LanguageControl.On : LanguageControl.Off;
 
@@ -195,10 +197,15 @@ namespace Game
 				ShittyCreaturesSettingsManager.HealthBarEnabled = !ShittyCreaturesSettingsManager.HealthBarEnabled;
 				m_healthBarButton.Text = GetHealthBarButtonText();
 			}
-			if (m_nightcreaturesSpawnButton != null && m_nightcreaturesSpawnButton.IsClicked)
+			if (m_skeletonSpawnButton != null && m_skeletonSpawnButton.IsClicked)
 			{
-				ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled = !ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled;
-				m_nightcreaturesSpawnButton.Text = GetNightCreaturesSpawnButtonText();
+				ShittyCreaturesSettingsManager.SkeletonSpawnEnabled = !ShittyCreaturesSettingsManager.SkeletonSpawnEnabled;
+				m_skeletonSpawnButton.Text = GetSkeletonSpawnButtonText();
+			}
+			if (m_spiderSpawnButton != null && m_spiderSpawnButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.SpiderSpawnEnabled = !ShittyCreaturesSettingsManager.SpiderSpawnEnabled;
+				m_spiderSpawnButton.Text = GetSpiderSpawnButtonText();
 			}
 			if (m_fastMeleeButton != null && m_fastMeleeButton.IsClicked)
 			{
