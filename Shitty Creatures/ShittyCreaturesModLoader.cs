@@ -3203,7 +3203,8 @@ namespace Game
 								AssignClothesToCreature(creature, difficulty);
 							}
 							// Para bandidos: SOLO ARMADURA en dificultades altas, NADA en bajas
-							else if (m_banditTemplates.Contains(templateName))
+							// EXCLUIR a LaBandida porque ya tiene su armadura antibalas fija
+							else if (m_banditTemplates.Contains(templateName) && templateName != "LaBandida")
 							{
 								AssignBanditClothes(creature, difficulty);
 							}
