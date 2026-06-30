@@ -28,63 +28,34 @@ namespace Game
 		private bool m_invasionActive;
 		private bool m_invasionStarted;
 		private bool m_invasionCompleted;
-
 		private bool m_wasRejected;
 
-		/// <summary>
-		/// Indica si la Noche Verde estuvo activa en algún momento durante la invasión actual.
-		/// Se usa para otorgar el logro 70 (Noche Verde + Guerra de Narcos).
-		/// </summary>
 		private bool m_greenNightWasActiveDuringInvasion;
 
-		/// <summary>
-		/// Flag para sincronizar los bandidos en el primer Update después de cargar.
-		/// Necesario porque las entidades podrían no estar cargadas cuando Load() se ejecuta.
-		/// </summary>
 		private bool m_needsInitialSync;
-
-		/// <summary>
-		/// Flag para indicar que el estado fue restaurado desde un guardado.
-		/// Evita que la lógica de transición (wasEffective → !effective) se dispare
-		/// incorrectamente al cargar durante una doble guerra.
-		/// </summary>
 		private bool m_restoredFromSave;
 
-		// =====================================================
-		// TEMPORIZADOR INICIAL DE SPAWN
-		// =====================================================
-
-		/// <summary>
-		/// Tiempo de retraso antes de que comience el spawn (en segundos).
-		/// </summary>
 		private const float InitialSpawnDelay = 5.0f;
-
-		/// <summary>
-		/// Indica si estamos en el período de retraso inicial antes del primer spawn.
-		/// </summary>
 		private bool m_inInitialDelay;
-
-		/// <summary>
-		/// Temporizador que cuenta el tiempo transcurrido durante el retraso inicial.
-		/// </summary>
 		private float m_initialDelayTimer;
 
-		// =====================================================
+		private static readonly HashSet<string> m_banditNames = new HashSet<string>
+		{
+			"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
+			"Bandit6", "Bandit7", "Bandit8", "Bandit9", "Bandit10",
+			"Bandit11", "Bandit13", "Bandit14", "Bandit15", "Bandit16"
+		};
+
+		private int m_killsByPlayer;
+		private bool m_bossUnlocked;
+		private bool m_bossSpawnedThisWar;
+		private HashSet<int> m_banditDeathCounted = new HashSet<int>();
 
 		public bool IsWarAccepted => m_acceptedWar;
 		public bool IsWarRejected => m_wasRejected;
 		public bool IsWarCompleted => m_invasionCompleted;
 		public bool WasGreenNightActiveDuringInvasion => m_greenNightWasActiveDuringInvasion;
-
-		/// <summary>
-		/// Indica si estamos en el período de retraso inicial.
-		/// Útil para mostrar un mensaje en la UI como "Los narcos llegarán en X segundos..."
-		/// </summary>
 		public bool IsInInitialDelay => m_inInitialDelay;
-
-		/// <summary>
-		/// Tiempo restante del retraso inicial en segundos.
-		/// </summary>
 		public float RemainingInitialDelay => m_inInitialDelay ? Math.Max(0f, InitialSpawnDelay - m_initialDelayTimer) : 0f;
 
 		private float m_spawnTimer;
@@ -93,10 +64,6 @@ namespace Game
 		private const int MaxGlobalBandits = 35;
 		private const int MaxSpawnsPerFrame = 2;
 
-		/// <summary>
-		/// Trackea el "tiempo efectivo de invasión" (invasion time normal + noche verde activa).
-		/// La invasión solo finaliza cuando este valor pasa de true a false.
-		/// </summary>
 		private bool m_wasEffectiveInvasionTime;
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -104,7 +71,6 @@ namespace Game
 
 		public void AcceptWar()
 		{
-			// Si la guerra ya está completada (amanecer), reiniciamos el estado para permitir una nueva guerra
 			if (m_invasionCompleted)
 			{
 				m_invasionCompleted = false;
@@ -117,14 +83,16 @@ namespace Game
 				m_restoredFromSave = false;
 				m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 
-				// Reiniciar temporizador inicial
 				m_inInitialDelay = false;
 				m_initialDelayTimer = 0f;
+
+				m_killsByPlayer = 0;
+				m_bossUnlocked = false;
+				m_bossSpawnedThisWar = false;
 
 				return;
 			}
 
-			// Si no está completada y aún no se había aceptado, activamos la aceptación
 			if (!m_acceptedWar)
 			{
 				m_acceptedWar = true;
@@ -132,9 +100,10 @@ namespace Game
 				m_greenNightWasActiveDuringInvasion = false;
 				m_restoredFromSave = false;
 
-				// Reiniciar temporizador inicial (se activará cuando la invasión empiece)
 				m_inInitialDelay = false;
 				m_initialDelayTimer = 0f;
+
+				m_bossSpawnedThisWar = false;
 			}
 		}
 
@@ -183,21 +152,19 @@ namespace Game
 			m_wasRejected = valuesDictionary.GetValue<bool>("WasRejected", false);
 			m_greenNightWasActiveDuringInvasion = valuesDictionary.GetValue<bool>("GreenNightWasActiveDuringInvasion", false);
 
-			// Restaurar estado activo directamente del guardado
 			m_invasionActive = valuesDictionary.GetValue<bool>("InvasionActive", false);
 			m_invasionStarted = valuesDictionary.GetValue<bool>("InvasionStarted", false);
 
-			// Restaurar temporizador inicial
 			m_inInitialDelay = valuesDictionary.GetValue<bool>("InInitialDelay", false);
 			m_initialDelayTimer = valuesDictionary.GetValue<float>("InitialDelayTimer", 0f);
 
-			// Calcular tiempo efectivo de invasión (incluye noche verde)
-			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
+			m_killsByPlayer = valuesDictionary.GetValue<int>("KillsByPlayer", 0);
+			m_bossUnlocked = valuesDictionary.GetValue<bool>("BossUnlocked", false);
+			m_bossSpawnedThisWar = valuesDictionary.GetValue<bool>("BossSpawnedThisWar", false);
 
-			// Marcar que restauramos desde guardado para evitar transiciones falsas
+			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 			m_restoredFromSave = true;
 
-			// Lógica de restauración con compatibilidad hacia atrás
 			if (m_invasionCompleted)
 			{
 				m_invasionActive = false;
@@ -208,10 +175,8 @@ namespace Game
 			}
 			else if (m_acceptedWar && !m_invasionActive && m_wasEffectiveInvasionTime)
 			{
-				// Caso de compatibilidad: guardados antiguos que no tenían InvasionActive
 				m_invasionActive = true;
 				m_invasionStarted = true;
-				// Para guardados antiguos, no aplicar retraso (ya estaba en progreso)
 				m_inInitialDelay = false;
 				m_initialDelayTimer = 0f;
 				m_needsInitialSync = true;
@@ -232,6 +197,9 @@ namespace Game
 			valuesDictionary.SetValue("InvasionStarted", m_invasionStarted);
 			valuesDictionary.SetValue("InInitialDelay", m_inInitialDelay);
 			valuesDictionary.SetValue("InitialDelayTimer", m_initialDelayTimer);
+			valuesDictionary.SetValue("KillsByPlayer", m_killsByPlayer);
+			valuesDictionary.SetValue("BossUnlocked", m_bossUnlocked);
+			valuesDictionary.SetValue("BossSpawnedThisWar", m_bossSpawnedThisWar);
 		}
 
 		public void CancelWar()
@@ -256,18 +224,8 @@ namespace Game
 			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 		}
 
-		/// <summary>
-		/// Calcula si estamos en "tiempo efectivo de invasión":
-		/// - Tiempo de invasión normal (DuskStart → Middawn), O
-		/// - Noche Verde activa
-		/// 
-		/// Ambos eventos terminan en Middawn, por lo que en una doble guerra
-		/// ambos terminan exactamente al mismo tiempo.
-		/// </summary>
 		private bool CalculateEffectiveInvasionTime()
 		{
-			// Verificar si estamos en el momento de finalización (igual que GreenNightSky)
-			// Esto garantiza que ambos sistemas terminen al mismo tiempo
 			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 			float middawn = m_subsystemTimeOfDay.Middawn;
 			const float dawnTolerance = 0.005f;
@@ -276,11 +234,9 @@ namespace Game
 			if (isEndMoment)
 				return false;
 
-			// Si la Noche Verde está activa, siempre es tiempo efectivo de invasión
 			if (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
 				return true;
 
-			// Si no hay Noche Verde, usar el tiempo de invasión normal
 			return IsInvasionTime();
 		}
 
@@ -325,7 +281,6 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// Sincronizar bandits en el primer Update después de cargar
 			if (m_needsInitialSync)
 			{
 				m_needsInitialSync = false;
@@ -337,7 +292,6 @@ namespace Game
 
 			bool effectiveInvasionTime = CalculateEffectiveInvasionTime();
 
-			// Si no hay guerra aceptada, desactivamos cualquier invasión activa
 			if (!m_acceptedWar)
 			{
 				if (m_invasionActive)
@@ -352,7 +306,6 @@ namespace Game
 				return;
 			}
 
-			// Si la guerra está aceptada y la invasión no está activa
 			if (!m_invasionActive)
 			{
 				if (effectiveInvasionTime)
@@ -362,28 +315,18 @@ namespace Game
 					m_spawnTimer = 0f;
 					SetAllBanditsDrugTraffickerMode(true);
 
-					// Iniciar el temporizador de retraso inicial
 					m_inInitialDelay = true;
 					m_initialDelayTimer = 0f;
+
+					m_bossSpawnedThisWar = false;
 				}
 			}
 
-			// Rastrear si la Noche Verde estuvo activa durante esta invasión
 			if (m_invasionActive && m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
 			{
 				m_greenNightWasActiveDuringInvasion = true;
 			}
 
-			// =====================================================
-			// MANEJO DE FINALIZACIÓN
-			// 
-			// La invasión termina cuando el tiempo efectivo pasa de true a false.
-			// Como IsInvasionTime() ahora usa Middawn (igual que GreenNightSky),
-			// ambos eventos terminan exactamente al mismo tiempo:
-			// - Individual: en Middawn
-			// - Doble guerra: en Middawn (cuando GreenNightSky desactiva IsGreenNightActive
-			//   y IsInvasionTime() también devuelve false)
-			// =====================================================
 			if (!m_restoredFromSave && m_wasEffectiveInvasionTime && !effectiveInvasionTime && m_invasionActive)
 			{
 				m_invasionActive = false;
@@ -391,40 +334,38 @@ namespace Game
 				m_inInitialDelay = false;
 				m_initialDelayTimer = 0f;
 				SetAllBanditsDrugTraffickerMode(false);
+
+				m_killsByPlayer = 0;
+				m_bossUnlocked = false;
+				m_bossSpawnedThisWar = false;
+
 				InvasionCompleted?.Invoke();
 			}
 
-			// Limpiar flag de restauración después del primer frame
 			m_restoredFromSave = false;
-
 			m_wasEffectiveInvasionTime = effectiveInvasionTime;
 
 			if (!m_invasionActive)
 				return;
 
-			// =====================================================
-			// TEMPORIZADOR INICIAL DE SPAWN
-			// Durante este período, no se spawnean bandidos
-			// =====================================================
 			if (m_inInitialDelay)
 			{
 				m_initialDelayTimer += dt;
-
 				if (m_initialDelayTimer >= InitialSpawnDelay)
 				{
-					// El retraso ha terminado, ahora se puede spawnear
 					m_inInitialDelay = false;
 					m_initialDelayTimer = 0f;
-					m_spawnTimer = 0f; // Reiniciar el timer de spawn
+					m_spawnTimer = 0f;
 				}
 				else
 				{
-					// Aún en retraso, no spawnear
 					return;
 				}
 			}
 
-			// Resto del código de spawn
+			// Ya no se espera a medianoche para spawnear al jefe.
+			// El spawn se activa inmediatamente al alcanzar 100 muertes en IncrementKillsByPlayer().
+
 			int totalBandits = CountBandits();
 			if (totalBandits >= MaxGlobalBandits)
 				return;
@@ -440,36 +381,21 @@ namespace Game
 			}
 		}
 
-		/// <summary>
-		/// Determina si es hora de invasión NORMAL: desde DuskStart hasta Middawn.
-		/// 
-		/// IMPORTANTE: Usa Middawn en lugar de DawnStart para que la invasión
-		/// termine EXACTAMENTE al mismo tiempo que la Noche Verde.
-		/// 
-		/// SubsystemGreenNightSky termina en Middawn:
-		///   bool isEndMoment = Math.Abs(timeOfDay - middawn) < dawnTolerance;
-		/// 
-		/// Antes usaba DawnStart, lo cual causaba que la invasión individual
-		/// terminara antes que la Noche Verde.
-		/// </summary>
 		private bool IsInvasionTime()
 		{
 			TimeOfDayMode mode = m_subsystemGameInfo.WorldSettings.TimeOfDayMode;
 
-			// Modos donde NO hay invasión
 			if (mode == TimeOfDayMode.Day || mode == TimeOfDayMode.Sunrise)
 				return false;
 
-			// Modos donde SÍ hay invasión
 			if (mode == TimeOfDayMode.Night || mode == TimeOfDayMode.Sunset)
 				return true;
 
-			// Modo Changing: verificar si estamos entre Dusk y Middawn
 			if (mode == TimeOfDayMode.Changing)
 			{
 				float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 				float duskStart = m_subsystemTimeOfDay.DuskStart;
-				float middawn = m_subsystemTimeOfDay.Middawn;  // CAMBIO: Middawn en lugar de DawnStart
+				float middawn = m_subsystemTimeOfDay.Middawn;
 
 				return timeOfDay >= duskStart || timeOfDay < middawn;
 			}
@@ -547,6 +473,7 @@ namespace Game
 				}
 
 				Project.AddEntity(entity);
+
 				return true;
 			}
 			catch (Exception ex)
@@ -554,6 +481,112 @@ namespace Game
 				Log.Error($"Error spawning bandit {templateName}: {ex.Message}");
 				return false;
 			}
+		}
+
+		private void SpawnBoss()
+		{
+			ComponentPlayer targetPlayer = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
+			if (targetPlayer == null)
+				return;
+
+			Vector3 playerPos = targetPlayer.ComponentBody.Position;
+
+			float angle = m_random.Float(0f, 2f * MathF.PI);
+			float distance = m_random.Float(25f, 50f);
+
+			Vector2 offset2D = new Vector2(MathF.Cos(angle) * distance, MathF.Sin(angle) * distance);
+			Vector2 candidatePos2D = new Vector2(playerPos.X + offset2D.X, playerPos.Z + offset2D.Y);
+
+			Vector3 spawnPos = FindValidSpawnPointNear(candidatePos2D, playerPos.Y);
+			if (spawnPos == Vector3.Zero)
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					float newDist = m_random.Float(15f, 40f);
+					float newAngle = m_random.Float(0f, 2f * MathF.PI);
+					Vector2 newOffset = new Vector2(MathF.Cos(newAngle) * newDist, MathF.Sin(newAngle) * newDist);
+					Vector2 newCandidate = new Vector2(playerPos.X + newOffset.X, playerPos.Z + newOffset.Y);
+					spawnPos = FindValidSpawnPointNear(newCandidate, playerPos.Y);
+					if (spawnPos != Vector3.Zero)
+						break;
+				}
+			}
+
+			if (spawnPos == Vector3.Zero)
+			{
+				Log.Warning("[SubsystemBanditInvasion] No se pudo encontrar un punto de spawn válido para el jefe.");
+				return;
+			}
+
+			try
+			{
+				Entity entity = DatabaseManager.CreateEntity(Project, "LaBandida", true);
+				var body = entity.FindComponent<ComponentBody>(true);
+				body.Position = spawnPos;
+				body.Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, m_random.Float(0f, 2f * MathF.PI));
+				var creature = entity.FindComponent<ComponentCreature>(true);
+				creature.ConstantSpawn = false;
+
+				var banditChase = entity.FindComponent<ComponentBanditChaseBehavior>();
+				if (banditChase != null)
+				{
+					banditChase.IsDrugTraffickerMode = true;
+				}
+
+				Project.AddEntity(entity);
+				Log.Information($"[SubsystemBanditInvasion] Jefe spawnado en {spawnPos}");
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"Error spawning boss LaBandida: {ex.Message}");
+			}
+		}
+
+		private Vector3 FindValidSpawnPointNear(Vector2 position2D, float referenceY)
+		{
+			int x = (int)position2D.X;
+			int z = (int)position2D.Y;
+			int y = (int)referenceY;
+
+			for (int i = 0; i < 20; i++)
+			{
+				Point3 pointUp = new Point3(x, y + i, z);
+				if (TestSpawnPoint(pointUp))
+				{
+					return new Vector3(pointUp.X + 0.5f, pointUp.Y + 1.1f, pointUp.Z + 0.5f);
+				}
+
+				Point3 pointDown = new Point3(x, y - i, z);
+				if (TestSpawnPoint(pointDown))
+				{
+					return new Vector3(pointDown.X + 0.5f, pointDown.Y + 1.1f, pointDown.Z + 0.5f);
+				}
+			}
+
+			for (int dx = -2; dx <= 2; dx++)
+			{
+				for (int dz = -2; dz <= 2; dz++)
+				{
+					if (dx == 0 && dz == 0) continue;
+					int testX = x + dx;
+					int testZ = z + dz;
+					for (int i = 0; i < 20; i++)
+					{
+						Point3 pointUp = new Point3(testX, y + i, testZ);
+						if (TestSpawnPoint(pointUp))
+						{
+							return new Vector3(pointUp.X + 0.5f, pointUp.Y + 1.1f, pointUp.Z + 0.5f);
+						}
+						Point3 pointDown = new Point3(testX, y - i, testZ);
+						if (TestSpawnPoint(pointDown))
+						{
+							return new Vector3(pointDown.X + 0.5f, pointDown.Y + 1.1f, pointDown.Z + 0.5f);
+						}
+					}
+				}
+			}
+
+			return Vector3.Zero;
 		}
 
 		private Vector3 GetValidSpawnPoint()
@@ -677,10 +710,33 @@ namespace Game
 			return count;
 		}
 
-		private bool IsBanditTemplate(string name)
+		public bool IsBanditTemplate(string name)
 		{
 			if (string.IsNullOrEmpty(name)) return false;
-			return name.StartsWith("Bandit") && name != "FirearmsDealer";
+			return m_banditNames.Contains(name);
+		}
+
+		public void IncrementKillsByPlayer()
+		{
+			m_killsByPlayer++;
+			if (m_killsByPlayer >= 100 && !m_bossUnlocked && m_invasionActive && !m_bossSpawnedThisWar)
+			{
+				m_bossUnlocked = true;
+				m_bossSpawnedThisWar = true;
+
+				SpawnBoss();
+
+				ComponentPlayer firstPlayer = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
+				if (firstPlayer != null)
+				{
+					firstPlayer.ComponentGui.DisplayLargeMessage(
+						"¡La líder del Cartel ha llegado!\n ¡Prepárate para la pelea final!",
+						"",
+						5f,
+						0f
+					);
+				}
+			}
 		}
 
 		private class BanditSpawnData
