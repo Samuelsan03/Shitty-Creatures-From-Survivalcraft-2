@@ -60,7 +60,7 @@ namespace Game
 {
 	"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
 	"Bandit6", "Bandit8", "Bandit9", "Bandit10",
-	"Bandit11", "Bandit13", "Bandit14", "Bandit15", "Bandit16"
+	"Bandit11", "Bandit13", "Bandit14", "Bandit15", "Bandit16", "LaBandida"
 };
 
 		// Índices de ropa sin protección (para dificultades bajas)
@@ -91,7 +91,11 @@ namespace Game
 	"Tank1", "Tank2", "Tank3",
 	"TankGhost1", "TankGhost2", "TankGhost3",
 	"MachineGunInfected", "FlyingInfectedBoss",
-	"FrozenTank", "FrozenTankGhost"
+	"FrozenTank", "FrozenTankGhost",
+	"LaBandida",
+	"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
+	"Bandit6", "Bandit8", "Bandit9", "Bandit10",
+	"Bandit11", "Bandit13", "Bandit14", "Bandit15", "Bandit16"
 };
 
 		// MusicModLoader
@@ -2064,6 +2068,28 @@ namespace Game
 				else
 				{
 					AudioManager.PlaySound(deathSoundPath, 1f, 0f, 0f);
+				}
+			}
+
+			// ===== NUEVO: Contar muertes de bandidos por el jugador =====
+			if (health != null && injury != null)
+			{
+				Entity deadEntity2 = health.Entity;
+				if (deadEntity2 != null)
+				{
+					ComponentPlayer killerPlayer = injury.Attacker?.Entity?.FindComponent<ComponentPlayer>();
+					if (killerPlayer != null) // Solo si el asesino es un jugador
+					{
+						var banditInvasion = deadEntity2.Project.FindSubsystem<SubsystemBanditInvasion>(true);
+						if (banditInvasion != null && banditInvasion.IsInvasionActive) // Guerra activa
+						{
+							string templateName2 = deadEntity2.ValuesDictionary?.DatabaseObject?.Name;
+							if (banditInvasion.IsBanditTemplate(templateName2)) // Es un narcotraficante
+							{
+								banditInvasion.IncrementKillsByPlayer();
+							}
+						}
+					}
 				}
 			}
 		}
