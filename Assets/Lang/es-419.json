@@ -1,4 +1,7 @@
 {
+  "SubsystemBanditInvasion": {
+    "0": "¡La líder del Cartel ha llegado!\n ¡Prepárate para la pelea final!"
+},
   "ComponentAimep3Evolution": {
     "0": "{0} evolucionó al nivel {1}. La pandemia solo empeora.",
     "1": "{0} evolucionó al nivel {1}. Ya no hay vuelta atrás, es una máquina de matar."
@@ -185,7 +188,9 @@
 "140": "Error: dios detectado",
 "141": "Aimep3 alcanzó su máximo poder. Ahora puede derrotar a cualquier desarrollador con una barra de pan. No te acerques.",
 "142": "El creador se arrepiente",
-"143": "Has demostrado que no hay límites para el sufrimiento humano. El desarrollador ya no sabe qué más inventar. Te mereces un premio por tu terquedad."
+"143": "Has demostrado que no hay límites para el sufrimiento humano. El desarrollador ya no sabe qué más inventar. Te mereces un premio por tu terquedad.",
+"144": "Expediente cerrado",
+"145": "El caso de la narcotraficante más buscada del continente ha sido resuelto. No preguntes cómo, no preguntes por qué. Solo acepta las monedas y olvida que viste algo. El gobierno te lo agradece."
   },
   "AchievementsMessages": {
     "0": "¡LOGRO {0} DESBLOQUEADO!",
@@ -402,6 +407,7 @@
    },
   "Database": {
     "DisplayName": {
+      "LaBandida": "La Bandida",
       "InfectedSpiderTamed": "Araña Infectada Aliada",
       "InfectedSpider": "Araña infectada",
       "SonicTheHedgehog": "Sonic el Erizo",
@@ -573,6 +579,7 @@
       "Richard": "Richard"
     },
     "Description": {
+      "LaBandida": "La Bandida es la fundadora y líder absoluta del Cartel de los Bandidos, una organización criminal que ha sembrado el terror en todo el continente. Durante años, todos creyeron que el cerebro del cartel era un hombre: un señor de la guerra frío y calculador. Pero la realidad era muy distinta: quien movía los hilos era ella, una mujer que ascendió desde los barrios bajos, eliminando a sus rivales con una astucia y ferocidad que nadie esperaba. Su verdadera identidad permaneció oculta hasta que la guerra estalló, y cuando el caos alcanzó su punto álgido, ella misma salió a la luz para ajustar cuentas. Al contrario que los demás narcotraficantes de su cartel, que son meros sicarios, ella es la jefa final: el verdadero objetivo de la invasión. Solo aparece cuando has diezmado a cien de sus secuaces, y lo hace con un equipo militar antibalas de última generación: casco, chaleco, pantalones y botas tácticas. Esta armadura la hace prácticamente inmune a cualquier disparo convencional; las balas normales rebotan en ella como si nada. Para abrirle paso y poder hacerle daño, necesitas armas de alto poder que puedan perforar su protección: la Minigun, la AK-48, el Sniper o, si quieres asegurarte, el Mosquete Doble cargado con sus exclusivas balas antitanks. Estas son las únicas herramientas capaces de romper su defensa y dejarla vulnerable. En combate, su resistencia es colosal y sus ataques cuerpo a cuerpo son devastadores; no cometas el error de subestimarla solo por su género. Para derrotarla, necesitarás mantener la movilidad, explotar cualquier descuido y, sobre todo, no desperdiciar munición en su armadura. Ella ha sobrevivido a todo tipo de emboscadas y sabe anticipar tus movimientos. Enfrentarla cara a cara es el verdadero fin de la guerra.",
       "InfectedSpider": "Una araña infectada que acecha en las profundidades y emerge durante las noches. Aparece desde la oleada 8, y también puede encontrarse en cuevas de forma independiente a las oleadas. Extremadamente agresiva, ataca a todo lo que se mueve sin importar la hora del día. Posee un veneno muy potente que puede envenenar gravemente a sus presas. Su velocidad y capacidad de salto la convierten en una cazadora formidable. Puede ser domesticada con un collar, transformándose en una versión dócil que protege a su dueño. Durante la Noche Verde su agresividad aumenta, priorizando atacar jugadores. Es resistente al veneno. Al morir suelta carne podrida.",
       "InfiniteTheJackal": "Infinite the Jackal es un legendario chacal mercenario inspirado en el guerrero que apareció por primera vez en Sonic Forces (2017). Antiguo líder de la temida Jackal Squad, alcanzó fama como el Mercenario Supremo gracias a su extraordinaria fuerza y a su obsesión por superar cualquier signo de debilidad. En este mundo recorre los desiertos durante las noches más oscuras, lejos de la civilización, buscando perfeccionar sus habilidades y encontrar rivales dignos. Aunque normalmente se muestra leal y pacífico con quienes cuentan con su respeto, nunca rechaza un desafío de combate. Su velocidad, resistencia y capacidad de lucha superan ampliamente las de la mayoría de las criaturas, convirtiéndolo en una figura temida y admirada por igual. Aquellos que logren derrotarlo en un duelo justo ganarán el reconocimiento de una auténtica leyenda. Consejo: Al comenzar el duelo, no le des tiempo para recuperar la iniciativa. Los combatientes capaces de encadenar golpes cuerpo a cuerpo rápidos y mantener una presión constante pueden poner a prueba incluso la extraordinaria resistencia de Infinite. Sin embargo, derrotarlo no es la única forma de ganarse su respeto; demostrar valentía, honor y determinación inquebrantable durante el combate puede llevar a que reconozca tu fuerza y acepte convertirse en tu aliado.",
       "KnucklesTheEchidna": "Knuckles the Echidna es un poderoso guerrero rojo que debutó en Sonic the Hedgehog 3 (1994). Último descendiente conocido de los equidnas y guardián de la Master Emerald, ha dedicado su vida a proteger uno de los tesoros más importantes de su mundo. Su enorme fuerza, determinación y sentido del deber lo han convertido tanto en rival como en aliado de Sonic a lo largo de numerosas aventuras. En este mundo solo aparece durante el invierno en las montañas más altas y remotas, como si siguiera vigilando desde las alturas algún antiguo secreto olvidado. Rara vez se deja ver, pero quienes logran encontrarlo descubren a un combatiente formidable cuya fuerza es tan legendaria como su lealtad.",
