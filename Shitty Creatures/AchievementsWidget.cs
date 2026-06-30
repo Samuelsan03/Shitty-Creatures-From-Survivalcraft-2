@@ -817,46 +817,83 @@ namespace Game
 
 		private List<string> WrapText(BitmapFont font, string text, float maxWidth, float fontScale)
 		{
-			List<string> lines = new List<string>();
+			List<string> result = new List<string>();
 			if (string.IsNullOrEmpty(text))
 			{
-				lines.Add("");
-				return lines;
+				result.Add("");
+				return result;
 			}
 
-			string[] words = text.Split(' ');
-			string currentLine = "";
-
-			foreach (string word in words)
+			// Dividir por saltos de línea existentes (maneja los \n manuales)
+			string[] paragraphs = text.Split(new char[] { '\n' }, StringSplitOptions.None);
+			foreach (string paragraph in paragraphs)
 			{
-				string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
-				float testWidth = font.MeasureText(testLine, new Vector2(fontScale), Vector2.Zero).X;
-
-				if (testWidth <= maxWidth)
+				if (string.IsNullOrEmpty(paragraph))
 				{
-					currentLine = testLine;
+					result.Add("");
+					continue;
+				}
+
+				bool hasSpaces = paragraph.Contains(' ');
+				if (hasSpaces)
+				{
+					// Algoritmo original para idiomas con espacios
+					string[] words = paragraph.Split(' ');
+					string currentLine = "";
+					foreach (string word in words)
+					{
+						string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
+						float testWidth = font.MeasureText(testLine, new Vector2(fontScale), Vector2.Zero).X;
+						if (testWidth <= maxWidth)
+						{
+							currentLine = testLine;
+						}
+						else
+						{
+							if (!string.IsNullOrEmpty(currentLine))
+								result.Add(currentLine);
+							currentLine = word;
+						}
+					}
+					if (!string.IsNullOrEmpty(currentLine))
+						result.Add(currentLine);
 				}
 				else
 				{
-					if (!string.IsNullOrEmpty(currentLine))
+					// Para chino, japonés, coreano y otros sin espacios: wrap por caracteres
+					string currentLine = "";
+					foreach (char c in paragraph)
 					{
-						lines.Add(currentLine);
+						string testLine = currentLine + c;
+						float testWidth = font.MeasureText(testLine, new Vector2(fontScale), Vector2.Zero).X;
+						if (testWidth <= maxWidth)
+						{
+							currentLine = testLine;
+						}
+						else
+						{
+							// Si un solo carácter ya excede, se agrega forzosamente (caso poco común)
+							if (string.IsNullOrEmpty(currentLine))
+							{
+								result.Add(c.ToString());
+								currentLine = "";
+							}
+							else
+							{
+								result.Add(currentLine);
+								currentLine = c.ToString();
+							}
+						}
 					}
-					currentLine = word;
+					if (!string.IsNullOrEmpty(currentLine))
+						result.Add(currentLine);
 				}
 			}
 
-			if (!string.IsNullOrEmpty(currentLine))
-			{
-				lines.Add(currentLine);
-			}
+			if (result.Count == 0)
+				result.Add("");
 
-			if (lines.Count == 0)
-			{
-				lines.Add("");
-			}
-
-			return lines;
+			return result;
 		}
 
 		public override void Update()
