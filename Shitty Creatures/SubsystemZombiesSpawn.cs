@@ -756,7 +756,6 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// ===== NUEVO BLOQUE: si la noche verde está desactivada, reseteamos el estado de sincronización =====
 			if (!m_subsystemGreenNightSky.GreenNightEnabled)
 			{
 				m_wasGreenNightActive = false;
@@ -764,7 +763,6 @@ namespace Game
 				m_midnightBossesSpawnedThisNight = false;
 				m_greenNightSpawnDelayActive = false;
 				m_greenNightSpawnDelayTimer = 0f;
-				// No reseteamos la batalla de jefes ni el progreso de oleadas para preservar el avance.
 			}
 
 			UpdateCountdownLabel();
@@ -773,7 +771,6 @@ namespace Game
 			int maxWave = m_waves.Keys.Max();
 			bool isNormalNight = IsNormalNight();
 
-			// ===== VERIFICAR ESTADO DEL JEFE DESPUÉS DE CARGAR =====
 			if (m_needsBossStateVerification)
 			{
 				if (Project.Entities.Count > 0)
@@ -782,18 +779,15 @@ namespace Game
 				}
 			}
 
-			// ===== SPAWN DE INFECTED SPIDER (SOLO SI LA OPCIÓN ESTÁ ACTIVA) =====
-			if (ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled)
+			if (ShittyCreaturesSettingsManager.SpiderSpawnEnabled)
 			{
 				if (m_skeletonNewSpawnChunks.Count > 0 && !isGreenNightActive)
 				{
-					// Spawn CUEVAS - activo excepto en noche verde
 					foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
 					{
 						SpawnCaveSpidersInChunk(chunk, SpiderCaveNewChunkAttempts);
 					}
 
-					// Spawn SUPERFICIE - solo noche normal
 					if (isNormalNight)
 					{
 						foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
@@ -803,7 +797,6 @@ namespace Game
 					}
 				}
 
-				// Control de cooldown para spawn constante de superficie
 				if (!isNormalNight || isGreenNightActive)
 				{
 					m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
@@ -815,13 +808,11 @@ namespace Game
 
 				if (m_skeletonSpawnChunks.Count > 0 && !isGreenNightActive)
 				{
-					// Spawn CONSTANTE CUEVAS - activo excepto en noche verde
 					foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
 					{
 						SpawnConstantCaveSpidersInChunk(chunk, SpiderCaveConstantChunkAttempts);
 					}
 
-					// Spawn CONSTANTE SUPERFICIE - solo noche normal con cooldown
 					if (isNormalNight && m_spiderConstantSpawnCooldown <= 0f)
 					{
 						foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
@@ -834,13 +825,10 @@ namespace Game
 			}
 			else
 			{
-				// Si la opción está desactivada, reseteamos el cooldown para que no se dispare al reactivar
 				m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
 			}
-			// ===== FIN SPAWN DE INFECTED SPIDER =====
 
-			// ===== SPAWN DE ESQUELETOS NORMALES =====
-			if (ShittyCreaturesSettingsManager.NightCreaturesSpawnEnabled)
+			if (ShittyCreaturesSettingsManager.SkeletonSpawnEnabled)
 			{
 				if (m_skeletonNewSpawnChunks.Count > 0)
 				{
@@ -883,13 +871,9 @@ namespace Game
 				m_skeletonNewSpawnChunks.Clear();
 				m_skeletonSpawnChunks.Clear();
 			}
-			// ===== FIN SPAWN DE ESQUELETOS NORMALES =====
 
-			// ===== LÓGICA DE NOCHE VERDE =====
-			// Guardar el estado anterior antes de actualizar
 			bool wasGreenNightActive = m_wasGreenNightActive;
 
-			// Detectar INICIO de la noche verde (transición de inactivo a activo)
 			if (!wasGreenNightActive && isGreenNightActive)
 			{
 				m_nightEndProcessed = false;
@@ -900,38 +884,29 @@ namespace Game
 				m_greenNightSpawnDelayActive = true;
 				m_greenNightSpawnDelayTimer = GreenNightSpawnDelaySeconds;
 
-				// Si hay jefes vivos de noches anteriores, no hacer nada con ellos
 				Entity existingBoss = FindAliveBoss();
 				if (existingBoss != null)
 				{
-					// Jefe existente, no eliminar
 				}
 				else if (m_bossBattleActive)
 				{
-					// Batalla activa pero sin jefe, resetear
 				}
 
-				// Iniciar batalla de jefes SOLO si es la ola final
 				if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
 				{
 					StartBossBattle();
 					m_bossSpawnDelayed = true;
-					m_bossSpawnDelayTimer = GreenNightSpawnDelaySeconds; // 5 segundos de retraso
+					m_bossSpawnDelayTimer = GreenNightSpawnDelaySeconds;
 				}
 			}
-			// ===== FIN VERIFICACIÓN =====
 
-			// Detectar FIN de la noche verde (transición de activo a inactivo)
 			if (wasGreenNightActive && !isGreenNightActive && !m_nightEndProcessed)
 			{
-				// Solo resetear el estado de batalla (no eliminar entidades)
 				m_nightEndProcessed = true;
 			}
 
-			// Actualizar el estado para la próxima iteración
 			m_wasGreenNightActive = isGreenNightActive;
 
-			// Guardar la hora anterior ANTES de retornar (para detectar medianoche)
 			float currentTimeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 
 			if (!isGreenNightActive)
@@ -940,23 +915,19 @@ namespace Game
 				return;
 			}
 
-			// ===== SPAWN DE JEFES A MEDIANOCHE (EXCEPTO OLA FINAL) =====
 			if (!m_midnightBossesSpawnedThisNight && m_currentWave != maxWave)
 			{
 				float midnight = m_subsystemTimeOfDay.Midnight;
 				bool passedMidnight = false;
 
-				// Caso normal: pasamos de antes de medianoche a después
 				if (m_lastTimeOfDay < midnight && currentTimeOfDay >= midnight)
 				{
 					passedMidnight = true;
 				}
-				// Caso especial: medianoche cerca del 0.0 (cambio de día)
 				else if (m_lastTimeOfDay > 0.9f && currentTimeOfDay < 0.1f && midnight < 0.1f)
 				{
 					passedMidnight = true;
 				}
-				// Caso: estamos exactamente en medianoche (por si se perdió el momento exacto)
 				else if (Math.Abs(currentTimeOfDay - midnight) < MidnightDetectionTolerance)
 				{
 					passedMidnight = true;
@@ -968,11 +939,9 @@ namespace Game
 					m_midnightBossesSpawnedThisNight = true;
 				}
 			}
-			// ===== FIN SPAWN DE JEFES A MEDIANOCHE =====
 
 			m_lastTimeOfDay = currentTimeOfDay;
 
-			// ===== GESTIONAR RETRASO DE SPAWN DE JEFE =====
 			if (m_bossSpawnDelayed)
 			{
 				m_bossSpawnDelayTimer -= dt;
@@ -985,9 +954,7 @@ namespace Game
 					}
 				}
 			}
-			// ===== FIN GESTIÓN RETRASO =====
 
-			// ===== VERIFICAR SI EL JEFE ACTUAL MURIÓ =====
 			if (m_bossBattleActive)
 			{
 				if (m_currentBossEntity != null && !IsEntityAlive(m_currentBossEntity))
@@ -1001,9 +968,7 @@ namespace Game
 					m_bossSpawnDelayTimer = 0.5f;
 				}
 			}
-			// ===== FIN VERIFICACIÓN MUERTE JEFE =====
 
-			// ===== ACTUALIZAR RETRASO DE SPAWN (SOLO NOCHE VERDE) =====
 			if (m_greenNightSpawnDelayActive)
 			{
 				m_greenNightSpawnDelayTimer -= dt;
@@ -1013,9 +978,7 @@ namespace Game
 					m_greenNightSpawnDelayTimer = 0f;
 				}
 			}
-			// ===== FIN ACTUALIZAR RETRASO =====
 
-			// ===== SPAWN NORMAL DE CRIATURAS (SOLO NOCHE VERDE, DESPUÉS DEL RETRASO) =====
 			if (!m_greenNightSpawnDelayActive)
 			{
 				int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
@@ -1039,7 +1002,6 @@ namespace Game
 						break;
 				}
 			}
-			// ===== FIN SPAWN NORMAL DE CRIATURAS =====
 		}
 
 		private void RebuildBossQueue()
