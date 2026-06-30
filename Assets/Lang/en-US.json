@@ -328,7 +328,8 @@
     "FreeCameraDescription": "Enable/disable free camera mode (only in non-creative modes)",
     "BleedingDescription": "Toggle bleeding on wounded creatures",
     "HealthBarDescription": "Show health bars on creatures",
-    "NightCreaturesSpawnEnabled": "Enable the spawning of skeletons and infected spiders during normal nights",
+    "SkeletonSpawnDescription": "Allows skeletons to spawn during normal nights.",
+    "SpiderSpawnDescription": "Allows infected spiders to spawn during normal nights (including caves).",
     "FastMeleeDescription": "Enable rapid consecutive melee attacks when clicking/tapping quickly on the same target",
     "InGameMusicDescription": "Show a button in-game to play random music tracks while playing"
 },
