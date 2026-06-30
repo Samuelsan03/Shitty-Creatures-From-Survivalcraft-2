@@ -4,14 +4,6 @@ using Engine.Graphics;
 
 namespace Game
 {
-	public enum ProgressState
-	{
-		Start,      // 0% - 33%
-		Progress,   // 34% - 66%
-		Almost,     // 67% - 99%
-		Complete    // 100%
-	}
-
 	public class ProgressBarWidget : Widget
 	{
 		private float m_value;
@@ -104,6 +96,14 @@ namespace Game
 			start = flatBatch.TriangleVertices.Count;
 			flatBatch.QueueRectangle(Vector2.Zero, size, 0f, new Color(100, 100, 100));
 			flatBatch.TransformTriangles(GlobalTransform, start, -1);
+		}
+
+		public enum ProgressState
+		{
+			Start,      // 0% - 33%
+			Progress,   // 34% - 66%
+			Almost,     // 67% - 99%
+			Complete    // 100%
 		}
 	}
 }
