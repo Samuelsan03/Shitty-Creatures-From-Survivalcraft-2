@@ -6,83 +6,120 @@ namespace Game
 {
 	public class HealTextParticleSystem : ParticleSystem<HealTextParticleSystem.Particle>
 	{
-		private FontBatch3D m_batch;
-		private float m_hue;
-		public float TextScale; // Escala del texto (ajustable)
+		private float m_elapsedTime;
 
-		public HealTextParticleSystem(Vector3 position, Vector3 velocity, string text, float scale = 0.012f) : base(1)
+		public HealTextParticleSystem(Vector3 position, Vector3 velocity, string text) : base(1)
 		{
-			var random = new Random();
-			Particle p = Particles[0];
-			p.IsActive = true;
-			p.Position = position;
-			p.TimeToLive = 1.0f; // Duración 3 segundos
-			p.Velocity = velocity + random.Vector3(0.5f) * new Vector3(1f, 0f, 1f) + 0.8f * Vector3.UnitY;
-			p.Text = text;
-			m_hue = 0f;
-			TextScale = scale;
+			Random random = new Random();
+			HealTextParticleSystem.Particle particle = base.Particles[0];
+			particle.IsActive = true;
+			particle.Position = position;
+			particle.TimeToLive = 1.0f;
+			particle.Velocity = velocity + random.Vector3(0.5f) * new Vector3(1f, 0f, 1f) + 0.8f * Vector3.UnitY;
+			particle.Text = text;
+			m_elapsedTime = 0f;
 		}
 
 		public override bool Simulate(float dt)
 		{
 			dt = Math.Clamp(dt, 0f, 0.1f);
-			float fade = MathF.Pow(0.1f, dt);
-			bool anyAlive = false;
-			for (int i = 0; i < Particles.Length; i++)
+			m_elapsedTime += dt;
+			float s = MathF.Pow(0.1f, dt);
+			bool flag = false;
+			for (int i = 0; i < base.Particles.Length; i++)
 			{
-				Particle p = Particles[i];
-				if (p.IsActive)
+				HealTextParticleSystem.Particle particle = base.Particles[i];
+				if (particle.IsActive)
 				{
-					anyAlive = true;
-					p.TimeToLive -= dt;
-					if (p.TimeToLive > 0f)
+					flag = true;
+					particle.TimeToLive -= dt;
+					if (particle.TimeToLive > 0f)
 					{
-						// Cambio de color arcoíris
-						m_hue += dt * 0.35f;
-						if (m_hue > 1f) m_hue -= 1f;
-						Vector3 hsv = new Vector3(m_hue, 1f, 1f);
-						Vector3 rgb = Color.HsvToRgb(hsv);
-						p.Color = new Color(rgb.X, rgb.Y, rgb.Z, 1f) * MathUtils.Saturate(2f * p.TimeToLive);
-
-						// Física: sube y se frena
-						p.Velocity += new Vector3(0f, 0.3f, 0f) * dt;
-						p.Velocity *= fade;
-						p.Position += p.Velocity * dt;
+						particle.Velocity += new Vector3(0f, 0.5f, 0f) * dt;
+						particle.Velocity *= s;
+						particle.Position += particle.Velocity * dt;
+						// Efecto arcoíris: el color cambia con el tiempo
+						particle.Color = GetRainbowColor(m_elapsedTime) * MathUtils.Saturate(2f * particle.TimeToLive);
 					}
 					else
 					{
-						p.IsActive = false;
+						particle.IsActive = false;
 					}
 				}
 			}
-			return !anyAlive;
+			return !flag;
+		}
+
+		private Color GetRainbowColor(float time)
+		{
+			// Cicla a través del arcoíris (rojo -> naranja -> amarillo -> verde -> azul -> violeta -> rojo)
+			float hue = (time * 1.5f) % 1f;
+			return HsvToRgb(hue, 1f, 1f);
+		}
+
+		private Color HsvToRgb(float h, float s, float v)
+		{
+			float r, g, b;
+			float i = (float)Math.Floor(h * 6f);
+			float f = h * 6f - i;
+			float p = v * (1f - s);
+			float q = v * (1f - f * s);
+			float t = v * (1f - (1f - f) * s);
+
+			switch ((int)i % 6)
+			{
+				case 0:
+					r = v; g = t; b = p;
+					break;
+				case 1:
+					r = q; g = v; b = p;
+					break;
+				case 2:
+					r = p; g = v; b = t;
+					break;
+				case 3:
+					r = p; g = q; b = v;
+					break;
+				case 4:
+					r = t; g = p; b = v;
+					break;
+				default:
+					r = v; g = p; b = q;
+					break;
+			}
+
+			return new Color(r, g, b);
 		}
 
 		public override void Draw(Camera camera)
 		{
-			if (m_batch == null)
-				m_batch = SubsystemParticles.PrimitivesRenderer.FontBatch(LabelWidget.BitmapFont, 0, DepthStencilState.None, null, null, null);
-
-			Vector3 viewDir = camera.ViewDirection;
-			Vector3 right = Vector3.Normalize(Vector3.Cross(viewDir, Vector3.UnitY));
-			Vector3 up = -Vector3.Normalize(Vector3.Cross(right, viewDir));
-
-			for (int i = 0; i < Particles.Length; i++)
+			if (this.m_batch == null)
 			{
-				Particle p = Particles[i];
-				if (!p.IsActive) continue;
-
-				float dist = Vector3.Distance(camera.ViewPosition, p.Position);
-				float fadeNear = MathUtils.Saturate(3f * (dist - 0.2f));
-				float fadeFar = MathUtils.Saturate(0.2f * (20f - dist));
-				float alpha = fadeNear * fadeFar;
-				if (alpha <= 0f) continue;
-
-				float scale = TextScale * MathF.Sqrt(dist);
-				Color color = p.Color * alpha;
-				m_batch.QueueText(p.Text, p.Position, right * scale, up * scale, color, TextAnchor.Center, Vector2.Zero);
+				this.m_batch = this.SubsystemParticles.PrimitivesRenderer.FontBatch(LabelWidget.BitmapFont, 0, DepthStencilState.None, null, null, null);
+			}
+			Vector3 viewDirection = camera.ViewDirection;
+			Vector3 vector = Vector3.Normalize(Vector3.Cross(viewDirection, Vector3.UnitY));
+			Vector3 v = -Vector3.Normalize(Vector3.Cross(vector, viewDirection));
+			for (int i = 0; i < base.Particles.Length; i++)
+			{
+				HealTextParticleSystem.Particle particle = base.Particles[i];
+				if (particle.IsActive)
+				{
+					float num = Vector3.Distance(camera.ViewPosition, particle.Position);
+					float num2 = MathUtils.Saturate(3f * (num - 0.2f));
+					float num3 = MathUtils.Saturate(0.2f * (20f - num));
+					float num4 = num2 * num3;
+					if (num4 > 0f)
+					{
+						float s = 0.005f * MathF.Sqrt(num);
+						Color color = particle.Color * num4;
+						this.m_batch.QueueText(particle.Text, particle.Position, vector * s, v * s, color, TextAnchor.Center, Vector2.Zero);
+					}
+				}
 			}
 		}
+
+		public FontBatch3D m_batch;
 
 		public class Particle : Game.Particle
 		{
