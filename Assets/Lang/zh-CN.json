@@ -1,4 +1,9 @@
 {
+  "ComponentFirearmsShooters": {
+    "0": "已治疗！",
+    "1": "装填中！",
+    "2": "已装填！"
+},
   "SubsystemBanditInvasion": {
     "0": "帮派首领已经到来！\n准备迎接最终决战！"
   },
