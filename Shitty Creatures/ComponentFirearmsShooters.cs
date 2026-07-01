@@ -22,6 +22,9 @@ namespace Game
 		public float ReloadTime = 1.0f;
 		public float PistolAimTime = 0.5f;
 		public float SniperAimTime = 1.0f;
+		public bool CanHealSelf = false;
+		public float SelfHealProbability = 0f;
+		private double m_nextSelfHealTime;
 
 		private bool m_isAiming = false;
 		private bool m_isFiring = false;
@@ -84,6 +87,9 @@ namespace Game
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 1.0f);
 			PistolAimTime = valuesDictionary.GetValue<float>("PistolAimTime", 0.5f);
 			SniperAimTime = valuesDictionary.GetValue<float>("SniperAimTime", 1.0f);
+			CanHealSelf = valuesDictionary.GetValue<bool>("CanHealSelf", false);
+			SelfHealProbability = valuesDictionary.GetValue<float>("SelfHealProbability", 0f);
+			m_nextSelfHealTime = 0.0;
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
@@ -508,6 +514,16 @@ namespace Game
 								KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
 								m_subsystemParticles.AddParticleSystem(additionalParticles, false);
 							}
+
+							// --- NUEVO: Mostrar texto "CARGADO!" con efecto arcoíris ---
+							if (m_subsystemParticles != null && m_componentCreature != null)
+							{
+								Vector3 pos = m_componentCreature.ComponentCreatureModel.EyePosition + new Vector3(0f, 0.2f, 0f);
+								Vector3 vel = new Vector3(0f, 0.5f, 0f);
+								string text = LanguageControl.Get("ComponentFirearmsShooters", "2"); // "CARGADO!"
+								var ps = new ReloadStatusParticleSystem(pos, vel, text);
+								m_subsystemParticles.AddParticleSystem(ps, false);
+							}
 						}
 						catch (Exception ex)
 						{
@@ -540,6 +556,31 @@ namespace Game
 				ResetAnimations();
 				m_currentWeaponIndex = -1;
 				return;
+			}
+
+			// ===== AUTOCURACIÓN SOLO CUANDO ESTÁ A PUNTO DE MORIR (salud <= 20%) =====
+			if (CanHealSelf && m_componentCreature.ComponentHealth.Health > 0f && m_componentCreature.ComponentHealth.Health <= 0.2f)
+			{
+				if (currentTime >= m_nextSelfHealTime)
+				{
+					if (m_random.Float(0f, 1f) < SelfHealProbability)
+					{
+						// Curar salud completa
+						m_componentCreature.ComponentHealth.Heal(1f);
+
+						// Efecto de texto arcoíris desde las piernas
+						if (m_subsystemParticles != null)
+						{
+							Vector3 feetPos = m_componentCreature.ComponentBody.Position;
+							Vector3 velocity = new Vector3(0f, 0.5f, 0f);
+							// Obtener texto localizado usando LanguageControl
+							string healText = LanguageControl.Get("ComponentFirearmsShooters", "0");
+							var particleSystem = new HealTextParticleSystem(feetPos, velocity, healText, 0.005f);
+							m_subsystemParticles.AddParticleSystem(particleSystem, false);
+						}
+					}
+					m_nextSelfHealTime = currentTime + 0.5;
+				}
 			}
 
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
@@ -1108,6 +1149,16 @@ namespace Game
 						Vector3 offset = new Vector3(m_random.Float(-0.2f, 0.2f), m_random.Float(0.1f, 0.4f), m_random.Float(-0.2f, 0.2f));
 						KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
 						m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+					}
+
+					// --- NUEVO: Mostrar texto "RECARGANDO!" con efecto arcoíris ---
+					if (m_subsystemParticles != null && m_componentCreature != null)
+					{
+						Vector3 pos = m_componentCreature.ComponentCreatureModel.EyePosition + new Vector3(0f, 0.2f, 0f);
+						Vector3 vel = new Vector3(0f, 0.5f, 0f);
+						string text = LanguageControl.Get("ComponentFirearmsShooters", "1"); // "RECARGANDO!"
+						var ps = new ReloadStatusParticleSystem(pos, vel, text);
+						m_subsystemParticles.AddParticleSystem(ps, false);
 					}
 				}
 				catch (Exception ex)
