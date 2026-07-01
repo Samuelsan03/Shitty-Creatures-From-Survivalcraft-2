@@ -1,4 +1,9 @@
 {
+  "ComponentFirearmsShooters": {
+    "0": "HEALED!",
+    "1": "RELOADING!",
+    "2": "LOADED!"
+},
   "SubsystemBanditInvasion": {
     "0": "The Cartel Leader has arrived!\nPrepare for the final battle!"
   },
