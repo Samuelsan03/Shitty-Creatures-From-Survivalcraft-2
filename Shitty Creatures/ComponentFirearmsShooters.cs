@@ -575,7 +575,7 @@ namespace Game
 							Vector3 velocity = new Vector3(0f, 0.5f, 0f);
 							// Obtener texto localizado usando LanguageControl
 							string healText = LanguageControl.Get("ComponentFirearmsShooters", "0");
-							var particleSystem = new HealTextParticleSystem(feetPos, velocity, healText, 0.005f);
+							var particleSystem = new HealTextParticleSystem(feetPos, velocity, healText);
 							m_subsystemParticles.AddParticleSystem(particleSystem, false);
 						}
 					}
