@@ -15,10 +15,9 @@ namespace Game
 			Particle particle = Particles[0];
 			particle.IsActive = true;
 			particle.Position = position;
-			particle.TimeToLive = 1.0f;          // Duración un poco mayor
+			particle.TimeToLive = 1.0f;
 			particle.Velocity = velocity + random.Vector3(0.5f) * new Vector3(1f, 0f, 1f) + 0.3f * Vector3.UnitY;
 			particle.Text = text;
-			// El color base se actualizará en cada simulación para crear el arcoíris
 			particle.BaseColor = Color.White;
 		}
 
@@ -37,19 +36,16 @@ namespace Game
 					particle.TimeToLive -= dt;
 					if (particle.TimeToLive > 0f)
 					{
-						// Movimiento suave hacia arriba
 						particle.Velocity += new Vector3(0f, 0.4f, 0f) * dt;
 						particle.Velocity *= s;
 						particle.Position += particle.Velocity * dt;
 
-						// Efecto arcoíris: el matiz varía con el tiempo restante
-						float hue = (1.0f - particle.TimeToLive / 1.2f) * 2.0f; // dos ciclos completos
-						hue = hue - (float)Math.Floor(hue); // normalizar a [0,1)
+						float hue = (1.0f - particle.TimeToLive / 1.2f) * 2.0f;
+						hue = hue - (float)Math.Floor(hue);
 						Vector3 hsv = new Vector3(hue * 360f, 0.9f, 1.0f);
 						Vector3 rgb = Color.HsvToRgb(hsv);
 						Color rainbowColor = new Color(rgb.X, rgb.Y, rgb.Z, 1f);
 
-						// Atenuación al final de la vida
 						float alpha = MathUtils.Saturate(2f * particle.TimeToLive);
 						particle.Color = rainbowColor * alpha;
 					}
@@ -80,16 +76,9 @@ namespace Game
 				if (particle.IsActive)
 				{
 					float distance = Vector3.Distance(camera.ViewPosition, particle.Position);
-					float fadeNear = MathUtils.Saturate(3f * (distance - 0.2f));
-					float fadeFar = MathUtils.Saturate(0.2f * (20f - distance));
-					float visibility = fadeNear * fadeFar;
-					if (visibility > 0f)
-					{
-						float scale = 0.005f * MathF.Sqrt(distance);
-						Color color = particle.Color * visibility;
-						m_batch.QueueText(particle.Text, particle.Position, right * scale, up * scale,
-										  color, TextAnchor.Center, Vector2.Zero);
-					}
+					float scale = 0.005f * MathF.Sqrt(distance);
+					m_batch.QueueText(particle.Text, particle.Position, right * scale, up * scale,
+									  particle.Color, TextAnchor.Center, Vector2.Zero);
 				}
 			}
 		}
@@ -98,7 +87,7 @@ namespace Game
 		{
 			public float TimeToLive;
 			public Vector3 Velocity;
-			public Color BaseColor;   // No se usa directamente, se mantiene por compatibilidad
+			public Color BaseColor;
 			public string Text;
 		}
 	}
