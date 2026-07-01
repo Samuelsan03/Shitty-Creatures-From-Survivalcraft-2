@@ -38,7 +38,6 @@ namespace Game
 						particle.Velocity += new Vector3(0f, 0.5f, 0f) * dt;
 						particle.Velocity *= s;
 						particle.Position += particle.Velocity * dt;
-						// Efecto arcoíris: el color cambia con el tiempo
 						particle.Color = GetRainbowColor(m_elapsedTime) * MathUtils.Saturate(2f * particle.TimeToLive);
 					}
 					else
@@ -52,7 +51,6 @@ namespace Game
 
 		private Color GetRainbowColor(float time)
 		{
-			// Cicla a través del arcoíris (rojo -> naranja -> amarillo -> verde -> azul -> violeta -> rojo)
 			float hue = (time * 1.5f) % 1f;
 			return HsvToRgb(hue, 1f, 1f);
 		}
@@ -106,15 +104,8 @@ namespace Game
 				if (particle.IsActive)
 				{
 					float num = Vector3.Distance(camera.ViewPosition, particle.Position);
-					float num2 = MathUtils.Saturate(3f * (num - 0.2f));
-					float num3 = MathUtils.Saturate(0.2f * (20f - num));
-					float num4 = num2 * num3;
-					if (num4 > 0f)
-					{
-						float s = 0.005f * MathF.Sqrt(num);
-						Color color = particle.Color * num4;
-						this.m_batch.QueueText(particle.Text, particle.Position, vector * s, v * s, color, TextAnchor.Center, Vector2.Zero);
-					}
+					float s = 0.006f * MathF.Sqrt(num);
+					this.m_batch.QueueText(particle.Text, particle.Position, vector * s, v * s, particle.Color, TextAnchor.Center, Vector2.Zero);
 				}
 			}
 		}
