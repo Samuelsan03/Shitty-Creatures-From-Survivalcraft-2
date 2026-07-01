@@ -496,7 +496,23 @@ namespace Game
 			if (m_isReloading)
 			{
 				ApplyReloadingAnimation(dt);
-				if (currentTime - m_animationStartTime >= ReloadTime)
+
+				// Calcular el tiempo real de recarga considerando los multiplicadores de cada arma
+				double actualReloadTime = ReloadTime;
+				if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.Izh43Block), true, false))
+				{
+					actualReloadTime = ReloadTime * 1.5;
+				}
+				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SniperBlock), true, false))
+				{
+					actualReloadTime = ReloadTime * 2.0;
+				}
+				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.RevolverBlock), true, false))
+				{
+					actualReloadTime = ReloadTime * 1.2;
+				}
+
+				if (currentTime - m_animationStartTime >= actualReloadTime)
 				{
 					m_isReloading = false;
 					m_shotsSinceLastReload = 0;
@@ -515,7 +531,7 @@ namespace Game
 								m_subsystemParticles.AddParticleSystem(additionalParticles, false);
 							}
 
-							// --- NUEVO: Mostrar texto "CARGADO!" con efecto arcoíris ---
+							// --- Mostrar texto "CARGADO!" con efecto arcoíris ---
 							if (m_subsystemParticles != null && m_componentCreature != null)
 							{
 								Vector3 pos = m_componentCreature.ComponentCreatureModel.EyePosition + new Vector3(0f, 0.2f, 0f);
