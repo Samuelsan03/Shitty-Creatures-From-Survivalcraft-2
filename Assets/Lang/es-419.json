@@ -1,4 +1,9 @@
 {
+  "ComponentFirearmsShooters": {
+    "0": "¡CURADO!",
+    "1": "¡RECARGANDO!",
+    "2": "¡CARGADO!"
+},
   "SubsystemBanditInvasion": {
     "0": "¡La líder del Cartel ha llegado!\n ¡Prepárate para la pelea final!"
 },
