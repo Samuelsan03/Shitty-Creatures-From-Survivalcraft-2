@@ -1499,6 +1499,22 @@
 "ClothingBlock:54": {
   "DisplayName": "Military Bulletproof Boots",
   "Description": "Reinforced tactical boots with ballistic protection. Cannot be crafted; can only be obtained by defeating La Bandida."
+},
+"CommonInfectedSpawnEggBlock:0": {
+  "DisplayName": "Common Infected Spawn Egg",
+  "Description": "Spawner egg that hatches a random common infected creature when thrown against a surface. Available in creative mode only."
+},
+"BoomerSpawnEggBlock:0": {
+  "DisplayName": "Boomer Spawn Egg",
+  "Description": "Spawner egg that hatches a random explosive infected creature when thrown. These creatures explode upon death, causing area damage."
+},
+"SpecialInfectedSpawnEggBlock:0": {
+  "DisplayName": "Special Infected Spawn Egg",
+  "Description": "Spawner egg that hatches a random powerful infected creature when thrown. These are dangerous and resilient enemies."
+},
+"FlyingInfectedSpawnEggBlock:0": {
+  "DisplayName": "Flying Infected Spawn Egg",
+  "Description": "Spawner egg that hatches a random flying infected creature when thrown. Includes all airborne infected variants."
 }
 },
       "ContentWidgets": {
