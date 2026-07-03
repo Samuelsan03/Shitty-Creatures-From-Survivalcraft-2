@@ -21,6 +21,7 @@ namespace Game
 			"Textures/Wallpapers/infinite jack",
 			"Textures/Wallpapers/jack metamorphosis",
 			"Textures/Wallpapers/jack the chacal serious",
+			"Textures/Wallpapers/AxelWallpaper"
 		};
 
 		private enum TransitionState
