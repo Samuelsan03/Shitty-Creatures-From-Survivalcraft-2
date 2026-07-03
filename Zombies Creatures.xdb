@@ -152,13 +152,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="328a687c-ac37-498e-bef4-d84d86c6fa7d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="636312af-7c10-432e-8e07-ff287e890880" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="9b5911e6-6c3f-4342-8bf3-67abcd71300f">
-                <Parameter Name="Color" Guid="57224d92-b2ac-4651-bbc5-8ac581c67666" Value="86,139,25" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="f6cd5426-aa47-47d8-8bf7-579a1c07aaea" Value="7" Type="int"/>
-                <Parameter Name="SwapUV" Guid="8c3f4637-7dec-49ca-821c-d8ca75e010e3" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="12373db2-4378-49c9-abec-ff92097c4549" Value="[DisplayName:InfectedNormal1]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="3c584e95-5e71-4a6d-bad3-ab68e714a945" Value="1000" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedNormalTamed1" Guid="922c6e4a-ef62-456d-8167-0f8e40ef7c44" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -465,13 +458,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="7bbd79bd-08f8-4f1d-ab9b-f14aff3337f6" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="522650fe-de81-4624-ae49-e6cfe403f032" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="f8db8809-3df7-4819-a64a-6fa12818fbd4">
-                <Parameter Name="Color" Guid="a7db3b90-ca9b-4d66-aa3f-f17e9b2d8705" Value="86,139,25" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="b8f466a4-f37a-4583-bd9f-ad9c706b87ac" Value="7" Type="int"/>
-                <Parameter Name="SwapUV" Guid="2b046326-52fd-4988-be99-ddf2e0c9cbcf" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="2aae83b6-590a-4f57-9161-9d7f12617b5e" Value="[DisplayName:InfectedNormal2]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="34b0f220-5095-467b-a39d-2ee800db38ca" Value="1001" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedNormalTamed2" Guid="cd91e7a4-2843-41a4-a15e-f5d834c6d6e1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -753,13 +739,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="c9af843c-ac22-4085-8956-29a3bdb00200" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="649bb7f8-5228-407c-bc18-093f7f54f644" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="0332a337-d884-4c43-bee0-13bb78a59363">
-                <Parameter Name="Color" Guid="d2dbb716-da44-494b-8b0d-df1f629f72b0" Value="86,139,25" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="c9bd3381-fc52-430b-a0f8-ca1242f9ae59" Value="7" Type="int"/>
-                <Parameter Name="SwapUV" Guid="85ba8acf-78ba-4c6d-abc0-63dfc9262d05" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="16cdcf7f-f5c6-42cc-a794-7cd43a48ea36" Value="[DisplayName:InfectedFast1]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="b8bae6f3-b424-4785-9a9a-998be331a3bc" Value="1002" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFastTamed1" Guid="0117c65b-d60e-47de-8ffb-b110348c0efc" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -1011,13 +990,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="e011f168-9a98-4358-afd6-fb57b65f992d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="6e811fdb-f84b-4849-9389-1242b8b77375" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="7d9a8cbc-559f-492a-adb4-3634b2f8b31c">
-                <Parameter Name="Color" Guid="e64f5331-7836-42de-af5c-d2e50bc302a2" Value="86,139,25" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="98d1aecc-2a14-4043-867b-6ba253273328" Value="7" Type="int"/>
-                <Parameter Name="SwapUV" Guid="05bfa595-9b48-40a6-a2fd-2cc7c794c69b" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="d9401ed0-f267-4550-b3a3-fc9b89bc067c" Value="[DisplayName:InfectedFast2]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="2d077c1c-7e1c-4486-9d4a-7c9d40c50460" Value="1003" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFastTamed2" Guid="9b8dd50d-52ad-4f80-8788-3a660b33ce26" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -1278,13 +1250,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="55ee8697-e3eb-43e0-9180-337986e0327a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="8672629d-92a9-4882-bfbf-574c29abc8a9" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="44e59185-21ce-4fd0-be2e-c451800743f0">
-                <Parameter Name="Color" Guid="f35ee19b-7a5a-4aea-b1f9-73b4bbd0cff3" Value="86,139,25" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="60379d1c-2c53-4775-9aa7-1b38b5058c83" Value="7" Type="int"/>
-                <Parameter Name="SwapUV" Guid="ed92fbb5-ae34-44b0-82b7-101226bcecf6" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="4b7bd344-cc17-4418-8c05-1feb058c9767" Value="[DisplayName:InfectedMuscle1]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="5dad4ab0-cdb1-4d75-a95c-e4f4e99b46e2" Value="1004" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscleTamed1" Guid="030aa759-c8dd-4a46-bafa-1cc330478a4d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -1559,13 +1524,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="648b71ac-d39b-447a-9f45-da040b2ae68d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="ca4e2855-8733-4920-8426-3eeb3159bd40" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="b5ddc418-b2c0-4182-a0bc-6e9ba293ba3d">
-                <Parameter Name="Color" Guid="75fe517c-f086-430d-8468-a0d0a5609bc7" Value="86,139,25" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="4a7e7b31-422f-4fc2-ac28-0419746bd81a" Value="7" Type="int"/>
-                <Parameter Name="SwapUV" Guid="db8ae043-1cab-4ec0-b4b3-f35101d085d0" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="d573b6f7-b64f-4768-a517-750ba4d71f1a" Value="[DisplayName:InfectedMuscle2]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="0e361c7c-4102-461b-a346-f555494ae513" Value="1005" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscleTamed2" Guid="42a903ab-9c22-410b-9407-4cef9cb37741" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -1836,13 +1794,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="2dbeee1c-a334-4156-a56c-a17d16f7011d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="8b63af34-0417-4d2f-9e24-795278d8744f" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="a86e1ac0-8ca0-4260-a921-ea43e14a68a8">
-                <Parameter Name="Color" Guid="a8518c7b-cf9f-4b7d-8a63-e2c6cd02b422" Value="86,139,25" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="cf5fc360-762a-479f-9bbe-5b98ce06aef8" Value="7" Type="int"/>
-                <Parameter Name="SwapUV" Guid="a061b03f-b6c8-466c-9394-e3c3e7406ce8" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="8d9a69bd-73cb-4e65-ba15-7fc297f76f87" Value="[DisplayName:PoisonousInfected1]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="11bd540d-3b48-43fc-a7d3-9d9cde2fec42" Value="1006" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousInfectedTamed1" Guid="6990ec17-91bf-4b4f-9fb7-470f88d63b09" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -2109,13 +2060,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="49065972-1db4-4471-8760-c9429dc4e04a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="4a8cd08e-4141-430b-9dc7-5bd60e4bc133" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="6d365481-73e0-4e35-9588-f3a143e75b11">
-                <Parameter Name="Color" Guid="8067dd07-9ddc-48ad-bdc4-22632b3b0db9" Value="86,139,25" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="4c16b871-3651-4206-800f-9f2dfbb70802" Value="7" Type="int"/>
-                <Parameter Name="SwapUV" Guid="a63c39eb-f4d0-410e-b13c-fe35b0d40756" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="c5a2ea41-1a63-4ecc-8154-e75af257a647" Value="[DisplayName:PoisonousInfected2]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="edb34f78-8f3d-413e-87c6-c5749e90860c" Value="1007" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousInfectedTamed2" Guid="ce1a9422-a91e-48de-b251-98917cef397d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -2345,14 +2289,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="442202ba-e848-41ab-8fa6-0bf39e7055a7">
         <Parameter Name="AutoDespawn" Guid="c6a4ab4c-a253-4d28-b93f-12e7d165b8e1" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="6cd3c67c-4f66-4ef9-960b-08310e7a8fb7">
-        <Parameter Name="Color" Guid="949f61bd-74d2-4a45-b993-9af42facad99" Value="86,139,25" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="b39da8e4-bda3-4261-abc7-98d96fd9974e" Value="7" Type="int"/>
-        <Parameter Name="SwapUV" Guid="38140ebd-0e36-4cac-9819-da515db56d74" Value="False" Type="bool"/>
-        <Parameter Name="Scale" Guid="b8e40536-fec3-4cb4-b9fd-dd60f57a237e" Value="0.99" Type="float" />
-        <Parameter Name="DisplayName" Guid="87498924-f96e-462d-9391-338be1f0d944" Value="[DisplayName:InfectedFly1]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="ef301616-2616-42e9-99f0-657cd2ea181b" Value="1008" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFlyTamed1" Guid="d56fcb71-d0e3-4f82-9760-ee66fa62f953" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
@@ -2556,14 +2492,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="a7cb34c4-c7ac-456a-b8a9-b80f5588873b">
         <Parameter Name="AutoDespawn" Guid="68d3ee73-99d2-4f6c-8657-fe2e9c02a394" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="e2da4a8e-fbb5-4e35-9a60-388ab66e266a">
-        <Parameter Name="Color" Guid="bd84d573-d487-40d7-9a80-c9b913db3eb5" Value="86,139,25" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="3014aca0-cdd8-44cd-9ef2-532e6dc6cd15" Value="7" Type="int"/>
-        <Parameter Name="SwapUV" Guid="0866bc88-e012-40d8-b746-10cb0a4b14a2" Value="False" Type="bool"/>
-        <Parameter Name="Scale" Guid="c8ba6ce7-586e-469d-b01b-68b9e5603e40" Value="0.99" Type="float" />
-        <Parameter Name="DisplayName" Guid="1373496d-9073-45f4-ad2e-4cc1ddbd4c3d" Value="[DisplayName:InfectedFly2]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="940dc27b-770f-472e-9c7b-0f4fbd53ce56" Value="1010" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFlyTamed2" Guid="54f063f3-0c55-4589-9cb5-0c7eb5ad50df" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
@@ -2761,14 +2689,6 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FlyAwayBehavior" Guid="db8327cb-3bc6-4743-9565-3b40826ee5fd" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
     <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="1c37b761-6631-42fe-8e0f-9df9f52f9fac" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
-    <ParameterSet Name="CreatureEggData" Guid="c52aac85-a3fa-4948-b29d-48b6c1709c1b">
-        <Parameter Name="Color" Guid="622be13f-e4fe-4c2b-b18e-6527e000c3f0" Value="86,139,25" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="80fb6313-8c7f-47a4-87f7-fc757189c64b" Value="7" Type="int"/>
-        <Parameter Name="SwapUV" Guid="845875b9-84d8-4293-b2c6-fe4b300f6728" Value="False" Type="bool"/>
-        <Parameter Name="Scale" Guid="ccc18955-c9c8-439b-8839-2a311c33dd22" Value="0.99" Type="float" />
-        <Parameter Name="DisplayName" Guid="8b5d1fab-7449-4d53-8b7f-372fffe29683" Value="[DisplayName:InfectedFly3]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="be91c744-dc27-4ef1-8dab-99dec8f2b5be" Value="1011" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFlyTamed3" Guid="0faf17b8-76eb-4c0b-8e09-4906d27b6e4f" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
@@ -2960,14 +2880,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="de0e421a-d6a8-4549-ac6b-e08152736d01">
         <Parameter Name="AutoDespawn" Guid="e4e4df19-a642-4674-9d8a-ca8e52e345bf" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="4f8d5454-a186-43f3-997a-62c824bc1424">
-        <Parameter Name="Color" Guid="5bbce1c0-0b2e-4e41-9e16-224f96c9a861" Value="86,139,25" Type="Color"/>
-        <Parameter Name="Scale" Guid="180e8491-019f-4e54-95c8-75a4eece720f" Value="3.85" Type="float"/>
-        <Parameter Name="TextureSlot" Guid="561dd620-6b7e-4235-b814-b6c6589602fd" Value="183" Type="int"/>
-        <Parameter Name="SwapUV" Guid="66d24dff-c71d-44e9-9f25-47e9ade9d6e7" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="456d7342-2b95-4fb6-83d4-3a940186842f" Value="[DisplayName:FlyingInfectedBoss]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="ef0a8e87-2922-4c31-87bd-d78f17f7c340" Value="1012" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="FlyingInfectedBossTamed" Guid="9c02bd72-5d77-4aee-b250-550c3e2eb3ee" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
@@ -3232,13 +3144,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="8f816f17-f703-4982-ad4c-85dcbed8245e" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="2b2cb0e4-83c3-4f3b-a892-5568a692da9a" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="74104668-0ab0-41a5-a8a1-f0e9bec30422">
-                <Parameter Name="Color" Guid="4fa8a229-fbfd-49f8-8851-2e8e40e5a0f8" Value="255,0,255" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="6f91dc02-e4c4-4e25-b05d-87d09d435761" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="53d1103b-2afb-43e0-9fe6-c572405518cb" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="9d97ebf6-8d30-47a4-8e40-8c1380b195c9" Value="[DisplayName:Boomer1]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="4841a102-5ea8-4589-ac9b-406de789c879" Value="1013" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="BoomerTamed1" Guid="2421a4f0-5681-4b41-8e0b-79dd235e7332" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -3537,13 +3442,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="f87b90f4-3f4e-479c-9420-2d913132168e" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="bd702a61-bde9-4eef-af52-077e018a02d2" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="119b1f97-78d6-4b27-8f75-5bb296891b79">
-                <Parameter Name="Color" Guid="138e00e3-3e92-45a5-aa84-974b486c5cb0" Value="255,0,255" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="14229739-5ac6-4b36-8971-48e091bf0bf5" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="6235b99d-390f-42b8-ad09-22ee4c5c73eb" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="c30809a6-fb82-488c-b587-96c81d1d8e4e" Value="[DisplayName:Boomer2]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="1edea828-91c1-4cd8-bf53-4712ea7832cc" Value="1014" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="BoomerTamed2" Guid="80d3bd4c-3f09-43ac-ae4d-9ec634b66b2a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -3843,13 +3741,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="11408094-9d3f-4856-b87b-067c88b4991a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="c9a0cd06-a251-4a0f-90a2-ffcb62ec8627" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="43af22ad-f8f9-41b1-9811-1012577c656e">
-                <Parameter Name="Color" Guid="2926e170-06cf-4745-a6d8-d1546d00f58b" Value="255,0,255" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="06b82ac5-0a52-4a0a-a5c3-9a375ac350d1" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="10e95706-741c-4cd3-872f-624d3ad6734c" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="8ad1179d-2407-4b26-aa59-c7c1e3ed1e6d" Value="[DisplayName:Boomer3]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="24f82541-ce85-4926-b4cc-9fca2e1b9bb3" Value="1015" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="BoomerTamed3" Guid="819d2c53-dd93-4275-a098-ba88aa415a2b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -4120,14 +4011,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="66956c3a-3ff7-44bd-ae0a-97292bc05f04" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="03c2c4ee-0ba4-4e95-983d-11627d4276d0" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="b362e106-e869-49a5-a859-3f330a9992ad">
-                <Parameter Name="Color" Guid="b0166c39-4663-440d-9874-544600292cba" Value="0,0,206" Type="Color"/>
-                <Parameter Name="Scale" Guid="3a2e56fa-ede0-4b2c-9081-e501bad724b4" Value="4.5" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="835ccd2b-8680-46d7-9341-910c4e3b93a6" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="9bac10a9-eb69-46f3-a6fa-9bf7fa05cf50" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="da90fe2c-a64d-4d76-bf9d-dc5ca61868d5" Value="[DisplayName:Charger1]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="836c0343-25ac-4ec6-a5b4-701288873993" Value="1016" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="ChargerTamed1" Guid="71b20a82-1915-4d87-bba8-84dce263b294" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -4371,14 +4254,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="0ec957fb-3440-4d31-bf6d-d41c4654aa72" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="24a671ff-4202-499f-bfdc-2114bbfc5e65" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="7afef490-c7ff-4d37-98b6-657a369c0098">
-                <Parameter Name="Color" Guid="5d3069e8-f295-4e93-8d9e-faf9ba669aee" Value="0,0,206" Type="Color"/>
-                <Parameter Name="Scale" Guid="ec9900c6-44b8-4ee4-9bb0-69a536358456" Value="4.5" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="22514dfe-4ca9-4f5b-8914-02e680061aaf" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="6c8e2bd4-b957-43a2-b147-037b425efef1" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="97685946-443b-41f6-a35e-8422430ee504" Value="[DisplayName:Charger2]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="1c92ff75-06b3-4e92-b7ef-54f8fedc5d67" Value="1017" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="ChargerTamed2" Guid="4ce8fe98-6334-4b6b-a8a0-70dbc81288ee" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -4625,14 +4500,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="7e405224-4a82-44cf-9dc2-d42900d3bbd7" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="44b9f27e-da02-40c7-a944-1c7b8bdb1ccd" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="2b5934c6-d03d-44c5-89e2-ee7166a19d7e">
-                <Parameter Name="Color" Guid="3cd776ea-298b-48fd-9a18-893acf5b657f" Value="153,0,0" Type="Color"/>
-                <Parameter Name="Scale" Guid="180a5ca4-6054-4db5-8de3-fecccac39002" Value="6.0" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="01eb3264-cea6-4ef5-91cd-77a99910a7a4" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="9090b51e-c090-4ed1-beef-01101347be14" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="074c0789-c43f-4fdd-ae1d-c478fd63bbe0" Value="[DisplayName:Tank1]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="bdbd9540-5965-4d56-aaad-7271370c8ee3" Value="1018" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="TankTamed1" Guid="1c076bb6-99c0-408e-b0a5-3dbcf90c79d2" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -4875,14 +4742,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="37717321-5dcb-4504-9b6a-2083ccd4ff61" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="6a8920f2-392f-43e9-9ac0-f0ddf2aedbbb" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="cf94597e-ebbf-45fe-bc59-c55930f13c33">
-                <Parameter Name="Color" Guid="dd145a73-550f-461d-9688-55168468cefc" Value="153,0,0" Type="Color"/>
-                <Parameter Name="Scale" Guid="3b982353-8dee-4f37-9a84-7be0ac1f5fa3" Value="6.0" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="f4903d9e-1c1d-4c79-acb5-f28a0c60b5ba" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="1424f8a6-f192-4b08-91ba-32ee6f7976d6" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="c71a29e2-af58-45fc-b84e-17b028e09dd3" Value="[DisplayName:Tank2]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="5458c1f6-a922-44d6-b385-38920e19a89a" Value="1019" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="TankTamed2" Guid="1310d97c-f6f7-4fef-8596-19e3f76b22ff" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -5129,14 +4988,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="86cc4d6d-9bb5-41ce-bacb-20f39f7dd826" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="5554d38a-054c-4ae9-8a9d-bc24c2812c85" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="a29790b8-82c5-4086-98b3-e107aa512a70">
-                <Parameter Name="Color" Guid="a4ea04b3-3154-4118-ad00-9b8a1f6d2153" Value="153,0,0" Type="Color"/>
-                <Parameter Name="Scale" Guid="1ac1477e-316a-4785-a2bf-e7e70f340d1c" Value="6.0" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="e06ebd68-1370-4671-b9f4-453c827afdae" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="c87b47e2-b085-4e6c-817e-7723a25bc4ca" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="22cbe743-687b-4320-bd09-c5971091a2fe" Value="[DisplayName:Tank3]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="f13d8032-1ab7-4dda-bcae-213b024006f8" Value="1020" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="TankTamed3" Guid="8220b1d1-6c19-416f-b6ed-eb34710e6835" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -5419,13 +5270,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="a5d0059c-1e4d-4fa8-9175-fa457d61c7bd" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="93a5e0e7-b510-4540-92fa-e9a95f46ad5e" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="50d1ce02-f669-4853-9eba-03e668c6202c">
-                <Parameter Name="Color" Guid="63ab9cf2-206a-4127-925c-1b1147ff0c95" Value="255,255,255" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="996a7e50-96b0-4a88-86ec-423cc2d6583e" Value="50" Type="int"/>
-                <Parameter Name="SwapUV" Guid="7b13511a-383e-41f2-8ecd-ed8622fd80c2" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="adc3edbf-cb42-4138-a94d-83b903a74ecd" Value="[DisplayName:GhostNormal]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="dd1a64c5-3a2d-41da-be3d-5719b0ef5d6b" Value="1021" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="GhostNormalTamed" Guid="9a265b40-a235-48a3-9585-1a67dbf2bb13" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -5769,13 +5613,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="d52a869c-1ab4-4097-9b56-cf7b3577036b" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="66837a2d-42bf-46e2-9e2c-159f25b719af" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="0b084546-70c9-425b-ba83-f1de156fd1dc">
-                <Parameter Name="Color" Guid="90bd3a97-425e-47c2-a941-ed89f52873a1" Value="255,255,255" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="538396a8-f7b5-4564-9c17-2b6474dcbf05" Value="50" Type="int"/>
-                <Parameter Name="SwapUV" Guid="905d7ee1-196b-4c60-8425-e77277ab6cae" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="3a867e59-722c-45ce-8754-bcde3157eb54" Value="[DisplayName:GhostFast]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="31173625-da87-42c3-bb72-e17347c4d005" Value="1022" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="GhostFastTamed" Guid="92f68295-930a-435d-ab10-56df2c34d904" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -6112,13 +5949,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="6ef673c2-10e5-43f9-b7e1-4ac64d93d679" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="cac500b1-ded0-4366-837e-ad417eeef874" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="070f6a9a-ff1e-47f3-bb8d-c17892e911b2">
-                <Parameter Name="Color" Guid="fa23e7e8-c3a7-42eb-9af6-f4ebafc38a97" Value="255,255,255" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="3c8d3125-66e6-4288-bac9-0f41614471ca" Value="50" Type="int"/>
-                <Parameter Name="SwapUV" Guid="b64170a4-6b2b-4a51-a67b-9c12f6ef4a77" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="97e55d20-5f2d-4fe9-a21a-4d8ccc1ae737" Value="[DisplayName:PoisonousGhost]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="c831985f-b404-4bf7-8c56-62f49e5ba5ce" Value="1023" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousGhostTamed" Guid="5fc09d45-ec47-4c7e-8927-1973d4b4bb30" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -6427,14 +6257,6 @@
                 <Parameter Name="LadderSpeed" Guid="d6da76cf-1a74-45eb-bec9-08dc88b5fe64" Value="3.0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="8f653579-80b0-447b-952c-e57496bba24b" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
-            <ParameterSet Name="CreatureEggData" Guid="01242baf-b086-495e-9e30-81ebe3c30441">
-                <Parameter Name="Color" Guid="827a969c-d7fd-4d78-94e4-9477e3b73c40" Value="255,255,255" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="2ddbdf71-2654-4123-82e3-e9a4fdba2dc0" Value="183" Type="int"/>
-                <Parameter Name="Scale" Guid="ff96c3f2-6781-4263-94d8-bdeed75b804e" Value="3.5" Type="float"/>
-                <Parameter Name="SwapUV" Guid="91e9218d-7cad-4d0e-9076-418436995e13" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="5257a0d7-710f-4d8e-9156-1a9e72094c0a" Value="[DisplayName:GhostBoomer1]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="9e953198-210e-4038-9208-72bef77755f6" Value="1025" Type="int"/>
-            </ParameterSet>
           </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomerTamed1" Guid="8f3428de-e5d7-4932-82ae-496734bae8b6" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -6776,14 +6598,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="44890f57-c6ac-45d9-82b4-8c365cea313c" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="f32e775a-e0c4-463a-b4e3-3f869f68c666" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="89a23344-57e4-41b0-bd6e-d2526f05d673">
-                <Parameter Name="Color" Guid="a985a771-2c8a-4d8b-b0f2-01fc167b4b4a" Value="255,255,255" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="31137bd9-cbfb-4354-9e36-708156098093" Value="183" Type="int"/>
-                <Parameter Name="Scale" Guid="a87ca977-9f1a-443c-9ec3-bffdb20b0a6f" Value="3.5" Type="float"/>
-                <Parameter Name="SwapUV" Guid="703d3199-9fc2-4e39-9e91-8f4ce0110af0" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="93466b62-fc5c-43f6-a752-711664004587" Value="[DisplayName:GhostBoomer2]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="d164c98c-9876-4931-a0ac-7a66f3958cde" Value="1026" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomerTamed2" Guid="40c6d952-7308-412b-953a-03a70fc910b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -7125,14 +6939,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="3e214497-fef4-4ad8-bcf3-4368934d5010" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="0b229d28-a624-416c-a071-dfdd86d4fcf3" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="4a01158e-1e8a-4f5a-9d14-2c8a23574231">
-                <Parameter Name="Color" Guid="c80746ec-0206-42c6-a707-ac57acb262da" Value="255,255,255" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="09df3dc5-58f0-4b72-b981-767c73576ade" Value="183" Type="int"/>
-                <Parameter Name="Scale" Guid="83544776-8918-4e1a-823a-4b36eeab961d" Value="3.5" Type="float"/>
-                <Parameter Name="SwapUV" Guid="61dccc0c-db92-48a8-9574-91119397693d" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="16b7aa62-5f3c-4c60-95aa-e3e34b9f7ad8" Value="[DisplayName:GhostBoomer3]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="879bd635-e913-4113-8d78-3d1a9ee46ed6" Value="1027" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomerTamed3" Guid="4c7d49e4-ba7f-4229-9055-c779f4c99650" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -7441,14 +7247,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="88cfc466-a1c6-4032-9bd4-47b1b5729591" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="74a0bdce-9926-4c73-aea2-c6cc987936fa" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="8e81b9a4-d168-42c0-8748-b2bcee1542ca">
-                <Parameter Name="Color" Guid="764c70b9-734e-47b9-aed7-65c9f88444d2" Value="255,255,255" Type="Color"/>
-                <Parameter Name="Scale" Guid="afdb5edf-410f-41c0-b1a1-55ab23c45ce9" Value="4.5" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="164c6c99-9105-4a12-8c0b-716e41780eb1" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="52483484-fc56-4dd3-bca1-a2f8d617d82e" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="384a29e2-af3b-4d09-9de8-97f9a3c4d4e7" Value="[DisplayName:GhostCharger]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="47eb3436-88cb-4ef9-aa4c-8d5b04b554b4" Value="1029" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="GhostChargerTamed" Guid="2bad85ab-cf65-45a7-aab9-c8a333b2d918" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -7712,14 +7510,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="ca049f07-5f14-423e-9598-cf6493b097fd" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="aba3954e-d08b-44b6-b2d4-f03bd4d8dfe2" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="7a34762f-2de0-4c6f-b3b5-32914918c4af">
-                <Parameter Name="Color" Guid="4df0485c-fcfe-4410-9b9f-119841102b0f" Value="165,67,162" Type="Color"/>
-                <Parameter Name="Scale" Guid="fb9fdb02-7731-486a-abba-afceb663324f" Value="6.0" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="dbeaa5aa-a2f6-4285-8076-e937aa5f7d28" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="95485829-9f09-44b8-a065-105f54b38da0" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="155ea628-d08c-4787-a506-82fb06f3539b" Value="[DisplayName:TankGhost1]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="b0b7c49f-6c45-48e1-ad5b-9ea18e51ba87" Value="1030" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="TankGhostTamed1" Guid="af912da0-2a5d-4116-ae58-ae52cd557dfb" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -7967,14 +7757,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="0434dfd8-9f8e-4638-ba71-41bdbd59237b" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="f20e6e21-96ef-4b1c-8cb0-5644733c1de8" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="61fe3d34-eaeb-4aeb-aa81-9198b70e63cf">
-                <Parameter Name="Color" Guid="145f7bd2-0092-43e6-822d-36d18c89b133" Value="165,67,162" Type="Color"/>
-                <Parameter Name="Scale" Guid="5f8a10fc-3fe4-47c9-8104-8f9b089fb64d" Value="6.0" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="e429483b-283b-4481-9206-b3e05accc3c5" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="f779cd95-59e8-4dda-9f50-f87b7b2b2310" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="16c3f88d-8b10-4241-9069-0396a8f60f5e" Value="[DisplayName:TankGhost2]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="752bd667-2630-4ddc-9faa-29f9482fe6c5" Value="1031" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="TankGhostTamed2" Guid="cb71396b-664c-4d7f-9842-93e3ba06ce93" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -8231,14 +8013,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="6e2ec9be-72dc-4539-b694-f0ecf1a1085e" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="340ca7e8-79a5-49f2-b89d-c38c6242fcb9" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="e6134d77-52bb-4cb1-9d71-c4cd2ed40d8a">
-                <Parameter Name="Color" Guid="0c6edf4a-6a2b-428d-a709-6ff89945b875" Value="165,67,162" Type="Color"/>
-                <Parameter Name="Scale" Guid="5e027461-29f1-4bae-9b48-56a2c424b653" Value="6.0" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="89c2982f-1b21-4aaa-b36d-86cebc0a9b3d" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="d1f37695-9e7e-4117-ace4-a7559076554f" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="f1a8c0cd-d904-4853-93f4-21890200197c" Value="[DisplayName:TankGhost3]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="fa8a1450-4463-456b-b144-db7b58036fb9" Value="1032" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="TankGhostTamed3" Guid="02455402-6ea9-4c49-b3e9-af8872c0a815" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -8498,14 +8272,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="78b05c10-dc93-4505-98a4-99d1369b1dbe" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="d7ed0e17-d280-46f5-8634-26ab191325bf" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="3697a2bc-3ab4-4607-bf84-865d28ca6d76">
-                <Parameter Name="Color" Guid="6da19952-a6b0-4415-8ad8-25de75aa33ff" Value="174,123,58" Type="Color"/>
-                <Parameter Name="Scale" Guid="1835d3f8-d479-414d-86fe-6eb492b1e8aa" Value="7.0" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="a2e409a0-6530-404a-b58f-c20ad6699cb1" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="d4a63426-79b1-4e47-bdb3-a2c465da4b0b" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="de4cd71a-be60-4632-be34-3f5ba7c2fdd5" Value="[DisplayName:MachineGunInfected]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="8b078284-d59e-4179-a6a4-436cfedd5811" Value="1033" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="MachineGunInfectedTamed" Guid="0ced2f63-6233-4199-8463-2dfb4d458f02" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -8763,13 +8529,6 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="88b73c40-5b91-4e88-9fdb-63bba33c638d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Value="False" Type="bool" Guid="451c68ad-3b50-443f-b8d7-6a8f61deb00f"/>
     </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="c267a544-f961-4238-8737-99efa4134e1b">
-        <Parameter Name="Color" Value="100,150,100" Type="Color" Guid="29f0671b-cf03-46a6-9f33-da49778e37de"/>
-        <Parameter Name="TextureSlot" Value="163" Type="int" Guid="1dc02bcc-6049-4250-8527-d22db63b05bf"/>
-        <Parameter Name="SwapUV" Value="False" Type="bool" Guid="8e67d885-1bb1-466a-b403-c9567d5766ba"/>
-        <Parameter Name="DisplayName" Value="[DisplayName:InfectedWolf]" Type="string" Guid="e12b2d25-67fb-4924-a3e3-f13f0799eac8"/>
-        <Parameter Name="EggTypeIndex" Value="1034" Type="int" Guid="da5ecf6d-3d58-47b9-a0af-d5c5f77c5590"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedWolfTamed" Guid="0283fba2-5837-4536-8f74-52d42bf66cf8" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -9007,13 +8766,6 @@
         <Parameter Name="AutoDespawn" Guid="77e0775e-c1b7-46bc-ab66-b9423dfe8f98" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="b8c47dee-b9b1-4bdd-95be-abff4a1b1374"/>
-    <ParameterSet Name="CreatureEggData" Guid="0e08651e-ce57-49d5-a455-d788b55ccfa1">
-        <Parameter Name="TextureSlot" Guid="a8aab9ad-55e3-41da-918b-3feb7f61896f" Value="163" Type="int"/>
-        <Parameter Name="Color" Guid="a035b600-7ba4-4127-8f15-d7d2dc406f75" Value="179,95,95" Type="Color"/>
-        <Parameter Name="SwapUV" Guid="d75dafc8-27e1-4214-ae9b-980436f4d13b" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="0d09da56-1e01-4d61-a181-106082b6b909" Value="[DisplayName:InfectedWerewolf]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="5392f8aa-52aa-4c76-a254-97eb4f2d02d5" Value="1035" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedWerewolfTamed" Guid="6401c4d7-b05a-4f94-bc15-89c79a387ec3" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -9260,13 +9012,6 @@
         <Parameter Name="AutoDespawn" Guid="a43674c5-2ee8-42bf-ba09-8574258b0fc2" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="60b88377-4c89-4c60-83e8-8b57112abb77"/>
-    <ParameterSet Name="CreatureEggData" Guid="be65d8ef-4c95-4e5a-b010-543fefd743ee">
-        <Parameter Name="TextureSlot" Guid="5edb7795-a08d-4eec-ba23-27ec2b41925d" Value="163" Type="int"/>
-        <Parameter Name="Color" Guid="039d1525-c0a2-40ca-bf3f-723d455daecf" Value="141,105,70" Type="Color"/>
-        <Parameter Name="SwapUV" Guid="bc50093c-6470-4501-84e8-6f44e6f4dfa1" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="b767078d-1f4e-431c-a3f8-febec218e254" Value="[DisplayName:InfectedHyena]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="73fa9d75-1e6d-4b42-ae4d-28f82b3b4510" Value="1036" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedHyenaTamed" Guid="94393520-531c-4fe1-b28a-245621b43703" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -9474,13 +9219,6 @@
               </ParameterSet>
               <ParameterSet Name="LootOnFire" Guid="47fb1bfe-3e88-406c-b196-75a494efc9b5" />
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="4b994955-dd78-4b7f-a90c-92e0fa6c31a4">
-              <Parameter Name="Color" Guid="8f760a1a-8210-4515-a1f1-4de77c85aa27" Value="142,113,74" Type="Color"/>
-              <Parameter Name="SwapUV" Guid="5f6367c6-a79d-48b1-913f-d1db641f285f" Value="True" Type="bool"/>
-              <Parameter Name="DisplayName" Guid="8d4c3f44-1a35-48e9-bf55-b958c023c374" Value="[DisplayName:InfectedBear]" Type="string"/>
-              <Parameter Name="TextureSlot" Guid="ae1a3749-141a-4183-9069-fcd7aff0e58a" Value="163" Type="int"/>
-              <Parameter Name="EggTypeIndex" Guid="eef3f314-dc15-46b7-877d-6ff5873636a1" Value="1037" Type="int"/>
-            </ParameterSet>
           </EntityTemplate>
 
           <EntityTemplate Name="InfectedBearTamed" Guid="b4f69790-e83f-4141-ad5e-a94e7e392ac0" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -9716,12 +9454,6 @@
   <Parameter Name="Force" Guid="393ac780-cbfa-4a9f-9baf-8cc2fdc67a19" Value="25" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="9e2197b2-1980-4e6c-8b9e-1913895b96ee" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-            <ParameterSet Name="CreatureEggData" Guid="bc513cab-ac61-4440-a81d-372c4c5702a2">
-              <Parameter Name="Color" Guid="c37ed700-cd46-4fbc-8586-579c61236537" Value="112,40,119" Type="Color"/>
-              <Parameter Name="TextureSlot" Guid="bf149ea8-0f42-40ab-a727-1b1a590a899c" Value="163" Type="int"/>
-              <Parameter Name="DisplayName" Guid="69e269a9-6fa4-439f-8f34-948d6699f2ed" Value="[DisplayName:InfectedWildboar]" Type="string"/>
-              <Parameter Name="EggTypeIndex" Guid="30ad373b-5097-4d55-80e6-fe17783d5144" Value="1038" Type="int"/>
-            </ParameterSet>
           </EntityTemplate>
 
           <EntityTemplate Name="InfectedWildboarTamed" Guid="c8787c56-c7ca-4fac-988d-45e81ddef109" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -9904,13 +9636,6 @@
         <Parameter Name="DayRange" Guid="a28849d9-27c9-43b9-9b57-4c94954712db" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="fc05e1f6-5739-4be3-bb54-dd7e6fcb5135" Value="0" Type="float"/>
     </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="892c57ab-c2b4-4064-bb52-047cdc23927d">
-              <Parameter Name="Color" Guid="99fb9026-dbf1-4072-99b2-dcf386c4d036" Value="112,128,115" Type="Color"/>
-              <Parameter Name="TextureSlot" Guid="e268a2e5-6fae-4904-b393-a7d01dee2036" Value="163" Type="int"/>
-              <Parameter Name="Scale" Guid="662bd260-fd8d-408b-b36a-1afff222687d" Value="0.99" Type="float" />
-              <Parameter Name="DisplayName" Guid="57f9e911-65f2-4ae9-abdb-fe2f0d9640ec" Value="[DisplayName:InfectedBird]" Type="string"/>
-              <Parameter Name="EggTypeIndex" Guid="72a82f64-e7a5-4fd8-9dd3-14518ae27bd2" Value="1039" Type="int"/>
-            </ParameterSet>
             </EntityTemplate>
 
             <EntityTemplate Name="InfectedBirdTamed" Guid="cddd54bc-d23a-4490-9ff5-0ce9d3499d52" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
@@ -10103,13 +9828,6 @@
     <MemberComponentTemplate Name="NewAutoInteract" Guid="98b6a8f7-8884-4687-b9f5-31132844246c" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="f521611e-3ac2-4ce7-ad9d-b6443f09659f">
-        <Parameter Name="Color" Guid="d15a36fe-bdb0-4704-bbde-87670fb51867" Value="42,121,71" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="d5486a91-c3ad-41f4-9b64-02825b869297" Value="109" Type="int"/>
-        <Parameter Name="SwapUV" Guid="fa6e5e83-995a-49c3-9aae-6cf5cda70309" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="12b70506-5b10-4e0f-8583-1b264619723d" Value="[DisplayName:PredatoryChameleon]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="35ac1210-8067-4c32-9c6e-5dfc997e2cbe" Value="1040" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="PredatoryChameleonTamed" Guid="09fcb5bf-1456-4b1c-bc10-6460fe19d048" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -10371,13 +10089,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="7351902a-e177-449e-8984-e70e050ba2ac" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="a7d5cf4e-a75a-4acc-bc83-80b8b78f572a" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="cb6447f0-afb7-4f17-bd0c-1f73c29e80cb">
-                <Parameter Name="Color" Guid="968cb3e1-e0d5-4167-809f-d0328f2ab8e3" Value="124,124,124" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="d3e60275-b380-4220-9028-a04fdd04e5b5" Value="193" Type="int"/>
-                <Parameter Name="SwapUV" Guid="127e0546-2242-41f7-9c91-0d9af0cf9c39" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="a1328fbc-26ee-4ea3-be96-1b45092d5df6" Value="[DisplayName:HumanoidSkeleton]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="a6168354-e935-43c9-803e-2193e8a44cf9" Value="1041" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
 <EntityTemplate Name="HumanoidSkeletonTamed" Guid="9e4a56a4-818a-4d1d-8c1a-7db32411e2cb" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -10681,13 +10392,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="6076ef23-4eda-4dff-9b33-f032c3721241" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="ab387434-6025-4474-824b-af05a6cf2c17" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="b1b17415-f77d-49b8-98df-ad3d9dfbcdd8">
-                <Parameter Name="Color" Guid="604ee332-dd4c-409e-8630-3b1c20d7126f" Value="0,169,230" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="64c6330f-8a39-4046-b1fe-d015a695714a" Value="7" Type="int"/>
-                <Parameter Name="SwapUV" Guid="5c9ac6e7-a098-44c1-9b54-6221622d5e6b" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="1b998599-37a3-4b15-b310-fcf440a52245" Value="[DisplayName:InfectedFreezer]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="5f8a1704-afd4-4a55-85a2-2e7fb85e2e9e" Value="1047" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
 <EntityTemplate Name="InfectedFreezerTamed" Guid="e3875ee4-4ff9-4da6-9a02-f12425a54f1c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -10993,13 +10697,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="4e91e713-b1bb-415b-bd73-f2112c8600bd" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="49645224-d702-45c2-94ad-8ecf2ff7fd8a" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="562b05d7-eda8-45ec-ab84-23ad1516a9f2">
-                <Parameter Name="Color" Guid="5f08257b-16b9-4381-ade3-76ed622fea11" Value="0,169,230" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="dcc94033-8b3b-49e8-89e3-e35039a5e657" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="1fdc97b3-ab4a-4c01-825e-6f81e5b9bbc9" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="87441e3d-5879-48e9-9126-f5f4cf64c054" Value="[DisplayName:BoomerFrozen]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="505c5b65-fefa-4251-9a20-9d9447fab140" Value="1042" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="BoomerFrozenTamed" Guid="9b7aee17-8d12-4120-a46d-4a5a0ca7bb09" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -11322,13 +11019,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="acb140f7-0ddb-4136-b459-e9a5a002aac7" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="c14b7e23-f5e1-4833-af78-687a86865d94" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="c94c5a8f-29ff-425e-b40f-96cbe46e009e">
-                <Parameter Name="Color" Guid="d942fea1-0b06-4704-91d3-69c490d24dfb" Value="0,169,230" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="1f48a944-c17b-4a7b-92ba-e1ed65dffc07" Value="50" Type="int"/>
-                <Parameter Name="SwapUV" Guid="05cf02df-518e-4dcc-adc3-7a00dedc35dd" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="b16b906b-1792-4a0d-a321-335c693e220c" Value="[DisplayName:FrozenGhost]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="b5a17bba-c5d6-446e-8dd9-0738118013fb" Value="1043" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="FrozenGhostTamed" Guid="f8a96d4f-cc7e-48bf-b7ab-ae6675d413cb" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -11670,14 +11360,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="aef04c75-55ba-42ae-af69-c0b1422fc25d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="49aef9b1-5775-4195-a1fc-43fa4925dd15" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="2ae53d51-7683-4a39-83fc-46c6f5d9a052">
-                <Parameter Name="Color" Guid="b5e2e73b-70aa-4b2b-943d-627ff8282fd8" Value="0,169,230" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="ec07a034-54e6-4510-aceb-4d779ac8b0aa" Value="183" Type="int"/>
-                <Parameter Name="Scale" Guid="c7d8ed84-aab3-420d-b821-f8fda92b82c2" Value="3.5" Type="float"/>
-                <Parameter Name="SwapUV" Guid="aa7bc494-b1fb-4cfc-bf0f-0b86c52b0730" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="166bb0d5-e82e-4c72-a401-95af4cb7268e" Value="[DisplayName:FrozenGhostBoomer]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="52725056-9bba-45ef-91d7-6aa9f501ba7f" Value="1044" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="FrozenGhostBoomerTamed" Guid="8d35c1fb-02f1-47c3-a058-dfd0e310c9f8" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -11968,14 +11650,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="c092eb09-8800-4c54-b7f9-2070e8c3ac78" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="d7f8fedb-23ef-490b-8952-2cc2c23398f9" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="2eccff78-c4f1-4940-bcef-f9b8560eacfc">
-                <Parameter Name="Color" Guid="a98ea36f-10e4-4cd5-84ea-234f1068ed33" Value="0,169,230" Type="Color"/>
-                <Parameter Name="Scale" Guid="0c856cf8-f454-491b-aa12-bd14ea3812bf" Value="6.0" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="d9f3c7c3-3f66-4c93-958c-28e76316a678" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="a699a0dd-ee05-4391-816a-430d79455b3c" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="a9b40dd4-a657-4b8d-89d4-d390e5f4efa3" Value="[DisplayName:FrozenTank]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="4587bd1d-0add-4d67-9e84-a2fcac0fc24c" Value="1045" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="FrozenTankTamed" Guid="203c87d3-9359-47b9-a847-56964b3795df" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -12230,14 +11904,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="d567640d-7bba-402b-9c63-5a264e050976" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="9eb22f0d-87e3-4311-9ec6-32757d731ef6" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <ParameterSet Name="CreatureEggData" Guid="7bb58251-ae54-4e8c-895c-430db61c197a">
-                <Parameter Name="Color" Guid="a8824c57-6c46-46aa-9090-55d73d05cfc5" Value="66,188,225" Type="Color"/>
-                <Parameter Name="Scale" Guid="9f8d3263-2fa1-478f-bda6-c95a3df76f28" Value="6.0" Type="float"/>
-                <Parameter Name="TextureSlot" Guid="4125e343-daee-413a-a27e-d72ecfd075c3" Value="183" Type="int"/>
-                <Parameter Name="SwapUV" Guid="dc1fb1e0-04d2-4a5e-9f78-6edce74092c4" Value="True" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="71613eed-af66-48ce-b8cb-58324b5e96b5" Value="[DisplayName:FrozenTankGhost]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="c5bd52b9-9ee9-40b2-b3d6-de0897a9f1ce" Value="1046" Type="int"/>
-            </ParameterSet>
         </EntityTemplate>
 
         <EntityTemplate Name="FrozenTankGhostTamed" Guid="bdbaa82b-3f9b-4518-9bea-4d6340d0d79c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -12466,13 +12132,6 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="a210e931-426b-4a8e-925b-912a259d7945" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="c9c699e7-88ce-4138-8570-2dc8b9d4ca47" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
-            <ParameterSet Name="CreatureEggData" Guid="4a65a14e-7013-4e5b-8893-2e43cafcfb8b">
-              <Parameter Name="SwapUV" Guid="023ea52f-dfcf-4ddb-ac19-f1cb66e46222" Value="False" Type="bool" />
-              <Parameter Name="Color" Guid="5d63b91b-98de-4741-8f04-96e3695b1c40" Value="0,102,102" Type="Color" />
-              <Parameter Name="TextureSlot" Guid="0ce2142b-26dc-438d-aa1e-e2df27b7344c" Value="163" Type="int" />
-              <Parameter Name="DisplayName" Guid="c3dc4bdc-1094-4cf6-b41e-9d0f5bcd2909" Value="[DisplayName:InfectedSpider]" Type="string" />
-              <Parameter Name="EggTypeIndex" Guid="a16698b8-05aa-49d5-83d3-83a020c9393f" Value="1048" Type="int" />
-            </ParameterSet>
           </EntityTemplate>
 
           <EntityTemplate Name="InfectedSpiderTamed" Guid="60fb743b-0352-4602-a612-701e43770f9d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
