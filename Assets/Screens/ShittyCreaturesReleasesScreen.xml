@@ -1,7 +1,7 @@
 <Screen xmlns="runtime-namespace:Game">
   <PanoramaWidget />
   <StackPanelWidget Direction="Horizontal">
-    <CanvasWidget Style="{Widgets/TopBarContents}">
+    <CanvasWidget Style="{Widgets/ShittyCreaturesRainbowTopBar}">
       <LabelWidget Name="TopBar.Label" Text="[ShittyCreaturesReleasesScreen:0]" />
     </CanvasWidget>
     <CanvasWidget Size="280, Infinity" Margin="10, 10">
