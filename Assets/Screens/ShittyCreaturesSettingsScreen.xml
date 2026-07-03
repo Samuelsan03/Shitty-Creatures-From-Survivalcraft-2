@@ -1,14 +1,14 @@
 <Screen xmlns="runtime-namespace:Game">
   <PanoramaWidget />
   <StackPanelWidget Direction="Horizontal">
-    <CanvasWidget Style="{Widgets/TopBarContents}">
+    <CanvasWidget Style="{Widgets/ShittyCreaturesTopBar}">
       <LabelWidget Name="TopBar.Label" Text="" />
     </CanvasWidget>
     <CanvasWidget Margin="10, 20">
       <BevelledRectangleWidget Style="{Styles/Area}" />
       <ScrollPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3, 3">
         <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Name="Content">
-          <!-- Las filas se añaden dinámicamente desde el código -->
+          <!-- Las filas se añadirán dinámicamente desde el código -->
         </StackPanelWidget>
       </ScrollPanelWidget>
     </CanvasWidget>
