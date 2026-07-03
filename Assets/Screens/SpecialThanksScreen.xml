@@ -4,8 +4,8 @@
 
   <StackPanelWidget Direction="Horizontal">
 
-    <CanvasWidget Style="{Widgets/TopBarContents}" >
-      <LabelWidget Name="TopBar.Label" Text="Special Thanks" />
+    <CanvasWidget Style="{Widgets/ShittySettingsTopBar}" >
+      <LabelWidget Name="TopBar.Label" Text="[SpecialThanksScreen:0]" />
     </CanvasWidget>
 
     <CanvasWidget Size="Infinity, Infinity" Margin="10, 10">
@@ -15,10 +15,7 @@
       <ScrollPanelWidget Name="ScrollPanel" Direction="Vertical" Margin="3, 3" ClampToBounds="true">
         <CanvasWidget HorizontalAlignment="Center" VerticalAlignment="Near">
 
-          <!-- StackPanel principal donde se agregarán los agradecimientos -->
-          <StackPanelWidget Name="ThanksStack" Direction="Vertical" HorizontalAlignment="Center" Margin="10, 10" >
-            <!-- Se llenará desde código -->
-          </StackPanelWidget>
+          <StackPanelWidget Name="ThanksStack" Direction="Vertical" HorizontalAlignment="Center" Margin="10, 10" />
 
         </CanvasWidget>
       </ScrollPanelWidget>
