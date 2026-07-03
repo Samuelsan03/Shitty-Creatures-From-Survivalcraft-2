@@ -14,7 +14,6 @@ namespace Game
 		private LabelWidget m_titleLabel;
 		private LabelWidget m_infoLabel;
 		private LabelWidget m_textLabel;
-		private ButtonWidget m_backButton;
 
 		private List<ModVersionInfo> m_versions;
 
@@ -29,38 +28,6 @@ namespace Game
 			m_releasesListPanel = Children.Find<ListPanelWidget>("ReleasesList", true);
 			m_infoLabel = Children.Find<LabelWidget>("ReleaseInfo", true);
 
-			// ─────────────────────────────────────────────
-			// 1. Crear la barra superior (topbar) si no existe
-			// ─────────────────────────────────────────────
-			var topBar = Children.Find<CanvasWidget>("TopBar", false);
-			if (topBar == null)
-			{
-				topBar = CreateTopBar();
-				Children.Add(topBar);
-			}
-
-			// Cambiar el color de la barra a rojo
-			foreach (var child in topBar.Children)
-			{
-				if (child is BevelledRectangleWidget rect)
-				{
-					rect.CenterColor = Color.Red;
-					rect.BevelColor = Color.Red;
-				}
-				if (child is BevelledButtonWidget btn)
-				{
-					foreach (var btnChild in btn.Children)
-					{
-						if (btnChild is BevelledRectangleWidget btnRect)
-						{
-							btnRect.CenterColor = Color.Red;
-							btnRect.BevelColor = Color.Red;
-						}
-					}
-				}
-			}
-
-			// Configurar la lista de versiones
 			m_releasesListPanel.ItemWidgetFactory = (item) =>
 			{
 				var versionInfo = item as ModVersionInfo;
@@ -78,112 +45,9 @@ namespace Game
 			LoadVersionData();
 		}
 
-		// ─────────────────────────────────────────────
-		// 2. Método para crear la barra superior manualmente
-		// ─────────────────────────────────────────────
-		private CanvasWidget CreateTopBar()
-		{
-			var canvas = new CanvasWidget
-			{
-				Name = "TopBar",
-				Size = new Vector2(64f, float.PositiveInfinity)
-			};
-
-			// Fondo de la barra (rojo)
-			var background = new BevelledRectangleWidget
-			{
-				Size = new Vector2(64f, float.PositiveInfinity),
-				TextureScale = 0.5f,
-				CenterColor = Color.Red,
-				BevelColor = Color.Red,
-				IsHitTestVisible = false
-			};
-
-			// Botón de retroceso
-			var backButton = new BevelledButtonWidget
-			{
-				Name = "TopBar.Back",
-				Size = new Vector2(60f, 60f)
-			};
-			var btnRect = new BevelledRectangleWidget
-			{
-				Name = "BevelledButton.Rectangle",
-				Size = new Vector2(float.PositiveInfinity, float.PositiveInfinity),
-				CenterColor = Color.Red,
-				BevelColor = Color.Red
-			};
-			var arrow = new RectangleWidget
-			{
-				Name = "BevelledButton.Image",
-				Size = new Vector2(32f, 32f),
-				Subtexture = ContentManager.Get<Subtexture>("Textures/Atlas/ArrowLeft"),
-				FillColor = Color.White,
-				OutlineColor = Color.Transparent,
-				HorizontalAlignment = WidgetAlignment.Center,
-				VerticalAlignment = WidgetAlignment.Center,
-				IsVisible = true
-			};
-			backButton.Children.Add(btnRect);
-			backButton.Children.Add(arrow);
-			m_backButton = backButton;
-
-			// Etiqueta del título (texto vertical) - CORREGIDO: usar "ShittyCreaturesReleasesScreen" y "0"
-			var titleLabel = new LabelWidget
-			{
-				Name = "TopBar.Label",
-				Text = LanguageControl.GetContentWidgets("ShittyCreaturesReleasesScreen", "0"),
-				Color = Color.White,
-				HorizontalAlignment = WidgetAlignment.Center,
-				VerticalAlignment = WidgetAlignment.Center,
-				TextOrientation = TextOrientation.VerticalLeft
-			};
-
-			// Stack principal (botón + fondo)
-			var stack = new StackPanelWidget
-			{
-				Direction = LayoutDirection.Vertical,
-				Margin = new Vector2(4f, 0f),
-				IsHitTestVisible = false
-			};
-
-			stack.Children.Add(new CanvasWidget { Size = new Vector2(0f, 4f) });
-			stack.Children.Add(backButton);
-			stack.Children.Add(new CanvasWidget { Size = new Vector2(0f, 4f) });
-			stack.Children.Add(background);
-			stack.Children.Add(new CanvasWidget { Size = new Vector2(0f, 4f) });
-
-			// Stack para la etiqueta
-			var labelStack = new StackPanelWidget
-			{
-				Direction = LayoutDirection.Vertical,
-				Margin = new Vector2(4f, 0f),
-				IsHitTestVisible = false
-			};
-			labelStack.Children.Add(new CanvasWidget { Size = new Vector2(0f, 4f) });
-			labelStack.Children.Add(new CanvasWidget { Size = new Vector2(0f, 64f) });
-
-			var labelContainer = new CanvasWidget
-			{
-				Size = new Vector2(54f, float.PositiveInfinity),
-				VerticalAlignment = WidgetAlignment.Center,
-				Margin = new Vector2(0f, 10f),
-				ClampToBounds = true
-			};
-			labelContainer.Children.Add(titleLabel);
-			labelStack.Children.Add(labelContainer);
-			labelStack.Children.Add(new CanvasWidget { Size = new Vector2(0f, 4f) });
-
-			canvas.Children.Add(stack);
-			canvas.Children.Add(labelStack);
-
-			return canvas;
-		}
-
-		// ─────────────────────────────────────────────
-		// 3. Resto del código
-		// ─────────────────────────────────────────────
 		private void LoadVersionData()
 		{
+			// Datos estáticos de versiones con fechas proporcionadas
 			m_versions = new List<ModVersionInfo>
 			{
 				new ModVersionInfo { Version = "1.0.6", DisplayName = "1.0.6", ReleaseDate = "" },
@@ -215,6 +79,7 @@ namespace Game
 			const string category = "ShittyCreaturesLog";
 			string versionPrefix = $"Line{version.Replace(".", "_")}_";
 
+			// Diccionario para almacenar orden -> texto
 			var linesDict = new Dictionary<int, string>();
 
 			var jsonNode = typeof(LanguageControl).GetField("jsonNode",
@@ -229,6 +94,7 @@ namespace Game
 					{
 						if (prop.Key.StartsWith(versionPrefix))
 						{
+							// Extraer número para ordenar
 							string numPart = prop.Key.Substring(versionPrefix.Length);
 							if (int.TryParse(numPart, out int order))
 							{
@@ -241,12 +107,14 @@ namespace Game
 				}
 			}
 
+			// Si no se encontraron traducciones, usar descripción de respaldo
 			if (linesDict.Count == 0)
 			{
 				var info = m_versions.Find(v => v.Version == version);
 				return info?.Description ?? "No description available.";
 			}
 
+			// Ordenar por clave (número de línea) y concatenar
 			var sorted = linesDict.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value);
 			return string.Join(Environment.NewLine, sorted);
 		}
@@ -266,7 +134,7 @@ namespace Game
 
 		public override void Update()
 		{
-			if (Input.Back || Input.Cancel || (m_backButton != null && m_backButton.IsClicked))
+			if (Input.Back || Input.Cancel || Children.Find<ButtonWidget>("TopBar.Back", true).IsClicked)
 			{
 				ScreensManager.SwitchScreen("MainMenu", Array.Empty<object>());
 			}
