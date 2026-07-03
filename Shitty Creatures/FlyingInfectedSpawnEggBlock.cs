@@ -8,7 +8,8 @@ namespace Game
 {
 	public class FlyingInfectedSpawnEggBlock : Block
 	{
-		public const int Index = 647; // ID único
+		public const int Index = 647;
+		private const float Scale = 1.2f;
 
 		private BlockMesh m_blockMesh;
 		private Texture2D m_alertTexture;
@@ -18,13 +19,12 @@ namespace Game
 			Model model = ContentManager.Get<Model>("Models/Egg");
 			Matrix boneTransform = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh("Egg", true).ParentBone);
 			m_alertTexture = ContentManager.Get<Texture2D>("Textures/alerta", throwOnNotFound: true);
-
 			m_blockMesh = new BlockMesh();
 			m_blockMesh.AppendModelMeshPart(
 				model.FindMesh("Egg", true).MeshParts[0],
 				boneTransform,
 				false, false, false, false,
-				Color.SkyBlue // Color celeste para voladores
+				Color.SkyBlue
 			);
 			base.Initialize();
 		}
@@ -38,10 +38,11 @@ namespace Game
 
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
+			float scaledSize = size * Scale;
 			if (m_alertTexture != null)
-				BlocksManager.DrawMeshBlock(primitivesRenderer, m_blockMesh, m_alertTexture, color, size, ref matrix, environmentData);
+				BlocksManager.DrawMeshBlock(primitivesRenderer, m_blockMesh, m_alertTexture, color, scaledSize, ref matrix, environmentData);
 			else
-				BlocksManager.DrawMeshBlock(primitivesRenderer, m_blockMesh, color, size, ref matrix, environmentData);
+				BlocksManager.DrawMeshBlock(primitivesRenderer, m_blockMesh, color, scaledSize, ref matrix, environmentData);
 		}
 	}
 }
