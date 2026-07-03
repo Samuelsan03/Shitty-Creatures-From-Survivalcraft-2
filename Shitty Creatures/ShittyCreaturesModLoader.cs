@@ -8,7 +8,6 @@ using Engine.Media;
 using GameEntitySystem;
 using TemplatesDatabase;
 using XmlUtilities;
-using static Game.TerrainContentsGenerator21;
 
 namespace Game
 {
