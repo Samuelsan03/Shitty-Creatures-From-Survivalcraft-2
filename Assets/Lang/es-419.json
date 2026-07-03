@@ -1501,7 +1501,23 @@
 "ClothingBlock:54": {
   "DisplayName": "Botas Militares Antibalas",
   "Description": "Botas tácticas reforzadas con protección balística. No se pueden fabricar; solo pueden obtenerse derrotando a La Bandida."
-}
+},
+"CommonInfectedSpawnEggBlock:0": {
+    "DisplayName": "Huevo generador de infectado común",
+    "Description": "Huevo generador que hace aparecer una criatura infectada común aleatoria al lanzarlo contra una superficie. Disponible solo en el modo creativo."
+  },
+  "BoomerSpawnEggBlock:0": {
+    "DisplayName": "Huevo generador de Boomer",
+    "Description": "Huevo generador que hace aparecer una criatura infectada explosiva aleatoria al lanzarlo. Estas criaturas explotan al morir, causando daño en un área."
+  },
+  "SpecialInfectedSpawnEggBlock:0": {
+    "DisplayName": "Huevo generador de infectado especial",
+    "Description": "Huevo generador que hace aparecer una criatura infectada poderosa aleatoria al lanzarlo. Son enemigos peligrosos y resistentes."
+  },
+  "FlyingInfectedSpawnEggBlock:0": {
+    "DisplayName": "Huevo generador de infectado volador",
+    "Description": "Huevo generador que hace aparecer una criatura infectada voladora aleatoria al lanzarlo. Incluye todas las variantes de infectados aéreos."
+  }
 },
   "ContentWidgets": {
     "LetterWarDialog": {
