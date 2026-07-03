@@ -395,9 +395,7 @@ namespace Game
 						DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
 					batch.QueueQuad(Vector2.Zero, new Vector2(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height), 0f, Vector2.Zero, Vector2.One, Color.White);
 
-					ClothingSlot[] innerOrder = ComponentClothing.m_innerSlotsOrder?.Length > 0
-						? ComponentClothing.m_innerSlotsOrder
-						: new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs, ClothingSlot.Feet };
+					ClothingSlot[] innerOrder = new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs, ClothingSlot.Feet };
 					foreach (ClothingSlot slot in innerOrder)
 					{
 						if (!m_clothes.ContainsKey(slot)) continue;
@@ -422,9 +420,7 @@ namespace Game
 					Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
 					batchIndex = 0;
 
-					ClothingSlot[] outerOrder = ComponentClothing.m_outerSlotsOrder?.Length > 0
-						? ComponentClothing.m_outerSlotsOrder
-						: new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs, ClothingSlot.Feet };
+					ClothingSlot[] outerOrder = new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs, ClothingSlot.Feet };
 					foreach (ClothingSlot slot in outerOrder)
 					{
 						if (!m_clothes.ContainsKey(slot)) continue;
