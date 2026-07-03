@@ -1501,7 +1501,23 @@
 "ClothingBlock:54": {
   "DisplayName": "军用防弹靴",
   "Description": "配备防弹防护的强化战术靴。无法制作；只能通过击败 La Bandida 获得。"
-}
+},
+"CommonInfectedSpawnEggBlock:0": {
+    "DisplayName": "普通感染者生成蛋",
+    "Description": "将此生成蛋投掷到地面或其他表面后，会随机生成一只普通感染者。仅可在创造模式中使用。"
+  },
+  "BoomerSpawnEggBlock:0": {
+    "DisplayName": "Boomer生成蛋",
+    "Description": "投掷后会随机生成一只爆炸型感染者。这类生物死亡时会发生爆炸，并对周围区域造成伤害。"
+  },
+  "SpecialInfectedSpawnEggBlock:0": {
+    "DisplayName": "特殊感染者生成蛋",
+    "Description": "投掷后会随机生成一只强大的特殊感染者。它们是危险且生命力顽强的敌人。"
+  },
+  "FlyingInfectedSpawnEggBlock:0": {
+    "DisplayName": "飞行感染者生成蛋",
+    "Description": "投掷后会随机生成一只飞行感染者。包含所有空中感染者变种。"
+  }
 },
   "ContentWidgets": {
     "LetterWarDialog": {
