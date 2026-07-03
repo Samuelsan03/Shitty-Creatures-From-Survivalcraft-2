@@ -15,6 +15,10 @@ namespace Game
 		private LabelWidget m_infoLabel;
 		private LabelWidget m_textLabel;
 
+		private BevelledRectangleWidget m_rainbowBackButton;
+		private BevelledRectangleWidget m_rainbowSideBar;
+		private float m_rainbowTime;
+
 		private List<ModVersionInfo> m_versions;
 
 		public ShittyCreaturesReleasesScreen()
@@ -27,6 +31,9 @@ namespace Game
 			m_scrollPanel = Children.Find<ScrollPanelWidget>("ScrollPanel", true);
 			m_releasesListPanel = Children.Find<ListPanelWidget>("ReleasesList", true);
 			m_infoLabel = Children.Find<LabelWidget>("ReleaseInfo", true);
+
+			m_rainbowBackButton = Children.Find<BevelledRectangleWidget>("BevelledButton.Rectangle", true);
+			m_rainbowSideBar = Children.Find<BevelledRectangleWidget>("RainbowSideBar", true);
 
 			m_releasesListPanel.ItemWidgetFactory = (item) =>
 			{
@@ -47,7 +54,6 @@ namespace Game
 
 		private void LoadVersionData()
 		{
-			// Datos estáticos de versiones con fechas proporcionadas
 			m_versions = new List<ModVersionInfo>
 			{
 				new ModVersionInfo { Version = "1.0.6", DisplayName = "1.0.6", ReleaseDate = "" },
@@ -79,7 +85,6 @@ namespace Game
 			const string category = "ShittyCreaturesLog";
 			string versionPrefix = $"Line{version.Replace(".", "_")}_";
 
-			// Diccionario para almacenar orden -> texto
 			var linesDict = new Dictionary<int, string>();
 
 			var jsonNode = typeof(LanguageControl).GetField("jsonNode",
@@ -94,7 +99,6 @@ namespace Game
 					{
 						if (prop.Key.StartsWith(versionPrefix))
 						{
-							// Extraer número para ordenar
 							string numPart = prop.Key.Substring(versionPrefix.Length);
 							if (int.TryParse(numPart, out int order))
 							{
@@ -107,14 +111,12 @@ namespace Game
 				}
 			}
 
-			// Si no se encontraron traducciones, usar descripción de respaldo
 			if (linesDict.Count == 0)
 			{
 				var info = m_versions.Find(v => v.Version == version);
 				return info?.Description ?? "No description available.";
 			}
 
-			// Ordenar por clave (número de línea) y concatenar
 			var sorted = linesDict.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value);
 			return string.Join(Environment.NewLine, sorted);
 		}
@@ -132,8 +134,36 @@ namespace Game
 			m_scrollPanel.ScrollPosition = 0f;
 		}
 
+		private void UpdateRainbowEffect()
+		{
+			m_rainbowTime += Time.FrameDuration;
+
+			// 60 grados por segundo = ciclo completo en 6 segundos
+			float hue = (m_rainbowTime * 60f) % 360f;
+
+			// Convertir HSV a RGB (valores 0-1)
+			Vector3 rgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
+
+			// Crear color
+			Color rainbowColor = new Color(rgb.X, rgb.Y, rgb.Z);
+
+			if (m_rainbowBackButton != null)
+			{
+				m_rainbowBackButton.CenterColor = rainbowColor;
+				m_rainbowBackButton.BevelColor = rainbowColor;
+			}
+
+			if (m_rainbowSideBar != null)
+			{
+				m_rainbowSideBar.CenterColor = rainbowColor;
+				m_rainbowSideBar.BevelColor = rainbowColor;
+			}
+		}
+
 		public override void Update()
 		{
+			UpdateRainbowEffect();
+
 			if (Input.Back || Input.Cancel || Children.Find<ButtonWidget>("TopBar.Back", true).IsClicked)
 			{
 				ScreensManager.SwitchScreen("MainMenu", Array.Empty<object>());
