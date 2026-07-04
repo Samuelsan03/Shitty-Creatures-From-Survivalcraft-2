@@ -363,9 +363,6 @@ namespace Game
 				}
 			}
 
-			// Ya no se espera a medianoche para spawnear al jefe.
-			// El spawn se activa inmediatamente al alcanzar 100 muertes en IncrementKillsByPlayer().
-
 			int totalBandits = CountBandits();
 			if (totalBandits >= MaxGlobalBandits)
 				return;
@@ -405,6 +402,14 @@ namespace Game
 
 		private bool TrySpawnBanditGroup()
 		{
+			// --- NUEVA LÓGICA: probabilidad de spawnear al jefe ---
+			if (!m_bossSpawnedThisWar && m_random.Float(0f, 1f) < 0.1f) // 10% de probabilidad
+			{
+				SpawnBoss();
+				m_bossSpawnedThisWar = true;
+				return true; // Se considera que se ha generado un grupo (el jefe)
+			}
+
 			BanditSpawnData selected = GetRandomBandit();
 			if (selected == null)
 				return false;
@@ -714,25 +719,6 @@ namespace Game
 		{
 			if (string.IsNullOrEmpty(name)) return false;
 			return m_banditNames.Contains(name);
-		}
-
-		public void IncrementKillsByPlayer()
-		{
-			m_killsByPlayer++;
-			if (m_killsByPlayer >= 100 && !m_bossUnlocked && m_invasionActive && !m_bossSpawnedThisWar)
-			{
-				m_bossUnlocked = true;
-				m_bossSpawnedThisWar = true;
-
-				SpawnBoss();
-
-				ComponentPlayer firstPlayer = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
-				if (firstPlayer != null)
-				{
-					string bossMessage = LanguageControl.Get("SubsystemBanditInvasion", 0);
-					firstPlayer.ComponentGui.DisplayLargeMessage(bossMessage, "", 5f, 0f);
-				}
-			}
 		}
 
 		private class BanditSpawnData
