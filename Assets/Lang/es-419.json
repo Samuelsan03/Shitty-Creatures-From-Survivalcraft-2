@@ -1517,7 +1517,11 @@
   "FlyingInfectedSpawnEggBlock:0": {
     "DisplayName": "Huevo generador de infectado volador",
     "Description": "Huevo generador que hace aparecer una criatura infectada voladora aleatoria al lanzarlo. Incluye todas las variantes de infectados aéreos."
-  }
+  },
+  "AnimalInfectedSpawnEggBlock:0": {
+  "DisplayName": "Huevo generador de animales infectados",
+  "Description": "Huevo generador de animales infectados. Lánzalo contra una superficie sólida para invocar una criatura infectada aleatoria de origen animal. Disponible solo en el modo creativo."
+}
 },
   "ContentWidgets": {
     "LetterWarDialog": {
