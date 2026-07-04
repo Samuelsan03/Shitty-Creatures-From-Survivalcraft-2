@@ -1517,7 +1517,11 @@
   "FlyingInfectedSpawnEggBlock:0": {
     "DisplayName": "飞行感染者生成蛋",
     "Description": "投掷后会随机生成一只飞行感染者。包含所有空中感染者变种。"
-  }
+  },
+  "AnimalInfectedSpawnEggBlock:0": {
+  "DisplayName": "感染动物生成蛋",
+  "Description": "用于生成感染动物的生成蛋。将其投掷到坚硬的表面上，可随机生成一只源自动物的感染生物。仅可在创造模式中使用。"
+}
 },
   "ContentWidgets": {
     "LetterWarDialog": {
