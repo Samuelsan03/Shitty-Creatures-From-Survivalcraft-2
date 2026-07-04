@@ -1515,6 +1515,10 @@
 "FlyingInfectedSpawnEggBlock:0": {
   "DisplayName": "Flying Infected Spawn Egg",
   "Description": "Spawner egg that hatches a random flying infected creature when thrown. Includes all airborne infected variants."
+},
+"AnimalInfectedSpawnEggBlock:0": {
+  "DisplayName": "Animal Infected Spawn Egg",
+  "Description": "Spawner egg for infected animals. Throw it against a hard surface to spawn a random infected creature of animal origin. Available in creative mode only."
 }
 },
       "ContentWidgets": {
