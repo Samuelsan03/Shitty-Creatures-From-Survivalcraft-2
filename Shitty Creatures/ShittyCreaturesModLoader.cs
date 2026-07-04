@@ -2058,29 +2058,8 @@ namespace Game
 					AudioManager.PlaySound(deathSoundPath, 1f, 0f, 0f);
 				}
 			}
-
-			// ===== NUEVO: Contar muertes de bandidos por el jugador =====
-			if (health != null && injury != null)
-			{
-				Entity deadEntity2 = health.Entity;
-				if (deadEntity2 != null)
-				{
-					ComponentPlayer killerPlayer = injury.Attacker?.Entity?.FindComponent<ComponentPlayer>();
-					if (killerPlayer != null) // Solo si el asesino es un jugador
-					{
-						var banditInvasion = deadEntity2.Project.FindSubsystem<SubsystemBanditInvasion>(true);
-						if (banditInvasion != null && banditInvasion.IsInvasionActive) // Guerra activa
-						{
-							string templateName2 = deadEntity2.ValuesDictionary?.DatabaseObject?.Name;
-							if (banditInvasion.IsBanditTemplate(templateName2)) // Es un narcotraficante
-							{
-								banditInvasion.IncrementKillsByPlayer();
-							}
-						}
-					}
-				}
-			}
 		}
+
 
 		public override void OnCreatureDying(ComponentHealth health, Injury injury)
 		{
