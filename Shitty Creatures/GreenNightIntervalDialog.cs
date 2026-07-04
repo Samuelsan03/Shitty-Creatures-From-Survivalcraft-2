@@ -41,13 +41,13 @@ namespace Game
 		private List<DifficultyMode> m_availableDifficultyModes; // ← NUEVO: lista filtrada
 
 		private readonly Color[] m_difficultyColors = {
-	new Color(136, 187, 255),   // VeryEasy
-    new Color(100, 200, 100),   // Easy
-    new Color(100, 100, 255),   // Normal
-    new Color(255, 200, 0),     // Medium
-    new Color(255, 80, 80),     // Hard
-    new Color(150, 0, 150),     // Extreme
-    new Color(0, 40, 90)        // Impossible
+	new Color(230, 255, 240),   // VeryEasy - verde menta
+    new Color(170, 240, 255),   // Easy - turquesa
+    new Color(90, 190, 255),    // Normal - azul brillante
+    new Color(70, 110, 220),    // Medium - azul profundo
+    new Color(90, 60, 170),     // Hard - violeta
+    new Color(60, 30, 110),     // Extreme - índigo oscuro
+    new Color(20, 15, 40)       // Impossible - noche
 };
 
 		private string GetText(int key) => LanguageControl.GetContentWidgets("GreenNightIntervalDialog", key.ToString());
