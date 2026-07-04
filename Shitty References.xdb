@@ -638,6 +638,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="AnimalInfectedSpawnEggBlockBehavior" Guid="43199bab-04c6-42ce-b73f-8c87ca93477a" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemAnimalInfectedSpawnEggBlockBehavior" Type="string" Guid="99fea780-15f1-4fb1-87e6-288dcf67d2aa"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="SpecialInfectedSpawnEggBlockBehavior" Guid="e852c256-49ec-4192-93b3-ecda91791838" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemSpecialInfectedSpawnEggBlockBehavior" Type="string" Guid="7de4ac77-1c6f-4f96-be16-668294a558cb"/>
 </MemberSubsystemTemplate>
