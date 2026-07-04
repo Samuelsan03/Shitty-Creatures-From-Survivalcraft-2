@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -22,18 +22,11 @@ namespace Game
 			"PoisonousInfected1",
 			"PoisonousInfected2",
 			"PoisonousGhost",
-			"InfectedBear",
-			"InfectedWildboar",
-			"PredatoryChameleon",
 			"InfectedFreezer",
 			"HumanoidSkeleton",
 			"Charger1",
 			"Charger2",
 			"GhostCharger",
-			"InfectedHyena",
-			"InfectedWerewolf",
-			"InfectedWolf",
-			"InfectedSpider"
 		};
 
 		private SubsystemGameInfo m_subsystemGameInfo;
