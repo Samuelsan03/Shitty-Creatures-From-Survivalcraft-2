@@ -137,6 +137,16 @@ namespace Game
 
 				bool isPremium = elem.Attribute("IsTheAchievementPremium")?.Value == "true";
 
+				// LEER LOS NUEVOS ATRIBUTOS
+				bool isCounter = elem.Attribute("IsCounter")?.Value == "true";
+				int counterTarget = 0;
+				if (isCounter)
+				{
+					XAttribute targetAttr = elem.Attribute("CounterTarget");
+					if (targetAttr != null)
+						int.TryParse(targetAttr.Value, out counterTarget);
+				}
+
 				bool unlocked = AchievementsManager.IsAchievementUnlocked(m_componentPlayer, number);
 
 				if (hidden && !unlocked)
@@ -153,7 +163,9 @@ namespace Game
 					unlocked: unlocked,
 					rewardClaimed: AchievementsManager.IsRewardClaimed(m_componentPlayer, number),
 					typeOfAchievement: typeOfAchievement,
-					isPremium: isPremium
+					isPremium: isPremium,
+					isCounter: isCounter,
+					counterTarget: counterTarget
 				);
 			}
 
@@ -502,7 +514,7 @@ namespace Game
 			m_needsReorder = true;
 		}
 
-		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed, string typeOfAchievement, bool isPremium)
+		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed, string typeOfAchievement, bool isPremium, bool isCounter, int counterTarget)
 		{
 			var achievementContainer = new CanvasWidget
 			{
@@ -569,11 +581,11 @@ namespace Game
 			achievementContainer.Children.Add(categoryLabel);
 
 			// --- BARRA DE PROGRESO Y PORCENTAJE (SOLO LOGROS CON CONTADOR) ---
-			bool hasProgressBar = IsProgressBarAchievement(achievementNumber);
+			bool hasProgressBar = isCounter && counterTarget > 0;
 			ProgressBarWidget progressBar = null;
 			LabelWidget percentLabel = null;
 			int currentKills = 0;
-			int target = 0;
+			int target = counterTarget;
 
 			if (hasProgressBar)
 			{
@@ -623,13 +635,10 @@ namespace Game
 
 			// Descripción
 			string finalDescription = baseDescription;
-			if (!unlocked && hasProgressBar)
+			if (!unlocked && hasProgressBar && target > 0)
 			{
-				if (target > 0)
-				{
-					int displayKills = Math.Min(currentKills, target);
-					finalDescription = $"{baseDescription} ({displayKills}/{target})";
-				}
+				int displayKills = Math.Min(currentKills, target);
+				finalDescription = $"{baseDescription} ({displayKills}/{target})";
 			}
 
 			var textStack = new StackPanelWidget
@@ -757,7 +766,9 @@ namespace Game
 				StatusLabel = statusLabel,
 				PercentLabel = percentLabel,
 				TitleLabel = titleLabel,
-				IsPremium = isPremium
+				IsPremium = isPremium,
+				IsCounter = isCounter,
+				CounterTarget = counterTarget
 			};
 		}
 
@@ -766,52 +777,75 @@ namespace Game
 			current = 0;
 			target = 0;
 
+			// Obtener target desde el XML si está disponible
+			if (m_achievementItems.TryGetValue(achievementNumber, out var itemData) && itemData.IsCounter)
+			{
+				target = itemData.CounterTarget;
+			}
+
 			switch (achievementNumber)
 			{
-				case 16: current = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 10; break;
-				case 17: current = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 50; break;
-				case 18: current = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 100; break;
-				case 19: current = AchievementsManager.GetBossKills(m_componentPlayer); target = 10; break;
-				case 20: current = AchievementsManager.GetBossKills(m_componentPlayer); target = 50; break;
-				case 21: current = AchievementsManager.GetBossKills(m_componentPlayer); target = 100; break;
-				case 22: current = AchievementsManager.GetTankKills(m_componentPlayer); target = 10; break;
-				case 23: current = AchievementsManager.GetTankKills(m_componentPlayer); target = 50; break;
-				case 24: current = AchievementsManager.GetTankKills(m_componentPlayer); target = 100; break;
-				case 25: current = AchievementsManager.GetGhostKills(m_componentPlayer); target = 10; break;
-				case 26: current = AchievementsManager.GetGhostKills(m_componentPlayer); target = 50; break;
-				case 27: current = AchievementsManager.GetGhostKills(m_componentPlayer); target = 100; break;
-				case 28: current = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 10; break;
-				case 29: current = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 50; break;
-				case 30: current = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 100; break;
-				case 31: current = AchievementsManager.GetBanditKills(m_componentPlayer); target = 10; break;
-				case 32: current = AchievementsManager.GetBanditKills(m_componentPlayer); target = 50; break;
-				case 33: current = AchievementsManager.GetBanditKills(m_componentPlayer); target = 100; break;
-				case 34: current = AchievementsManager.GetHeals(m_componentPlayer); target = 10; break;
-				case 35: current = AchievementsManager.GetHeals(m_componentPlayer); target = 50; break;
-				case 36: current = AchievementsManager.GetHeals(m_componentPlayer); target = 100; break;
-				case 38: current = AchievementsManager.GetPirateKills(m_componentPlayer); target = 10; break;
-				case 39: current = AchievementsManager.GetPirateKills(m_componentPlayer); target = 50; break;
-				case 40: current = AchievementsManager.GetPirateKills(m_componentPlayer); target = 100; break;
-				case 44: current = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 10; break;
-				case 45: current = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 25; break;
-				case 46: current = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 50; break;
-				case 47: current = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 100; break;
-				case 48: current = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 10; break;
-				case 49: current = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 25; break;
-				case 50: current = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 55; break;
-				case 51: current = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 100; break;
-				case 57: current = AchievementsManager.GetNormalTames(m_componentPlayer); target = 10; break;
-				case 58: current = AchievementsManager.GetNormalTames(m_componentPlayer); target = 25; break;
-				case 59: current = AchievementsManager.GetNormalTames(m_componentPlayer); target = 50; break;
-				case 60: current = AchievementsManager.GetNormalTames(m_componentPlayer); target = 100; break;
-				case 61: current = AchievementsManager.GetBossTames(m_componentPlayer); target = 10; break;
-				case 62: current = AchievementsManager.GetBossTames(m_componentPlayer); target = 25; break;
-				case 63: current = AchievementsManager.GetBossTames(m_componentPlayer); target = 50; break;
-				case 64: current = AchievementsManager.GetBossTames(m_componentPlayer); target = 100; break;
-				case 65: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 10; break;
-				case 66: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 25; break;
-				case 67: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 50; break;
-				case 68: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 100; break;
+				case 16: current = AchievementsManager.GetInfectedKills(m_componentPlayer); break;
+				case 17: current = AchievementsManager.GetInfectedKills(m_componentPlayer); break;
+				case 18: current = AchievementsManager.GetInfectedKills(m_componentPlayer); break;
+				case 19: current = AchievementsManager.GetBossKills(m_componentPlayer); break;
+				case 20: current = AchievementsManager.GetBossKills(m_componentPlayer); break;
+				case 21: current = AchievementsManager.GetBossKills(m_componentPlayer); break;
+				case 22: current = AchievementsManager.GetTankKills(m_componentPlayer); break;
+				case 23: current = AchievementsManager.GetTankKills(m_componentPlayer); break;
+				case 24: current = AchievementsManager.GetTankKills(m_componentPlayer); break;
+				case 25: current = AchievementsManager.GetGhostKills(m_componentPlayer); break;
+				case 26: current = AchievementsManager.GetGhostKills(m_componentPlayer); break;
+				case 27: current = AchievementsManager.GetGhostKills(m_componentPlayer); break;
+				case 28: current = AchievementsManager.GetGhostTankKills(m_componentPlayer); break;
+				case 29: current = AchievementsManager.GetGhostTankKills(m_componentPlayer); break;
+				case 30: current = AchievementsManager.GetGhostTankKills(m_componentPlayer); break;
+				case 31: current = AchievementsManager.GetBanditKills(m_componentPlayer); break;
+				case 32: current = AchievementsManager.GetBanditKills(m_componentPlayer); break;
+				case 33: current = AchievementsManager.GetBanditKills(m_componentPlayer); break;
+				case 34: current = AchievementsManager.GetHeals(m_componentPlayer); break;
+				case 35: current = AchievementsManager.GetHeals(m_componentPlayer); break;
+				case 36: current = AchievementsManager.GetHeals(m_componentPlayer); break;
+				case 38: current = AchievementsManager.GetPirateKills(m_componentPlayer); break;
+				case 39: current = AchievementsManager.GetPirateKills(m_componentPlayer); break;
+				case 40: current = AchievementsManager.GetPirateKills(m_componentPlayer); break;
+				case 44: current = AchievementsManager.GetFlyingKills(m_componentPlayer); break;
+				case 45: current = AchievementsManager.GetFlyingKills(m_componentPlayer); break;
+				case 46: current = AchievementsManager.GetFlyingKills(m_componentPlayer); break;
+				case 47: current = AchievementsManager.GetFlyingKills(m_componentPlayer); break;
+				case 48: current = AchievementsManager.GetBoomerKills(m_componentPlayer); break;
+				case 49: current = AchievementsManager.GetBoomerKills(m_componentPlayer); break;
+				case 50: current = AchievementsManager.GetBoomerKills(m_componentPlayer); break;
+				case 51: current = AchievementsManager.GetBoomerKills(m_componentPlayer); break;
+				case 57: current = AchievementsManager.GetNormalTames(m_componentPlayer); break;
+				case 58: current = AchievementsManager.GetNormalTames(m_componentPlayer); break;
+				case 59: current = AchievementsManager.GetNormalTames(m_componentPlayer); break;
+				case 60: current = AchievementsManager.GetNormalTames(m_componentPlayer); break;
+				case 61: current = AchievementsManager.GetBossTames(m_componentPlayer); break;
+				case 62: current = AchievementsManager.GetBossTames(m_componentPlayer); break;
+				case 63: current = AchievementsManager.GetBossTames(m_componentPlayer); break;
+				case 64: current = AchievementsManager.GetBossTames(m_componentPlayer); break;
+				case 65: current = AchievementsManager.GetGhostTames(m_componentPlayer); break;
+				case 66: current = AchievementsManager.GetGhostTames(m_componentPlayer); break;
+				case 67: current = AchievementsManager.GetGhostTames(m_componentPlayer); break;
+				case 68: current = AchievementsManager.GetGhostTames(m_componentPlayer); break;
+			}
+
+			// Si no se encontró target en el XML, usar valores por defecto (fallback)
+			if (target == 0)
+			{
+				switch (achievementNumber)
+				{
+					case 16: case 25: case 31: case 34: case 38: case 44: case 48: case 57: case 61: case 65: target = 10; break;
+					case 17: case 26: case 32: case 35: case 39: case 45: case 49: case 58: case 62: case 66: target = 25; break;
+					case 18: case 27: case 33: case 36: case 40: case 47: case 51: case 60: case 64: case 68: target = 100; break;
+					case 19: case 22: case 28: target = 10; break;
+					case 20: case 23: case 29: target = 50; break;
+					case 21: case 24: case 30: target = 100; break;
+					case 46: target = 50; break;
+					case 50: target = 55; break;
+					case 59: case 63: case 67: target = 50; break;
+				}
 			}
 		}
 
@@ -1032,17 +1066,18 @@ namespace Game
 			public ProgressBarWidget ProgressBar;
 			public LabelWidget StatusLabel;
 			public LabelWidget PercentLabel;
-			public LabelWidget TitleLabel;          // <-- NUEVO
-			public bool IsPremium;                  // <-- NUEVO
+			public LabelWidget TitleLabel;
+			public bool IsPremium;
+			public bool IsCounter;        // NUEVO
+			public int CounterTarget;     // NUEVO
 		}
 
 		private bool IsProgressBarAchievement(int number)
 		{
-			// Solo logros con contadores acumulativos (coincide con los rangos usados en GetCounterValues y en AchievementsManager)
-			return (number >= 16 && number <= 36) ||   // infectados (16-18), jefes (19-21), tanks (22-24), fantasmas (25-27), ghost tanks (28-30), bandidos (31-33), curaciones (34-36)
-				   (number >= 38 && number <= 40) ||   // piratas (38-40)
-				   (number >= 44 && number <= 51) ||   // voladores (44-47), boomers (48-51)
-				   (number >= 57 && number <= 68);     // domesticaciones normales (57-60), jefes (61-64), fantasmas (65-68)
+			// Usar el valor leído del XML
+			if (m_achievementItems.TryGetValue(number, out var itemData))
+				return itemData.IsCounter && itemData.CounterTarget > 0;
+			return false;
 		}
 
 		private void UpdateProgressBarAndStatus(int achievementNumber, int current, int target)
