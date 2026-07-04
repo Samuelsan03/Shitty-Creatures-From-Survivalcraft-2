@@ -1,457 +1,588 @@
-using Engine;
-using Engine.Graphics;
-using Engine.Serialization;
-using GameEntitySystem;
-using TemplatesDatabase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Engine;
+using Engine.Graphics;
+using Engine.Serialization;
+using Game;
+using GameEntitySystem;
+using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentCreatureClothing : Component, IInventory, IUpdateable
-	{
-		public Dictionary<ClothingSlot, List<int>> m_clothes = new Dictionary<ClothingSlot, List<int>>();
+    public class ComponentCreatureClothing : Component, IUpdateable, IInventory
+    {
+        public float SteedMovementSpeedFactor { get; private set; }
 
-		public ComponentCreature m_componentCreature;
-		public ComponentHumanModel m_componentHumanModel;
-		public ComponentNewHumanModel m_componentNewHumanModel;
-		public ComponentOuterClothingModel m_componentOuterClothingModel;
-		public ComponentBody m_componentBody;
-		public ComponentHealth m_componentHealth;
-		public SubsystemTerrain m_subsystemTerrain;
-		public SubsystemGameInfo m_subsystemGameInfo;
-		public SubsystemModelsRenderer m_subsystemModelsRenderer;
+        public UpdateOrder UpdateOrder
+        {
+            get
+            {
+                return UpdateOrder.Default;
+            }
+        }
+
+        Project IInventory.Project
+        {
+            get
+            {
+                return base.Project;
+            }
+        }
+
+        public int SlotsCount
+        {
+            get
+            {
+                return 4;
+            }
+        }
+
+        public int ActiveSlotIndex
+        {
+            get
+            {
+                return -1;
+            }
+            set
+            {
+            }
+        }
+
+        public int VisibleSlotsCount
+        {
+            get
+            {
+                return this.SlotsCount;
+            }
+            set
+            {
+            }
+        }
+
+        public ReadOnlyList<int> GetClothes(ClothingSlot slot)
+        {
+            return new ReadOnlyList<int>(this.m_clothes[slot]);
+        }
+
+        public virtual int GetClothesIndex(ClothingSlot slot, string displayName, out List<int> list)
+        {
+            int result = -1;
+            list = new List<int>(this.GetClothes(slot));
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                int value = list[i];
+                Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+                ClothingBlock clothingBlock = block as ClothingBlock;
+                bool flag = clothingBlock != null && clothingBlock.GetDisplayName(this.m_subsystemTerrain, value) == displayName;
+                if (flag)
+                {
+                    result = i;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        public virtual void SetClothes(ClothingSlot slot, IEnumerable<int> clothes)
+        {
+            bool flag = !this.m_clothes[slot].SequenceEqual(clothes);
+            if (flag)
+            {
+                this.m_clothes[slot].Clear();
+                this.m_clothes[slot].AddRange(clothes);
+                this.m_clothedTexturesValid = false;
+                float num = 0f;
+                foreach (KeyValuePair<ClothingSlot, List<int>> keyValuePair in this.m_clothes)
+                {
+                    foreach (int value in keyValuePair.Value)
+                    {
+                        ClothingData clothingData = this.clothingBlock.GetClothingData(value);
+                        num += clothingData.DensityModifier;
+                    }
+                }
+                float num2 = num - this.m_densityModifierApplied;
+                this.m_densityModifierApplied += num2;
+                this.m_componentBody.Density += num2;
+                this.SteedMovementSpeedFactor = 1f;
+                foreach (int value2 in this.GetClothes(ClothingSlot.Head))
+                {
+                    ClothingData clothingData2 = this.clothingBlock.GetClothingData(value2);
+                    this.SteedMovementSpeedFactor *= clothingData2.SteedMovementSpeedFactor;
+                }
+                foreach (int value3 in this.GetClothes(ClothingSlot.Torso))
+                {
+                    ClothingData clothingData3 = this.clothingBlock.GetClothingData(value3);
+                    this.SteedMovementSpeedFactor *= clothingData3.SteedMovementSpeedFactor;
+                }
+                foreach (int value4 in this.GetClothes(ClothingSlot.Legs))
+                {
+                    ClothingData clothingData4 = this.clothingBlock.GetClothingData(value4);
+                    this.SteedMovementSpeedFactor *= clothingData4.SteedMovementSpeedFactor;
+                }
+                foreach (int value5 in this.GetClothes(ClothingSlot.Feet))
+                {
+                    ClothingData clothingData5 = this.clothingBlock.GetClothingData(value5);
+                    this.SteedMovementSpeedFactor *= clothingData5.SteedMovementSpeedFactor;
+                }
+            }
+        }
+
+        public virtual float ApplyArmorProtection(float attackPower, bool Applied = false)
+        {
+            bool flag = !Applied;
+            if (flag)
+            {
+                float num = this.m_random.Float(0f, 1f);
+                ClothingSlot slot = ((double)num < 0.10000000149011612) ? ClothingSlot.Feet : (((double)num < 0.30000001192092896) ? ClothingSlot.Legs : (((double)num < 0.8999999761581421) ? ClothingSlot.Torso : ClothingSlot.Head));
+                float num2 = (float)(BlocksManager.Blocks[203].Durability + 1);
+                List<int> list = new List<int>(this.GetClothes(slot));
+                for (int i = 0; i < list.Count; i++)
+                {
+                    int value = list[i];
+                    ClothingData clothingData = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetClothingData(value);
+                    float x = (num2 - (float)BlocksManager.Blocks[203].GetDamage(value)) / num2 * clothingData.Sturdiness;
+                    float num3 = MathUtils.Min(attackPower * MathUtils.Saturate(clothingData.ArmorProtection), x);
+                    bool flag2 = (double)num3 > 0.0;
+                    if (flag2)
+                    {
+                        attackPower -= num3;
+                        float x2 = (float)((double)num3 / (double)clothingData.Sturdiness * (double)num2 + 0.001);
+                        int damageCount = (int)((double)MathUtils.Floor(x2) + (this.m_random.Bool(MathUtils.Remainder(x2, 1f)) ? 1.0 : 0.0));
+                        list[i] = BlocksManager.DamageItem(value, damageCount, null);
+                        bool flag3 = !string.IsNullOrEmpty(clothingData.ImpactSoundsFolder);
+                        if (flag3)
+                        {
+                            this.m_subsystemAudio.PlayRandomSound(clothingData.ImpactSoundsFolder, 1f, this.m_random.Float(-0.3f, 0.3f), this.m_componentBody.Position, 4f, 0.15f);
+                        }
+                    }
+                }
+                int j = 0;
+                while (j < list.Count)
+                {
+                    bool flag4 = Terrain.ExtractContents(list[j]) != 203;
+                    if (flag4)
+                    {
+                        list.RemoveAt(j);
+                        this.m_subsystemParticles.AddParticleSystem(new BlockDebrisParticleSystem(this.m_subsystemTerrain, this.m_componentBody.Position + this.m_componentBody.StanceBoxSize / 2f, 1f, 1f, Color.White, 0), false);
+                    }
+                    else
+                    {
+                        j++;
+                    }
+                }
+                this.SetClothes(slot, list);
+            }
+            return MathUtils.Max(attackPower, 0f);
+        }
+
+        public virtual float NewApplyArmorProtection(float attackPower, float armorPenetration)
+        {
+            bool flag = false;
+            bool flag2 = !flag;
+            if (flag2)
+            {
+                float num = this.m_random.Float(0f, 1f);
+                ClothingSlot slot = (num < 0.1f) ? ClothingSlot.Feet : ((num < 0.3f) ? ClothingSlot.Legs : ((num < 0.9f) ? ClothingSlot.Torso : ClothingSlot.Head));
+                float num2 = (float)(BlocksManager.Blocks[203].Durability + 1);
+                List<int> list = new List<int>(this.GetClothes(slot));
+                for (int i = 0; i < list.Count; i++)
+                {
+                    int value = list[i];
+                    ClothingData clothingData = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetClothingData(value);
+                    float num3 = clothingData.ArmorProtection * (1f - MathUtils.Saturate(armorPenetration));
+                    float x = (num2 - (float)BlocksManager.Blocks[203].GetDamage(value)) / num2 * clothingData.Sturdiness;
+                    float num4 = MathUtils.Min(attackPower * num3, x);
+                    bool flag3 = num4 > 0f;
+                    if (flag3)
+                    {
+                        attackPower -= num4;
+                        float x2 = num4 / clothingData.Sturdiness * num2 + 0.001f;
+                        int damageCount = (int)(MathUtils.Floor(x2) + (float)(this.m_random.Bool(MathUtils.Remainder(x2, 1f)) ? 1 : 0));
+                        list[i] = BlocksManager.DamageItem(value, damageCount, null);
+                        bool flag4 = !string.IsNullOrEmpty(clothingData.ImpactSoundsFolder);
+                        if (flag4)
+                        {
+                            this.m_subsystemAudio.PlayRandomSound(clothingData.ImpactSoundsFolder, 1f, this.m_random.Float(-0.3f, 0.3f), this.m_componentBody.Position, 4f, 0.15f);
+                        }
+                    }
+                }
+                int j = 0;
+                while (j < list.Count)
+                {
+                    bool flag5 = Terrain.ExtractContents(list[j]) != 203;
+                    if (flag5)
+                    {
+                        list.RemoveAt(j);
+                        this.m_subsystemParticles.AddParticleSystem(new BlockDebrisParticleSystem(this.m_subsystemTerrain, this.m_componentBody.Position + this.m_componentBody.StanceBoxSize / 2f, 1f, 1f, Color.White, 0), false);
+                    }
+                    else
+                    {
+                        j++;
+                    }
+                }
+                this.SetClothes(slot, list);
+            }
+            return MathUtils.Max(attackPower, 0f);
+        }
+
+        public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
+        {
+            this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
+            this.m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
+            this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
+            this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+            this.m_componentHumanModel = base.Entity.FindComponent<ComponentHumanModel>(true);
+            this.m_componentBody = base.Entity.FindComponent<ComponentBody>(true);
+            this.m_componentOuterClothingModel = base.Entity.FindComponent<ComponentOuterClothingModel>(true);
+            
+            this.SteedMovementSpeedFactor = 1f;
+            this.m_clothes[ClothingSlot.Head] = new List<int>();
+            this.m_clothes[ClothingSlot.Torso] = new List<int>();
+            this.m_clothes[ClothingSlot.Legs] = new List<int>();
+            this.m_clothes[ClothingSlot.Feet] = new List<int>();
+
+            ValuesDictionary clothesDict = valuesDictionary.GetValue<ValuesDictionary>("CreatureClothes");
+            string head = clothesDict.GetValue<string>("Head");
+            string torso = clothesDict.GetValue<string>("Torso");
+            string legs = clothesDict.GetValue<string>("Legs");
+            string feet = clothesDict.GetValue<string>("Feet");
+
+            this.SetClothes(ClothingSlot.Head, HumanReadableConverter.ValuesListFromString<int>(';', head));
+            this.SetClothes(ClothingSlot.Torso, HumanReadableConverter.ValuesListFromString<int>(';', torso));
+            this.SetClothes(ClothingSlot.Legs, HumanReadableConverter.ValuesListFromString<int>(';', legs));
+            this.SetClothes(ClothingSlot.Feet, HumanReadableConverter.ValuesListFromString<int>(';', feet));
+
+            string value2 = valuesDictionary.GetValue<string>("SkinTexture", "");
+            this.m_skinTexture = (string.IsNullOrEmpty(value2) ? null : ContentManager.Get<Texture2D>(value2, null));
+            bool flag10 = this.m_skinTexture == null;
+            if (flag10)
+            {
+                ComponentHumanModel componentHumanModel = this.m_componentHumanModel;
+                this.m_skinTexture = ((componentHumanModel != null) ? componentHumanModel.TextureOverride : null);
+            }
+            Display.DeviceReset += this.Display_DeviceReset;
+        }
+
+        public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
+        {
+            ValuesDictionary clothesDict = new ValuesDictionary();
+            valuesDictionary.SetValue<ValuesDictionary>("CreatureClothes", clothesDict);
+            clothesDict.SetValue<string>("Head", HumanReadableConverter.ValuesListToString<int>(';', this.m_clothes[ClothingSlot.Head].ToArray()));
+            clothesDict.SetValue<string>("Torso", HumanReadableConverter.ValuesListToString<int>(';', this.m_clothes[ClothingSlot.Torso].ToArray()));
+            clothesDict.SetValue<string>("Legs", HumanReadableConverter.ValuesListToString<int>(';', this.m_clothes[ClothingSlot.Legs].ToArray()));
+            clothesDict.SetValue<string>("Feet", HumanReadableConverter.ValuesListToString<int>(';', this.m_clothes[ClothingSlot.Feet].ToArray()));
+        }
+
+        public sealed override void Dispose()
+        {
+            base.Dispose();
+            bool flag = this.m_skinTexture != null && !ContentManager.IsContent(this.m_skinTexture);
+            if (flag)
+            {
+                this.m_skinTexture.Dispose();
+                this.m_skinTexture = null;
+            }
+            bool flag2 = this.m_innerClothedTexture != null;
+            if (flag2)
+            {
+                this.m_innerClothedTexture.Dispose();
+                this.m_innerClothedTexture = null;
+            }
+            bool flag3 = this.m_outerClothedTexture != null;
+            if (flag3)
+            {
+                this.m_outerClothedTexture.Dispose();
+                this.m_outerClothedTexture = null;
+            }
+            Display.DeviceReset -= this.Display_DeviceReset;
+        }
+
+        public virtual void Update(float dt)
+        {
+            this.UpdateRenderTargets();
+        }
+
+        public virtual int GetSlotValue(int slotIndex)
+        {
+            return this.GetClothes((ClothingSlot)slotIndex).LastOrDefault<int>();
+        }
+
+        public virtual int GetSlotCount(int slotIndex)
+        {
+            bool flag = this.GetClothes((ClothingSlot)slotIndex).Count <= 0;
+            int result;
+            if (flag)
+            {
+                result = 0;
+            }
+            else
+            {
+                result = 1;
+            }
+            return result;
+        }
+
+        public virtual int GetSlotCapacity(int slotIndex, int value)
+        {
+            return 0;
+        }
+
+        public virtual int GetSlotProcessCapacity(int slotIndex, int value)
+        {
+            Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+            bool flag = block.GetNutritionalValue(value) > 0f;
+            int result;
+            if (flag)
+            {
+                result = 1;
+            }
+            else
+            {
+                bool flag2 = !(block is ClothingBlock) || !this.CanWearClothing(value);
+                if (flag2)
+                {
+                    result = 0;
+                }
+                else
+                {
+                    result = 1;
+                }
+            }
+            return result;
+        }
+
+        public virtual void AddSlotItems(int slotIndex, int value, int count)
+        {
+        }
+
+        public virtual void ProcessSlotItems(int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
+        {
+            processedCount = 0;
+            processedValue = 0;
+            bool flag = processCount == 1;
+            if (flag)
+            {
+                Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+                bool flag2 = block.GetNutritionalValue(value) > 0f;
+                if (flag2)
+                {
+                    bool flag3 = block is BucketBlock;
+                    if (flag3)
+                    {
+                        processedValue = Terrain.MakeBlockValue(90, 0, Terrain.ExtractData(value));
+                        processedCount = 1;
+                    }
+                    bool flag4 = count > 1 && processedCount > 0 && processedValue != value;
+                    if (flag4)
+                    {
+                        processedValue = value;
+                        processedCount = processCount;
+                    }
+                }
+                bool flag5 = block is ClothingBlock;
+                if (flag5)
+                {
+                    ClothingData clothingData = this.clothingBlock.GetClothingData(value);
+                    List<int> clothes = new List<int>(this.GetClothes(clothingData.Slot))
+                    {
+                        value
+                    };
+                    this.SetClothes(clothingData.Slot, clothes);
+                }
+            }
+        }
+
+        public int RemoveSlotItems(int slotIndex, int count)
+        {
+            bool flag = count == 1;
+            if (flag)
+            {
+                List<int> list = new List<int>(this.GetClothes((ClothingSlot)slotIndex));
+                bool flag2 = list.Count > 0;
+                if (flag2)
+                {
+                    list.RemoveAt(list.Count - 1);
+                    this.SetClothes((ClothingSlot)slotIndex, list);
+                    return 1;
+                }
+            }
+            return 0;
+        }
+
+        public virtual void DropAllItems(Vector3 position)
+        {
+            Game.Random random = new Game.Random();
+            SubsystemPickables subsystemPickables = base.Project.FindSubsystem<SubsystemPickables>(true);
+            for (int i = 0; i < this.SlotsCount; i++)
+            {
+                int slotCount = this.GetSlotCount(i);
+                bool flag = slotCount > 0;
+                if (flag)
+                {
+                    int slotValue = this.GetSlotValue(i);
+                    int count = this.RemoveSlotItems(i, slotCount);
+                    Vector3 value = random.Float(5f, 10f) * Vector3.Normalize(new Vector3(random.Float(-1f, 1f), random.Float(1f, 2f), random.Float(-1f, 1f)));
+                    subsystemPickables.AddPickable(slotValue, count, position, new Vector3?(value), null, base.Entity);
+                }
+            }
+        }
+
+        private void Display_DeviceReset()
+        {
+            this.m_clothedTexturesValid = false;
+        }
+
+        private bool CanWearClothing(int value)
+        {
+            ClothingData clothingData = this.clothingBlock.GetClothingData(value);
+            IList<int> list = this.GetClothes(clothingData.Slot);
+            bool flag = list.Count == 0;
+            bool result;
+            if (flag)
+            {
+                result = true;
+            }
+            else
+            {
+                ClothingData clothingData2 = this.clothingBlock.GetClothingData(list[list.Count - 1]);
+                result = (clothingData.Layer > clothingData2.Layer);
+            }
+            return result;
+        }
+
+        private void UpdateRenderTargets()
+        {
+            bool flag = this.m_skinTexture == null;
+            if (flag)
+            {
+                PlayerData playerData = new PlayerData(base.Project);
+                this.m_skinTexture = CharacterSkinsManager.LoadTexture(playerData.CharacterSkinName);
+                Utilities.Dispose<RenderTarget2D>(ref this.m_innerClothedTexture);
+                Utilities.Dispose<RenderTarget2D>(ref this.m_outerClothedTexture);
+            }
+            bool flag2 = this.m_innerClothedTexture == null || this.m_innerClothedTexture.Width != this.m_skinTexture.Width || this.m_innerClothedTexture.Height != this.m_skinTexture.Height;
+            if (flag2)
+            {
+                this.m_innerClothedTexture = new RenderTarget2D(this.m_skinTexture.Width, this.m_skinTexture.Height, 1, ColorFormat.Rgba8888, DepthFormat.None);
+                this.m_componentHumanModel.TextureOverride = this.m_innerClothedTexture;
+                this.m_clothedTexturesValid = false;
+            }
+            bool flag3 = this.m_outerClothedTexture == null || this.m_outerClothedTexture.Width != this.m_skinTexture.Width || this.m_outerClothedTexture.Height != this.m_skinTexture.Height;
+            if (flag3)
+            {
+                this.m_outerClothedTexture = new RenderTarget2D(this.m_skinTexture.Width, this.m_skinTexture.Height, 1, ColorFormat.Rgba8888, DepthFormat.None);
+                this.m_componentOuterClothingModel.TextureOverride = this.m_outerClothedTexture;
+                this.m_clothedTexturesValid = false;
+            }
+            bool flag4 = ComponentCreatureClothing.DrawClothedTexture && !this.m_clothedTexturesValid;
+            if (flag4)
+            {
+                this.m_clothedTexturesValid = true;
+                Rectangle scissorRectangle = Display.ScissorRectangle;
+                RenderTarget2D renderTarget = Display.RenderTarget;
+                try
+                {
+                    Display.RenderTarget = this.m_innerClothedTexture;
+                    Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
+                    int num = 0;
+                    TexturedBatch2D texturedBatch2D = this.m_primitivesRenderer.TexturedBatch(this.m_skinTexture, false, num++, DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
+                    texturedBatch2D.QueueQuad(Vector2.Zero, new Vector2((float)this.m_innerClothedTexture.Width, (float)this.m_innerClothedTexture.Height), 0f, Vector2.Zero, Vector2.One, Color.White);
+                    foreach (ClothingSlot slot in ComponentCreatureClothing.m_innerSlotsOrder)
+                    {
+                        foreach (int value in this.GetClothes(slot))
+                        {
+                            int data = Terrain.ExtractData(value);
+                            ClothingData clothingData = this.clothingBlock.GetClothingData(value);
+                            Color fabricColor = SubsystemPalette.GetFabricColor(this.m_subsystemTerrain, new int?(ClothingBlock.GetClothingColor(data)));
+                            texturedBatch2D = this.m_primitivesRenderer.TexturedBatch(clothingData.Texture, false, num++, DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
+                            bool flag5 = !clothingData.IsOuter;
+                            if (flag5)
+                            {
+                                texturedBatch2D.QueueQuad(new Vector2(0f, 0f), new Vector2((float)this.m_innerClothedTexture.Width, (float)this.m_innerClothedTexture.Height), 0f, Vector2.Zero, Vector2.One, fabricColor);
+                            }
+                        }
+                    }
+                    this.m_primitivesRenderer.Flush(true, int.MaxValue);
+                    Display.RenderTarget = this.m_outerClothedTexture;
+                    Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
+                    num = 0;
+                    foreach (ClothingSlot slot2 in ComponentCreatureClothing.m_outerSlotsOrder)
+                    {
+                        foreach (int value2 in this.GetClothes(slot2))
+                        {
+                            int data2 = Terrain.ExtractData(value2);
+                            ClothingData clothingData2 = this.clothingBlock.GetClothingData(value2);
+                            Color fabricColor2 = SubsystemPalette.GetFabricColor(this.m_subsystemTerrain, new int?(ClothingBlock.GetClothingColor(data2)));
+                            texturedBatch2D = this.m_primitivesRenderer.TexturedBatch(clothingData2.Texture, false, num++, DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
+                            bool isOuter = clothingData2.IsOuter;
+                            if (isOuter)
+                            {
+                                float num2 = 1f;
+                                bool flag6 = num2 < 1f;
+                                if (flag6)
+                                {
+                                    fabricColor2.A = (byte)(num2 * 255f);
+                                }
+                                texturedBatch2D.QueueQuad(new Vector2(0f, 0f), new Vector2((float)this.m_outerClothedTexture.Width, (float)this.m_outerClothedTexture.Height), 0f, Vector2.Zero, Vector2.One, fabricColor2);
+                            }
+                        }
+                    }
+                    this.m_primitivesRenderer.Flush(true, int.MaxValue);
+                }
+                finally
+                {
+                    Display.RenderTarget = renderTarget;
+                    Display.ScissorRectangle = scissorRectangle;
+                }
+            }
+        }
+
+		public static int GetClothingSlotIndex(ClothingSlot slot)
+		{
+			// Los ClothingSlot fijos son: Head=0, Torso=1, Legs=2, Feet=3
+			if (slot == ClothingSlot.Head) return 0;
+			if (slot == ClothingSlot.Torso) return 1;
+			if (slot == ClothingSlot.Legs) return 2;
+			if (slot == ClothingSlot.Feet) return 3;
+			return -1; // Slot no válido
+		}
+
 		public SubsystemAudio m_subsystemAudio;
-		public SubsystemParticles m_subsystemParticles;
-		public SubsystemSoundMaterials m_subsystemSoundMaterials;
-		public Random m_random = new Random();
+        public SubsystemParticles m_subsystemParticles;
+        private SubsystemGameInfo m_subsystemGameInfo;
+        private readonly ClothingBlock clothingBlock = BlocksManager.Blocks[203] as ClothingBlock;
+        private SubsystemTerrain m_subsystemTerrain;
+        private ComponentHumanModel m_componentHumanModel;
+        private ComponentBody m_componentBody;
+        private ComponentOuterClothingModel m_componentOuterClothingModel;
+        private Texture2D m_skinTexture;
+        private RenderTarget2D m_innerClothedTexture;
+        private RenderTarget2D m_outerClothedTexture;
+        private readonly PrimitivesRenderer2D m_primitivesRenderer = new PrimitivesRenderer2D();
+        private readonly Game.Random m_random = new Game.Random();
+        private float m_densityModifierApplied;
+        private bool m_clothedTexturesValid;
+        private readonly List<int> m_clothesList = new List<int>();
+        private readonly Dictionary<ClothingSlot, List<int>> m_clothes = new Dictionary<ClothingSlot, List<int>>();
 
-		public RenderTarget2D m_innerClothedTexture;
-		public RenderTarget2D m_outerClothedTexture;
-		public PrimitivesRenderer2D m_primitivesRenderer = new PrimitivesRenderer2D();
-		public bool m_clothedTexturesValid;
+        private static readonly ClothingSlot[] m_innerSlotsOrder = new ClothingSlot[]
+        {
+            ClothingSlot.Head,
+            ClothingSlot.Torso,
+            ClothingSlot.Feet,
+            ClothingSlot.Legs
+        };
 
-		// Textura base de la piel
-		private Texture2D m_cachedSkinTexture;
+        private static readonly ClothingSlot[] m_outerSlotsOrder = new ClothingSlot[]
+        {
+            ClothingSlot.Head,
+            ClothingSlot.Torso,
+            ClothingSlot.Legs,
+            ClothingSlot.Feet
+        };
 
-		public float m_baseDensity;
-		public float m_totalDensityModifier;
-
-		Project IInventory.Project => Project;
-		public int SlotsCount => 4;
-		public int VisibleSlotsCount { get; set; } = 4;
-		public int ActiveSlotIndex { get; set; } = -1;
-		public UpdateOrder UpdateOrder => UpdateOrder.Default;
-
-		private static readonly ClothingSlot[] m_slotsOrder = new[]
-		{
-			ClothingSlot.Head,
-			ClothingSlot.Torso,
-			ClothingSlot.Legs,
-			ClothingSlot.Feet
-		};
-
-		public static int GetClothingSlotIndex(ClothingSlot slot) => Array.IndexOf(m_slotsOrder, slot);
-
-		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
-		{
-			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
-			m_subsystemModelsRenderer = Project.FindSubsystem<SubsystemModelsRenderer>(true);
-			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
-			m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
-			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
-			m_subsystemSoundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
-
-			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
-			m_componentBody = m_componentCreature.ComponentBody;
-			m_componentHealth = Entity.FindComponent<ComponentHealth>(true);
-			m_componentHumanModel = Entity.FindComponent<ComponentHumanModel>(true);
-			m_componentNewHumanModel = Entity.FindComponent<ComponentNewHumanModel>(false);
-			m_componentOuterClothingModel = Entity.FindComponent<ComponentOuterClothingModel>(true);
-
-			m_baseDensity = m_componentBody.Density;
-			m_totalDensityModifier = 0f;
-
-			// Obtener y cachear la textura de piel base
-			m_cachedSkinTexture = m_componentHumanModel.TextureOverride;
-			if (m_cachedSkinTexture == null)
-			{
-				Model model = m_componentHumanModel.Model;
-				if (model != null)
-				{
-					foreach (ModelMesh mesh in model.Meshes)
-					{
-						foreach (ModelMeshPart part in mesh.MeshParts)
-						{
-							if (!string.IsNullOrEmpty(part.TexturePath))
-							{
-								m_cachedSkinTexture = ContentManager.Get<Texture2D>(part.TexturePath);
-								break;
-							}
-						}
-						if (m_cachedSkinTexture != null) break;
-					}
-				}
-			}
-
-			foreach (ClothingSlot slot in ClothingSlot.ClothingSlots.Values)
-				m_clothes[slot] = new List<int>();
-
-			ValuesDictionary clothesData = valuesDictionary.GetValue<ValuesDictionary>("CreatureClothes", null);
-			if (clothesData != null)
-			{
-				foreach (string key in ClothingSlot.ClothingSlots.Keys)
-				{
-					List<int> loadedClothes = HumanReadableConverter.ValuesListFromString<int>(
-						';', clothesData.GetValue<string>(key, "")).ToList();
-					m_clothes[ClothingSlot.ClothingSlots[key]] = loadedClothes;
-				}
-			}
-
-			if (m_componentHealth != null)
-				m_componentHealth.Injured += OnInjured;
-
-			Display.DeviceReset += Display_DeviceReset;
-			RecalculateDensity();
-		}
-
-		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
-		{
-			var clothesSave = new ValuesDictionary();
-			foreach (var kv in m_clothes)
-				clothesSave.SetValue<string>(kv.Key.Name,
-					HumanReadableConverter.ValuesListToString<int>(';', kv.Value.ToArray()));
-			valuesDictionary.SetValue<ValuesDictionary>("CreatureClothes", clothesSave);
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			Utilities.Dispose(ref m_innerClothedTexture);
-			Utilities.Dispose(ref m_outerClothedTexture);
-			Display.DeviceReset -= Display_DeviceReset;
-			if (m_componentHealth != null)
-				m_componentHealth.Injured -= OnInjured;
-		}
-
-		private void Display_DeviceReset() => m_clothedTexturesValid = false;
-
-		private void OnInjured(Injury injury)
-		{
-			if (injury == null || m_componentHealth == null || m_componentHealth.Health <= 0f) return;
-			if (injury.Attackment != null)
-			{
-				float remaining = ApplyArmorProtection(injury.Amount);
-				injury.Amount = remaining;
-			}
-		}
-
-		public void SetClothes(ClothingSlot slot, IEnumerable<int> newClothes)
-		{
-			List<int> clothesList = newClothes.ToList();
-			if (!m_clothes[slot].SequenceEqual(clothesList))
-			{
-				foreach (int oldValue in m_clothes[slot].Except(clothesList))
-				{
-					ClothingData data = GetClothingData(oldValue);
-					data?.Dismount?.Invoke(oldValue, null);
-				}
-				foreach (int newValue in clothesList.Except(m_clothes[slot]))
-				{
-					ClothingData data = GetClothingData(newValue);
-					data?.Mount?.Invoke(newValue, null);
-				}
-				m_clothes[slot] = clothesList;
-				m_clothedTexturesValid = false;
-				RecalculateDensity();
-			}
-		}
-
-		private void RecalculateDensity()
-		{
-			float total = 0f;
-			foreach (var kv in m_clothes)
-				foreach (int v in kv.Value)
-				{
-					ClothingData d = GetClothingData(v);
-					if (d != null) total += d.DensityModifier;
-				}
-			m_totalDensityModifier = total;
-			m_componentBody.Density = m_baseDensity + total;
-		}
-
-		public ReadOnlyList<int> GetClothes(ClothingSlot slot) => new ReadOnlyList<int>(m_clothes[slot]);
-
-		private ClothingData GetClothingData(int value)
-		{
-			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-			return block.GetClothingData(value);
-		}
-
-		private Color GetClothingColor(int value)
-		{
-			int data = Terrain.ExtractData(value);
-			return SubsystemPalette.GetFabricColor(m_subsystemTerrain, new int?(ClothingBlock.GetClothingColor(data)));
-		}
-
-		public bool CanWearClothing(int value)
-		{
-			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-			if (!(block is ClothingBlock))
-				return false;
-			ClothingData data = block.GetClothingData(value);
-			return data != null;
-		}
-
-		public float ApplyArmorProtection(float attackPower)
-		{
-			if (attackPower <= 0f) return 0f;
-			float num = m_random.Float(0f, 1f);
-			ClothingSlot slot = (num < 0.1f) ? ClothingSlot.Feet :
-							   (num < 0.3f) ? ClothingSlot.Legs :
-							   (num < 0.9f) ? ClothingSlot.Torso : ClothingSlot.Head;
-
-			List<int> clothes = new List<int>(GetClothes(slot));
-			List<int> after = new List<int>(clothes);
-			float remaining = attackPower;
-
-			for (int i = 0; i < clothes.Count; i++)
-			{
-				int value = clothes[i];
-				ClothingData data = GetClothingData(value);
-				if (data == null) continue;
-				Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-				float dur = (float)(block.GetDurability(value) + 1);
-				float dmg = (float)block.GetDamage(value);
-				float maxAbs = (dur - dmg) / dur * data.Sturdiness;
-				float absorb = MathF.Min(remaining * MathUtils.Saturate(data.ArmorProtection / 1f), maxAbs);
-				if (absorb > 0f)
-				{
-					remaining -= absorb;
-					{
-						float raw = absorb / data.Sturdiness * dur + 0.001f;
-						int pts = (int)(MathF.Floor(raw) + (m_random.Bool(MathUtils.Remainder(raw, 1f)) ? 1 : 0));
-						after[i] = BlocksManager.DamageItem(value, pts, Entity);
-					}
-					if (!string.IsNullOrEmpty(data.ImpactSoundsFolder))
-						m_subsystemAudio.PlayRandomSound(data.ImpactSoundsFolder, 1f, m_random.Float(-0.3f, 0.3f), m_componentBody.Position, 4f, 0.15f);
-					else
-						m_subsystemSoundMaterials.PlayImpactSound(value, m_componentBody.Position, 1f);
-				}
-			}
-
-			for (int j = after.Count - 1; j >= 0; j--)
-				if (!BlocksManager.Blocks[Terrain.ExtractContents(after[j])].CanWear(after[j]))
-				{
-					after.RemoveAt(j);
-					m_subsystemParticles.AddParticleSystem(new BlockDebrisParticleSystem(m_subsystemTerrain,
-						m_componentBody.Position + m_componentBody.StanceBoxSize / 2f, 1f, 1f, Color.White, 0), false);
-				}
-
-			after.Sort((a, b) => (GetClothingData(a)?.Layer ?? 0) - (GetClothingData(b)?.Layer ?? 0));
-			SetClothes(slot, after);
-			return MathF.Max(remaining, 0f);
-		}
-
-		// ========== MÉTODOS IInventory CORREGIDOS ==========
-		public int GetSlotValue(int slotIndex)
-		{
-			if (slotIndex < 0 || slotIndex >= 4) return 0;
-			ClothingSlot slot = m_slotsOrder[slotIndex];
-			var list = m_clothes[slot];
-			return list.Count > 0 ? list[list.Count - 1] : 0;
-		}
-
-		public int GetSlotCount(int slotIndex)
-		{
-			if (slotIndex < 0 || slotIndex >= 4) return 0;
-			ClothingSlot slot = m_slotsOrder[slotIndex];
-			return m_clothes[slot].Count > 0 ? 1 : 0;
-		}
-
-		public int GetSlotCapacity(int slotIndex, int value) => 0;
-
-		public int GetSlotProcessCapacity(int slotIndex, int value)
-		{
-			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-			return (block.CanWear(value) && CanWearClothing(value)) ? 1 : 0;
-		}
-
-		public void AddSlotItems(int slotIndex, int value, int count) { }
-
-		public void ProcessSlotItems(int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
-		{
-			processedValue = 0; processedCount = 0;
-			if (slotIndex < 0 || slotIndex >= 4 || count <= 0 || processCount != 1) return;
-			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-			if (block.CanWear(value) && CanWearClothing(value))
-			{
-				ClothingData data = GetClothingData(value);
-				if (data != null)
-				{
-					data.Mount?.Invoke(value, null);
-					ClothingSlot slot = m_slotsOrder[slotIndex];
-					List<int> newList = new List<int>(m_clothes[slot]);
-					newList.Add(value);
-					SetClothes(slot, newList);
-					processedValue = value;
-					processedCount = 1;
-				}
-			}
-		}
-
-		public int RemoveSlotItems(int slotIndex, int count)
-		{
-			if (slotIndex < 0 || slotIndex >= 4 || count != 1) return 0;
-			ClothingSlot slot = m_slotsOrder[slotIndex];
-			List<int> current = m_clothes[slot];
-			if (current.Count == 0) return 0;
-			int lastValue = current[current.Count - 1];
-			ClothingData data = GetClothingData(lastValue);
-			data?.Dismount?.Invoke(lastValue, null);
-			List<int> newList = new List<int>(current);
-			newList.RemoveAt(newList.Count - 1);
-			SetClothes(slot, newList);
-			return 1;
-		}
-
-		public void DropAllItems(Vector3 position)
-		{
-			Random rand = new Random();
-			SubsystemPickables pickables = Project.FindSubsystem<SubsystemPickables>(true);
-			for (int i = 0; i < 4; i++)
-			{
-				if (GetSlotCount(i) > 0)
-				{
-					int value = GetSlotValue(i);
-					int removed = RemoveSlotItems(i, 1);
-					Vector3 velocity = rand.Float(5f, 10f) * Vector3.Normalize(
-						new Vector3(rand.Float(-1f, 1f), rand.Float(1f, 2f), rand.Float(-1f, 1f)));
-					pickables.AddPickable(value, removed, position, new Vector3?(velocity), null, Entity);
-				}
-			}
-		}
-
-		public void Update(float dt) => UpdateRenderTargets();
-
-		private void UpdateRenderTargets()
-		{
-			if (m_cachedSkinTexture == null)
-			{
-				m_cachedSkinTexture = m_componentHumanModel.TextureOverride;
-				if (m_cachedSkinTexture == null)
-				{
-					Model model = m_componentHumanModel.Model;
-					if (model != null)
-					{
-						foreach (ModelMesh mesh in model.Meshes)
-						{
-							foreach (ModelMeshPart part in mesh.MeshParts)
-							{
-								if (!string.IsNullOrEmpty(part.TexturePath))
-								{
-									m_cachedSkinTexture = ContentManager.Get<Texture2D>(part.TexturePath);
-									break;
-								}
-							}
-							if (m_cachedSkinTexture != null) break;
-						}
-					}
-				}
-				if (m_cachedSkinTexture == null) return;
-			}
-
-			if (m_innerClothedTexture == null || m_innerClothedTexture.Width != m_cachedSkinTexture.Width || m_innerClothedTexture.Height != m_cachedSkinTexture.Height)
-			{
-				Utilities.Dispose(ref m_innerClothedTexture);
-				m_innerClothedTexture = new RenderTarget2D(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height, 1, ColorFormat.Rgba8888, DepthFormat.None);
-				m_componentHumanModel.TextureOverride = m_innerClothedTexture;
-				m_clothedTexturesValid = false;
-			}
-			if (m_outerClothedTexture == null || m_outerClothedTexture.Width != m_cachedSkinTexture.Width || m_outerClothedTexture.Height != m_cachedSkinTexture.Height)
-			{
-				Utilities.Dispose(ref m_outerClothedTexture);
-				m_outerClothedTexture = new RenderTarget2D(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height, 1, ColorFormat.Rgba8888, DepthFormat.None);
-				m_componentOuterClothingModel.TextureOverride = m_outerClothedTexture;
-				m_clothedTexturesValid = false;
-			}
-
-			m_componentHumanModel.TextureOverride = m_innerClothedTexture;
-			m_componentOuterClothingModel.TextureOverride = m_outerClothedTexture;
-
-			if (!m_clothedTexturesValid)
-			{
-				m_clothedTexturesValid = true;
-				Rectangle oldScissor = Display.ScissorRectangle;
-				RenderTarget2D oldTarget = Display.RenderTarget;
-				try
-				{
-					Display.RenderTarget = m_innerClothedTexture;
-					Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
-					int batchIndex = 0;
-
-					TexturedBatch2D batch = m_primitivesRenderer.TexturedBatch(m_cachedSkinTexture, false, batchIndex++,
-						DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
-					batch.QueueQuad(Vector2.Zero, new Vector2(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height), 0f, Vector2.Zero, Vector2.One, Color.White);
-
-					ClothingSlot[] innerOrder = new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs, ClothingSlot.Feet };
-					foreach (ClothingSlot slot in innerOrder)
-					{
-						if (!m_clothes.ContainsKey(slot)) continue;
-						foreach (int value in m_clothes[slot])
-						{
-							ClothingData data = GetClothingData(value);
-							if (data == null || data.IsOuter) continue;
-							if (data.Texture == null && !string.IsNullOrEmpty(data._textureName))
-								data.Texture = ContentManager.Get<Texture2D>(data._textureName);
-							if (data.Texture != null)
-							{
-								Color color = GetClothingColor(value);
-								batch = m_primitivesRenderer.TexturedBatch(data.Texture, false, batchIndex++,
-									DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
-								batch.QueueQuad(Vector2.Zero, new Vector2(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height), 0f, Vector2.Zero, Vector2.One, color);
-							}
-						}
-					}
-					m_primitivesRenderer.Flush(true, int.MaxValue);
-
-					Display.RenderTarget = m_outerClothedTexture;
-					Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
-					batchIndex = 0;
-
-					ClothingSlot[] outerOrder = new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs, ClothingSlot.Feet };
-					foreach (ClothingSlot slot in outerOrder)
-					{
-						if (!m_clothes.ContainsKey(slot)) continue;
-						foreach (int value in m_clothes[slot])
-						{
-							ClothingData data = GetClothingData(value);
-							if (data == null || !data.IsOuter) continue;
-							if (data.Texture == null && !string.IsNullOrEmpty(data._textureName))
-								data.Texture = ContentManager.Get<Texture2D>(data._textureName);
-							if (data.Texture != null)
-							{
-								Color color = GetClothingColor(value);
-								batch = m_primitivesRenderer.TexturedBatch(data.Texture, false, batchIndex++,
-									DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
-								batch.QueueQuad(Vector2.Zero, new Vector2(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height), 0f, Vector2.Zero, Vector2.One, color);
-							}
-						}
-					}
-					m_primitivesRenderer.Flush(true, int.MaxValue);
-				}
-				catch (Exception ex)
-				{
-					Log.Error($"Error en UpdateRenderTargets de ComponentCreatureClothing: {ex.Message}");
-					m_clothedTexturesValid = false;
-				}
-				finally
-				{
-					Display.RenderTarget = oldTarget;
-					Display.ScissorRectangle = oldScissor;
-				}
-			}
-		}
-	}
+        public static bool ShowClothedTexture = false;
+        public static bool DrawClothedTexture = true;
+    }
 }
