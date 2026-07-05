@@ -15,7 +15,6 @@ namespace Game
 		private Random m_random = new Random();
 
 		private Dictionary<Entity, int> m_playerImpactCount = new Dictionary<Entity, int>();
-		// Diccionario para rastrear los sistemas de partículas de cada proyectil
 		private Dictionary<Projectile, List<FreezingTrailParticleSystem>> m_projectileTrails = new Dictionary<Projectile, List<FreezingTrailParticleSystem>>();
 
 		public override int[] HandledBlocks => new int[] { FreezingSnowballBlock.Index };
@@ -31,14 +30,15 @@ namespace Game
 
 		public override void OnFiredAsProjectile(Projectile projectile)
 		{
-			// Crear dos sistemas de partículas para la nube alrededor de la bola
-			var particleSystem = new FreezingTrailParticleSystem(projectile.Position, 0.5f, float.MaxValue);
+			// La bola de nieve tiene escala 2.5f. Ajustamos el tamaño de la estela para que coincida.
+			// Nube principal que envuelve la bola
+			var particleSystem = new FreezingTrailParticleSystem(120, 1.2f, float.MaxValue, new Color(200, 240, 255, 220));
 			m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, particleSystem);
 
-			var particleSystem2 = new FreezingTrailParticleSystem(projectile.Position, 0.3f, float.MaxValue);
+			// Nube secundaria ligeramente más pequeña y desplazada para dar profundidad
+			var particleSystem2 = new FreezingTrailParticleSystem(80, 0.8f, float.MaxValue, new Color(180, 220, 255, 200));
 			m_subsystemProjectiles.AddTrail(projectile, new Vector3(0f, 0.05f, 0f), particleSystem2);
 
-			// Guardar referencias para poder detenerlas al impactar
 			var trails = new List<FreezingTrailParticleSystem> { particleSystem, particleSystem2 };
 			m_projectileTrails[projectile] = trails;
 
@@ -47,20 +47,16 @@ namespace Game
 
 		public override bool OnHitAsProjectile(CellFace? cellFace, ComponentBody componentBody, WorldItem worldItem)
 		{
-			// Obtener el proyectil (asumimos que worldItem es el Projectile)
 			Projectile projectile = worldItem as Projectile;
 			if (projectile != null && m_projectileTrails.TryGetValue(projectile, out List<FreezingTrailParticleSystem> trails))
 			{
-				// Detener los sistemas de partículas para que se desvanezcan (fade-out)
 				foreach (var trail in trails)
 				{
 					trail.IsStopped = true;
 				}
-				// Eliminar del diccionario
 				m_projectileTrails.Remove(projectile);
 			}
 
-			// Resto de la lógica de impacto (daño, efectos sobre criaturas, etc.)
 			if (componentBody != null)
 			{
 				ComponentCreature creature = componentBody.Entity.FindComponent<ComponentCreature>();
@@ -102,10 +98,9 @@ namespace Game
 				}
 			}
 
-			// Reproducir sonido de impacto (sin generar nuevas partículas)
 			m_subsystemAudio.PlaySound("Audio/congelado", 3.0f, m_random.Float(-0.2f, 0.2f), worldItem.Position, 2f, true);
 
-			return false; // Permitir que el proyectil continúe (o se destruya según la lógica base)
+			return false;
 		}
 
 		private void ApplyFreezingEffectsToPlayer(ComponentPlayer player, int impactNumber)
@@ -170,7 +165,6 @@ namespace Game
 
 		private void StartFluOnTarget(ComponentCreature target, float duration)
 		{
-			// Intentar con el sistema de gripe para criaturas (ComponentFluInfected)
 			var targetFluInfected = target.Entity.FindComponent<ComponentFluInfected>();
 			if (targetFluInfected != null)
 			{
@@ -178,12 +172,10 @@ namespace Game
 				return;
 			}
 
-			// Si es un jugador, usar el sistema original ComponentFlu (del juego base)
 			if (target is ComponentPlayer player && player.ComponentFlu != null)
 			{
 				if (!player.ComponentFlu.HasFlu)
 					player.ComponentFlu.StartFlu();
-				// Ajustar duración mediante reflexión (si es necesario)
 				var fluField = typeof(ComponentFlu).GetField("m_fluDuration",
 					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 				if (fluField != null)
@@ -193,7 +185,6 @@ namespace Game
 						fluField.SetValue(player.ComponentFlu, duration);
 				}
 			}
-			// Si no tiene componente de gripe, no se puede infectar (y no se añade)
 		}
 	}
 }
