@@ -44,6 +44,18 @@ namespace Game
 			return false;
 		}
 
+		/// <summary>
+		/// Verifica si el objetivo está dentro del rango de ataque melee
+		/// </summary>
+		private bool IsTargetInAttackRange(ComponentCreature target)
+		{
+			if (target == null || this.m_componentCreature.ComponentBody == null || target.ComponentBody == null)
+				return false;
+
+			float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
+			return distance <= m_attackRange;
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
@@ -52,7 +64,8 @@ namespace Game
 			this.m_chaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
 			this.m_zombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
 			this.m_poisonIntensity = valuesDictionary.GetValue<float>("PoisonIntensity");
-			this.m_infectProbability = valuesDictionary.GetValue<float>("InfectProbability", 1f); // Nuevo parámetro, por defecto 1 (100%)
+			this.m_infectProbability = valuesDictionary.GetValue<float>("InfectProbability", 1f);
+			this.m_attackRange = valuesDictionary.GetValue<float>("AttackRange", 2f);
 
 			this.m_stateMachine.AddState("Inactive", delegate
 			{
@@ -72,8 +85,9 @@ namespace Game
 
 				this.m_target = target;
 
-				// Condición modificada: ahora incluye la probabilidad de infección
+				// Condición corregida: verificar distancia ANTES de infectar
 				if (this.m_target != null &&
+					this.IsTargetInAttackRange(this.m_target) &&
 					this.m_componentCreature.ComponentCreatureModel.IsAttackHitMoment &&
 					this.m_random.Float() < this.m_infectProbability)
 				{
@@ -94,6 +108,13 @@ namespace Game
 				this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
 			}, delegate
 			{
+				// Verificar que el target siga en rango antes de infectar
+				if (this.m_target != null && !this.IsTargetInAttackRange(this.m_target))
+				{
+					this.m_stateMachine.TransitionTo("Inactive");
+					return;
+				}
+
 				if (this.StartInfect(this.m_target))
 				{
 					ComponentRunAwayBehavior componentRunAwayBehavior = this.m_componentCreature.Entity.FindComponent<ComponentRunAwayBehavior>();
@@ -124,6 +145,7 @@ namespace Game
 		private float m_importanceLevel;
 		public float m_poisonIntensity;
 		private ComponentCreature m_target;
-		private float m_infectProbability; // Nuevo campo: probabilidad de infectar al golpear (0..1)
+		private float m_infectProbability;
+		private float m_attackRange; // Nuevo campo: rango de ataque para verificar distancia
 	}
 }
