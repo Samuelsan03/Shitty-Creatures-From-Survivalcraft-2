@@ -638,20 +638,8 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
-    <MemberSubsystemTemplate Name="AnimalInfectedSpawnEggBlockBehavior" Guid="43199bab-04c6-42ce-b73f-8c87ca93477a" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemAnimalInfectedSpawnEggBlockBehavior" Type="string" Guid="99fea780-15f1-4fb1-87e6-288dcf67d2aa"/>
-</MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="SpecialInfectedSpawnEggBlockBehavior" Guid="e852c256-49ec-4192-93b3-ecda91791838" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemSpecialInfectedSpawnEggBlockBehavior" Type="string" Guid="7de4ac77-1c6f-4f96-be16-668294a558cb"/>
-</MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="FlyingInfectedSpawnEggBlockBehavior" Guid="3be923ca-0208-4a69-91ac-9f5b44884fb7" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemFlyingInfectedSpawnEggBlockBehavior" Type="string" Guid="8a729b6f-efea-45f2-8f9f-e0db43ffa5ee"/>
-</MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="BoomerSpawnEggBlockBehavior" Guid="ea36828d-dd8c-414d-9680-17acb0f735a1" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemBoomerSpawnEggBlockBehavior" Type="string" Guid="f8363545-ffd6-472b-ba8c-57d97c43c3f4"/>
-</MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="CommonInfectedSpawnEggBlockBehavior" Guid="f8a710e7-a17b-4dfb-8ffd-9583631fb28f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemCommonInfectedSpawnEggBlockBehavior" Type="string" Guid="a5d8c457-d9bd-4367-879d-41a140832131"/>
+    <MemberSubsystemTemplate Name="InfectedSpawnEggBlockBehavior" Guid="43199bab-04c6-42ce-b73f-8c87ca93477a" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemInfectedSpawnEggBlockBehavior" Type="string" Guid="99fea780-15f1-4fb1-87e6-288dcf67d2aa"/>
 </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="BlueberryBushBlockBehavior" Guid="5493f350-0a0c-4ed1-bf2f-d912ebc4eaa2" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemBlueberryBushBlockBehavior" Type="string" Guid="56dd93e7-a38e-49bf-bf27-63f0f547a51a"/>
