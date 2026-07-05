@@ -6,134 +6,83 @@ namespace Game
 {
 	public class FreezingTrailParticleSystem : ParticleSystem<FreezingTrailParticleSystem.Particle>, ITrailParticleSystem
 	{
-		private Random m_random = new Random();
-		private Vector3 m_position;
-		private float m_size;
-		private float m_toGenerate;
-		private float m_age;
+		public Random m_random = new Random();
+		public float m_toGenerate;
+		public float m_textureSlotMultiplier;
+		public float m_textureSlotOffset;
+		public float m_duration;
+		public float m_size;
+		public float m_maxDuration;
+		public Color m_color;
 
+		public Vector3 Position { get; set; }
 		public bool IsStopped { get; set; }
 
-		Vector3 ITrailParticleSystem.Position
+		public FreezingTrailParticleSystem(int particlesCount, float size, float maxDuration, Color color) : base(particlesCount)
 		{
-			get => m_position;
-			set => m_position = value;
-		}
-
-		bool ITrailParticleSystem.IsStopped
-		{
-			get => IsStopped;
-			set => IsStopped = value;
-		}
-
-		public FreezingTrailParticleSystem(Vector3 position, float size, float maxVisibilityDistance) : base(100) // Menos partículas
-		{
-			m_position = position;
 			m_size = size;
+			m_maxDuration = maxDuration;
 			Texture = ContentManager.Get<Texture2D>("Textures/Gui/congelante particulas");
 			TextureSlotsCount = 3;
+			m_textureSlotMultiplier = m_random.Float(1.1f, 1.9f);
+			m_textureSlotOffset = (float)((m_random.Float(0f, 1f) < 0.33f) ? 3 : 0);
+			m_color = color;
 		}
 
 		public override bool Simulate(float dt)
 		{
-			m_age += dt;
-			bool anyActive = false;
-
-			// Generar partículas solo si no está detenido
-			if (!IsStopped)
+			m_duration += dt;
+			if (m_duration > m_maxDuration)
 			{
-				// Tasa de emisión reducida para una nube densa pero no excesiva
-				m_toGenerate += 15f * dt;
-
-				for (int i = 0; i < Particles.Length; i++)
+				IsStopped = true;
+			}
+			float num = Math.Clamp(50f / m_size, 10f, 40f);
+			m_toGenerate += num * dt;
+			float s = MathF.Pow(0.1f, dt);
+			bool flag = false;
+			for (int i = 0; i < Particles.Length; i++)
+			{
+				FreezingTrailParticleSystem.Particle particle = Particles[i];
+				if (particle.IsActive)
 				{
-					Particle p = Particles[i];
-					if (p.IsActive)
+					flag = true;
+					particle.Time += dt;
+					if (particle.Time <= particle.Duration)
 					{
-						anyActive = true;
-						p.Time += dt;
-						p.TimeToLive -= dt;
-
-						if (p.TimeToLive > 0f)
-						{
-							// Animación rápida de textura (3 slots)
-							p.TextureSlot = (int)MathUtils.Min(2f * p.Time / 0.8f, 2f); // ciclo rápido
-							p.Color = Color.Lerp(new Color(200, 240, 255, 220), Color.Transparent, p.Time / 0.8f);
-							// Casi sin movimiento para que rodeen la bola
-							p.Position += p.Velocity * dt;
-						}
-						else
-						{
-							p.IsActive = false;
-						}
+						particle.Position += particle.Velocity * dt;
+						particle.Velocity *= s;
+						FreezingTrailParticleSystem.Particle particle2 = particle;
+						particle2.Velocity.Y = particle2.Velocity.Y + 10f * dt;
+						particle.TextureSlot = (int)MathUtils.Min(9f * particle.Time / particle.Duration * m_textureSlotMultiplier + m_textureSlotOffset, 8f);
+						particle.Size = new Vector2(m_size * (0.15f + 0.8f * particle.Time / particle.Duration));
 					}
-					else if (m_toGenerate >= 1f)
+					else
 					{
-						p.IsActive = true;
-						// Posición en una pequeña esfera alrededor del centro
-						Vector3 offset = m_random.Float(-0.3f, 0.3f) * Vector3.UnitX
-										+ m_random.Float(-0.3f, 0.3f) * Vector3.UnitY
-										+ m_random.Float(-0.3f, 0.3f) * Vector3.UnitZ;
-						p.Position = m_position + offset * m_size;
-						p.Color = new Color(200, 240, 255, 220);
-						float s = m_size * m_random.Float(0.8f, 1.2f);
-						p.Size = new Vector2(s, s);
-						// Velocidad casi nula para que no se alejen
-						p.Velocity = new Vector3(
-							m_random.Float(-0.05f, 0.05f),
-							m_random.Float(-0.05f, 0.05f),
-							m_random.Float(-0.05f, 0.05f)
-						);
-						p.Time = 0f;
-						// Vida muy corta: 0.5 a 1 segundo (rastro corto)
-						p.TimeToLive = m_random.Float(0.5f, 1f);
-						p.FlipX = (m_random.Int(0, 1) == 0);
-						p.FlipY = (m_random.Int(0, 1) == 0);
-						m_toGenerate -= 1f;
+						particle.IsActive = false;
 					}
 				}
-
-				m_toGenerate = MathUtils.Remainder(m_toGenerate, 1f);
-			}
-			else
-			{
-				// Modo detenido: solo simular partículas existentes hasta que mueran
-				for (int i = 0; i < Particles.Length; i++)
+				else if (!IsStopped && m_toGenerate >= 1f)
 				{
-					Particle p = Particles[i];
-					if (p.IsActive)
-					{
-						anyActive = true;
-						p.Time += dt;
-						p.TimeToLive -= dt;
-
-						if (p.TimeToLive > 0f)
-						{
-							p.TextureSlot = (int)MathUtils.Min(2f * p.Time / 0.8f, 2f);
-							p.Color = Color.Lerp(new Color(200, 240, 255, 220), Color.Transparent, p.Time / 0.8f);
-							p.Position += p.Velocity * dt;
-						}
-						else
-						{
-							p.IsActive = false;
-						}
-					}
+					particle.IsActive = true;
+					Vector3 v = new Vector3(m_random.Float(-1f, 1f), m_random.Float(-1f, 1f), m_random.Float(-1f, 1f));
+					particle.Position = Position + 0.025f * v;
+					particle.Color = m_color;
+					particle.Velocity = 0.2f * v;
+					particle.Time = 0f;
+					particle.Size = new Vector2(0.15f * m_size);
+					particle.Duration = (float)Particles.Length / num * m_random.Float(0.8f, 1.05f);
+					particle.FlipX = m_random.Bool();
+					particle.FlipY = m_random.Bool();
+					m_toGenerate -= 1f;
 				}
 			}
-
-			// El sistema se elimina cuando está detenido y no quedan partículas activas
-			return IsStopped && !anyActive;
-		}
-
-		public override void Draw(Camera camera)
-		{
-			base.Draw(camera);
+			return IsStopped && !flag;
 		}
 
 		public new class Particle : Game.Particle
 		{
 			public float Time;
-			public float TimeToLive;
+			public float Duration;
 			public Vector3 Velocity;
 		}
 	}
