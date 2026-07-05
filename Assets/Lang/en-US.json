@@ -277,21 +277,20 @@
   },
   "ShittyCreaturesLog": {
     "Line1_0_6_1": "• Free Camera has been added. This mode is only available in Peaceful (Harmless), Survival (Survival), Challenging (Challenging), Cruel (Cruel), and Adventure (Adventure); it does not work in Creative mode. Its behavior is similar to the debug camera, allowing you to move freely around the world to observe the environment and creatures without restrictions.",
-    "Line1_0_6_2": "• Added the special \"Green Night\" event. You can enable or disable it, adjust how often it occurs, and choose from five Mental States: Therapy Waiting List, Monday Morning, Structural Damage, The Last Architect, and Sanity Load Error. Each Mental State changes enemy spawn rates, aggression, environmental destruction capabilities, and tactical behavior. The event takes place at night according to the configured interval.",
+    "Line1_0_6_2": "• Added the special event \"Green Night\". You can enable or disable it, configure how often it occurs (in days), and choose between seven Mental States: Early Retirement, Therapy Waiting List, Monday Morning, Structural Damage, The Last Architect, Sanity Load Error, and a seventh secret state. Each Mental State changes enemy spawn rates, aggression, environmental destruction capabilities, and tactical behavior. The event takes place at night according to the configured interval.",
     "Line1_0_6_3:": "A thirst mechanic has been introduced to create a more realistic experience. You will now need to find sources of water, such as buckets or containers. However, drinking untreated water may cause nausea, especially if it comes from unsafe sources. To avoid negative effects, it is recommended to boil water before consuming it.",
     "Line1_0_6_4": "• New Digimons and bandits have been added. Currently, there are 4 unique bandits that players can hire using nuclear coins.",
     "Line1_0_6_5": "• Added trading and hiring system.",
     "Line1_0_6_6": "• New unlockable event: after surviving all the waves of the Green Night (yes, all of them, including the one where you cried in the shower), a suspiciously convenient chest will appear near you. It contains a letter. It’s not spam, it’s not a Viagra offer, it’s an invitation. If you accept it… well, let’s just say the nights will stop being boring. We won’t say exactly what happens (spoilers), but it involves shady-looking guys, questionable life choices, and the feeling that maybe you should have stayed in bed. If you refuse… they’ll ask you again. And again. And again. The letter has a lot of patience. Or a mean streak. You decide.",
-    "Line1_0_6_7": "• Added Shitty Creatures settings accessible from the main game options via a red button, allowing players to customize their mod experience. Settings are saved to an XML file to persist between game sessions and prevent unwanted reset to defaults.",
+    "Line1_0_6_7": "• Shitty Creatures settings have been added, accessible from the main menu through a dedicated button. All options are automatically saved to an XML file, preserving your settings between game sessions.",
     "Line1_0_6_8": "• New weapons have been added: firearms, freezing bomb, and double-barrel musket.",
     "Line1_0_6_9": "• New tools have been introduced: thin-head hammer (mines faster than standard pickaxes).",
     "Line1_0_6_10": "• A flu system for creatures has been implemented.",
     "Line1_0_6_11": "• A healing system has been added, compatible with both creatures and players, including treatment for nausea, poison, and flu, as well as healing for low-health creatures.",
     "Line1_0_6_12": "• The trident now summons lightning when it hits a target.",
     "Line1_0_6_13": "• Translations have been fixed, polished, and improved.",
-    "Line1_0_6_14": "• Improved creature artificial intelligence, they can now handle any weapon including ranged, throwables, firearms and melee.",
-    "Line1_0_6_15": "• Creatures can now wear clothing and armor from their inventory just like the player. They will automatically equip any wearable item they carry. Armor with high protection values will absorb incoming damage, reducing or completely negating injuries based on the armor's strength, durability, and the affected body part. Armor pieces will take damage and eventually break with use, functioning identically to player-worn armor.",
-    "Line1_0_6_16": "• A bleeding system for creatures has been added. It allows players to see when they are close to death and how long their corpse remains before disappearing.",
+    "Line1_0_6_14": "• The creatures' artificial intelligence has been improved. They can now use any type of weapon, including melee, ranged, thrown, and firearms. If they have a melee weapon in their inventory while using a ranged, thrown, or firearm weapon, they will automatically switch to the melee weapon once they are close enough to their target. Additionally, they can now equip clothing and armor just like the player, as well as ride mounts.",
+    "Line1_0_6_15": "• A bleeding system for creatures has been added. It allows players to see when they are close to death and how long their corpse remains before disappearing.",
     "Line1_0_5_1": "• Added new weapons: Flamethrower, Scythe, Trident, Repeating Crossbow, Poison Bomb, Item Cannon",
     "Line1_0_5_2": "• Added new NPCs: Digimon, Alliance members, Muerte members, Pirates, Infected (zombies)",
     "Line1_0_5_3": "• Added music system (background music, chase music for enemies)",
@@ -1500,25 +1499,29 @@
   "DisplayName": "Military Bulletproof Boots",
   "Description": "Reinforced tactical boots with ballistic protection. Cannot be crafted; can only be obtained by defeating La Bandida."
 },
-"CommonInfectedSpawnEggBlock:0": {
+"InfectedSpawnEggBlock:0": {
   "DisplayName": "Common Infected Spawn Egg",
-  "Description": "Spawner egg that hatches a random common infected creature when thrown against a surface. Available in creative mode only."
+  "Description": "Summons an infected creature when thrown against a solid object. The resulting being displays standard aggressive tendencies, with some variations capable of delivering poison or freezing effects through their attacks."
 },
-"BoomerSpawnEggBlock:0": {
+"InfectedSpawnEggBlock:1": {
   "DisplayName": "Boomer Spawn Egg",
-  "Description": "Spawner egg that hatches a random explosive infected creature when thrown. These creatures explode upon death, causing area damage."
+  "Description": "Creates an unstable infected upon impact with a hard surface. This volatile entity detonates in a devastating explosion at the moment of death, producing a powerful shockwave that destroys terrain and inflicts massive damage to anything nearby."
 },
-"SpecialInfectedSpawnEggBlock:0": {
+"InfectedSpawnEggBlock:2": {
   "DisplayName": "Special Infected Spawn Egg",
-  "Description": "Spawner egg that hatches a random powerful infected creature when thrown. These are dangerous and resilient enemies."
+  "Description": "Generates an exceptionally powerful boss-class infected when shattered. These formidable opponents possess immense durability and strength, demanding superior weaponry and tactics to overcome in combat."
 },
-"FlyingInfectedSpawnEggBlock:0": {
+"InfectedSpawnEggBlock:3": {
   "DisplayName": "Flying Infected Spawn Egg",
-  "Description": "Spawner egg that hatches a random flying infected creature when thrown. Includes all airborne infected variants."
+  "Description": "Releases an airborne infected upon destruction against any surface. The resulting creature takes to the skies, granting it the ability to bypass ground-level obstacles and assault players from elevated positions."
 },
-"AnimalInfectedSpawnEggBlock:0": {
+"InfectedSpawnEggBlock:4": {
   "DisplayName": "Animal Infected Spawn Egg",
-  "Description": "Spawner egg for infected animals. Throw it against a hard surface to spawn a random infected creature of animal origin. Available in creative mode only."
+  "Description": "Spawns a bestial infected after being thrown and broken. Drawing from animalistic traits, this variant relies on raw speed and ferocity rather than supernatural abilities to overwhelm its prey."
+},
+"InfectedSpawnEggBlock:5": {
+  "DisplayName": "Ghost Infected Spawn Egg",
+  "Description": "Conjures an ethereal infected when smashed. These spectral entities move with unnatural swiftness and possess a degree of intangibility, enabling them to slip through attacks and strike with ghostly precision."
 }
 },
       "ContentWidgets": {
