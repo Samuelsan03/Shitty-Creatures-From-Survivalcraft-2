@@ -257,6 +257,10 @@ namespace Game
 			if (m_random.Float(0f, 1f) >= probability)
 				return false;
 
+			// --- NUEVA VERIFICACIÓN: espacio en inventario ---
+			if (!HasSpaceForPickable(pickable))
+				return false;
+
 			m_interestingPickables.Add(pickable);
 			return true;
 		}
@@ -588,22 +592,32 @@ namespace Game
                         m_stateMachine.TransitionTo("Move");
                         return;
                     }
-                    // === FIN LÓGICA DE MIRA ===
+					// === FIN LÓGICA DE MIRA ===
 
-                    // Si está en la mira Y lo suficientemente cerca, recolectar
-                    if (distSq < 0.64f) // ~0.8 bloques de distancia
-                    {
-                        m_collectTime -= m_subsystemTime.GameTimeDelta;
-                        m_blockedTime = 0f;
+					// Si está en la mira Y lo suficientemente cerca, recolectar
+					if (distSq < 0.64f) // ~0.8 bloques de distancia
+					{
+						// --- VERIFICACIÓN ADICIONAL DE ESPACIO ---
+						if (!HasSpaceForPickable(m_targetPickable))
+						{
+							m_interestingPickables.Remove(m_targetPickable);
+							m_targetPickable = null;
+							m_importanceLevel = 0f;
+							m_stateMachine.TransitionTo("Inactive");
+							return;
+						}
 
-                        if (m_collectTime <= 0f)
-                        {
-                            CollectPickable(m_targetPickable);
-                            m_importanceLevel = 0f;
-                            m_stateMachine.TransitionTo("Inactive");
-                        }
-                    }
-                    else
+						m_collectTime -= m_subsystemTime.GameTimeDelta;
+						m_blockedTime = 0f;
+
+						if (m_collectTime <= 0f)
+						{
+							CollectPickable(m_targetPickable);
+							m_importanceLevel = 0f;
+							m_stateMachine.TransitionTo("Inactive");
+						}
+					}
+					else
                     {
                         // Está en la mira pero demasiado lejos, dar un pasito más
                         float eyeOffset = Vector3.Distance(
@@ -1113,6 +1127,18 @@ namespace Game
 		}
 
 		// ---- Limpieza ----
+
+		private bool HasSpaceForPickable(Pickable pickable)
+		{
+			if (pickable == null || pickable.ToRemove) return false;
+			if (m_componentMiner == null || m_componentMiner.Inventory == null) return false;
+
+			IInventory inventory = m_componentMiner.Inventory;
+			int value = pickable.Value;
+			int count = pickable.Count;
+
+			return FindSlotForItem(inventory, value, count) >= 0;
+		}
 
 		public override void Dispose()
 		{
