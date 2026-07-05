@@ -8,7 +8,6 @@ namespace Game
 	public class SubsystemBigStoneFrozenChunkBlockBehavior : SubsystemBlockBehavior
 	{
 		private SubsystemProjectiles m_subsystemProjectiles;
-		private SubsystemParticles m_subsystemParticles;
 		private Random m_random = new Random();
 
 		public override int[] HandledBlocks => new int[] { BlocksManager.GetBlockIndex<BigStoneFrozenChunkBlock>() };
@@ -17,13 +16,16 @@ namespace Game
 		{
 			base.Load(valuesDictionary);
 			m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
-			m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
 		}
 
 		public override void OnFiredAsProjectile(Projectile projectile)
 		{
-			// Usar el nuevo FreezingTrailParticleSystem estilo SmokeTrail
-			var trail = new FreezingTrailParticleSystem(projectile.Position, 0.4f, float.MaxValue);
+			// La escala del bloque es 4.5f. Multiplicamos el tamaño base (0.4f) por esa escala para que la nube envuelva el bloque.
+			// En SmokeTrail, el tamaño máximo de la partícula es: m_size * (0.15f + 0.8f) = m_size * 0.95f
+			// Con 1.8f, las partículas medirán aprox 1.71 de radio, envolviendo bien la piedra.
+			float trailSize = 1.8f;
+
+			var trail = new FreezingTrailParticleSystem(150, trailSize, float.MaxValue, new Color(200, 240, 255, 220));
 			m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, trail);
 		}
 
@@ -31,7 +33,6 @@ namespace Game
 		{
 			if (componentBody == null) return false;
 
-			// Aplicar gripe al objetivo
 			var player = componentBody.Entity.FindComponent<ComponentPlayer>();
 			if (player != null)
 			{
