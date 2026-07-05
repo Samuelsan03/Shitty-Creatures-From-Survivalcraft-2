@@ -17,7 +17,8 @@ namespace Game
 			Boomer,
 			Special,
 			Flying,
-			Animal
+			Animal,
+			Ghost
 		}
 
 		private static readonly Dictionary<InfectedType, float> s_scales = new Dictionary<InfectedType, float>
@@ -26,7 +27,8 @@ namespace Game
 			{ InfectedType.Boomer, 2.4f },
 			{ InfectedType.Special, 3.6f },
 			{ InfectedType.Flying, 1.2f },
-			{ InfectedType.Animal, 2f }
+			{ InfectedType.Animal, 2f },
+			{ InfectedType.Ghost, 1.8f }
 		};
 
 		private static readonly Dictionary<InfectedType, Color> s_colors = new Dictionary<InfectedType, Color>
@@ -35,7 +37,8 @@ namespace Game
 			{ InfectedType.Boomer, new Color(255, 165, 0) },
 			{ InfectedType.Special, new Color(128, 0, 128) },
 			{ InfectedType.Flying, new Color(135, 206, 235) },
-			{ InfectedType.Animal, new Color(255, 0, 0) }
+			{ InfectedType.Animal, new Color(255, 0, 0) },
+			{ InfectedType.Ghost, new Color(200, 200, 255) }
 		};
 
 		private BlockMesh m_blockMesh;
