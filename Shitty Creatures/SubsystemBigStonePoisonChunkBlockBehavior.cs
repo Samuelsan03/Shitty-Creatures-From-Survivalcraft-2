@@ -24,66 +24,69 @@ namespace Game
 			}
 		}
 
-		private SubsystemProjectiles m_subsystemProjectiles;
-		private SubsystemBodies m_subsystemBodies;
 		private bool m_initialized;
+		private Action<Attackment> m_bodyAttackedHandler;
 
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
-			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
-			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			m_initialized = true;
 		}
 
-		public void Update(float dt)
+		public override void OnEntityAdded(Entity entity)
 		{
-			if (!m_initialized)
-				return;
+			base.OnEntityAdded(entity);
 
-			// Revisar todos los proyectiles activos
-			foreach (Projectile projectile in m_subsystemProjectiles.Projectiles)
+			// Solo suscribirse si está inicializado y la entidad tiene un cuerpo
+			if (m_initialized)
 			{
-				if (Terrain.ExtractContents(projectile.Value) == BigStonePoisonChunkBlock.Index)
+				ComponentBody body = entity.FindComponent<ComponentBody>();
+				if (body != null)
 				{
-					// Verificar si este proyectil impactó en este frame
-					if (projectile.ToRemove && !m_processedProjectiles.Contains(projectile))
-					{
-						// Este proyectil impactó y está marcado para remover
-						TryApplyPoisonEffect(projectile);
-						m_processedProjectiles.Add(projectile);
-					}
+					// Suscribir el evento Attacked (Action<Attackment>)
+					body.Attacked = (Action<Attackment>)Delegate.Combine(body.Attacked, m_bodyAttackedHandler);
 				}
 			}
-
-			// Limpiar proyectiles ya procesados
-			m_processedProjectiles.RemoveWhere(p => !m_subsystemProjectiles.Projectiles.Contains(p));
 		}
 
-		private void TryApplyPoisonEffect(Projectile projectile)
+		public override void OnEntityRemoved(Entity entity)
 		{
-			if (projectile == null)
+			base.OnEntityRemoved(entity);
+
+			// Limpiar el evento al eliminar la entidad para evitar memory leaks
+			ComponentBody body = entity.FindComponent<ComponentBody>();
+			if (body != null && m_bodyAttackedHandler != null)
+			{
+				body.Attacked = (Action<Attackment>)Delegate.Remove(body.Attacked, m_bodyAttackedHandler);
+			}
+		}
+
+		public SubsystemBigStonePoisonChunkBlockBehavior()
+		{
+			// Inicializar el handler una sola vez con el tipo correcto Action<Attackment>
+			m_bodyAttackedHandler = new Action<Attackment>(HandleBodyAttacked);
+		}
+
+		private void HandleBodyAttacked(Attackment attackment)
+		{
+			// Verificar que el ataque venga de un proyectil
+			ProjectileAttackment projectileAttack = attackment as ProjectileAttackment;
+			if (projectileAttack == null)
 				return;
 
-			// Buscar cuerpos cercanos al punto de impacto
-			Vector3 impactPos = projectile.Position;
-			Vector2 corner1 = new Vector2(impactPos.X - 2f, impactPos.Z - 2f);
-			Vector2 corner2 = new Vector2(impactPos.X + 2f, impactPos.Z + 2f);
+			// Verificar que el proyectil no sea nulo y sea específicamente la roca venenosa
+			if (projectileAttack.Projectile == null || projectileAttack.Projectile.Value == 0)
+				return;
 
-			DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
-			m_subsystemBodies.FindBodiesInArea(corner1, corner2, bodies);
+			if (Terrain.ExtractContents(projectileAttack.Projectile.Value) != BigStonePoisonChunkBlock.Index)
+				return;
 
-			for (int i = 0; i < bodies.Count; i++)
+			// Si llegamos aquí, la roca LE PEGÓ DE VERDAD a esta entidad. Aplicar veneno.
+			// Usar attackment.Target (que es Entity) en lugar de AttackedEntity
+			ComponentCreature creature = attackment.Target?.FindComponent<ComponentCreature>();
+			if (creature != null)
 			{
-				ComponentBody body = bodies.Array[i];
-				if (body != null && body.Entity != null)
-				{
-					ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
-					if (creature != null)
-					{
-						ApplyPoisonToCreature(creature);
-					}
-				}
+				ApplyPoisonToCreature(creature);
 			}
 		}
 
@@ -114,6 +117,10 @@ namespace Game
 			}
 		}
 
-		private HashSet<Projectile> m_processedProjectiles = new HashSet<Projectile>();
+		public void Update(float dt)
+		{
+			// Ya no necesitamos buscar proyectiles ni áreas.
+			// El veneno se aplica automáticamente y de forma precisa a través del evento Attacked del motor.
+		}
 	}
 }
