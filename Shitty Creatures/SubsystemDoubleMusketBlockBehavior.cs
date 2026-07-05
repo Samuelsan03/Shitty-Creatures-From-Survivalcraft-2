@@ -140,7 +140,6 @@ namespace Game
 						m_subsystemAudio.PlaySound("Audio/Items/GunShot Musket Remake", 1f, m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
 						m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(m_subsystemTerrain, muzzlePos + 0.3f * dirNorm, dirNorm), false);
 						m_subsystemNoise.MakeNoise(muzzlePos, 1f, 40f);
-						componentMiner.ComponentCreature.ComponentBody.ApplyImpulse(-4f * dirNorm);
 
 						shotsRemaining--;
 						if (shotsRemaining <= 0)
