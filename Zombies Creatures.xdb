@@ -1705,7 +1705,10 @@
         <Parameter Name="IdleSound" Guid="68354ba7-2796-4b4b-b88c-9fffed3cf003" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="2f135a7c-0e56-497b-aefa-a03114a9761f" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfected" Guid="80fa9aeb-ac21-4d80-b604-a16452f1e156" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+<MemberComponentTemplate Name="PoisonInfected" Guid="80fa9aeb-ac21-4d80-b604-a16452f1e156">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="ca627a61-fcea-4979-88a3-8a0f97f70894" InheritanceParent="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9">
@@ -1843,9 +1846,12 @@
         <Parameter Name="IdleSound" Guid="f5c51c3b-f32c-4827-8249-e20d735a0de1" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="1bfe71a3-3e0c-496b-a4c3-b5debb40b49d" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfected" Guid="33d0405c-1084-43d3-a8d4-046d0381f4f7" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+<MemberComponentTemplate Name="PoisonInfected" Guid="33d0405c-1084-43d3-a8d4-046d0381f4f7">
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="81e9c337-9f5a-4e7c-b54a-0b85304bca9e" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="15b849e1-76cc-4686-a2d3-d5d1f50b1310">
@@ -1971,7 +1977,10 @@
         <Parameter Name="IdleSound" Guid="6a1025f9-dd4a-4fd6-95a9-4dcc1a58c556" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="e5887a72-9ce1-451b-aec1-c0458431dd1e" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfected" Guid="f8aca144-39d3-4b97-aa2a-22a1f1a68b51" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+<MemberComponentTemplate Name="PoisonInfected" Guid="f8aca144-39d3-4b97-aa2a-22a1f1a68b51">
+<Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="a60a9b6e-076a-4ac6-b099-6d63b8dcc475" InheritanceParent="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9">
