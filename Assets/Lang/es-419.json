@@ -277,21 +277,20 @@
   },
   "ShittyCreaturesLog": {
     "Line1_0_6_1": "• Se ha añadido la Cámara Libre. Este modo solo está disponible en Pacífico (Harmless), Supervivencia (Survival), Desafiante (Challenging), Cruel (Cruel) y Aventura (Adventure); no funciona en modo Creativo. Su comportamiento es similar a la cámara de depuración, permitiendo desplazarse libremente por el mundo para observar el entorno y a las criaturas sin restricciones.",
-    "Line1_0_6_2": "• Se ha añadido el evento especial \"Noche Verde\". Puedes activarlo o desactivarlo, ajustar cada cuántos días ocurre y elegir entre cinco Estados Mentales: Lista de Espera para Terapia, Lunes por la Mañana, Daño Estructural, El Último Arquitecto y Error al Cargar la Cordura. Cada Estado Mental modifica la frecuencia de aparición de enemigos, su agresividad, la capacidad de destrucción del entorno y su comportamiento táctico. El evento se activa por la noche según el intervalo configurado.",
+    "Line1_0_6_2": "• Se ha añadido el evento especial \"Noche Verde\". Puedes activarlo o desactivarlo, ajustar cada cuántos días ocurre y elegir entre siete Estados Mentales: Jubilación Anticipada, Lista de Espera para Terapia, Lunes por la Mañana, Daño Estructural, El Último Arquitecto, Error al Cargar la Cordura y un séptimo estado secreto. Cada Estado Mental modifica la frecuencia de aparición de enemigos, su agresividad, la capacidad de destrucción del entorno y su comportamiento táctico. El evento se activa por la noche según el intervalo configurado.",
     "Line1_0_6_3": "• Se ha incorporado el sistema de sed para ofrecer una experiencia más realista. Ahora será necesario encontrar fuentes de agua, como cubetas o recipientes. Sin embargo, beber agua sin tratar puede provocar náuseas, especialmente si proviene de fuentes no seguras. Para evitar efectos negativos, se recomienda hervir el agua antes de consumirla.",
     "Line1_0_6_4": "• Se han añadido nuevos Digimons y bandidos. Actualmente, hay 4 bandidos únicos que los jugadores pueden contratar usando monedas nucleares.",
     "Line1_0_6_5": "• Se añadió un sistema de comercio y contratación.",
     "Line1_0_6_6": "• Nuevo evento desbloqueable: después de sobrevivir a todas las oleadas de la noche verde (sí, todas, incluyendo esa donde lloraste en la ducha), aparecerá un cofre sospechosamente cerca de ti. Contiene una carta. No es spam, no es una oferta de viagra, es una invitación. Si la aceptas… bueno, digamos que las noches dejarán de ser aburridas. No diremos qué pasa exactamente (spoilers), pero involucra tipos con mala mirada, decisiones de vida cuestionables y la sensación de que tal vez debiste quedarte en la cama. Si rechazas… ellos volverán a preguntarte. Y otra vez. Y otra vez. La carta tiene mucha paciencia. O mala leche. Tú decides.",
-    "Line1_0_6_7": "• Se añadieron configuraciones de Shitty Creatures accesibles desde las opciones principales del juego mediante un botón rojo, permitiendo a los jugadores personalizar su experiencia con el mod. Las configuraciones se guardan en un archivo XML para persistir entre sesiones de juego y evitar reinicios no deseados a los valores predeterminados.",
+    "Line1_0_6_7": "• Se agregaron las configuraciones de Shitty Creatures, accesibles desde el menú principal a través de un botón dedicado. Todas las opciones se almacenan automáticamente en un archivo XML, manteniendo la configuración entre sesiones de juego.",
     "Line1_0_6_8": "• Se añadieron nuevas armas: armas de fuego, bomba congelante y mosquete de doble cañón.",
     "Line1_0_6_9": "• Se incorporaron nuevas herramientas: martillo de cabeza delgada (pica más rápido que los picos tradicionales).",
     "Line1_0_6_10": "• Se implementó un sistema de gripe para criaturas.",
     "Line1_0_6_11": "• Se añadió un sistema de curación compatible tanto con criaturas como con el jugador, incluyendo tratamiento contra náuseas, veneno y gripe, así como curación para criaturas con baja salud.",
     "Line1_0_6_12": "• El tridente ahora invoca un rayo al impactar contra el objetivo.",
     "Line1_0_6_13": "• Se han corregido, pulido y mejorado las traducciones.",
-    "Line1_0_6_14": "• Se mejoró la inteligencia artificial de las criaturas; ahora pueden manejar cualquier arma, incluyendo armas a distancia, arrojadizas, de fuego y cuerpo a cuerpo.",
-    "Line1_0_6_15": "• Las criaturas ahora pueden usar ropa y armaduras de su inventario igual que el jugador. Equiparán automáticamente cualquier objeto vestible que lleven. Las armaduras con altos valores de protección absorberán el daño entrante, reduciendo o anulando completamente las lesiones según la resistencia, durabilidad y la parte del cuerpo afectada. Las piezas de armadura recibirán daño y eventualmente se romperán con el uso, funcionando de manera idéntica a la armadura usada por el jugador.",
-    "Line1_0_6_16": "• Se ha añadido un sistema de sangrado para criaturas. Permite a los jugadores ver cuándo están cerca de la muerte y cuánto tiempo permanece su cadáver antes de desaparecer.",
+    "Line1_0_6_14": "• La inteligencia artificial de las criaturas ha sido mejorada. Ahora pueden utilizar cualquier tipo de arma, incluidas las armas cuerpo a cuerpo, a distancia, arrojadizas y de fuego. Si disponen de un arma cuerpo a cuerpo en su inventario y están usando un arma a distancia, arrojadiza o de fuego, cambiarán automáticamente al arma cuerpo a cuerpo cuando estén lo suficientemente cerca de su objetivo. Además, ahora pueden equiparse ropa y armaduras de la misma forma que el jugador, así como montar monturas.",
+    "Line1_0_6_15": "• Se ha añadido un sistema de sangrado para criaturas. Permite a los jugadores ver cuándo están cerca de la muerte y cuánto tiempo permanece su cadáver antes de desaparecer.",
     "Line1_0_5_1": "• Nuevas armas: Lanzallamas, Guadaña, Tridente, Ballesta Repetidora, Bomba Venenosa, Lanzaobjetos",
     "Line1_0_5_2": "• Nuevos NPCs: Digimon, miembros de la Alianza, miembros de Muerte, Piratas, Infectados (zombis)",
     "Line1_0_5_3": "• Nuevo sistema de música (música de fondo, música de persecución para enemigos)",
@@ -1502,25 +1501,29 @@
   "DisplayName": "Botas Militares Antibalas",
   "Description": "Botas tácticas reforzadas con protección balística. No se pueden fabricar; solo pueden obtenerse derrotando a La Bandida."
 },
-"CommonInfectedSpawnEggBlock:0": {
-    "DisplayName": "Huevo generador de infectado común",
-    "Description": "Huevo generador que hace aparecer una criatura infectada común aleatoria al lanzarlo contra una superficie. Disponible solo en el modo creativo."
-  },
-  "BoomerSpawnEggBlock:0": {
-    "DisplayName": "Huevo generador de Boomer",
-    "Description": "Huevo generador que hace aparecer una criatura infectada explosiva aleatoria al lanzarlo. Estas criaturas explotan al morir, causando daño en un área."
-  },
-  "SpecialInfectedSpawnEggBlock:0": {
-    "DisplayName": "Huevo generador de infectado especial",
-    "Description": "Huevo generador que hace aparecer una criatura infectada poderosa aleatoria al lanzarlo. Son enemigos peligrosos y resistentes."
-  },
-  "FlyingInfectedSpawnEggBlock:0": {
-    "DisplayName": "Huevo generador de infectado volador",
-    "Description": "Huevo generador que hace aparecer una criatura infectada voladora aleatoria al lanzarlo. Incluye todas las variantes de infectados aéreos."
-  },
-  "AnimalInfectedSpawnEggBlock:0": {
-  "DisplayName": "Huevo generador de animales infectados",
-  "Description": "Huevo generador de animales infectados. Lánzalo contra una superficie sólida para invocar una criatura infectada aleatoria de origen animal. Disponible solo en el modo creativo."
+  "InfectedSpawnEggBlock:0": {
+  "DisplayName": "Huevo generador de infectado común",
+  "Description": "Invoca una criatura infectada al lanzarlo contra una superficie sólida. El ser resultante presenta un comportamiento agresivo estándar, aunque algunas variantes pueden infligir veneno o efectos de congelación con sus ataques."
+},
+"InfectedSpawnEggBlock:1": {
+  "DisplayName": "Huevo generador de Boomer",
+  "Description": "Crea un infectado inestable al impactar contra una superficie sólida. Esta entidad volátil detona en una explosión devastadora al morir, produciendo una poderosa onda expansiva que destruye el terreno e inflige un daño masivo a todo lo que se encuentre cerca."
+},
+"InfectedSpawnEggBlock:2": {
+  "DisplayName": "Huevo generador de infectado especial",
+  "Description": "Genera un infectado excepcionalmente poderoso de clase jefe al romperse. Estos formidables enemigos poseen una enorme resistencia y fuerza, por lo que requieren armamento superior y tácticas avanzadas para ser derrotados."
+},
+"InfectedSpawnEggBlock:3": {
+  "DisplayName": "Huevo generador de infectado volador",
+  "Description": "Libera un infectado aéreo al romperse contra cualquier superficie. La criatura resultante surca los cielos, lo que le permite superar obstáculos a nivel del suelo y atacar a los jugadores desde posiciones elevadas."
+},
+"InfectedSpawnEggBlock:4": {
+  "DisplayName": "Huevo generador de infectado animal",
+  "Description": "Genera un infectado de naturaleza bestial tras ser lanzado y romperse. Inspirado en rasgos animales, esta variante confía en su velocidad y ferocidad en lugar de habilidades sobrenaturales para acabar con sus presas."
+},
+"InfectedSpawnEggBlock:5": {
+  "DisplayName": "Huevo generador de infectado fantasma",
+  "Description": "Invoca un infectado etéreo al romperse. Estas entidades espectrales se desplazan con una rapidez antinatural y poseen cierto grado de intangibilidad, lo que les permite atravesar ataques y golpear con una precisión fantasmal."
 }
 },
   "ContentWidgets": {
