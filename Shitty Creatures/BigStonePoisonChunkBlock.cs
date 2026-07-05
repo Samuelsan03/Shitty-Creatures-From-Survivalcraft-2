@@ -1,72 +1,126 @@
 using System;
 using Engine;
-using Engine.Graphics;
+using Game;
+using GameEntitySystem;
+using TemplatesDatabase;
 
 namespace Game
 {
-	public class BigStonePoisonChunkBlock : ChunkBlock
+	public class SubsystemBigStonePoisonChunkBlockBehavior : SubsystemBlockBehavior, IUpdateable
 	{
-		// Textura personalizada
-		public Texture2D m_texture;
-
-		public BigStonePoisonChunkBlock() : base(
-			Matrix.CreateScale(4.5f) * Matrix.CreateRotationX(0f) * Matrix.CreateRotationZ(1f),
-			Matrix.CreateScale(2.5f) * Matrix.CreateTranslation(0.1875f, 0.0625f, 0f),
-			new Color(50, 200, 50), // Color verdoso para indicar veneno
-			true)
+		public override int[] HandledBlocks
 		{
-		}
-
-		// Sobrescribir Initialize para cargar la textura
-		public override void Initialize()
-		{
-			base.Initialize();
-			m_texture = ContentManager.Get<Texture2D>("Textures/BigStoneTexture");
-		}
-
-		// Sobrescribir DrawBlock para usar la textura personalizada
-		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
-		{
-			// Usar la textura personalizada en lugar de la predeterminada
-			BlocksManager.DrawMeshBlock(primitivesRenderer, this.m_standaloneBlockMesh, m_texture, color, size, ref matrix, environmentData);
-		}
-
-		// Sobrescribir GenerateTerrainVertices para usar la textura personalizada
-		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
-		{
-			// Usar la textura personalizada para la geometría del terreno
-			generator.GenerateMeshVertices(this, x, y, z, this.m_blockMesh, Color.White, null, geometry.GetGeometry(m_texture).SubsetOpaque);
-		}
-
-		// Sobrescribir CreateDebrisParticleSystem para usar la textura personalizada
-		public override BlockDebrisParticleSystem CreateDebrisParticleSystem(SubsystemTerrain subsystemTerrain, Vector3 position, int value, float strength)
-		{
-			return new BlockDebrisParticleSystem(subsystemTerrain, position, strength, this.DestructionDebrisScale, Color.White, 0, m_texture);
-		}
-
-		// Método para obtener el nombre mostrado - usa LanguageControl
-		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
-		{
-			string displayName;
-			if (LanguageControl.TryGetBlock("BigStonePoisonChunk:0", "DisplayName", out displayName))
+			get
 			{
-				return displayName;
+				return new int[] { BigStonePoisonChunkBlock.Index };
 			}
-			return "Poison Giant Rock";
 		}
 
-		// Método para obtener la descripción
-		public override string GetDescription(int value)
+		public UpdateOrder UpdateOrder
 		{
-			string description;
-			if (LanguageControl.TryGetBlock("BigStonePoisonChunk:0", "Description", out description))
+			get
 			{
-				return description;
+				return UpdateOrder.Default;
 			}
-			return "A giant rock imbued with toxic properties. Upon impact, it releases a poisonous cloud that slowly weakens its victims. While the initial damage is moderate, the lingering poison effect can be deadly over time. Like the rare giant rock, it cannot be crafted and can only be obtained through special means.";
 		}
 
-		public static int Index = 428; // ID único para este bloque
-		private BlockMesh m_blockMesh;
+		private bool m_initialized;
+		private Action<Attackment> m_bodyAttackedHandler;
+
+		public override void Load(ValuesDictionary valuesDictionary)
+		{
+			base.Load(valuesDictionary);
+			m_initialized = true;
+		}
+
+		public override void OnEntityAdded(Entity entity)
+		{
+			base.OnEntityAdded(entity);
+
+			// Solo suscribirse si está inicializado y la entidad tiene un cuerpo
+			if (m_initialized)
+			{
+				ComponentBody body = entity.FindComponent<ComponentBody>();
+				if (body != null)
+				{
+					// Suscribir el evento Attacked (Action<Attackment>)
+					body.Attacked = (Action<Attackment>)Delegate.Combine(body.Attacked, m_bodyAttackedHandler);
+				}
+			}
+		}
+
+		public override void OnEntityRemoved(Entity entity)
+		{
+			base.OnEntityRemoved(entity);
+
+			// Limpiar el evento al eliminar la entidad para evitar memory leaks
+			ComponentBody body = entity.FindComponent<ComponentBody>();
+			if (body != null && m_bodyAttackedHandler != null)
+			{
+				body.Attacked = (Action<Attackment>)Delegate.Remove(body.Attacked, m_bodyAttackedHandler);
+			}
+		}
+
+		public SubsystemBigStonePoisonChunkBlockBehavior()
+		{
+			// Inicializar el handler una sola vez con el tipo correcto Action<Attackment>
+			m_bodyAttackedHandler = new Action<Attackment>(HandleBodyAttacked);
+		}
+
+		private void HandleBodyAttacked(Attackment attackment)
+		{
+			// Verificar que el ataque venga de un proyectil
+			ProjectileAttackment projectileAttack = attackment as ProjectileAttackment;
+			if (projectileAttack == null)
+				return;
+
+			// Verificar que el proyectil no sea nulo y sea específicamente la roca venenosa
+			if (projectileAttack.Projectile == null || projectileAttack.Projectile.Value == 0)
+				return;
+
+			if (Terrain.ExtractContents(projectileAttack.Projectile.Value) != BigStonePoisonChunkBlock.Index)
+				return;
+
+			// Si llegamos aquí, la roca LE PEGÓ DE VERDAD a esta entidad. Aplicar veneno.
+			// Usar attackment.Target (que es Entity) en lugar de AttackedEntity
+			ComponentCreature creature = attackment.Target?.FindComponent<ComponentCreature>();
+			if (creature != null)
+			{
+				ApplyPoisonToCreature(creature);
+			}
+		}
+
+		private void ApplyPoisonToCreature(ComponentCreature creature)
+		{
+			if (creature == null)
+				return;
+
+			ComponentPoisonInfected componentPoisonInfected = creature.Entity.FindComponent<ComponentPoisonInfected>();
+			ComponentPlayer componentPlayer = creature as ComponentPlayer;
+
+			if (componentPlayer != null)
+			{
+				// Para jugadores: usar sistema de enfermedad
+				if (!componentPlayer.ComponentSickness.IsSick)
+				{
+					componentPlayer.ComponentSickness.StartSickness();
+					if (componentPoisonInfected != null)
+					{
+						componentPlayer.ComponentSickness.m_sicknessDuration = 15f - componentPoisonInfected.PoisonResistance;
+					}
+				}
+			}
+			else if (componentPoisonInfected != null && !componentPoisonInfected.IsInfected)
+			{
+				// Para otras criaturas: usar sistema de infección de veneno
+				componentPoisonInfected.StartInfect(15f);
+			}
+		}
+
+		public void Update(float dt)
+		{
+			// Ya no necesitamos buscar proyectiles ni áreas.
+			// El veneno se aplica automáticamente y de forma precisa a través del evento Attacked del motor.
+		}
 	}
 }
