@@ -18,18 +18,14 @@ namespace Game
 					"InfectedNormal2",
 					"InfectedMuscle1",
 					"InfectedMuscle2",
-					"GhostNormal",
-					"GhostFast",
 					"InfectedFast1",
 					"InfectedFast2",
 					"PoisonousInfected1",
 					"PoisonousInfected2",
-					"PoisonousGhost",
 					"InfectedFreezer",
 					"HumanoidSkeleton",
 					"Charger1",
 					"Charger2",
-					"GhostCharger"
 				}
 			},
 			{
@@ -78,7 +74,16 @@ namespace Game
 					"InfectedWolf",
 					"InfectedSpider"
 				}
-			}
+			},
+			{
+	InfectedSpawnEggBlock.InfectedType.Ghost, new string[]
+	{
+		"GhostNormal",
+		"GhostFast",
+		"PoisonousGhost",
+		"GhostCharger",
+    }
+},
 		};
 
 		private static readonly Dictionary<InfectedSpawnEggBlock.InfectedType, string> s_errorKeys = new Dictionary<InfectedSpawnEggBlock.InfectedType, string>
@@ -87,7 +92,9 @@ namespace Game
 			{ InfectedSpawnEggBlock.InfectedType.Boomer, "SpawnErrorBoomer" },
 			{ InfectedSpawnEggBlock.InfectedType.Special, "SpawnErrorSpecial" },
 			{ InfectedSpawnEggBlock.InfectedType.Flying, "SpawnErrorFlying" },
-			{ InfectedSpawnEggBlock.InfectedType.Animal, "SpawnErrorAnimal" }
+			{ InfectedSpawnEggBlock.InfectedType.Animal, "SpawnErrorAnimal" },
+			{ InfectedSpawnEggBlock.InfectedType.Ghost, "SpawnErrorGhost" }
+
 		};
 
 		private SubsystemGameInfo m_subsystemGameInfo;
