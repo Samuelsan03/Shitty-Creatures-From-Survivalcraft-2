@@ -25,6 +25,7 @@ namespace Game
 		private SubsystemGameInfo m_subsystemGameInfo;
 		private SubsystemPickables m_subsystemPickables;
 		private SubsystemBlockBehaviors m_subsystemBlockBehaviors;
+		private SubsystemSoundMaterials m_subsystemSoundMaterials;
 
 		// ---------- Componentes de la entidad ----------
 		private ComponentHumanModel m_componentHumanModel;
@@ -75,6 +76,7 @@ namespace Game
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
 			m_subsystemPickables = Project.FindSubsystem<SubsystemPickables>(true);
 			m_subsystemBlockBehaviors = Project.FindSubsystem<SubsystemBlockBehaviors>(true);
+			m_subsystemSoundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
 
 			// Componentes de la entidad
 			m_componentHumanModel = Entity.FindComponent<ComponentHumanModel>(true);
@@ -468,9 +470,9 @@ namespace Game
 
 			float remainingPower = attackment.AttackPower;
 
-			// ===== NUEVO: divisor fijo para la protección (puedes ajustarlo) =====
-			float armorDivision = 10f;   // Usa 10 en lugar de 1
-										 // ===== FIN NUEVO =====
+			// ===== DIVISOR FIJO PARA PROTECCIÓN =====
+			float armorDivision = 10f;
+			// =========================================
 
 			for (int i = 0; i < before.Count; i++)
 			{
@@ -481,25 +483,23 @@ namespace Game
 					float armor = data.ArmorProtection;
 					float sturdiness = data.Sturdiness;
 
-					// ===== AHORA usa armorDivision en lugar de attackment.ArmorProtectionDivision =====
 					float damageAbsorbed = MathF.Min(
 						remainingPower * MathUtils.Saturate(armor / armorDivision),
 						sturdiness
 					);
-					// ===== FIN =====
 
 					if (damageAbsorbed > 0f)
 					{
 						remainingPower -= damageAbsorbed;
 
-						// ===== CÁLCULO DE DESGASTE CORRECTO (ya lo tienes) =====
+						// ===== CÁLCULO DE DESGASTE =====
 						int currentValue = after[i];
 						int durability = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].GetDurability(currentValue);
 						float x = damageAbsorbed / sturdiness * (durability + 1) + 0.001f;
 						int damageToAdd = (int)MathF.Floor(x);
 						if (m_random.Bool(MathUtils.Remainder(x, 1f)))
 							damageToAdd++;
-						// ===== FIN =====
+						// ================================
 
 						int newDamage = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].GetDamage(currentValue) + damageToAdd;
 
@@ -511,10 +511,31 @@ namespace Game
 									m_componentBody.Position + m_componentBody.StanceBoxSize / 2f,
 									1f, 1f, Color.White, 0), false);
 
-							if (!string.IsNullOrEmpty(data.ImpactSoundsFolder))
+							// ===== SONIDO DE IMPACTO =====
+							// Usar SubsystemSoundMaterials si está disponible
+							if (m_subsystemSoundMaterials != null)
+							{
+								// Si es un proyectil, usar su valor para el sonido de impacto
+								if (attackment is ProjectileAttackment projectileAttack && projectileAttack.Projectile != null)
+								{
+									m_subsystemSoundMaterials.PlayImpactSound(projectileAttack.Projectile.Value, m_componentBody.Position, 1f);
+								}
+								else if (!string.IsNullOrEmpty(data.ImpactSoundsFolder))
+								{
+									// Si no es proyectil, usar el sonido de la carpeta de la ropa
+									m_subsystemAudio.PlayRandomSound(data.ImpactSoundsFolder, 1f,
+										m_random.Float(-0.3f, 0.3f),
+										m_componentBody.Position, 4f, 0.15f);
+								}
+							}
+							else if (!string.IsNullOrEmpty(data.ImpactSoundsFolder))
+							{
+								// Fallback si no hay SubsystemSoundMaterials
 								m_subsystemAudio.PlayRandomSound(data.ImpactSoundsFolder, 1f,
 									m_random.Float(-0.3f, 0.3f),
 									m_componentBody.Position, 4f, 0.15f);
+							}
+							// ============================
 						}
 						else
 						{
