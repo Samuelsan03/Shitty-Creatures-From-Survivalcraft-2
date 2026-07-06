@@ -173,6 +173,7 @@ namespace Game
 			// Bloquear montura zombi para jugadores
 			ModsManager.RegisterHook("ScoreMount", this);
 			ModsManager.RegisterHook("OnEatPickable", this);
+			ModsManager.RegisterHook("ProcessAttackment", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -3388,6 +3389,38 @@ namespace Game
 			clothing.SetClothes(ClothingSlot.Torso, new[] { torsoValue });
 			clothing.SetClothes(ClothingSlot.Legs, new[] { legsValue });
 			clothing.SetClothes(ClothingSlot.Feet, new[] { feetValue });
+		}
+
+		public override void ProcessAttackment(Attackment attackment)
+		{
+			if (attackment?.Target == null || attackment.AttackPower <= 0f)
+				return;
+
+			ComponentCreatureClothing creatureClothing = attackment.Target.FindComponent<ComponentCreatureClothing>();
+			if (creatureClothing != null)
+			{
+				float originalPower = attackment.AttackPower;
+
+				// Aplicar protección ANTES de que Attackment calcule el daño
+				creatureClothing.ApplyArmorProtection(attackment);
+
+				// Verificar que el ataque provenga de una criatura (no caídas, explosiones, etc.)
+				ComponentCreature attackerCreature = attackment.Attacker?.FindComponent<ComponentCreature>();
+				if (attackerCreature == null)
+					return;
+
+				// Si el daño se redujo (incluso parcialmente), forzar reacción
+				if (attackment.AttackPower < originalPower)
+				{
+					ComponentCreature targetCreature = attackment.Target.FindComponent<ComponentCreature>();
+					if (targetCreature != null && targetCreature.ComponentHealth != null)
+					{
+						// Crear un Injury con daño 0 para simular el impacto
+						Injury zeroInjury = new AttackInjury(0f, attackment);
+						targetCreature.ComponentHealth.Injured?.Invoke(zeroInjury);
+					}
+				}
+			}
 		}
 
 		// ---------------------------------------------------------------------------------
