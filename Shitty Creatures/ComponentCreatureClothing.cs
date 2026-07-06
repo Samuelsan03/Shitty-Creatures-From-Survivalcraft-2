@@ -451,7 +451,6 @@ namespace Game
 			return lastData != null && data.Layer > lastData.Layer;
 		}
 
-		// ---------- Protección de armadura (opcional) ----------
 		public float ApplyArmorProtection(Attackment attackment)
 		{
 			if (attackment.AttackPower <= 0f)
@@ -469,6 +468,10 @@ namespace Game
 
 			float remainingPower = attackment.AttackPower;
 
+			// ===== NUEVO: divisor fijo para la protección (puedes ajustarlo) =====
+			float armorDivision = 10f;   // Usa 10 en lugar de 1
+										 // ===== FIN NUEVO =====
+
 			for (int i = 0; i < before.Count; i++)
 			{
 				int val = before[i];
@@ -477,19 +480,28 @@ namespace Game
 				{
 					float armor = data.ArmorProtection;
 					float sturdiness = data.Sturdiness;
-					float damageAbsorbed = MathF.Min(remainingPower * MathUtils.Saturate(armor / attackment.ArmorProtectionDivision), sturdiness);
+
+					// ===== AHORA usa armorDivision en lugar de attackment.ArmorProtectionDivision =====
+					float damageAbsorbed = MathF.Min(
+						remainingPower * MathUtils.Saturate(armor / armorDivision),
+						sturdiness
+					);
+					// ===== FIN =====
 
 					if (damageAbsorbed > 0f)
 					{
 						remainingPower -= damageAbsorbed;
 
-						// Dañar la prenda
+						// ===== CÁLCULO DE DESGASTE CORRECTO (ya lo tienes) =====
 						int currentValue = after[i];
 						int durability = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].GetDurability(currentValue);
-						int currentDamage = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].GetDamage(currentValue);
-						float fraction = damageAbsorbed / sturdiness;
-						int damageToAdd = (int)(fraction * (durability + 1)) + 1;
-						int newDamage = currentDamage + damageToAdd;
+						float x = damageAbsorbed / sturdiness * (durability + 1) + 0.001f;
+						int damageToAdd = (int)MathF.Floor(x);
+						if (m_random.Bool(MathUtils.Remainder(x, 1f)))
+							damageToAdd++;
+						// ===== FIN =====
+
+						int newDamage = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].GetDamage(currentValue) + damageToAdd;
 
 						if (newDamage > durability)
 						{
@@ -516,9 +528,7 @@ namespace Game
 			after.RemoveAll(v => v == 0 || !BlocksManager.Blocks[Terrain.ExtractContents(v)].CanWear(v));
 			SetClothes(slot, after);
 
-			// ===== IMPORTANTE: Actualizar el AttackPower del Attackment =====
 			attackment.AttackPower = Math.Max(remainingPower, 0f);
-
 			return attackment.AttackPower;
 		}
 
