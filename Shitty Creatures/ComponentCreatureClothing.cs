@@ -454,7 +454,9 @@ namespace Game
 		// ---------- Protección de armadura (opcional) ----------
 		public float ApplyArmorProtection(Attackment attackment)
 		{
-			float power = attackment.AttackPower;
+			if (attackment.AttackPower <= 0f)
+				return attackment.AttackPower;
+
 			float roll = m_random.Float(0f, 1f);
 			ClothingSlot slot;
 			if (roll < 0.1f) slot = ClothingSlot.Feet;
@@ -462,8 +464,11 @@ namespace Game
 			else if (roll < 0.9f) slot = ClothingSlot.Torso;
 			else slot = ClothingSlot.Head;
 
-			var before = new List<int>(m_clothes[slot]);
-			var after = new List<int>(before);
+			List<int> before = new List<int>(m_clothes[slot]);
+			List<int> after = new List<int>(before);
+
+			float remainingPower = attackment.AttackPower;
+
 			for (int i = 0; i < before.Count; i++)
 			{
 				int val = before[i];
@@ -472,28 +477,49 @@ namespace Game
 				{
 					float armor = data.ArmorProtection;
 					float sturdiness = data.Sturdiness;
-					float damage = MathF.Min(power * armor / attackment.ArmorProtectionDivision, sturdiness);
-					if (damage > 0f)
+					float damageAbsorbed = MathF.Min(remainingPower * MathUtils.Saturate(armor / attackment.ArmorProtectionDivision), sturdiness);
+
+					if (damageAbsorbed > 0f)
 					{
-						power -= damage;
+						remainingPower -= damageAbsorbed;
+
+						// Dañar la prenda
 						int currentValue = after[i];
 						int durability = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].GetDurability(currentValue);
 						int currentDamage = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].GetDamage(currentValue);
-						int newDamage = currentDamage + (int)(damage / sturdiness * durability) + 1;
+						float fraction = damageAbsorbed / sturdiness;
+						int damageToAdd = (int)(fraction * (durability + 1)) + 1;
+						int newDamage = currentDamage + damageToAdd;
+
 						if (newDamage > durability)
 						{
 							after[i] = 0;
+							m_subsystemParticles.AddParticleSystem(
+								new BlockDebrisParticleSystem(m_subsystemTerrain,
+									m_componentBody.Position + m_componentBody.StanceBoxSize / 2f,
+									1f, 1f, Color.White, 0), false);
+
+							if (!string.IsNullOrEmpty(data.ImpactSoundsFolder))
+								m_subsystemAudio.PlayRandomSound(data.ImpactSoundsFolder, 1f,
+									m_random.Float(-0.3f, 0.3f),
+									m_componentBody.Position, 4f, 0.15f);
 						}
 						else
 						{
-							after[i] = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].SetDamage(currentValue, newDamage);
+							after[i] = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)]
+								.SetDamage(currentValue, newDamage);
 						}
 					}
 				}
 			}
+
 			after.RemoveAll(v => v == 0 || !BlocksManager.Blocks[Terrain.ExtractContents(v)].CanWear(v));
 			SetClothes(slot, after);
-			return Math.Max(power, 0f);
+
+			// ===== IMPORTANTE: Actualizar el AttackPower del Attackment =====
+			attackment.AttackPower = Math.Max(remainingPower, 0f);
+
+			return attackment.AttackPower;
 		}
 
 		// ---------- Método estático para obtener índice de slot ----------
