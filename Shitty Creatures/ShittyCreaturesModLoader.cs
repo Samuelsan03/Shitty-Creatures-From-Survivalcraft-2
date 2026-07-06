@@ -137,13 +137,6 @@ namespace Game
 			ModsManager.RegisterHook("PlayInGameMusic", this);
 			_random = new Random();
 
-			// NewPanoramaModLoader
-			if (!s_panoramaHookRegistered)
-			{
-				ModsManager.RegisterHook("OnWidgetConstruct", this);
-				s_panoramaHookRegistered = true;
-			}
-
 			// RemoteControlModLoader
 			RegisterRemoteControlBlock();
 			ModsManager.RegisterHook("MatchRecipe", this);
@@ -174,6 +167,7 @@ namespace Game
 			ModsManager.RegisterHook("ScoreMount", this);
 			ModsManager.RegisterHook("OnEatPickable", this);
 			ModsManager.RegisterHook("ProcessAttackment", this);
+			ModsManager.RegisterHook("OnWidgetConstruct", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -932,6 +926,14 @@ namespace Game
 			}
 		}
 
+		public override void OnWidgetConstruct(ref Widget widget)
+		{
+			if (widget is PanoramaWidget && !(widget is NewPanoramaWidget))
+			{
+				widget = new NewPanoramaWidget();
+			}
+		}
+
 		private void UpdateCoordinateLabelsPosition(Project project)
 		{
 			var playersSubsystem = project.FindSubsystem<SubsystemPlayers>(true);
@@ -1284,15 +1286,6 @@ namespace Game
 		public override void PlayInGameMusic()
 		{
 			// No se modifica la música del juego (comportamiento original)
-		}
-
-		// ---------------------------------------------------------------------------------
-		// Hook: OnWidgetConstruct (NewPanoramaModLoader)
-		// ---------------------------------------------------------------------------------
-		public override void OnWidgetConstruct(ref Widget widget)
-		{
-			if (widget != null && widget.GetType().Name == "PanoramaWidget" && !(widget is NewPanoramaWidget))
-				widget = new NewPanoramaWidget();
 		}
 
 		// ---------------------------------------------------------------------------------
