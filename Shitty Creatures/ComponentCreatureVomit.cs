@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
+
 	public class ComponentCreatureVomit : Component, IUpdateable
 	{
 		private SubsystemTerrain m_subsystemTerrain;
@@ -20,20 +22,22 @@ namespace Game
 		private ComponentChaseBehavior m_oldChaseBehavior;
 		private ComponentZombieChaseBehavior m_zombieChaseBehavior;
 
-		public bool VomitShit { get; set; }
+		public bool VomitPoison { get; set; }
 		public bool VomitFire { get; set; }
 		public bool VomitFrozen { get; set; }
 		public bool VomitBlood { get; set; }
+
 		public float VomitProbability { get; set; } = 0.1f;
 		public float VomitCooldown { get; set; } = 5f;
 		public Vector2 VomitDistanceRange { get; set; } = new Vector2(2f, 12f);
 
-		private double m_lastVomitTime;
-		private double m_vomitStartTime;
 		private PoisonVomitParticleSystem m_activePoisonVomit;
 		private FireVomitParticleSystem m_activeFireVomit;
 		private FrozenVomitParticleSystem m_activeFrozenVomit;
 		private BloodVomitParticleSystem m_activeBloodVomit;
+		private VomitType m_activeType;
+		private double m_vomitStartTime;
+		private double m_lastVomitTime;
 		private Random m_random = new Random();
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -53,7 +57,7 @@ namespace Game
 			m_oldChaseBehavior = Entity.FindComponent<ComponentChaseBehavior>();
 			m_zombieChaseBehavior = Entity.FindComponent<ComponentZombieChaseBehavior>();
 
-			VomitShit = valuesDictionary.GetValue<bool>("VomitShit", false);
+			VomitPoison = valuesDictionary.GetValue<bool>("VomitPoison", false);
 			VomitFire = valuesDictionary.GetValue<bool>("VomitFire", false);
 			VomitFrozen = valuesDictionary.GetValue<bool>("VomitFrozen", false);
 			VomitBlood = valuesDictionary.GetValue<bool>("VomitBlood", false);
@@ -126,6 +130,7 @@ namespace Game
 
 			ComponentCreature target = GetCurrentChaseTarget();
 
+			// Actualizar vómito activo
 			if (m_activePoisonVomit != null)
 			{
 				bool shouldStop = false;
@@ -137,8 +142,10 @@ namespace Game
 					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
+				else if (m_activePoisonVomit.IsStopped)
+					shouldStop = true;
 
-				if (shouldStop || m_activePoisonVomit.IsStopped)
+				if (shouldStop)
 				{
 					m_activePoisonVomit.IsStopped = true;
 					m_activePoisonVomit = null;
@@ -162,8 +169,10 @@ namespace Game
 					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
+				else if (m_activeFireVomit.IsStopped)
+					shouldStop = true;
 
-				if (shouldStop || m_activeFireVomit.IsStopped)
+				if (shouldStop)
 				{
 					m_activeFireVomit.IsStopped = true;
 					m_activeFireVomit = null;
@@ -187,8 +196,10 @@ namespace Game
 					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
+				else if (m_activeFrozenVomit.IsStopped)
+					shouldStop = true;
 
-				if (shouldStop || m_activeFrozenVomit.IsStopped)
+				if (shouldStop)
 				{
 					m_activeFrozenVomit.IsStopped = true;
 					m_activeFrozenVomit = null;
@@ -212,8 +223,10 @@ namespace Game
 					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
+				else if (m_activeBloodVomit.IsStopped)
+					shouldStop = true;
 
-				if (shouldStop || m_activeBloodVomit.IsStopped)
+				if (shouldStop)
 				{
 					m_activeBloodVomit.IsStopped = true;
 					m_activeBloodVomit = null;
@@ -242,58 +255,65 @@ namespace Game
 			if (currentTime - m_lastVomitTime < (double)VomitCooldown)
 				return;
 
-			System.Collections.Generic.List<int> availableTypes = new System.Collections.Generic.List<int>();
-			if (VomitShit) availableTypes.Add(0);
-			if (VomitFire) availableTypes.Add(1);
-			if (VomitFrozen) availableTypes.Add(2);
-			if (VomitBlood) availableTypes.Add(3);
+			List<VomitType> availableTypes = new List<VomitType>();
+			if (VomitPoison) availableTypes.Add(VomitType.Poison);
+			if (VomitFire) availableTypes.Add(VomitType.Fire);
+			if (VomitFrozen) availableTypes.Add(VomitType.Frozen);
+			if (VomitBlood) availableTypes.Add(VomitType.Blood);
 
 			if (availableTypes.Count == 0)
 				return;
 
-			int chosenType = availableTypes[m_random.Int(availableTypes.Count)];
+			VomitType chosenType = availableTypes[m_random.Int(availableTypes.Count)];
 
 			Vector3 mouthPos = GetVomitMouthPosition();
 			Vector3 direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - mouthPos);
 
-			if (chosenType == 0)
+			switch (chosenType)
 			{
-				m_activePoisonVomit = new PoisonVomitParticleSystem(
-					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
-					m_subsystemTime, m_subsystemParticles, m_componentCreature);
-				m_activePoisonVomit.Position = mouthPos;
-				m_activePoisonVomit.Direction = direction;
-				m_activePoisonVomit.PoisonIntensity = 180f;
-				m_subsystemParticles.AddParticleSystem(m_activePoisonVomit, false);
-			}
-			else if (chosenType == 1)
-			{
-				m_activeFireVomit = new FireVomitParticleSystem(
-					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
-					m_subsystemTime, m_componentCreature);
-				m_activeFireVomit.Position = mouthPos;
-				m_activeFireVomit.Direction = direction;
-				m_activeFireVomit.FireDuration = 30f;
-				m_subsystemParticles.AddParticleSystem(m_activeFireVomit, false);
-			}
-			else if (chosenType == 2)
-			{
-				m_activeFrozenVomit = new FrozenVomitParticleSystem(
-					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
-					m_subsystemTime, m_componentCreature);
-				m_activeFrozenVomit.Position = mouthPos;
-				m_activeFrozenVomit.Direction = direction;
-				m_subsystemParticles.AddParticleSystem(m_activeFrozenVomit, false);
-			}
-			else if (chosenType == 3)
-			{
-				m_activeBloodVomit = new BloodVomitParticleSystem(
-					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
-					m_subsystemTime, m_subsystemParticles, m_componentCreature);
-				m_activeBloodVomit.Position = mouthPos;
-				m_activeBloodVomit.Direction = direction;
-				m_activeBloodVomit.BleedingIntensity = 180f;
-				m_subsystemParticles.AddParticleSystem(m_activeBloodVomit, false);
+				case VomitType.Poison:
+					var poison = new PoisonVomitParticleSystem(
+						m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
+						m_subsystemTime, m_subsystemParticles, m_componentCreature);
+					poison.Position = mouthPos;
+					poison.Direction = direction;
+					poison.PoisonIntensity = 180f;
+					m_activePoisonVomit = poison;
+					m_subsystemParticles.AddParticleSystem(poison, false);
+					break;
+
+				case VomitType.Fire:
+					var fire = new FireVomitParticleSystem(
+						m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
+						m_subsystemTime, m_componentCreature);
+					fire.Position = mouthPos;
+					fire.Direction = direction;
+					fire.FireDuration = 30f;
+					fire.ImpactDamage = 0.01f;
+					m_activeFireVomit = fire;
+					m_subsystemParticles.AddParticleSystem(fire, false);
+					break;
+
+				case VomitType.Frozen:
+					var frozen = new FrozenVomitParticleSystem(
+						m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
+						m_subsystemTime, m_componentCreature);
+					frozen.Position = mouthPos;
+					frozen.Direction = direction;
+					m_activeFrozenVomit = frozen;
+					m_subsystemParticles.AddParticleSystem(frozen, false);
+					break;
+
+				case VomitType.Blood:
+					var blood = new BloodVomitParticleSystem(
+						m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
+						m_subsystemTime, m_subsystemParticles, m_componentCreature);
+					blood.Position = mouthPos;
+					blood.Direction = direction;
+					blood.BleedingIntensity = 180f;
+					m_activeBloodVomit = blood;
+					m_subsystemParticles.AddParticleSystem(blood, false);
+					break;
 			}
 
 			m_lastVomitTime = currentTime;
@@ -322,6 +342,14 @@ namespace Game
 				m_activeFrozenVomit.IsStopped = true;
 			if (m_activeBloodVomit != null)
 				m_activeBloodVomit.IsStopped = true;
+		}
+
+		public enum VomitType
+		{
+			Poison,
+			Fire,
+			Frozen,
+			Blood
 		}
 	}
 }
