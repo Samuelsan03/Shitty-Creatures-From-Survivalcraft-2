@@ -3416,6 +3416,81 @@ namespace Game
 			}
 		}
 
+		public static bool ShouldIgnoreBodyForFriendlyFire(ComponentCreature owner, ComponentBody targetBody)
+		{
+			if (owner == null || targetBody == null) return false;
+			if (targetBody.Entity == owner.Entity) return true; // no te dañas a ti mismo
+
+			// --- Lógica idéntica a OnProjectileRaycastBody ---
+
+			// 1. Manada del jugador (ComponentNewHerdBehavior)
+			bool isOwnerPlayerHerd = false;
+			if (owner is ComponentPlayer)
+			{
+				isOwnerPlayerHerd = true;
+			}
+			else
+			{
+				var ownerHerd = owner.Entity.FindComponent<ComponentNewHerdBehavior>();
+				if (ownerHerd != null && (ownerHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+										  ownerHerd.HerdName.ToLower().Contains("guardian")))
+				{
+					isOwnerPlayerHerd = true;
+				}
+			}
+
+			if (isOwnerPlayerHerd)
+			{
+				// Si el objetivo es un jugador, es amigo
+				if (targetBody.Entity.FindComponent<ComponentPlayer>() != null) return true;
+				// Si pertenece a la misma manada o es guardián
+				var targetHerd = targetBody.Entity.FindComponent<ComponentNewHerdBehavior>();
+				if (targetHerd != null && targetHerd.IsSameHerdOrGuardian(owner)) return true;
+				return false; // no es amigo
+			}
+
+			// 2. Manadas de zombis (ComponentZombieHerdBehavior)
+			var ownerZombieHerd = owner.Entity.FindComponent<ComponentZombieHerdBehavior>();
+			if (ownerZombieHerd != null)
+			{
+				var targetZombieHerd = targetBody.Entity.FindComponent<ComponentZombieHerdBehavior>();
+				if (targetZombieHerd != null && ownerZombieHerd.IsSameZombieHerd(owner))
+				{
+					return true;
+				}
+			}
+
+			// 3. Manadas originales "Alianza", "Muerte", "Pirate" (ComponentHerdBehavior)
+			var ownerOriginalHerd = owner.Entity.FindComponent<ComponentHerdBehavior>();
+			if (ownerOriginalHerd != null)
+			{
+				string ownerHerdName = ownerOriginalHerd.HerdName;
+				if (ownerHerdName == "Alianza" || ownerHerdName == "Muerte" || ownerHerdName == "Pirate")
+				{
+					var targetOriginalHerd = targetBody.Entity.FindComponent<ComponentHerdBehavior>();
+					if (targetOriginalHerd != null && targetOriginalHerd.HerdName == ownerHerdName)
+					{
+						return true;
+					}
+				}
+			}
+
+			// 4. Bandidos (ComponentBanditHerdBehavior)
+			var ownerBanditHerd = owner.Entity.FindComponent<ComponentBanditHerdBehavior>();
+			if (ownerBanditHerd != null)
+			{
+				var targetBanditHerd = targetBody.Entity.FindComponent<ComponentBanditHerdBehavior>();
+				if (targetBanditHerd != null &&
+					!string.IsNullOrEmpty(ownerBanditHerd.HerdName) &&
+					string.Equals(ownerBanditHerd.HerdName, targetBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		// ---------------------------------------------------------------------------------
 		// SaveSettings / LoadSettings (heredados de ChaseMusicModLoader, vacíos)
 		// ---------------------------------------------------------------------------------
