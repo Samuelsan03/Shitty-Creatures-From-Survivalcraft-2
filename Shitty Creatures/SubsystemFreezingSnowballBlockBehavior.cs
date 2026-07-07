@@ -42,6 +42,8 @@ namespace Game
 			var trails = new List<FreezingTrailParticleSystem> { particleSystem, particleSystem2 };
 			m_projectileTrails[projectile] = trails;
 
+			projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
 			m_subsystemAudio.PlaySound("Audio/Throw", 1.0f, m_random.Float(-0.2f, 0.2f), projectile.Position, 2f, true);
 		}
 
