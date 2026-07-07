@@ -101,7 +101,6 @@ namespace Game
 
 							if (terrainHit != null && terrainHit.Value.Distance <= dist + radius)
 							{
-								// Romper bloques frágiles (cristales) si corresponde
 								int hitValue = terrainHit.Value.Value;
 								int hitContents = Terrain.ExtractContents(hitValue);
 								if (hitContents == GlassBlock.Index || hitContents == FramedGlassBlock.Index ||
@@ -120,7 +119,6 @@ namespace Game
 							}
 						}
 
-						// Colisión con cuerpos (cualquier cuerpo sólido)
 						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.15f, (body, d) =>
 						{
 							if (body.Entity == m_owner.Entity) return false;
@@ -130,6 +128,12 @@ namespace Game
 						if (bodyHit != null)
 						{
 							ComponentBody hitBody = bodyHit.Value.ComponentBody;
+							// --- COMPROBACIÓN DE FUEGO AMIGO ---
+							if (ShittyCreaturesModLoader.ShouldIgnoreBodyForFriendlyFire(m_owner, hitBody))
+							{
+								particle.IsActive = false;
+								continue;
+							}
 							ApplyFrozenEffect(hitBody, bodyHit.Value.HitPoint());
 
 							if (m_subsystemTime.GameTime - m_lastImpactSoundTime > 0.5)
@@ -171,8 +175,6 @@ namespace Game
 
 		private void TryBreakFragileBlock(TerrainRaycastResult hit)
 		{
-			// Romper bloques frágiles (cristales): GlassBlock, FramedGlassBlock, WindowBlock, LightbulbBlock
-			// Parámetros: toolLevel=0 (manos desnudas), newValue=0 (aire), noDrop=false, noParticleSystem=false
 			m_subsystemTerrain.DestroyCell(0, hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z, 0, false, false, null);
 		}
 
