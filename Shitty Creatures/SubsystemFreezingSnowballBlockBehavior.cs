@@ -30,7 +30,7 @@ namespace Game
 
 		public override void OnFiredAsProjectile(Projectile projectile)
 		{
-			m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new FreezingTrailParticleSystem(120, 1.2f, float.MaxValue, Color.White));
+			m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new FreezingTrailParticleSystem(20, 1.2f, float.MaxValue, Color.White));
 			projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 			m_subsystemAudio.PlaySound("Audio/Throw", 1.0f, m_random.Float(-0.2f, 0.2f), projectile.Position, 2f, true);
 		}
