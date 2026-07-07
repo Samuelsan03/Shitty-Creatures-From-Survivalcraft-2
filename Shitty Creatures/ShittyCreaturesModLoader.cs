@@ -168,6 +168,7 @@ namespace Game
 			ModsManager.RegisterHook("OnEatPickable", this);
 			ModsManager.RegisterHook("ProcessAttackment", this);
 			ModsManager.RegisterHook("OnWidgetConstruct", this);
+			ModsManager.RegisterHook("OnVitalStatsUpdateTemperature", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -3489,6 +3490,48 @@ namespace Game
 			}
 
 			return false;
+		}
+
+		public override void OnVitalStatsUpdateTemperature(
+	ComponentVitalStats vitalStats,
+	ref float temperature,
+	ref float gameTimeDelta,
+	ref bool skipVanilla)
+		{
+			// Solo aplicar en modos de supervivencia
+			var gameInfo = vitalStats.Project.FindSubsystem<SubsystemGameInfo>(true);
+			if (gameInfo.WorldSettings.GameMode == GameMode.Creative)
+				return;
+
+			ComponentPlayer player = vitalStats.m_componentPlayer;
+			if (player == null || player.ComponentBody == null)
+				return;
+
+			Vector3 pos = player.ComponentBody.Position;
+			int range = AirConditionerManager.GetMaxCoverageRangeAt(pos.X, pos.Y, pos.Z);
+
+			if (range > 0)
+			{
+				// Calentar al jugador (rango 0-15 → 12°C a 24°C)
+				float heatFactor = range / 15f; // 0.0 a 1.0
+				float targetTemp = 12f + heatFactor * 12f;
+
+				float speed = 2.0f; // grados por segundo
+				float diff = targetTemp - temperature;
+				float maxChange = speed * gameTimeDelta;
+
+				if (Math.Abs(diff) < maxChange)
+					temperature = targetTemp;
+				else
+					temperature += Math.Sign(diff) * maxChange;
+
+				// ★ ASIGNAR DIRECTAMENTE AL COMPONENTE PARA QUE PERSISTA ★
+				vitalStats.Temperature = temperature;
+
+				// Anular la lógica vanilla para que no sobrescriba
+				skipVanilla = true;
+			}
+			// Si no hay cobertura, no intervenimos (dejamos que el juego maneje la temperatura)
 		}
 
 		// ---------------------------------------------------------------------------------
