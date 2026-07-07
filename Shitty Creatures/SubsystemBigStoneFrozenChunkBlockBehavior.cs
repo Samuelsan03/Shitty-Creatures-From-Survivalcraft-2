@@ -25,8 +25,8 @@ namespace Game
 			// Con 1.8f, las partículas medirán aprox 1.71 de radio, envolviendo bien la piedra.
 			float trailSize = 1.8f;
 
-			var trail = new FreezingTrailParticleSystem(150, trailSize, float.MaxValue, new Color(200, 240, 255, 220));
-			m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, trail);
+			m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new FreezingTrailParticleSystem(150, trailSize, float.MaxValue, new Color(200, 240, 255, 220)));
+			projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 		}
 
 		public override bool OnHitAsProjectile(CellFace? cellFace, ComponentBody componentBody, WorldItem worldItem)
