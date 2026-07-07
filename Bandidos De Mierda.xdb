@@ -2740,6 +2740,7 @@
     <Parameter Name="CanEquipClothing" Guid="fbb94475-5af5-45eb-a85b-3cbb72844067" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="4d8b15a2-df45-41f2-a9f4-3741eea784a8" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+<Parameter Name="SkinTextureName" Guid="39852b7b-8987-4dbf-b17b-2f4037f0baba" Value="Textures/Bandidos/La Bandida" Type="string"/>
   <ParameterSet Name="CreatureClothes" Guid="cb8e905c-e7b7-41c7-834e-c64fa2a18967">
     <Parameter Name="Head" Guid="c630124d-b305-4bac-8298-341f740d2d52" Value="" Type="string"/>
     <Parameter Name="Torso" Guid="f1bd2d10-bdc6-43a9-bc13-55c3380eac6e" Value="" Type="string"/>
