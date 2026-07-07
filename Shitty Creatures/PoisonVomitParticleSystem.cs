@@ -105,7 +105,6 @@ namespace Game
 
 							if (terrainHit != null && terrainHit.Value.Distance <= distance + radius)
 							{
-								// Romper bloques frágiles (cristales) si corresponde
 								int hitValue = terrainHit.Value.Value;
 								int hitContents = Terrain.ExtractContents(hitValue);
 								if (hitContents == GlassBlock.Index || hitContents == FramedGlassBlock.Index ||
@@ -120,7 +119,6 @@ namespace Game
 							}
 						}
 
-						// Colisión con cuerpos (cualquier cuerpo sólido)
 						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.15f, (body, d) =>
 						{
 							if (body.Entity == m_componentCreature.Entity) return false;
@@ -130,10 +128,14 @@ namespace Game
 						if (bodyHit != null)
 						{
 							ComponentBody hitBody = bodyHit.Value.ComponentBody;
-							if (hitBody != null)
+							// --- COMPROBACIÓN DE FUEGO AMIGO ---
+							if (ShittyCreaturesModLoader.ShouldIgnoreBodyForFriendlyFire(m_componentCreature, hitBody))
 							{
-								ApplyPoisonToBody(hitBody);
+								particle.IsActive = false;
+								continue;
 							}
+							ApplyPoisonToBody(hitBody);
+							// --- SONIDO SOLO SI NO ES FUEGO AMIGO (ya está después de la comprobación) ---
 							m_subsystemSoundMaterials.PlayImpactSound(bodyHit.Value.ComponentBody.StandingOnValue ?? 0, bodyHit.Value.HitPoint(), 0.5f);
 							particle.IsActive = false;
 							continue;
@@ -169,21 +171,17 @@ namespace Game
 
 		private void TryBreakFragileBlock(TerrainRaycastResult hit)
 		{
-			// Romper bloques frágiles (cristales): GlassBlock, FramedGlassBlock, WindowBlock, LightbulbBlock
-			// Parámetros: toolLevel=0 (manos desnudas), newValue=0 (aire), noDrop=false, noParticleSystem=false
 			m_subsystemTerrain.DestroyCell(0, hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z, 0, false, false, null);
 		}
 
 		private void ApplyPoisonToBody(ComponentBody body)
 		{
-			// Evitar auto-infección
 			if (body.Entity == m_componentCreature.Entity)
 				return;
 
 			Entity entity = body.Entity;
 			if (entity == null) return;
 
-			// Jugador
 			ComponentPlayer player = entity.FindComponent<ComponentPlayer>();
 			if (player != null)
 			{
@@ -196,7 +194,6 @@ namespace Game
 				return;
 			}
 
-			// Criatura (solo si ya tiene ComponentPoisonInfected)
 			ComponentCreature creature = entity.FindComponent<ComponentCreature>();
 			if (creature != null)
 			{
@@ -205,7 +202,6 @@ namespace Game
 				{
 					poison.StartInfect(PoisonIntensity);
 				}
-				// Si no tiene el componente, simplemente no pasa nada (no se puede agregar en runtime)
 			}
 		}
 
