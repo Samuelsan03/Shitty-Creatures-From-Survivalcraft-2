@@ -470,9 +470,9 @@ namespace Game
 
 			float remainingPower = attackment.AttackPower;
 
-			// ===== DIVISOR FIJO PARA PROTECCIÓN =====
-			float armorDivision = 10f;
-			// =========================================
+			// Usar el divisor del Attackment (por defecto 1)
+			float armorDivision = attackment.ArmorProtectionDivision;
+			if (armorDivision <= 0f) armorDivision = 1f;
 
 			for (int i = 0; i < before.Count; i++)
 			{
@@ -483,69 +483,66 @@ namespace Game
 					float armor = data.ArmorProtection;
 					float sturdiness = data.Sturdiness;
 
+					// Calcular durabilidad efectiva (como en ClothingData)
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(val)];
+					float maxDurability = block.GetDurability(val) + 1; // GetDurability devuelve la durabilidad máxima
+					float currentDamage = block.GetDamage(val);
+					float durabilityFactor = (maxDurability - currentDamage) / maxDurability;
+					float maxAbsorb = durabilityFactor * sturdiness;
+
+					// Daño absorbido = mínimo entre (daño restante * saturación(armor/divisor)) y la absorción máxima permitida por la durabilidad
 					float damageAbsorbed = MathF.Min(
 						remainingPower * MathUtils.Saturate(armor / armorDivision),
-						sturdiness
+						maxAbsorb
 					);
 
 					if (damageAbsorbed > 0f)
 					{
 						remainingPower -= damageAbsorbed;
 
-						// ===== CÁLCULO DE DESGASTE =====
-						int currentValue = after[i];
-						int durability = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].GetDurability(currentValue);
-						float x = damageAbsorbed / sturdiness * (durability + 1) + 0.001f;
+						// Calcular el daño a añadir a la prenda (igual que en ClothingData)
+						float x = damageAbsorbed / sturdiness * maxDurability + 0.001f;
 						int damageToAdd = (int)MathF.Floor(x);
 						if (m_random.Bool(MathUtils.Remainder(x, 1f)))
 							damageToAdd++;
-						// ================================
 
-						int newDamage = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)].GetDamage(currentValue) + damageToAdd;
+						int currentValue = after[i];
+						int newDamage = block.GetDamage(currentValue) + damageToAdd;
 
-						if (newDamage > durability)
+						if (newDamage > block.GetDurability(currentValue))
 						{
-							after[i] = 0;
+							after[i] = 0; // Se rompe
 							m_subsystemParticles.AddParticleSystem(
 								new BlockDebrisParticleSystem(m_subsystemTerrain,
 									m_componentBody.Position + m_componentBody.StanceBoxSize / 2f,
 									1f, 1f, Color.White, 0), false);
 
-							// ===== SONIDO DE IMPACTO =====
-							// Usar SubsystemSoundMaterials si está disponible
+							// Sonido de impacto (si existe)
 							if (m_subsystemSoundMaterials != null)
 							{
-								// Si es un proyectil, usar su valor para el sonido de impacto
 								if (attackment is ProjectileAttackment projectileAttack && projectileAttack.Projectile != null)
-								{
 									m_subsystemSoundMaterials.PlayImpactSound(projectileAttack.Projectile.Value, m_componentBody.Position, 1f);
-								}
 								else if (!string.IsNullOrEmpty(data.ImpactSoundsFolder))
-								{
-									// Si no es proyectil, usar el sonido de la carpeta de la ropa
 									m_subsystemAudio.PlayRandomSound(data.ImpactSoundsFolder, 1f,
 										m_random.Float(-0.3f, 0.3f),
 										m_componentBody.Position, 4f, 0.15f);
-								}
 							}
 							else if (!string.IsNullOrEmpty(data.ImpactSoundsFolder))
 							{
-								// Fallback si no hay SubsystemSoundMaterials
 								m_subsystemAudio.PlayRandomSound(data.ImpactSoundsFolder, 1f,
 									m_random.Float(-0.3f, 0.3f),
 									m_componentBody.Position, 4f, 0.15f);
 							}
-							// ============================
 						}
 						else
 						{
-							after[i] = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)]
-								.SetDamage(currentValue, newDamage);
+							after[i] = block.SetDamage(currentValue, newDamage);
 						}
 					}
 				}
 			}
 
+			// Eliminar prendas rotas o inservibles
 			after.RemoveAll(v => v == 0 || !BlocksManager.Blocks[Terrain.ExtractContents(v)].CanWear(v));
 			SetClothes(slot, after);
 
