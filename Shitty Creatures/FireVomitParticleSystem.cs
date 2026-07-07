@@ -42,7 +42,6 @@ namespace Game
 
 		public override bool Simulate(float dt)
 		{
-			// Calcular luz ambiente
 			int x = Terrain.ToCell(Position.X);
 			int y = Terrain.ToCell(Position.Y);
 			int z = Terrain.ToCell(Position.Z);
@@ -85,7 +84,6 @@ namespace Game
 						Vector3 oldPos = particle.Position;
 						Vector3 newPos = oldPos + particle.Velocity * dt;
 
-						// Verificar si la partícula ya está dentro de un bloque sólido
 						int contents = m_subsystemTerrain.Terrain.GetCellContents(Terrain.ToCell(oldPos));
 						if (BlocksManager.Blocks[contents].IsCollidable_(contents))
 						{
@@ -93,7 +91,6 @@ namespace Game
 							continue;
 						}
 
-						// Colisión con terreno (con radio aumentado para mejor detección)
 						float radius = 0.15f;
 						Vector3 dir = newPos - oldPos;
 						float dist = dir.Length();
@@ -109,17 +106,14 @@ namespace Game
 
 							if (terrainHit != null && terrainHit.Value.Distance <= dist + radius)
 							{
-								// Romper bloques frágiles (cristales) o incendiar otros bloques
 								int hitValue = terrainHit.Value.Value;
 								int hitContents = Terrain.ExtractContents(hitValue);
 								if (hitContents == GlassBlock.Index || hitContents == FramedGlassBlock.Index || hitContents == WindowBlock.Index || hitContents == LightbulbBlock.Index)
 								{
-									// Romper bloques frágiles
 									TryBreakFragileBlock(terrainHit.Value);
 								}
 								else
 								{
-									// Incendiar el bloque impactado (comportamiento original)
 									TryIgniteBlock(terrainHit.Value);
 								}
 								if (m_subsystemTime.GameTime - m_lastImpactSoundTime > 0.3)
@@ -132,25 +126,29 @@ namespace Game
 							}
 						}
 
-						// Colisión con cuerpos (cualquier cuerpo que no sea el dueño y no sea transparente al raycast)
 						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.15f, (body, d) =>
 						{
 							if (body.Entity == m_owner.Entity) return false;
-							// Detenerse con cualquier cuerpo sólido (no transparente)
 							return !body.IsRaycastTransparent;
 						});
 
 						if (bodyHit != null)
 						{
 							ComponentBody hitBody = bodyHit.Value.ComponentBody;
+							// --- COMPROBACIÓN DE FUEGO AMIGO ---
+							if (ShittyCreaturesModLoader.ShouldIgnoreBodyForFriendlyFire(m_owner, hitBody))
+							{
+								particle.IsActive = false;
+								continue;
+							}
 							ComponentCreature target = hitBody.Entity.FindComponent<ComponentCreature>();
 							if (target != null)
 							{
 								ComponentHealth health = target.Entity.FindComponent<ComponentHealth>();
 								if (health != null)
 								{
-									string causeOfDeath = LanguageControl.Get("Injury", "FireVomit");
-									health.Injure(ImpactDamage, m_owner, false, causeOfDeath);
+									string cause = LanguageControl.Get("Injury", "FireVomit");
+									health.Injure(ImpactDamage, m_owner, false, cause);
 								}
 								ComponentOnFire onFire = target.Entity.FindComponent<ComponentOnFire>();
 								onFire?.SetOnFire(m_owner, FireDuration);
@@ -195,14 +193,11 @@ namespace Game
 
 		private void TryBreakFragileBlock(TerrainRaycastResult hit)
 		{
-			// Romper bloques frágiles (cristales): GlassBlock, FramedGlassBlock, WindowBlock, LightbulbBlock
-			// Parámetros: toolLevel=0 (manos desnudas), newValue=0 (aire), noDrop=false, noParticleSystem=false
 			m_subsystemTerrain.DestroyCell(0, hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z, 0, false, false, null);
 		}
 
 		private void TryIgniteBlock(TerrainRaycastResult hit)
 		{
-			// Incendiar la celda impactada directamente (comportamiento original)
 			m_subsystemFireBlockBehavior.SetCellOnFire(hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z, 1f);
 		}
 
