@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Xml.Linq;
 using Game;
 
@@ -11,16 +11,14 @@ namespace Game
 			XElement node = ContentManager.Get<XElement>("Dialogs/EditTemperatureDialog");
 			this.LoadContents(this, node);
 
-			// Obtener referencia al título
 			this.m_titleLabel = this.Children.Find<LabelWidget>("EditTemperatureDialog.Title", true);
 			this.m_okButton = this.Children.Find<ButtonWidget>("EditTemperatureDialog.Ok", true);
 			this.m_cancelButton = this.Children.Find<ButtonWidget>("EditTemperatureDialog.Cancel", true);
 			this.m_temperatureSlider = this.Children.Find<SliderWidget>("EditTemperatureDialog.TemperatureSlider", true);
 
-			// Traducir el título
-			this.m_titleLabel.Text = LanguageControl.Get("EditTemperatureDialog", "Settings") ?? "Air Conditioner - Settings";
-			this.m_okButton.Text = LanguageControl.Get("EditTemperatureDialog", "Ok") ?? "Ok";
-			this.m_cancelButton.Text = LanguageControl.Get("EditTemperatureDialog", "Cancel") ?? "Cancel";
+			this.m_titleLabel.Text = LanguageControl.Get("EditTemperatureDialog", "Settings");
+			this.m_okButton.Text = LanguageControl.Get("EditTemperatureDialog", "Ok");
+			this.m_cancelButton.Text = LanguageControl.Get("EditTemperatureDialog", "Cancel");
 
 			this.m_handler = handler;
 			this.m_temperature = temperature;
@@ -49,11 +47,11 @@ namespace Game
 			string statusText;
 			if (this.m_temperature == 0)
 			{
-				statusText = LanguageControl.Get("EditTemperatureDialog", "Off") ?? "Off";
+				statusText = LanguageControl.Get("EditTemperatureDialog", "Off");
 			}
 			else
 			{
-				statusText = LanguageControl.Get("EditTemperatureDialog", "CoverageRadius") ?? "Coverage radius";
+				statusText = LanguageControl.Get("EditTemperatureDialog", "CoverageRadius");
 			}
 
 			this.m_temperatureSlider.Text = string.Format("{0} ({1})",
@@ -73,7 +71,7 @@ namespace Game
 		}
 
 		public Action<int> m_handler;
-		public LabelWidget m_titleLabel; // Nueva variable para el título
+		public LabelWidget m_titleLabel;
 		public ButtonWidget m_okButton;
 		public ButtonWidget m_cancelButton;
 		public SliderWidget m_temperatureSlider;
