@@ -128,6 +128,12 @@ namespace Game
 						if (bodyHit != null)
 						{
 							ComponentBody hitBody = bodyHit.Value.ComponentBody;
+							// --- COMPROBACIÓN DE FUEGO AMIGO ---
+							if (ShittyCreaturesModLoader.ShouldIgnoreBodyForFriendlyFire(m_componentCreature, hitBody))
+							{
+								particle.IsActive = false;
+								continue;
+							}
 							if (hitBody != null)
 							{
 								Entity entity = hitBody.Entity;
@@ -136,13 +142,13 @@ namespace Game
 									ComponentHealth health = entity.FindComponent<ComponentHealth>();
 									if (health != null && health.Health > 0f)
 									{
-										float damage = 0.055f;
-										// Causa de muerte localizada usando LanguageControl
+										float damage = 0.01f;
 										string cause = LanguageControl.Get("Injury", "BloodVomit");
 										health.Injure(damage, m_componentCreature, false, cause);
 									}
 								}
 							}
+							// --- SONIDO SOLO SI NO ES FUEGO AMIGO (ya está después de la comprobación) ---
 							m_subsystemSoundMaterials.PlayImpactSound(bodyHit.Value.ComponentBody.StandingOnValue ?? 0, bodyHit.Value.HitPoint(), 0.5f);
 							particle.IsActive = false;
 							continue;
