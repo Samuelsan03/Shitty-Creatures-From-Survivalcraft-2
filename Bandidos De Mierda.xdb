@@ -2421,6 +2421,7 @@
     <Parameter Name="CanEquipClothing" Guid="ee724282-afaf-4368-8e3f-79bf6b6e5495" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="afe18504-d1d0-423a-9bb6-ce0a968b984c" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+<Parameter Name="SkinTextureName" Guid="3fc2a968-aad6-41c5-b278-3cb00d95fa4f" Value="Textures/Bandidos/francotiradora" Type="string"/>
   <ParameterSet Name="CreatureClothes" Guid="08d24a4a-27c8-474b-ae16-389f25761975">
     <Parameter Name="Head" Guid="02e60a75-dace-4662-9bc9-0f3ad7966bfb" Value="" Type="string"/>
     <Parameter Name="Torso" Guid="2253bd1e-f37b-4e90-be80-1752c94418a6" Value="" Type="string"/>
