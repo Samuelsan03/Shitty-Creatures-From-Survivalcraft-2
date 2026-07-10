@@ -10114,6 +10114,7 @@
   <Parameter Name="CanEquipClothing" Guid="85a33cdb-6bb8-47ac-a8df-26ed8beac171" Value="true" Type="bool" />
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="bd2d7d3a-87a5-40db-9b1e-3801bf40de99" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+<Parameter Name="SkinTextureName" Guid="aae25dc8-ade1-41be-a9f8-21d9e45828e8" Value="Textures/ZombiesDeMierda/Skull" Type="string"/>
   <ParameterSet Name="CreatureClothes" Guid="a4617246-e280-4a71-a217-4498c7e6ad80">
     <Parameter Name="Head" Guid="64be874f-d822-492e-ae7d-a106e0f52b27" Value="" Type="string"/>
     <Parameter Name="Torso" Guid="47fece74-d195-406a-b922-f87d68a54fca" Value="" Type="string"/>
