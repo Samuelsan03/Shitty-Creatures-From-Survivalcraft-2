@@ -46,7 +46,7 @@
   <Achievement AchievementNumber="32" TitleKey="68" DescriptionKey="69" Reward="40"  TypeOfAchievement="Combat" IsCounter="true" CounterTarget="50" />
   <Achievement AchievementNumber="33" TitleKey="70" DescriptionKey="71" Reward="80"  TypeOfAchievement="Combat" IsCounter="true" CounterTarget="100" />
   <Achievement AchievementNumber="34" TitleKey="72" DescriptionKey="73" Reward="20"  TypeOfAchievement="Healing" IsCounter="true" CounterTarget="10" />
-  <Achievement AchievementNumber="35" TitleKey="74" DescriptionKey="75" Reward="40"  TypeOfAchievement="Healing" IsCounter="true" CounterTarget="50" />
+  <Achievement AchievementNumber="35" TitleKey="74" DescriptionKey="75" Reward="40" TypeOfAchievement="Healing" IsCounter="true" CounterTarget="25" />
   <Achievement AchievementNumber="36" TitleKey="76" DescriptionKey="77" Reward="80"  TypeOfAchievement="Healing" IsCounter="true" CounterTarget="100" />
   <Achievement AchievementNumber="37" TitleKey="78" DescriptionKey="79" Reward="50"  TypeOfAchievement="Trade" />
   <Achievement AchievementNumber="38" TitleKey="80" DescriptionKey="81" Reward="25"  TypeOfAchievement="Combat" IsCounter="true" CounterTarget="10" />
@@ -82,4 +82,5 @@
   <Achievement AchievementNumber="72" TitleKey="140" DescriptionKey="141" Reward="500"  TypeOfAchievement="Taming" />
   <Achievement AchievementNumber="73" TitleKey="142" DescriptionKey="143" Reward="500"  TypeOfAchievement="Special" Hidden="true" IsTheAchievementPremium="true" />
   <Achievement AchievementNumber="74" TitleKey="144" DescriptionKey="145" Reward="250" TypeOfAchievement="Combat" IsTheAchievementPremium="true" />
+  <Achievement AchievementNumber="75" TitleKey="146" DescriptionKey="147" Reward="60" TypeOfAchievement="Healing" IsCounter="true" CounterTarget="50" />
 </AchievementsData>
