@@ -450,7 +450,8 @@ namespace Game
 		{
 			if (player != m_componentPlayer) return;
 			UpdateProgressBarAndStatus(34, currentHeals, 10);
-			UpdateProgressBarAndStatus(35, currentHeals, 50);
+			UpdateProgressBarAndStatus(35, currentHeals, 25);
+			UpdateProgressBarAndStatus(75, currentHeals, 50);   // NUEVO
 			UpdateProgressBarAndStatus(36, currentHeals, 100);
 			m_needsReorder = true;
 		}
@@ -829,6 +830,7 @@ namespace Game
 				case 66: current = AchievementsManager.GetGhostTames(m_componentPlayer); break;
 				case 67: current = AchievementsManager.GetGhostTames(m_componentPlayer); break;
 				case 68: current = AchievementsManager.GetGhostTames(m_componentPlayer); break;
+				case 75: current = AchievementsManager.GetHeals(m_componentPlayer); break;
 			}
 
 			// Si no se encontró target en el XML, usar valores por defecto (fallback)
@@ -845,6 +847,7 @@ namespace Game
 					case 46: target = 50; break;
 					case 50: target = 55; break;
 					case 59: case 63: case 67: target = 50; break;
+					case 75: target = 50; break;
 				}
 			}
 		}
@@ -1214,7 +1217,7 @@ namespace Game
 				case 32: current = AchievementsManager.GetBanditKills(m_componentPlayer); target = 50; break;
 				case 33: current = AchievementsManager.GetBanditKills(m_componentPlayer); target = 100; break;
 				case 34: current = AchievementsManager.GetHeals(m_componentPlayer); target = 10; break;
-				case 35: current = AchievementsManager.GetHeals(m_componentPlayer); target = 50; break;
+				case 35: current = AchievementsManager.GetHeals(m_componentPlayer); target = 25; break;
 				case 36: current = AchievementsManager.GetHeals(m_componentPlayer); target = 100; break;
 				case 38: current = AchievementsManager.GetPirateKills(m_componentPlayer); target = 10; break;
 				case 39: current = AchievementsManager.GetPirateKills(m_componentPlayer); target = 50; break;
@@ -1239,6 +1242,7 @@ namespace Game
 				case 66: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 25; break;
 				case 67: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 50; break;
 				case 68: current = AchievementsManager.GetGhostTames(m_componentPlayer); target = 100; break;
+				case 75: current = AchievementsManager.GetHeals(m_componentPlayer); target = 50; break;
 				default: return 0f;
 			}
 			if (target <= 0) return 0f;
