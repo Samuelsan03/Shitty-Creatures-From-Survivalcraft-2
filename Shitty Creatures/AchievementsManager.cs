@@ -271,6 +271,16 @@ namespace Game
 
 			int playerIndex = killer.PlayerData.PlayerIndex;
 
+			// ========== JEFA FINAL NARCOTRAFICANTES (La Bandida) ==========
+			if (templateName == "LaBandida")
+			{
+				if (killer != null)
+				{
+					UnlockAchievement(killer, 74, "KillLaBandida", LanguageControl.Get(AchievementsWidget.fName, 144));
+					// No se necesita contador porque es un logro único
+				}
+			}
+
 			// ========== TANK NORMAL ==========
 			bool isTank = (templateName == "Tank1" || templateName == "Tank2" || templateName == "Tank3" || templateName == "FrozenTank");
 			if (isTank)
@@ -537,16 +547,37 @@ namespace Game
 			s_subsystemAchievements.AddHeal(playerIndex);
 			int total = s_subsystemAchievements.GetHeals(playerIndex);
 
-			if (!s_subsystemAchievements.IsAchievementUnlocked(34)) OnHealCounterChanged?.Invoke(healer, total, 10);
-			if (!s_subsystemAchievements.IsAchievementUnlocked(35)) OnHealCounterChanged?.Invoke(healer, total, 50);
-			if (!s_subsystemAchievements.IsAchievementUnlocked(36)) OnHealCounterChanged?.Invoke(healer, total, 100);
+			// Logro #34: 10 curaciones
+			if (!s_subsystemAchievements.IsAchievementUnlocked(34))
+			{
+				OnHealCounterChanged?.Invoke(healer, total, 10);
+				if (total >= 10)
+					UnlockAchievement(healer, 34, "Heal10", LanguageControl.Get(AchievementsWidget.fName, 72));
+			}
 
-			if (total >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(34))
-				UnlockAchievement(healer, 34, "Heal10", LanguageControl.Get(AchievementsWidget.fName, 72));
-			if (total >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(35))
-				UnlockAchievement(healer, 35, "Heal50", LanguageControl.Get(AchievementsWidget.fName, 74));
-			if (total >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(36))
-				UnlockAchievement(healer, 36, "Heal100", LanguageControl.Get(AchievementsWidget.fName, 76));
+			// Logro #35: 25 curaciones
+			if (!s_subsystemAchievements.IsAchievementUnlocked(35))
+			{
+				OnHealCounterChanged?.Invoke(healer, total, 25);
+				if (total >= 25)
+					UnlockAchievement(healer, 35, "Heal25", LanguageControl.Get(AchievementsWidget.fName, 74));
+			}
+
+			// Logro #75: 50 curaciones (NUEVO)
+			if (!s_subsystemAchievements.IsAchievementUnlocked(75))
+			{
+				OnHealCounterChanged?.Invoke(healer, total, 50);
+				if (total >= 50)
+					UnlockAchievement(healer, 75, "Heal50", LanguageControl.Get(AchievementsWidget.fName, 146));
+			}
+
+			// Logro #36: 100 curaciones
+			if (!s_subsystemAchievements.IsAchievementUnlocked(36))
+			{
+				OnHealCounterChanged?.Invoke(healer, total, 100);
+				if (total >= 100)
+					UnlockAchievement(healer, 36, "Heal100", LanguageControl.Get(AchievementsWidget.fName, 76));
+			}
 		}
 
 		public static void OnPirateKill(ComponentPlayer killer)
