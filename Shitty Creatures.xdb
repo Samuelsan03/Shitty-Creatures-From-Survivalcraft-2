@@ -6245,6 +6245,7 @@
 
         <EntityTemplate Name="Rayman" Guid="850de9ee-5df5-4232-99c9-1e97f3906052" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="CreatureClothing" Guid="2a2eeb99-68dd-4093-96fd-f3674e0bee20" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+<Parameter Name="SkinTextureName" Guid="c0621c56-7881-4721-9641-10bd1ba93534" Value="Textures/rayman" Type="string"/>
   <ParameterSet Name="CreatureClothes" Guid="4519ce47-7269-42c7-9b45-fcff426a9dfa">
     <Parameter Name="Head" Guid="8da38a27-4dc3-4460-926c-b8c14edd3680" Value="" Type="string"/>
     <Parameter Name="Torso" Guid="df23592c-a9ae-410e-b309-e310b06922b6" Value="" Type="string"/>
