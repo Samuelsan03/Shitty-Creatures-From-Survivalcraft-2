@@ -855,6 +855,15 @@ namespace Game
 					StopCustomAiming();
 					return;
 				}
+
+				// CORRECCIÓN: Si el objetivo está demasiado cerca, cambiar a arma cuerpo a cuerpo
+				float customAimDistance = GetTargetDistance();
+				if (customAimDistance <= RangedAttackRange.X && SwitchToMeleeWeapon())
+				{
+					StopCustomAiming();
+					return;
+				}
+
 				bool hasLineOfSight = true;
 				if (IsThrowable(m_customWeaponContents))
 				{
