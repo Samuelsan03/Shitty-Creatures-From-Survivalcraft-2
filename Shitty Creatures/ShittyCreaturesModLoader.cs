@@ -60,7 +60,7 @@ namespace Game
 {
 	"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
 	"Bandit6", "Bandit8", "Bandit9", "Bandit10",
-	"Bandit11", "Bandit13", "Bandit14", "Bandit15", "Bandit16", "LaBandida"
+    "Bandit13", "Bandit14", "Bandit15", "Bandit16", "LaBandida"
 };
 
 		// Índices de ropa sin protección (para dificultades bajas)
@@ -95,7 +95,7 @@ namespace Game
 	"LaBandida",
 	"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
 	"Bandit6", "Bandit8", "Bandit9", "Bandit10",
-	"Bandit11", "Bandit13", "Bandit14", "Bandit15", "Bandit16"
+	"Bandit13", "Bandit14", "Bandit15", "Bandit16"
 };
 
 		private static Random _random;
