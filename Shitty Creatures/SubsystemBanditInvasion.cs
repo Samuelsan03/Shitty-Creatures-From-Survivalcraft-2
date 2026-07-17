@@ -24,6 +24,14 @@ namespace Game
 		private List<BanditSpawnData> m_bandits = new List<BanditSpawnData>();
 		private float m_totalProbabilitySum;
 
+		// ===== OPTIMIZACIÓN: pesos acumulados =====
+		private float[] m_cumulativeProbabilities;
+
+		// ===== OPTIMIZACIÓN: caché de conteo =====
+		private int m_cachedBanditCount = 0;
+		private float m_cacheUpdateTimer = 0f;
+		private const float CacheUpdateInterval = 2f;
+
 		private bool m_acceptedWar;
 		private bool m_invasionActive;
 		private bool m_invasionStarted;
@@ -165,6 +173,10 @@ namespace Game
 			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 			m_restoredFromSave = true;
 
+			// ===== OPTIMIZACIÓN: inicializar caché =====
+			m_cachedBanditCount = CountBanditsFromBodies();
+			m_cacheUpdateTimer = 0f;
+
 			if (m_invasionCompleted)
 			{
 				m_invasionActive = false;
@@ -276,7 +288,15 @@ namespace Game
 				}
 			}
 
+			// ===== OPTIMIZACIÓN: precalcular pesos acumulados =====
 			m_totalProbabilitySum = m_bandits.Sum(b => b.Probability);
+			m_cumulativeProbabilities = new float[m_bandits.Count];
+			float cum = 0f;
+			for (int i = 0; i < m_bandits.Count; i++)
+			{
+				cum += m_bandits[i].Probability;
+				m_cumulativeProbabilities[i] = cum;
+			}
 		}
 
 		public void Update(float dt)
@@ -289,6 +309,14 @@ namespace Game
 
 			if (m_invasionCompleted)
 				return;
+
+			// ===== OPTIMIZACIÓN: actualizar caché de conteo =====
+			m_cacheUpdateTimer += dt;
+			if (m_cacheUpdateTimer >= CacheUpdateInterval)
+			{
+				m_cacheUpdateTimer = 0f;
+				m_cachedBanditCount = CountBanditsFromBodies();
+			}
 
 			bool effectiveInvasionTime = CalculateEffectiveInvasionTime();
 
@@ -363,8 +391,8 @@ namespace Game
 				}
 			}
 
-			int totalBandits = CountBandits();
-			if (totalBandits >= MaxGlobalBandits)
+			// ===== USAR CACHÉ EN VEZ DE COUNTBANDITS() =====
+			if (m_cachedBanditCount >= MaxGlobalBandits)
 				return;
 
 			m_spawnTimer += dt;
@@ -442,22 +470,23 @@ namespace Game
 			return spawned > 0;
 		}
 
+		// ===== OPTIMIZACIÓN: GetRandomBandit con búsqueda binaria =====
 		private BanditSpawnData GetRandomBandit()
 		{
 			if (m_bandits.Count == 0 || m_totalProbabilitySum <= 0f)
 				return null;
 
 			float roll = m_random.Float(0f, m_totalProbabilitySum);
-			float cumulative = 0f;
 
-			foreach (var bandit in m_bandits)
-			{
-				cumulative += bandit.Probability;
-				if (roll <= cumulative)
-					return bandit;
-			}
+			// Búsqueda binaria en los pesos acumulados
+			int index = Array.BinarySearch(m_cumulativeProbabilities, roll);
+			if (index < 0)
+				index = ~index; // primer elemento mayor que roll
 
-			return m_bandits.LastOrDefault();
+			if (index >= m_bandits.Count)
+				index = m_bandits.Count - 1;
+
+			return m_bandits[index];
 		}
 
 		private bool SpawnBandit(string templateName, Vector3 position)
@@ -687,7 +716,14 @@ namespace Game
 			return Vector3.Zero;
 		}
 
+		// ===== OPTIMIZACIÓN: CountBandits usa caché =====
 		private int CountBandits()
+		{
+			return m_cachedBanditCount;
+		}
+
+		// ===== OPTIMIZACIÓN: método real de conteo =====
+		private int CountBanditsFromBodies()
 		{
 			int count = 0;
 			foreach (var body in m_subsystemBodies.Bodies)
