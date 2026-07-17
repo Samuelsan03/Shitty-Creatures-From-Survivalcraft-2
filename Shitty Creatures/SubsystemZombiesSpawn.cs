@@ -195,6 +195,18 @@ namespace Game
 		// Lista de bloques PERMITIDOS para spawnear
 		private HashSet<int> m_allowedBlockIndices = new HashSet<int>();
 
+		// ===== OPTIMIZACIÓN: CACHÉ DE CONTADORES =====
+		private int m_cachedSkeletonCount = 0;
+		private int m_cachedSpiderCount = 0;
+		private float m_cacheUpdateTimer = 0f;
+		private const float CacheUpdateInterval = 2f;
+
+		// ===== OPTIMIZACIÓN: PESOS ACUMULADOS =====
+		private Dictionary<int, int[]> m_waveCumulativeWeights = new Dictionary<int, int[]>();
+
+		// ===== OPTIMIZACIÓN: ÍNDICE DE CHUNKS =====
+		private int m_skeletonNewChunkIndex = 0;
+
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 		public static SubsystemZombiesSpawn Instance { get; private set; }
 		public int MaxWave => m_waves.Keys.Max();
@@ -248,7 +260,6 @@ namespace Game
 			m_extremeCompletionDialogShown = valuesDictionary.GetValue<bool>("ExtremeCompletionDialogShown", false);
 			m_hasAcceptedImpossibleChallenge = valuesDictionary.GetValue<bool>("HasAcceptedImpossibleChallenge", false);
 
-			// Al cargar, si había un retraso de jefe pendiente, usar el tiempo normal (0.5f) y no los 5s iniciales
 			if (m_bossSpawnDelayed)
 			{
 				m_bossSpawnDelayTimer = BossSpawnDelay;
@@ -256,7 +267,6 @@ namespace Game
 
 			string bossQueueStr = valuesDictionary.GetValue<string>("BossQueue", "");
 
-			// Ignorar retraso guardado para que solo aplique en el inicio real de la noche verde, no al cargar
 			m_greenNightSpawnDelayActive = false;
 			m_greenNightSpawnDelayTimer = 0f;
 
@@ -277,13 +287,17 @@ namespace Game
 			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 			m_needsBossStateVerification = m_bossBattleActive;
 			m_currentBossEntity = null;
-			// ===== FIN CARGAR ESTADO DE LA BATALLA DE JEFES =====
 
 			m_constantSpawnCooldown = ConstantSpawnCooldownTime;
 			m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
 			Instance = this;
 
 			CreateCountdownLabel();
+
+			// ===== OPTIMIZACIÓN: INICIALIZAR CACHÉ =====
+			m_cachedSkeletonCount = CountSkeletonsFromBodies(false);
+			m_cachedSpiderCount = CountSpidersFromBodies();
+			m_skeletonNewChunkIndex = 0;
 		}
 
 		private void OnSpawningChunk(SpawnChunk chunk)
@@ -472,7 +486,6 @@ namespace Game
 
 			WaveAdvanced?.Invoke(oldWave, newWave);
 
-			// ===== DESBLOQUEO EXTREME =====
 			if (oldWave == maxWave && m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme && !m_extremeCompletionDialogShown)
 			{
 				m_extremeCompletionDialogShown = true;
@@ -482,7 +495,6 @@ namespace Game
 				}
 			}
 
-			// ===== DESBLOQUEO IMPOSSIBLE (LOGRO #73) =====
 			if (oldWave == maxWave && m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Impossible)
 			{
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
@@ -519,7 +531,6 @@ namespace Game
 				}
 			}
 
-			// ===== NUEVO: Desactivar bloqueo de Impossible para aliados CADA VEZ que se complete la última ola =====
 			if (oldWave == maxWave)
 			{
 				ImpossibleBlockDisabledForAllies = true;
@@ -611,31 +622,26 @@ namespace Game
 				int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
 				int groundY = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
 
-				if (groundY <= 0 || groundY >= 254) continue; // dejar espacio arriba
+				if (groundY <= 0 || groundY >= 254) continue;
 
-				// Verificar que el bloque del suelo sea válido
 				int cellGround = m_subsystemTerrain.Terrain.GetCellValue(x, groundY, z);
 				int contentsGround = Terrain.ExtractContents(cellGround);
 				if (!m_allowedBlockIndices.Contains(contentsGround)) continue;
 
-				// Verificar que la celda donde se pondrá el cofre esté vacía
 				int cellAbove = m_subsystemTerrain.Terrain.GetCellValue(x, groundY + 1, z);
 				if (Terrain.ExtractContents(cellAbove) != 0) continue;
 
-				// Colocar el cofre
 				int data = GetChestFacingData(playerPos, new Vector3(x + 0.5f, groundY + 1, z + 0.5f));
 				int chestValue = Terrain.MakeBlockValue(ChestBlock.Index, 0, data);
 				m_subsystemTerrain.ChangeCell(x, groundY + 1, z, chestValue);
 
-				// Programar la inserción del objeto con un pequeño retraso
-				System.Timers.Timer timer = new System.Timers.Timer(100); // 0.1 segundos
+				System.Timers.Timer timer = new System.Timers.Timer(100);
 				timer.Elapsed += (sender, e) =>
 				{
 					timer.Stop();
 					timer.Dispose();
 					Dispatcher.Dispatch(() =>
 					{
-						// Buscar la entidad del cofre después del retraso
 						var blockEntities = Project.FindSubsystem<SubsystemBlockEntities>(true);
 						var blockEntity = blockEntities.GetBlockEntity(x, groundY + 1, z);
 						if (blockEntity != null)
@@ -652,13 +658,12 @@ namespace Game
 							}
 						}
 
-						// Si no se encontró, eliminar el cofre y registrar error
 						m_subsystemTerrain.ChangeCell(x, groundY + 1, z, 0);
 						Log.Error($"[SubsystemZombiesSpawn] No se pudo agregar la carta al cofre en ({x},{groundY + 1},{z})");
 					});
 				};
 				timer.Start();
-				return; // Éxito, se programó la inserción
+				return;
 			}
 
 			Log.Error("[SubsystemZombiesSpawn] No se pudo colocar el cofre con la carta cerca del jugador.");
@@ -767,14 +772,31 @@ namespace Game
 				}
 			}
 
+			// ===== OPTIMIZACIÓN: ACTUALIZAR CACHÉ DE CONTADORES =====
+			m_cacheUpdateTimer += dt;
+			if (m_cacheUpdateTimer >= CacheUpdateInterval)
+			{
+				m_cacheUpdateTimer = 0f;
+				m_cachedSkeletonCount = CountSkeletonsFromBodies(false);
+				m_cachedSpiderCount = CountSpidersFromBodies();
+			}
+
 			// ===== SPAWN DE ARAÑAS (SOLO SUPERFICIE) =====
 			if (ShittyCreaturesSettingsManager.SpiderSpawnEnabled)
 			{
 				if (m_skeletonNewSpawnChunks.Count > 0 && isNormalNight && !isGreenNightActive)
 				{
-					foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
+					int processed = 0;
+					for (int i = m_skeletonNewChunkIndex; i < m_skeletonNewSpawnChunks.Count && processed < 3; i++)
 					{
-						SpawnNormalSpidersInChunk(chunk, SpiderNormalNewChunkAttempts);
+						SpawnNormalSpidersInChunk(m_skeletonNewSpawnChunks[i], SpiderNormalNewChunkAttempts);
+						processed++;
+						m_skeletonNewChunkIndex++;
+					}
+					if (m_skeletonNewChunkIndex >= m_skeletonNewSpawnChunks.Count)
+					{
+						m_skeletonNewSpawnChunks.Clear();
+						m_skeletonNewChunkIndex = 0;
 					}
 				}
 
@@ -801,7 +823,7 @@ namespace Game
 				m_spiderConstantSpawnCooldown = SpiderConstantSpawnCooldownTime;
 			}
 
-			// ===== SPAWN DE ESQUELETOS (sin cambios) =====
+			// ===== SPAWN DE ESQUELETOS =====
 			if (ShittyCreaturesSettingsManager.SkeletonSpawnEnabled)
 			{
 				if (m_skeletonNewSpawnChunks.Count > 0)
@@ -809,12 +831,24 @@ namespace Game
 					if (isNormalNight && !isGreenNightActive)
 					{
 						m_skeletonNewSpawnChunks.RandomShuffle((int max) => m_random.Int(0, max - 1));
-						foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
+						int processed = 0;
+						for (int i = m_skeletonNewChunkIndex; i < m_skeletonNewSpawnChunks.Count && processed < 3; i++)
 						{
-							SpawnNormalSkeletonsInChunk(chunk, SkeletonNormalNewChunkAttempts);
+							SpawnNormalSkeletonsInChunk(m_skeletonNewSpawnChunks[i], SkeletonNormalNewChunkAttempts);
+							processed++;
+							m_skeletonNewChunkIndex++;
+						}
+						if (m_skeletonNewChunkIndex >= m_skeletonNewSpawnChunks.Count)
+						{
+							m_skeletonNewSpawnChunks.Clear();
+							m_skeletonNewChunkIndex = 0;
 						}
 					}
-					m_skeletonNewSpawnChunks.Clear();
+					else
+					{
+						m_skeletonNewSpawnChunks.Clear();
+						m_skeletonNewChunkIndex = 0;
+					}
 				}
 
 				if (!isNormalNight || isGreenNightActive)
@@ -1010,7 +1044,7 @@ namespace Game
 		// ===== SPAWN NORMAL DE ESQUELETOS =====
 		private void SpawnNormalSkeletonsInChunk(SpawnChunk chunk, int maxAttempts)
 		{
-			int currentCount = CountSkeletons(false);
+			int currentCount = m_cachedSkeletonCount;
 			if (currentCount >= SkeletonNormalTotalLimit)
 				return;
 
@@ -1087,7 +1121,7 @@ namespace Game
 				? SkeletonConstantTotalLimitChallenging
 				: SkeletonConstantTotalLimitNormal;
 
-			int currentCount = CountSkeletons(true);
+			int currentCount = m_cachedSkeletonCount;
 			if (currentCount >= totalLimit)
 				return;
 
@@ -1157,7 +1191,7 @@ namespace Game
 			if (y > topHeight + 2)
 				return 0f;
 
-			int currentCount = CountSkeletons(true);
+			int currentCount = m_cachedSkeletonCount;
 			int totalLimit = (m_subsystemGameInfo.WorldSettings.GameMode >= GameMode.Challenging)
 				? SkeletonConstantTotalLimitChallenging
 				: SkeletonConstantTotalLimitNormal;
@@ -1278,6 +1312,11 @@ namespace Game
 
 		private int CountSkeletons(bool constantSpawn)
 		{
+			return m_cachedSkeletonCount;
+		}
+
+		private int CountSkeletonsFromBodies(bool constantSpawn)
+		{
 			int count = 0;
 			foreach (ComponentBody body in m_subsystemBodies.Bodies)
 			{
@@ -1329,13 +1368,45 @@ namespace Game
 			if (mode == TimeOfDayMode.Day || mode == TimeOfDayMode.Sunrise)
 				return false;
 
-			// Usar la hora del día para determinar si es noche
 			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 			float dusk = m_subsystemTimeOfDay.DuskStart;
 			float dawn = m_subsystemTimeOfDay.DawnStart;
 			return timeOfDay >= dusk || timeOfDay < dawn;
 		}
 		// ===== FIN MÉTODOS COMPARTIDOS =====
+
+		// ===== OPTIMIZACIÓN: VERSIÓN OPTIMIZADA DE GetRandomWeightedEntry =====
+		private WaveEntry GetRandomWeightedEntry(List<WaveEntry> entries)
+		{
+			if (entries == null || entries.Count == 0) return null;
+
+			if (m_waveCumulativeWeights.TryGetValue(m_currentWave, out int[] cumulative))
+			{
+				int totalWeightCumulative = cumulative[cumulative.Length - 1];
+				if (totalWeightCumulative <= 0) return null;
+				int random = m_random.Int(0, totalWeightCumulative - 1);
+				int index = Array.BinarySearch(cumulative, random);
+				if (index < 0) index = ~index;
+				if (index >= entries.Count) index = entries.Count - 1;
+				return entries[index];
+			}
+
+			// Fallback al método original
+			int totalWeightFallback = entries.Sum(e => e.Weight);
+			if (totalWeightFallback <= 0) return null;
+
+			int r = m_random.Int(0, totalWeightFallback - 1);
+			int cumulative2 = 0;
+
+			foreach (var e in entries)
+			{
+				cumulative2 += e.Weight;
+				if (r < cumulative2)
+					return e;
+			}
+
+			return entries.LastOrDefault();
+		}
 
 		private int TrySpawnGroup()
 		{
@@ -1564,6 +1635,21 @@ namespace Game
 				m_waves[1] = defaultWave;
 				Log.Warning("Usando oleada por defecto de emergencia.");
 			}
+
+			// ===== OPTIMIZACIÓN: PRECALCULAR PESOS ACUMULADOS =====
+			m_waveCumulativeWeights.Clear();
+			foreach (var kvp in m_waves)
+			{
+				var entries = kvp.Value;
+				int[] cumulative = new int[entries.Count];
+				int sum = 0;
+				for (int i = 0; i < entries.Count; i++)
+				{
+					sum += entries[i].Weight;
+					cumulative[i] = sum;
+				}
+				m_waveCumulativeWeights[kvp.Key] = cumulative;
+			}
 		}
 
 		private void SetCurrentWave(int wave)
@@ -1708,7 +1794,6 @@ namespace Game
 			if (m_bossQueue.Count == 0)
 			{
 				m_bossBattleActive = false;
-				// El flag se activa solo al final de la noche en OnNaturalNightEnded
 			}
 			else
 			{
@@ -1835,24 +1920,6 @@ namespace Game
 			return Vector3.Zero;
 		}
 
-		private WaveEntry GetRandomWeightedEntry(List<WaveEntry> entries)
-		{
-			int totalWeight = entries.Sum(e => e.Weight);
-			if (totalWeight <= 0) return null;
-
-			int r = m_random.Int(0, totalWeight - 1);
-			int cumulative = 0;
-
-			foreach (var e in entries)
-			{
-				cumulative += e.Weight;
-				if (r < cumulative)
-					return e;
-			}
-
-			return entries.LastOrDefault();
-		}
-
 		private void SendMessageToAllPlayers(string className, string key, Color color)
 		{
 			string message = LanguageControl.Get(className, key);
@@ -1940,7 +2007,7 @@ namespace Game
 		// ===== SPAWN NORMAL DE INFECTED SPIDER (SUPERFICIE) =====
 		private void SpawnNormalSpidersInChunk(SpawnChunk chunk, int maxAttempts)
 		{
-			int currentCount = CountSpidersInWorld();
+			int currentCount = m_cachedSpiderCount;
 			if (currentCount >= SpiderNormalTotalLimit)
 				return;
 
@@ -1985,7 +2052,7 @@ namespace Game
 				? SpiderConstantTotalLimitChallenging
 				: SpiderConstantTotalLimitNormal;
 
-			int currentCount = CountSpidersInWorld();
+			int currentCount = m_cachedSpiderCount;
 			if (currentCount >= totalLimit)
 				return;
 
@@ -2026,6 +2093,11 @@ namespace Game
 		}
 
 		private int CountSpidersInWorld()
+		{
+			return m_cachedSpiderCount;
+		}
+
+		private int CountSpidersFromBodies()
 		{
 			int count = 0;
 			foreach (ComponentBody body in m_subsystemBodies.Bodies)
@@ -2125,10 +2197,6 @@ namespace Game
 		}
 		// ===== FIN SPAWN DE INFECTED SPIDER =====
 
-		/// <summary>
-		/// Spawnea los jefes definidos en la ola actual a medianoche.
-		/// Solo se usa para oleadas normales (no la final).
-		/// </summary>
 		private void SpawnMidnightBosses()
 		{
 			if (m_currentWaveEntries == null || m_currentWaveEntries.Count == 0)
@@ -2172,7 +2240,6 @@ namespace Game
 			}
 		}
 
-		// Método para reiniciar las oleadas
 		public void ResetWaves()
 		{
 			m_currentWave = 1;
