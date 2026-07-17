@@ -552,6 +552,9 @@
         <Recipe Result="AntidoteBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="teaantiflubucket" b="purpleflower" Description="[0]">
     "ab"
 </Recipe>
+<Recipe Result="BoiledWaterBucketBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
+    "aa"
+</Recipe>
 <Recipe Result="TeaAntifluBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="waterbucket" b="tallgrass" Description="[0]">
     "ab"
 </Recipe>
@@ -593,9 +596,6 @@
 </Recipe>
 <Recipe Result="TeaAntifluBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="boiledwaterbowl" b="tallgrass" Description="[0]">
     "ab"
-</Recipe>
-<Recipe Result="BoiledWaterBucketBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
-    "a"
 </Recipe>
         </Smelting>
     </Recipes>
