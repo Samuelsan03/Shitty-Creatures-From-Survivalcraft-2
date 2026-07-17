@@ -80,7 +80,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="3601992e-a18f-430f-8860-3101b89d599a">
         <Parameter Name="Mass" Guid="6c0086a9-adc6-4347-855b-975759304db4" Value="999" Type="float"/>
@@ -209,7 +209,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewInventory" Guid="416816e5-f69f-4fd3-816b-bd085731f70f" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
   <ParameterSet Name="CreatureItems">
@@ -400,7 +400,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="d2183f44-fd48-4882-bdb6-2f475e425a05" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
@@ -507,7 +507,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="582a45dd-5e7a-4d16-b9a1-4a7044841b64">
         <Parameter Name="Mass" Guid="4f5af964-70cf-4a34-a618-631b6f6c4417" Value="999" Type="float"/>
@@ -655,7 +655,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="f622f2fb-5cfd-4157-9f0e-bf3d433e6303">
         <Parameter Name="Mass" Guid="b2623d42-aebe-47b5-b4c3-1862f072d9d7" Value="999" Type="float"/>
@@ -803,7 +803,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="db8f7bb1-8cb3-4a41-920a-29abb78ff3ac">
         <Parameter Name="Mass" Guid="2f394c71-def3-411c-9af8-46bbdaa4c64c" Value="999" Type="float"/>
@@ -1108,7 +1108,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="aaf0a76f-6c01-4d28-9545-a3f378619f9d">
         <Parameter Name="Mass" Guid="29b7d123-4686-4ed5-a0f2-a47c322be980" Value="999" Type="float"/>
@@ -1256,7 +1256,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="26838e36-3949-472a-a71f-043a1dac9671">
         <Parameter Name="Mass" Guid="45a0738d-d1b5-41e1-9fbb-f27839a4f2f4" Value="999" Type="float"/>
@@ -1404,7 +1404,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="5133b180-0089-47ae-8ca9-b9c2ede5e7e2">
         <Parameter Name="Mass" Guid="cccfba51-57be-4933-b27d-7c891d58bc31" Value="999" Type="float"/>
@@ -1866,7 +1866,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="9ebcb514-c6de-4782-ab46-a824617435f1">
         <Parameter Name="Mass" Guid="d46de97b-6095-423d-9743-746f4c7fe001" Value="999" Type="float"/>
@@ -2014,7 +2014,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="7c8cec6b-cd8c-493a-8a39-b709ca90d6f4">
         <Parameter Name="Mass" Guid="34e7a7d2-0400-4ec2-b26b-af8fcbcd86ad" Value="999" Type="float"/>
@@ -2163,7 +2163,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="a28c6609-54c7-4d6e-ae67-dd9d4c1ffa5c">
         <Parameter Name="Mass" Guid="de02d9a3-6fd3-447c-a088-2b0ab7330e7a" Value="999" Type="float"/>
@@ -2443,7 +2443,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="0.5" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.05" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditHerdBehavior" Guid="29416a7e-8614-4f6f-a314-ae2001ee250e" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
@@ -2704,7 +2704,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
     <Parameter Name="CanHealSelf" Value="true" Type="bool"/>
-    <Parameter Name="SelfHealProbability" Value="0.5" Type="float"/>
+    <Parameter Name="SelfHealProbability" Value="0.1" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="BanditHerdBehavior" Guid="f40c5d9a-49a4-4540-8277-6306cf7aeabc" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
