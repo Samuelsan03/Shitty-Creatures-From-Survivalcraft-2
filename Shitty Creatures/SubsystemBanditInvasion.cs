@@ -50,8 +50,8 @@ namespace Game
 		private static readonly HashSet<string> m_banditNames = new HashSet<string>
 		{
 			"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
-			"Bandit6", "Bandit7", "Bandit8", "Bandit9", "Bandit10",
-			"Bandit11", "Bandit13", "Bandit14", "Bandit15", "Bandit16"
+			"Bandit6", "Bandit8", "Bandit9", "Bandit10",
+	        "Bandit13", "Bandit14", "Bandit15", "Bandit16"
 		};
 
 		private int m_killsByPlayer;
@@ -269,8 +269,8 @@ namespace Game
 				m_bandits.Add(new BanditSpawnData("Bandit1", 2, 0.45f));
 				m_bandits.Add(new BanditSpawnData("Bandit2", 2, 0.40f));
 				m_bandits.Add(new BanditSpawnData("Bandit3", 1, 0.25f));
-				m_bandits.Add(new BanditSpawnData("Bandit7", 3, 0.55f));
-				m_bandits.Add(new BanditSpawnData("Bandit11", 2, 0.45f));
+				m_bandits.Add(new BanditSpawnData("Bandit8", 3, 0.55f));
+				m_bandits.Add(new BanditSpawnData("Bandit9", 2, 0.45f));
 			}
 			else
 			{
