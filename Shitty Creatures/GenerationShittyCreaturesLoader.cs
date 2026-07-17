@@ -45,6 +45,7 @@ namespace Game
 			SubsystemGameInfo gameInfo = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemGameInfo>(true);
 			SubsystemSky sky = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemSky>(true);
 			SubsystemSeasons seasons = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemSeasons>(true);
+			SubsystemTerrain terrain = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemTerrain>(true);
 			Season currentSeason = seasons.Season;
 
 			// Función auxiliar: detectar si un punto está cerca del agua
@@ -669,8 +670,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 28. FIREARMS DEALER - 10% probabilidad - CUALQUIER HORA, ESTACIÓN, UBICACIÓN
-			// ==========================================
+			// 28. FIREARMS DEALER - 10% probabilidad - CUALQUIER HORA, ESTACIÓN, UBICACIÓN            // ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FirearmsDealer", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
@@ -682,6 +682,36 @@ namespace Game
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
 					return spawnBandit(ct, point, "FirearmsDealer");
+				}
+			});
+
+			// ==========================================
+			// 29. CAVE SPIDER - SPAWN EN CUEVAS (SIEMPRE ACTIVO, CONTROLADO POR SpiderSpawnEnabled)
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("CaveSpider", SpawnLocationType.Cave, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					// Solo spawnear si la configuración de arañas está activada
+					if (!ShittyCreaturesSettingsManager.SpiderSpawnEnabled)
+						return 0f;
+
+					// Verificar que sea un bloque de cueva válido
+					int cellValue = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int contents = Terrain.ExtractContents(cellValue);
+
+					// Bloques de cueva: Stone=2, Dirt=3, Gravel=4, GravelBlock=66, Sandstone=67, Clay=7
+					if (contents == 2 || contents == 3 || contents == 4 ||
+						contents == 66 || contents == 67 || contents == 7)
+					{
+						return 1.0f;
+					}
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					// Spawnear una sola araña por punto
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "InfectedSpider", point, 1).Count;
 				}
 			});
 		}
