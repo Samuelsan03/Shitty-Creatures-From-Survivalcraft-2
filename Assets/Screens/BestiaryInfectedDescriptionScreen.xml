@@ -4,7 +4,7 @@
 
   <StackPanelWidget Direction="Horizontal">
 
-    <CanvasWidget Style="{Widgets/TopBarContents}" >
+    <CanvasWidget Style="{Widgets/InfectedsTopBar}" >
       <LabelWidget Name="TopBar.Label" Text="[BestiaryInfectedDescriptionScreen:1]" />
     </CanvasWidget>
 
