@@ -195,7 +195,9 @@
 "142": "El creador se arrepiente",
 "143": "Has demostrado que no hay límites para el sufrimiento humano. El desarrollador ya no sabe qué más inventar. Te mereces un premio por tu terquedad.",
 "144": "Expediente cerrado",
-"145": "El caso de la narcotraficante más buscada del continente ha sido resuelto. No preguntes cómo, no preguntes por qué. Solo acepta las monedas y olvida que viste algo. El gobierno te lo agradece."
+"145": "El caso de la narcotraficante más buscada del continente ha sido resuelto. No preguntes cómo, no preguntes por qué. Solo acepta las monedas y olvida que viste algo. El gobierno te lo agradece.",
+"146": "Doctor Muerte (o algo así)",
+"147": "Has curado 50 veces a aliados y criaturas. La junta médica te ha retirado la licencia por practicar sin ética, pero al menos no te han mordido la cara... todavía. ¿Sanador o carnicero? La línea es borrosa cuando hay monedas de por medio."
   },
   "AchievementsMessages": {
     "0": "¡LOGRO {0} DESBLOQUEADO!",
@@ -1527,6 +1529,13 @@
 }
 },
   "ContentWidgets": {
+    "BestiaryInfectedScreen": {
+    "1": "Bestiario de Infectados"
+},
+"BestiaryInfectedDescriptionScreen": {
+    "1": "Descripción de Infectado",
+    "2": "Botín:"
+},
     "LetterWarDialog": {
       "Title": "CARTA DE GUERRA",
       "AcceptButton": "ACEPTAR",
