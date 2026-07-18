@@ -506,6 +506,33 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		public override void OnMainMenuScreenCreated(MainMenuScreen mainMenuScreen, StackPanelWidget leftBottomBar, StackPanelWidget rightBottomBar)
 		{
+			// ===== NUEVO BOTÓN BESTIARIO ZOMBI (verde) =====
+			BevelledButtonWidget zombieBestiaryButton = new BevelledButtonWidget
+			{
+				Name = "ZombieBestiaryButton",
+				Size = new Vector2(60f, 60f),
+				BevelColor = new Color(0, 128, 0),   // verde oscuro
+				CenterColor = new Color(0, 128, 0)   // mismo color para que el botón sea uniforme
+			};
+
+			RectangleWidget iconZombie = new RectangleWidget
+			{
+				Size = new Vector2(28f, 28f),
+				TextureLinearFilter = true,
+				HorizontalAlignment = WidgetAlignment.Center,
+				VerticalAlignment = WidgetAlignment.Center,
+				Subtexture = ContentManager.Get<Subtexture>("Textures/Gui/zombi icono"),
+				OutlineColor = Color.Transparent,
+				FillColor = Color.White,
+				IsVisible = true,
+				TextureAnisotropicFilter = true,
+				BlendState = BlendState.NonPremultiplied
+			};
+			zombieBestiaryButton.Children.Add(iconZombie);
+
+			// Insertar al final de la barra derecha (o donde prefieras)
+			rightBottomBar.Children.Add(zombieBestiaryButton);
+
 			// ----- Nuevo: enlace de TikTok (encima del copyright) -----
 			var bottomInfos = mainMenuScreen.Children.Find<StackPanelWidget>("BottomInfos", true);
 			if (bottomInfos != null)
@@ -742,6 +769,14 @@ namespace Game
 			MainMenuScreen mainMenu = widget as MainMenuScreen;
 			if (mainMenu != null)
 			{
+				// Botón de bestiario infectado
+				BevelledButtonWidget zombieButton = mainMenu.Children.Find<BevelledButtonWidget>("ZombieBestiaryButton", false);
+				if (zombieButton != null && zombieButton.IsClicked)
+				{
+					if (ScreensManager.FindScreen<BestiaryInfectedScreen>("BestiaryInfected") == null)
+						ScreensManager.AddScreen("BestiaryInfected", new BestiaryInfectedScreen());
+					ScreensManager.SwitchScreen("BestiaryInfected");
+				}
 				// Botón de Agradecimientos
 				BevelledButtonWidget thanksButton = mainMenu.Children.Find<BevelledButtonWidget>("SpecialThanksButton", false);
 				if (thanksButton != null && thanksButton.IsClicked)
