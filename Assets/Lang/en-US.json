@@ -195,7 +195,9 @@
 "142": "The creator regrets it",
 "143": "You have proven that there are no limits to human suffering. The developer no longer knows what else to invent. You deserve an award for your stubbornness.",
 "144": "Case closed",
-  "145": "The case of the continent's most wanted female drug trafficker has been resolved. Don't ask how, don't ask why. Just take the coins and forget you ever saw anything. The government thanks you."
+  "145": "The case of the continent's most wanted female drug trafficker has been resolved. Don't ask how, don't ask why. Just take the coins and forget you ever saw anything. The government thanks you.",
+  "146": "Dr. Death (or something like that)",
+  "147": "You have healed allies and creatures 50 times. The medical board has revoked your license for practicing without ethics, but at least they haven't bitten your face off... yet. Healer or butcher? The line gets blurry when there are coins involved."
   },
   "TypesOfAchievements": {
     "0": "Type",
@@ -1525,6 +1527,14 @@
 }
 },
       "ContentWidgets": {
+        "BestiaryInfectedScreen": {
+    "1": "Infected Bestiary"
+},
+"BestiaryInfectedDescriptionScreen": {
+    "1": "Infected Description",
+    "2": "Loot:"
+}
+,
         "LetterWarDialog": {
     "Title": "WAR LETTER",
     "AcceptButton": "ACCEPT",
