@@ -76,27 +76,47 @@ namespace Game
 			m_nameWidget.Text = info.DisplayName;
 			m_descriptionWidget.Text = info.Description;
 
-			// Propiedades 1
+			// ===== PROPIEDADES - COLUMNA 1 =====
 			m_propertyNames1Widget.Text = string.Empty;
 			m_propertyValues1Widget.Text = string.Empty;
-			AddProperty("resilience", info.AttackResilience.ToString("0.0"));
-			AddProperty("attack", info.AttackPower > 0f ? info.AttackPower.ToString("0.0") : LanguageControl.None);
-			AddProperty("herding", info.IsHerding ? LanguageControl.Yes : LanguageControl.No);
-			AddProperty("rideable", info.CanBeRidden ? LanguageControl.Yes : LanguageControl.No);
+
+			m_propertyNames1Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", "resilience");
+			m_propertyValues1Widget.Text += info.AttackResilience.ToString("0.0") + "\n";
+
+			m_propertyNames1Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", "attack");
+			m_propertyValues1Widget.Text += (info.AttackPower > 0f ? info.AttackPower.ToString("0.0") : LanguageControl.None) + "\n";
+
+			m_propertyNames1Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", "herding");
+			m_propertyValues1Widget.Text += (info.IsHerding ? LanguageControl.Yes : LanguageControl.No) + "\n";
+
+			// Clave "1" para "rideable" (igual que en el bestiario original)
+			m_propertyNames1Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", "1");
+			m_propertyValues1Widget.Text += (info.CanBeRidden ? LanguageControl.Yes : LanguageControl.No) + "\n";
+
 			m_propertyNames1Widget.Text = m_propertyNames1Widget.Text.TrimEnd();
 			m_propertyValues1Widget.Text = m_propertyValues1Widget.Text.TrimEnd();
 
-			// Propiedades 2
+			// ===== PROPIEDADES - COLUMNA 2 =====
 			m_propertyNames2Widget.Text = string.Empty;
 			m_propertyValues2Widget.Text = string.Empty;
-			AddProperty2("speed", (info.MovementSpeed * 3.6).ToString("0") + LanguageControl.Get("BestiaryDescriptionScreen", "speed unit"));
-			AddProperty2("jump height", info.JumpHeight.ToString("0.0") + LanguageControl.Get("BestiaryDescriptionScreen", "length unit"));
-			AddProperty2("weight", info.Mass.ToString() + LanguageControl.Get("BestiaryDescriptionScreen", "weight unit"));
-			AddProperty2("egg", info.HasSpawnerEgg ? LanguageControl.Exists : LanguageControl.None);
+
+			m_propertyNames2Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", "speed");
+			m_propertyValues2Widget.Text += (info.MovementSpeed * 3.6).ToString("0") + LanguageControl.Get("BestiaryDescriptionScreen", "speed unit") + "\n";
+
+			m_propertyNames2Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", "jump height");
+			m_propertyValues2Widget.Text += info.JumpHeight.ToString("0.0") + LanguageControl.Get("BestiaryDescriptionScreen", "length unit") + "\n";
+
+			m_propertyNames2Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", "weight");
+			m_propertyValues2Widget.Text += info.Mass.ToString() + LanguageControl.Get("BestiaryDescriptionScreen", "weight unit") + "\n";
+
+			// Huevo: usa la misma clave que el bestiario original (desde BlocksManager)
+			m_propertyNames2Widget.Text += LanguageControl.Get("BlocksManager", "Spawner Eggs") + ":";
+			m_propertyValues2Widget.Text += (info.HasSpawnerEgg ? LanguageControl.Exists : LanguageControl.None) + "\n";
+
 			m_propertyNames2Widget.Text = m_propertyNames2Widget.Text.TrimEnd();
 			m_propertyValues2Widget.Text = m_propertyValues2Widget.Text.TrimEnd();
 
-			// Loot
+			// ===== LOOT =====
 			m_dropsPanel.Children.Clear();
 			if (info.Loot.Count > 0)
 			{
@@ -110,36 +130,38 @@ namespace Game
 					else
 						countText = loot.MinCount.ToString();
 					if (loot.Probability < 1f)
-						countText += string.Format(LanguageControl.Get("BestiaryDescriptionScreen", 2), (loot.Probability * 100f).ToString("0"));
+						countText += string.Format(LanguageControl.Get("BestiaryDescriptionScreen", "2"), (loot.Probability * 100f).ToString("0"));
 
 					m_dropsPanel.Children.Add(new StackPanelWidget
 					{
 						Margin = new Vector2(20f, 0f),
 						Children =
 						{
-							new BlockIconWidget { Size = new Vector2(32f), Scale = 1.2f, VerticalAlignment = WidgetAlignment.Center, Value = loot.Value },
+							new BlockIconWidget
+							{
+								Size = new Vector2(32f),
+								Scale = 1.2f,
+								VerticalAlignment = WidgetAlignment.Center,
+								Value = loot.Value
+							},
 							new CanvasWidget { Size = new Vector2(10f, 0f) },
-							new LabelWidget { VerticalAlignment = WidgetAlignment.Center, Text = countText }
+							new LabelWidget
+							{
+								VerticalAlignment = WidgetAlignment.Center,
+								Text = countText
+							}
 						}
 					});
 				}
 			}
 			else
 			{
-				m_dropsPanel.Children.Add(new LabelWidget { Margin = new Vector2(20f, 0f), Text = LanguageControl.Nothing });
+				m_dropsPanel.Children.Add(new LabelWidget
+				{
+					Margin = new Vector2(20f, 0f),
+					Text = LanguageControl.Nothing
+				});
 			}
-		}
-
-		private void AddProperty(string key, string value)
-		{
-			m_propertyNames1Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", key) + "\n";
-			m_propertyValues1Widget.Text += value + "\n";
-		}
-
-		private void AddProperty2(string key, string value)
-		{
-			m_propertyNames2Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", key) + "\n";
-			m_propertyValues2Widget.Text += value + "\n";
 		}
 	}
 }
