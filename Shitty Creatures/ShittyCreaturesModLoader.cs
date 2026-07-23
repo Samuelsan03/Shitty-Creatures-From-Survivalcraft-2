@@ -1625,17 +1625,41 @@ namespace Game
 				CommandAlliesToAttack(targetPlayer, attackerCreature);
 			}
 
-			// ===== NUEVO: Daño letal en dificultad Impossible para ataques de criaturas =====
-			// Usar un nombre diferente para evitar conflicto con la variable targetPlayer de arriba
 			ComponentPlayer playerTarget = targetBody.Entity.FindComponent<ComponentPlayer>();
 			if (miner.ComponentCreature != null && miner.ComponentPlayer == null && playerTarget != null)
 			{
 				var greenNight = playerTarget.Project.FindSubsystem<SubsystemGreenNightSky>(true);
-				if (greenNight != null && greenNight.DifficultyMode == DifficultyMode.Impossible)
+				if (greenNight != null && greenNight.DifficultyMode == DifficultyMode.Impossible && greenNight.IsGreenNightActive)
 				{
-					attackPower = 999999f;
-					hitProbability = 1f;
-					hitProbability2 = 1f;
+					// Verificar si el jugador tiene armadura
+					bool hasArmor = false;
+					ComponentClothing clothing = playerTarget.Entity.FindComponent<ComponentClothing>();
+					if (clothing != null)
+					{
+						foreach (var slot in ClothingSlot.ClothingSlots.Values)
+						{
+							var clothes = clothing.GetClothes(slot);
+							foreach (int value in clothes)
+							{
+								var data = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetClothingData(value);
+								if (data != null && data.ArmorProtection > 0f)
+								{
+									hasArmor = true;
+									break;
+								}
+							}
+							if (hasArmor) break;
+						}
+					}
+
+					// SOLO aplicar daño letal si NO tiene armadura
+					if (!hasArmor)
+					{
+						attackPower = 999999f;
+						hitProbability = 1f;
+						hitProbability2 = 1f;
+					}
+					// Si tiene armadura, NO modificamos attackPower (ya tiene el valor multiplicado por dificultad)
 				}
 			}
 		}
@@ -2234,12 +2258,11 @@ namespace Game
 
 		public override void OnProjectileHitBody(Projectile projectile, BodyRaycastResult bodyRaycastResult, ref Attackment attackment, ref Vector3 velocityAfterAttack, ref Vector3 angularVelocityAfterAttack, ref bool ignoreBody)
 		{
-			// Obtener el nombre del bloque del proyectil
+			// ─── Lógica para balas personalizadas (ya existente) ───
 			int blockIndex = Terrain.ExtractContents(projectile.Value);
 			Block block = BlocksManager.Blocks[blockIndex];
 			string blockName = block.GetType().Name;
 
-			// Verificar si es una de las balas personalizadas
 			if (blockName == "NuevaBala" ||
 				blockName == "NuevaBala2" ||
 				blockName == "NuevaBala3" ||
@@ -2255,7 +2278,47 @@ namespace Game
 				attackment.StunTimeSet = 0f;
 			}
 
-			// ----- Ordenar ataque de aliados cuando el jugador DISPARA y golpea a una criatura -----
+			// ─── NUEVO: Protección contra rocas grandes si hay armadura ───
+			// Verificamos nuevamente si es una roca grande (usando blockIndex)
+			if (blockIndex == BigStoneChunkBlock.Index ||
+				blockIndex == BigStoneFlameChunkBlock.Index ||
+				blockIndex == BigStoneFrozenChunkBlock.Index ||
+				blockIndex == BigStonePoisonChunkBlock.Index)
+			{
+				ComponentPlayer targetPlayer = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentPlayer>();
+				if (targetPlayer != null)
+				{
+					ComponentClothing clothing = targetPlayer.Entity.FindComponent<ComponentClothing>();
+					bool hasArmor = false;
+					if (clothing != null)
+					{
+						foreach (var slot in ClothingSlot.ClothingSlots.Values)
+						{
+							var clothes = clothing.GetClothes(slot);
+							foreach (int value in clothes)
+							{
+								var data = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetClothingData(value);
+								if (data != null && data.ArmorProtection > 0f)
+								{
+									hasArmor = true;
+									break;
+								}
+							}
+							if (hasArmor) break;
+						}
+					}
+
+					if (hasArmor)
+					{
+						// Anula el daño de la roca
+						attackment.AttackPower = 0f;
+						// Mantenemos el impulso y aturdimiento ya modificados arriba
+					}
+				}
+			}
+
+			// ─── Lógica de aliados (ya existente) ───
+			// Ordenar ataque de aliados cuando el jugador DISPARA y golpea a una criatura
 			if (ShittyCreaturesSettingsManager.PunchCommandEnabled)
 			{
 				ComponentCreature targetCreature = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentCreature>();
@@ -2269,7 +2332,7 @@ namespace Game
 				}
 			}
 
-			// ----- NUEVO: Ordenar ataque de aliados cuando el jugador RECIBE un proyectil -----
+			// ─── Lógica de aliados cuando el jugador RECIBE un proyectil ───
 			ComponentPlayer hitPlayer = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentPlayer>();
 			if (hitPlayer != null && projectile.Owner != null && hitPlayer != projectile.Owner)
 			{
@@ -3444,9 +3507,56 @@ namespace Game
 					ComponentCreature targetCreature = attackment.Target.FindComponent<ComponentCreature>();
 					if (targetCreature != null && targetCreature.ComponentHealth != null)
 					{
-						// Crear un Injury con daño 0 para simular el impacto
 						Injury zeroInjury = new AttackInjury(0f, attackment);
 						targetCreature.ComponentHealth.Injured?.Invoke(zeroInjury);
+					}
+				}
+			}
+
+			// ─── DAÑO LETAL EN MODO IMPOSSIBLE SOLO PARA ZOMBIS DE MANADA ───
+			// SOLO si el jugador NO tiene armadura
+			ComponentPlayer targetPlayer = attackment.Target.FindComponent<ComponentPlayer>();
+			if (targetPlayer != null)
+			{
+				ComponentCreature attackerCreature = attackment.Attacker?.FindComponent<ComponentCreature>();
+				if (attackerCreature != null)
+				{
+					// Verificar si el atacante es un zombi con comportamiento de manada
+					ComponentZombieHerdBehavior zombieHerd = attackerCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
+					if (zombieHerd != null)
+					{
+						var greenNight = targetPlayer.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+						if (greenNight != null && greenNight.DifficultyMode == DifficultyMode.Impossible && greenNight.IsGreenNightActive)
+						{
+							// Verificar si el jugador tiene armadura
+							bool hasArmor = false;
+							ComponentClothing clothing = targetPlayer.Entity.FindComponent<ComponentClothing>();
+							if (clothing != null)
+							{
+								foreach (var slot in ClothingSlot.ClothingSlots.Values)
+								{
+									var clothes = clothing.GetClothes(slot);
+									foreach (int value in clothes)
+									{
+										var data = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetClothingData(value);
+										if (data != null && data.ArmorProtection > 0f)
+										{
+											hasArmor = true;
+											break;
+										}
+									}
+									if (hasArmor) break;
+								}
+							}
+
+							// SOLO aplicar daño letal si NO tiene armadura
+							if (!hasArmor)
+							{
+								attackment.AttackPower = 999999f; // Daño letal
+							}
+							// Si tiene armadura, NO modificamos attackment.AttackPower
+							// (ya tiene el valor multiplicado por dificultad de EnforceCombatStatsByDifficulty)
+						}
 					}
 				}
 			}
