@@ -415,18 +415,13 @@ namespace Game
 			if (playerWon)
 			{
 				m_hasBeenDefeated = true;
-
+				// ⬇️ CORRECCIÓN: Restaurar estadísticas originales
+				RestoreOriginalStats();   // <--- Agregar esta línea
 				if (m_herd != null)
 					m_herd.HerdName = "player";
 
-				// ✅ SOLO mostrar mensaje de victoria si el jugador activó el UMBRAL
-				// (no cuando la criatura murió realmente)
 				string victoryMsg = LanguageControl.Get("ComponentInfiniteChallenge", 1);
-				m_challenger?.ComponentGui?.DisplaySmallMessage(
-					victoryMsg,
-					new Color(100, 255, 100),
-					false,
-					true);
+				m_challenger?.ComponentGui?.DisplaySmallMessage(victoryMsg, new Color(100, 255, 100), false, true);
 
 				// Desbloquear logro
 				if (m_challenger != null)
@@ -439,23 +434,16 @@ namespace Game
 			}
 			else if (playerDied)
 			{
-				// Jugador murió durante el duelo
-				RestoreOriginalStats();
-
+				RestoreOriginalStats();   // Ya estaba presente
 				if (m_herd != null)
 					m_herd.HerdName = m_originalHerdName ?? "player";
-
 				m_state = ChallengeState.Idle;
 			}
 			else
 			{
-				// Infinite fue derrotado por otra causa (muerte real, daño ambiental, etc.)
-				// ✅ NO mostrar mensaje de victoria, solo restaurar todo
-				RestoreOriginalStats();
-
+				RestoreOriginalStats();   // Ya estaba presente
 				if (m_herd != null)
 					m_herd.HerdName = m_originalHerdName ?? "player";
-
 				m_state = ChallengeState.Idle;
 			}
 
