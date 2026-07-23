@@ -531,137 +531,137 @@ namespace Game
 				leave: null
 			);
 
-			            m_stateMachine.AddState("Collect",
-                enter: () =>
-                {
-                    m_collectTime = m_random.Float(0.5f, 0.5f);
-                    m_blockedTime = 0f;
-                },
-                update: () =>
-                {
-                    if (IsAnyChaseActive)
-                    {
-                        m_stateMachine.TransitionTo("Inactive");
-                        m_importanceLevel = 0f;
-                        return;
-                    }
+			m_stateMachine.AddState("Collect",
+	enter: () =>
+	{
+		m_collectTime = m_random.Float(0.5f, 0.5f);
+		m_blockedTime = 0f;
+	},
+	update: () =>
+	{
+		if (IsAnyChaseActive)
+		{
+			m_stateMachine.TransitionTo("Inactive");
+			m_importanceLevel = 0f;
+			return;
+		}
 
-                    if (!IsActive)
-                    {
-                        m_stateMachine.TransitionTo("Inactive");
-                        return;
-                    }
+		if (!IsActive)
+		{
+			m_stateMachine.TransitionTo("Inactive");
+			return;
+		}
 
-                    if (m_targetPickable == null)
-                    {
-                        m_importanceLevel = 0f;
-                        m_stateMachine.TransitionTo("Inactive");
-                        return;
-                    }
+		if (m_targetPickable == null)
+		{
+			m_importanceLevel = 0f;
+			m_stateMachine.TransitionTo("Inactive");
+			return;
+		}
 
-                    Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-                    Vector3 targetPos = m_targetPickable.Position;
-                    
-                    // Distancia horizontal ignorando la diferencia de altura exacta de los ojos
-                    float distSq = Vector3.DistanceSquared(
-                        new Vector3(eyePos.X, m_componentCreature.ComponentBody.Position.Y, eyePos.Z),
-                        targetPos
-                    );
+		Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+		Vector3 targetPos = m_targetPickable.Position;
 
-					// === NUEVA LÓGICA DE MIRA (FIELD OF VIEW) ===
-					Vector3 forward = Vector3.Transform(-Vector3.UnitZ, m_componentCreature.ComponentCreatureModel.EyeRotation);
-					Vector3 toTarget = targetPos - eyePos;
-                    float distanceToTarget = MathF.Sqrt(distSq > 0f ? distSq : 0f);
-                    
-                    if (distanceToTarget > 0.001f)
-                    {
-                        toTarget /= distanceToTarget; // Normalizar
-                    }
-                    else
-                    {
-                        toTarget = forward; // Si está exactamente encima, asumir que mira hacia adelante
-                    }
+		// Distancia horizontal ignorando la diferencia de altura exacta de los ojos
+		float distSq = Vector3.DistanceSquared(
+			new Vector3(eyePos.X, m_componentCreature.ComponentBody.Position.Y, eyePos.Z),
+			targetPos
+		);
 
-                    float dot = Vector3.Dot(forward, toTarget);
-                    float angle = MathF.Acos(MathUtils.Clamp(dot, -1f, 1f));
-                    float maxVisionAngle = MathUtils.DegToRad(60f); // 60 grados de visión
+		// === NUEVA LÓGICA DE MIRA (FIELD OF VIEW) ===
+		Vector3 forward = Vector3.Transform(-Vector3.UnitZ, m_componentCreature.ComponentCreatureModel.EyeRotation);
+		Vector3 toTarget = targetPos - eyePos;
+		float distanceToTarget = MathF.Sqrt(distSq > 0f ? distSq : 0f);
 
-                    // Si el objeto NO está en su mira, volver a moverse para girar
-                    if (angle > maxVisionAngle)
-                    {
-                        m_stateMachine.TransitionTo("Move");
-                        return;
-                    }
-					// === FIN LÓGICA DE MIRA ===
+		if (distanceToTarget > 0.001f)
+		{
+			toTarget /= distanceToTarget; // Normalizar
+		}
+		else
+		{
+			toTarget = forward; // Si está exactamente encima, asumir que mira hacia adelante
+		}
 
-					// Si está en la mira Y lo suficientemente cerca, recolectar
-					if (distSq < 0.64f) // ~0.8 bloques de distancia
-					{
-						// --- VERIFICACIÓN ADICIONAL DE ESPACIO ---
-						if (!HasSpaceForPickable(m_targetPickable))
-						{
-							m_interestingPickables.Remove(m_targetPickable);
-							m_targetPickable = null;
-							m_importanceLevel = 0f;
-							m_stateMachine.TransitionTo("Inactive");
-							return;
-						}
+		float dot = Vector3.Dot(forward, toTarget);
+		float angle = MathF.Acos(MathUtils.Clamp(dot, -1f, 1f));
+		float maxVisionAngle = MathUtils.DegToRad(60f); // 60 grados de visión
 
-						m_collectTime -= m_subsystemTime.GameTimeDelta;
-						m_blockedTime = 0f;
+		// Si el objeto NO está en su mira, volver a moverse para girar
+		if (angle > maxVisionAngle)
+		{
+			m_stateMachine.TransitionTo("Move");
+			return;
+		}
+		// === FIN LÓGICA DE MIRA ===
 
-						if (m_collectTime <= 0f)
-						{
-							CollectPickable(m_targetPickable);
-							m_importanceLevel = 0f;
-							m_stateMachine.TransitionTo("Inactive");
-						}
-					}
-					else
-                    {
-                        // Está en la mira pero demasiado lejos, dar un pasito más
-                        float eyeOffset = Vector3.Distance(
-                            m_componentCreature.ComponentCreatureModel.EyePosition,
-                            m_componentCreature.ComponentBody.Position
-                        );
+		// Si está en la mira Y lo suficientemente cerca, recolectar
+		if (distSq < 0.64f) // ~0.8 bloques de distancia
+		{
+			// --- VERIFICACIÓN ADICIONAL DE ESPACIO ---
+			if (!HasSpaceForPickable(m_targetPickable))
+			{
+				m_interestingPickables.Remove(m_targetPickable);
+				m_targetPickable = null;
+				m_importanceLevel = 0f;
+				m_stateMachine.TransitionTo("Inactive");
+				return;
+			}
 
-                        m_componentPathfinding.SetDestination(
-                            new Vector3?(m_targetPickable.Position),
-                            0.3f,
-                            0.5f + eyeOffset,
-                            0,
-                            false, true, false, null
-                        );
+			m_collectTime -= m_subsystemTime.GameTimeDelta;
+			m_blockedTime = 0f;
 
-                        m_blockedTime += m_subsystemTime.GameTimeDelta;
+			if (m_collectTime <= 0f)
+			{
+				CollectPickable(m_targetPickable);
+				m_importanceLevel = 0f;
+				m_stateMachine.TransitionTo("Inactive");
+			}
+		}
+		else
+		{
+			// Está en la mira pero demasiado lejos, dar un pasito más
+			float eyeOffset = Vector3.Distance(
+				m_componentCreature.ComponentCreatureModel.EyePosition,
+				m_componentCreature.ComponentBody.Position
+			);
 
-                        if (m_blockedTime > 3f)
-                        {
-                            m_blockedCount++;
-                            if (m_blockedCount >= 3)
-                            {
-                                m_importanceLevel = 0f;
-                                m_stateMachine.TransitionTo("Inactive");
-                            }
-                            else
-                            {
-                                m_stateMachine.TransitionTo("Move");
-                            }
-                        }
-                    }
+			m_componentPathfinding.SetDestination(
+				new Vector3?(m_targetPickable.Position),
+				0.3f,
+				0.5f + eyeOffset,
+				0,
+				false, true, false, null
+			);
 
-                    if (m_targetPickable != null)
-                    {
-                        m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(m_targetPickable.Position);
-                    }
+			m_blockedTime += m_subsystemTime.GameTimeDelta;
 
-                    if (m_random.Float(0f, 1f) < 0.1f * m_subsystemTime.GameTimeDelta)
-                    {
-                        m_componentCreature.ComponentCreatureSounds?.PlayIdleSound(true);
-                    }
-                },
-                leave: null
-            );
+			if (m_blockedTime > 3f)
+			{
+				m_blockedCount++;
+				if (m_blockedCount >= 3)
+				{
+					m_importanceLevel = 0f;
+					m_stateMachine.TransitionTo("Inactive");
+				}
+				else
+				{
+					m_stateMachine.TransitionTo("Move");
+				}
+			}
+		}
+
+		if (m_targetPickable != null)
+		{
+			m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(m_targetPickable.Position);
+		}
+
+		if (m_random.Float(0f, 1f) < 0.1f * m_subsystemTime.GameTimeDelta)
+		{
+			m_componentCreature.ComponentCreatureSounds?.PlayIdleSound(true);
+		}
+	},
+	leave: null
+);
 		}
 
 		private bool IsActive => m_importanceLevel > 0f && m_targetPickable != null && !m_targetPickable.ToRemove;
@@ -967,18 +967,20 @@ namespace Game
 				else
 				{
 					float mainChoice = m_random.Float(0f, 1f);
-					if (mainChoice < 0.55f)
+					if (mainChoice < 0.01f)
 					{
-						firstSlotValue = GetRandomMelee();
-						secondSlotValue = GetInfectedRangedOrFirearm();
-					}
-					else if (mainChoice < 0.90f)
-					{
+						// 1% de probabilidad total: armas a distancia o de fuego
 						firstSlotValue = GetInfectedRangedOrFirearm();
 						secondSlotValue = GetRandomMelee();
 					}
-					else
+					else if (mainChoice < 0.55f)
 					{
+						// 50% de probabilidad: arma cuerpo a cuerpo
+						firstSlotValue = GetRandomMelee();
+					}
+					else if (mainChoice < 0.75f)
+					{
+						// 20% de probabilidad: objetos lanzables
 						float throwChoice = m_random.Float(0f, 1f);
 						if (throwChoice < 0.50f)
 						{
@@ -1016,6 +1018,7 @@ namespace Game
 							}
 						}
 					}
+					// else 25%: inventario vacío (normal)
 				}
 
 				if (firstSlotValue > 0) AddSafe(firstSlotValue);
