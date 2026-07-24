@@ -125,7 +125,7 @@ namespace Game
 			}
 
 			// Ordenar por nombre
-			foreach (BestiaryCreatureInfo item in list.OrderBy(ci => ci.DisplayName))
+			foreach (BestiaryCreatureInfo item in list)
 			{
 				m_creaturesList.AddItem(item);
 			}
