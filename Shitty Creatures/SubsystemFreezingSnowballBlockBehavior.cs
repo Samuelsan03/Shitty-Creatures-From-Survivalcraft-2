@@ -45,22 +45,62 @@ namespace Game
 					if (creature is ComponentPlayer player)
 					{
 						Entity targetEntity = player.Entity;
-						int impactNumber = 0;
+
+						// ============================================
+						// VERIFICAR SI EL JUGADOR FUE CURADO
+						// ============================================
+						// Se resetea el contador si CUALQUIERA de estas condiciones se cumple:
+						// 1. La temperatura subió por encima de 6.5f (la bola más baja es 6f en paso 1)
+						// 2. El jugador debería tener gripe (paso 3+) pero ya no la tiene
+						bool shouldReset = false;
+
+						if (m_playerImpactCount.TryGetValue(targetEntity, out int previousImpactCount) && previousImpactCount > 0)
+						{
+							// Condición 1: Temperatura indica curación
+							if (player.ComponentVitalStats != null && player.ComponentVitalStats.Temperature > 6.5f)
+							{
+								shouldReset = true;
+							}
+							// Condición 2: Gripe fue curada (solo aplica si ya estaba en paso 3+)
+							else if (previousImpactCount >= 3)
+							{
+								if (player.ComponentFlu == null || !player.ComponentFlu.HasFlu)
+								{
+									shouldReset = true;
+								}
+							}
+						}
+
+						// Resetear el contador si fue curado
+						if (shouldReset)
+						{
+							m_playerImpactCount[targetEntity] = 0;
+						}
+
+						// ============================================
+						// CALCULAR NÚMERO DE IMPACTO
+						// ============================================
+						int impactNumber;
 						if (m_playerImpactCount.ContainsKey(targetEntity))
 						{
-							impactNumber = m_playerImpactCount[targetEntity];
-							m_playerImpactCount[targetEntity] = impactNumber + 1;
+							impactNumber = m_playerImpactCount[targetEntity] + 1;
 						}
 						else
 						{
-							m_playerImpactCount.Add(targetEntity, 1);
 							impactNumber = 1;
 						}
+						m_playerImpactCount[targetEntity] = impactNumber;
 
+						// ============================================
+						// APLICAR EFECTOS
+						// ============================================
 						ApplyFreezingEffectsToPlayer(player, impactNumber);
 
+						// Resetear después del 4to impacto (después de matar)
 						if (impactNumber >= 4)
+						{
 							m_playerImpactCount[targetEntity] = 0;
+						}
 					}
 					else
 					{
