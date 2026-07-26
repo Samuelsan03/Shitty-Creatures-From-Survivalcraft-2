@@ -828,7 +828,9 @@ namespace Game
 				// Botón "Salir"
 				BevelledButtonWidget exitButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyExitButton", false);
 				if (exitButton != null && exitButton.IsClicked)
-					Environment.Exit(0);
+				{
+					Window.Close();
+				}
 
 				// Efecto arcoíris en el copyright del mod (se busca dentro de mainMenu)
 				LabelWidget modCopyrightLabel = mainMenu.Children.Find<LabelWidget>("ModCopyrightLabel", true);
