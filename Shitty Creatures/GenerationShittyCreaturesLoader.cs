@@ -17,11 +17,10 @@ namespace Game
 			ModsManager.RegisterHook("OnProjectLoaded", this);
 		}
 
-		// ==================== CARGA DEL PROYECTO (reemplazar generador de terreno) ====================
+		// ==================== CARGA DEL PROYECTO ====================
 		public override void OnProjectLoaded(Project project)
 		{
-			// Inicializar los pinceles de árboles frutales (reinicializar siempre)
-			ShittyPlantsManager.Initialize(); // FORZAR reinicialización
+			ShittyPlantsManager.Initialize();
 
 			SubsystemTerrain terrainSubsystem = project.FindSubsystem<SubsystemTerrain>(true);
 			if (terrainSubsystem != null)
@@ -63,7 +62,7 @@ namespace Game
 				return spawnSys.SpawnCreatures(ct, templateName, point, count).Count;
 			};
 
-			// Función auxiliar para verificar bloque de suelo válido (para bandits) - IGUAL QUE EL ORIGINAL
+			// Función auxiliar para verificar bloque de suelo válido (para bandits)
 			Func<Point3, bool> isValidGround = delegate (Point3 point)
 			{
 				int cellValue = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
@@ -120,7 +119,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 3. PIRATA HOSTIL COMERCIANTE (día ≥ 35) - solo
+			// 3. PIRATA HOSTIL COMERCIANTE (día ≥ 35)
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("PirataHostilComerciante", SpawnLocationType.Surface, true, false)
 			{
@@ -137,7 +136,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 4. CAPITÁN PIRATA (día ≥ 55) - solo
+			// 4. CAPITÁN PIRATA (día ≥ 55)
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("CapitanPirata", SpawnLocationType.Surface, true, false)
 			{
@@ -356,7 +355,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 11. BANDIT1 - 20% probabilidad - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// 11. BANDIT1 - 20% probabilidad
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit1", SpawnLocationType.Surface, true, false)
 			{
@@ -373,7 +372,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 12. BANDIT2 - 10% probabilidad - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// 12. BANDIT2 - 10% probabilidad
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit2", SpawnLocationType.Surface, true, false)
 			{
@@ -462,7 +461,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 17. BANDIT7 - 45% probabilidad - CUALQUIER HORA
+			// 17. BANDIT7 - 45% probabilidad
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit7", SpawnLocationType.Surface, true, false)
 			{
@@ -479,7 +478,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 18. BANDIT8 - 5% probabilidad - SOLO DE DÍA, SOLO OTOÑO
+			// 18. BANDIT8 - 5% probabilidad - SOLO DE DÍA, OTOÑO
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit8", SpawnLocationType.Surface, true, false)
 			{
@@ -499,7 +498,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 19. BANDIT9 - 5% probabilidad - SOLO DE DÍA, SOLO OTOÑO
+			// 19. BANDIT9 - 5% probabilidad - SOLO DE DÍA, OTOÑO
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit9", SpawnLocationType.Surface, true, false)
 			{
@@ -519,7 +518,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 20. BANDIT10 - 10% probabilidad - SOLO DE NOCHE, SOLO INVIERNO
+			// 20. BANDIT10 - 10% probabilidad - SOLO DE NOCHE, INVIERNO
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit10", SpawnLocationType.Surface, true, false)
 			{
@@ -539,7 +538,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 21. BANDIT11 - 45% probabilidad - CUALQUIER HORA
+			// 21. BANDIT11 - 45% probabilidad
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit11", SpawnLocationType.Surface, true, false)
 			{
@@ -556,7 +555,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 22. BANDIT12 - 5% probabilidad - SOLO DE DÍA, SOLO PRIMAVERA
+			// 22. BANDIT12 - 5% probabilidad - SOLO DE DÍA, PRIMAVERA
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit12", SpawnLocationType.Surface, true, false)
 			{
@@ -670,7 +669,8 @@ namespace Game
 			});
 
 			// ==========================================
-			// 28. FIREARMS DEALER - 10% probabilidad - CUALQUIER HORA, ESTACIÓN, UBICACIÓN            // ==========================================
+			// 28. FIREARMS DEALER
+			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FirearmsDealer", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
@@ -686,21 +686,18 @@ namespace Game
 			});
 
 			// ==========================================
-			// 29. CAVE SPIDER - SPAWN EN CUEVAS (SIEMPRE ACTIVO, CONTROLADO POR SpiderSpawnEnabled)
+			// 29. CAVE SPIDER - SPAWN EN CUEVAS
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("CaveSpider", SpawnLocationType.Cave, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
-					// Solo spawnear si la configuración de arañas está activada
 					if (!ShittyCreaturesSettingsManager.SpiderSpawnEnabled)
 						return 0f;
 
-					// Verificar que sea un bloque de cueva válido
 					int cellValue = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(cellValue);
 
-					// Bloques de cueva: Stone=2, Dirt=3, Gravel=4, GravelBlock=66, Sandstone=67, Clay=7
 					if (contents == 2 || contents == 3 || contents == 4 ||
 						contents == 66 || contents == 67 || contents == 7)
 					{
@@ -710,10 +707,102 @@ namespace Game
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
-					// Spawnear una sola araña por punto
 					return subsystemCreatureSpawn.SpawnCreatures(ct, "InfectedSpider", point, 1).Count;
 				}
 			});
+
+			// ==========================================
+			// 30. CRIATURAS DE NOCHE VERDE (SPAWN CONSTANTE)
+			// ==========================================
+			// Todas las criaturas del XML de oleadas
+			string[] greenNightCreatures = new string[]
+			{
+	"InfectedBird", "InfectedNormal1", "InfectedNormal2",
+	"InfectedFly1", "InfectedFreezer", "FrozenGhost",
+	"InfectedFast1", "InfectedFast2", "InfectedMuscle1", "InfectedMuscle2",
+	"PoisonousInfected1", "PoisonousInfected2", "InfectedFly2",
+	"Boomer1", "InfectedHyena", "InfectedWolf",
+	"Boomer2", "PredatoryChameleon", "InfectedWerewolf", "InfectedFly3",
+	"Boomer3", "PoisonousGhost", "Charger1",
+	"GhostFast", "Charger2",
+	"GhostNormal", "GhostBoomer1", "InfectedWildboar",
+	"GhostBoomer2", "InfectedBear",
+	"GhostBoomer3", "FlyingInfectedBoss",
+	"BoomerFrozen", "FrozenGhostBoomer", "GhostCharger",
+	"Tank1", "Tank2", "Tank3", "FrozenTank",
+	"TankGhost1", "TankGhost2", "TankGhost3",
+	"FrozenTankGhost", "MachineGunInfected"
+			};
+
+			// Registrar cada criatura como spawn constante de noche verde
+			foreach (string creatureName in greenNightCreatures)
+			{
+				// Excluir esqueletos y arañas (ya tienen sus propios sistemas)
+				if (creatureName == "HumanoidSkeleton" || creatureName == "InfectedSpider")
+					continue;
+
+				bool isFlying = creatureName == "InfectedFly1" || creatureName == "InfectedFly2" || creatureName == "InfectedFly3" ||
+								creatureName == "FlyingInfectedBoss" || creatureName == "InfectedBird";
+
+				creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType(creatureName, SpawnLocationType.Surface, false, true) // constantSpawn = true
+				{
+					SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+					{
+						// Solo spawn durante noche verde
+						SubsystemGreenNightSky greenNight = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+						if (greenNight == null || !greenNight.IsGreenNightActive)
+							return 0f;
+
+						// Solo de noche
+						if (sky.SkyLightIntensity >= 0.1f)
+							return 0f;
+
+						// Para voladores, spawn en el aire
+						if (isFlying)
+						{
+							int surfaceHeight = terrain.Terrain.GetTopHeight(point.X, point.Z);
+							int airY = surfaceHeight + 20 + subsystemCreatureSpawn.m_random.Int(0, 30);
+							if (airY >= 10 && airY <= 255)
+								return 1.0f;
+							return 0f;
+						}
+
+						// Para criaturas terrestres
+						if (point.Y <= 3 || point.Y >= 253)
+							return 0f;
+
+						int cellBelow = terrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+						int cellCurrent = terrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+						int cellAbove = terrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+
+						Block blockBelow = BlocksManager.Blocks[Terrain.ExtractContents(cellBelow)];
+						Block blockCurrent = BlocksManager.Blocks[Terrain.ExtractContents(cellCurrent)];
+						Block blockAbove = BlocksManager.Blocks[Terrain.ExtractContents(cellAbove)];
+
+						bool belowSolid = (blockBelow.IsCollidable_(cellBelow) || blockBelow is WaterBlock);
+						bool currentEmpty = (!blockCurrent.IsCollidable_(cellCurrent) && !(blockCurrent is WaterBlock));
+						bool aboveEmpty = (!blockAbove.IsCollidable_(cellAbove) && !(blockAbove is WaterBlock));
+
+						if (!belowSolid || !currentEmpty || !aboveEmpty)
+							return 0f;
+
+						int belowContents = Terrain.ExtractContents(cellBelow);
+						if (belowContents != 2 && belowContents != 3 && belowContents != 7 && belowContents != 8)
+							return 0f;
+
+						int groundHeight = terrain.Terrain.GetTopHeight(point.X, point.Z);
+						if (point.Y > groundHeight + 2)
+							return 0f;
+
+						return 1.0f;
+					},
+					SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+					{
+						// El spawn real se maneja desde SubsystemZombiesSpawn
+						return 0;
+					}
+				});
+			}
 		}
 	}
 }
