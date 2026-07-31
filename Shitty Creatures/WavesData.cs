@@ -16,7 +16,6 @@ namespace Game
 			// 1. Intentar cargar con ContentManager (recomendado)
 			try
 			{
-				// Ruta esperada: Waves/Waves Programming.xml en los recursos del mod
 				root = ContentManager.Get<XElement>("Waves/Waves Programming");
 			}
 			catch (Exception ex)
@@ -86,11 +85,18 @@ namespace Game
 					foreach (var entryElement in waveElement.Elements("Entry"))
 					{
 						string templateName = (string)entryElement.Attribute("template");
-						int count = (int)entryElement.Attribute("count");
 
-						if (!string.IsNullOrEmpty(templateName) && count > 0)
+						// Atributo "count" opcional, si no existe peso = 1
+						int weight = 1;
+						var countAttr = entryElement.Attribute("count");
+						if (countAttr != null)
 						{
-							entries.Add(new WaveEntry(templateName, count));
+							weight = (int)countAttr;
+						}
+
+						if (!string.IsNullOrEmpty(templateName) && weight > 0)
+						{
+							entries.Add(new WaveEntry(templateName, weight));
 						}
 					}
 
