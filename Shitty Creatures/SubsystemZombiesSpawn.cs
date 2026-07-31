@@ -29,14 +29,41 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
-		// Flag para indicar que el bloqueo de Impossible está desactivado para aliados
-		public bool ImpossibleBlockDisabledForAllies { get; set; } = false;
+		// ===== PROPIEDADES PÚBLICAS PARA DIÁLOGOS Y COMPONENTES =====
 		public bool HasExtremeCompleted => m_extremeCompletionDialogShown;
+		public bool HasAcceptedImpossibleChallenge => m_hasAcceptedImpossibleChallenge;
+		public bool ImpossibleBlockDisabledForAllies { get; set; } = false;
 
 		private bool m_extremeCompletionDialogShown = false;
-
-		public bool HasAcceptedImpossibleChallenge => m_hasAcceptedImpossibleChallenge;
 		private bool m_hasAcceptedImpossibleChallenge = false;
+
+		public void ForceUpdateDifficultyLabel()
+		{
+			if (m_difficultyLabel == null) return;
+			string difficultyText = GetDifficultyLocalizedName();
+			string format = LanguageControl.Get("ZombiesSpawn", "CurrentDifficulty");
+			m_difficultyLabel.Text = string.Format(format, difficultyText);
+		}
+
+		public void ResetWaves()
+		{
+			m_currentWave = 1;
+			SetCurrentWave(1);
+			m_hasSpawnedBossThisNight = false;
+			m_bossBattleActive = false;
+			m_bossSpawnDelayed = false;
+			m_bossQueue.Clear();
+			m_currentBossEntity = null;
+			ImpossibleBlockDisabledForAllies = false;
+		}
+
+		public void SetAcceptedImpossibleChallenge(bool accepted)
+		{
+			m_hasAcceptedImpossibleChallenge = accepted;
+		}
+
+		// Flag para indicar que el bloqueo de Impossible está desactivado para aliados
+		private bool m_hasShownUnlockMessage = false;
 
 		// ===== RETRASO DE SPAWN AL INICIO DE NOCHE VERDE =====
 		private float m_greenNightSpawnDelayTimer = 0f;
@@ -153,7 +180,7 @@ namespace Game
 		private bool m_isAdvancingWave = false;
 
 		// Control de mensaje de desbloqueo
-		private bool m_hasShownUnlockMessage = false;
+		private bool m_hasShownUnlockMessageLocal = false;
 
 		// Label estático para la cuenta regresiva
 		private LabelWidget m_countdownLabel;
@@ -212,6 +239,9 @@ namespace Game
 		public int MaxWave => m_waves.Keys.Max();
 		public bool IsAllWavesCompleted => m_currentWave >= MaxWave && !m_bossBattleActive;
 
+		// ==========================================
+		// LOAD
+		// ==========================================
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			m_nightEndProcessed = false;
@@ -237,7 +267,7 @@ namespace Game
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 
 			m_letterWarSpawned = valuesDictionary.GetValue<bool>("LetterWarSpawned", false);
-			m_hasShownUnlockMessage = valuesDictionary.GetValue<bool>("HasShownUnlockMessage", false);
+			m_hasShownUnlockMessageLocal = valuesDictionary.GetValue<bool>("HasShownUnlockMessage", false);
 			m_midnightBossesSpawnedThisNight = valuesDictionary.GetValue<bool>("MidnightBossesSpawnedThisNight", false);
 			ImpossibleBlockDisabledForAllies = valuesDictionary.GetValue<bool>("ImpossibleBlockDisabledForAllies", false);
 			m_lastTimeOfDay = m_subsystemTimeOfDay.TimeOfDay;
@@ -443,14 +473,6 @@ namespace Game
 			stackPanel.IsVisible = true;
 		}
 
-		public void ForceUpdateDifficultyLabel()
-		{
-			if (m_difficultyLabel == null) return;
-			string difficultyText = GetDifficultyLocalizedName();
-			string format = LanguageControl.Get("ZombiesSpawn", "CurrentDifficulty");
-			m_difficultyLabel.Text = string.Format(format, difficultyText);
-		}
-
 		private int GetDaysUntilNextGreenNight()
 		{
 			if (!m_subsystemGreenNightSky.GreenNightEnabled)
@@ -536,7 +558,7 @@ namespace Game
 				ImpossibleBlockDisabledForAllies = true;
 			}
 
-			if (oldWave == maxWave && !m_hasShownUnlockMessage)
+			if (oldWave == maxWave && !m_hasShownUnlockMessageLocal)
 			{
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
@@ -552,9 +574,9 @@ namespace Game
 						timer1.Dispose();
 						Dispatcher.Dispatch(() =>
 						{
-							if (!m_hasShownUnlockMessage)
+							if (!m_hasShownUnlockMessageLocal)
 							{
-								m_hasShownUnlockMessage = true;
+								m_hasShownUnlockMessageLocal = true;
 
 								string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
 								string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
@@ -583,7 +605,7 @@ namespace Game
 				}
 				else
 				{
-					m_hasShownUnlockMessage = true;
+					m_hasShownUnlockMessageLocal = true;
 					string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
 					string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
 					foreach (var player in m_subsystemPlayers.ComponentPlayers)
@@ -685,7 +707,7 @@ namespace Game
 		{
 			valuesDictionary.SetValue("CurrentWave", m_currentWave);
 			valuesDictionary.SetValue("LetterWarSpawned", m_letterWarSpawned);
-			valuesDictionary.SetValue("HasShownUnlockMessage", m_hasShownUnlockMessage);
+			valuesDictionary.SetValue("HasShownUnlockMessage", m_hasShownUnlockMessageLocal);
 
 			valuesDictionary.SetValue("BossBattleActive", m_bossBattleActive);
 			valuesDictionary.SetValue("HasSpawnedBossThisNight", m_hasSpawnedBossThisNight);
@@ -1419,6 +1441,10 @@ namespace Game
 			if (entry == null || BossTemplates.Contains(entry.TemplateName))
 				return 0;
 
+			// EXCLUIR esqueletos (ya tienen su propio sistema)
+			if (entry.TemplateName == "HumanoidSkeleton" || entry.TemplateName == "InfectedSpider")
+				return 0;
+
 			Vector3 spawnPos;
 			bool isFlying = FlyingTemplates.Contains(entry.TemplateName);
 			if (isFlying)
@@ -1466,6 +1492,10 @@ namespace Game
 			{
 				var extraEntry = GetRandomWeightedEntry(m_currentWaveEntries);
 				if (extraEntry == null || BossTemplates.Contains(extraEntry.TemplateName))
+					continue;
+
+				// EXCLUIR esqueletos y arañas también en el grupo
+				if (extraEntry.TemplateName == "HumanoidSkeleton" || extraEntry.TemplateName == "InfectedSpider")
 					continue;
 
 				bool extraIsFlying = FlyingTemplates.Contains(extraEntry.TemplateName);
@@ -2238,24 +2268,6 @@ namespace Game
 			{
 				m_subsystemAudio.PlaySound("Audio/UI/Tank Warning Sound", 1f, 0f, 0f, 0f);
 			}
-		}
-
-		public void ResetWaves()
-		{
-			m_currentWave = 1;
-			SetCurrentWave(1);
-			m_hasSpawnedBossThisNight = false;
-			m_bossBattleActive = false;
-			m_bossSpawnDelayed = false;
-			m_bossQueue.Clear();
-			m_currentBossEntity = null;
-
-			ImpossibleBlockDisabledForAllies = false;
-		}
-
-		public void SetAcceptedImpossibleChallenge(bool accepted)
-		{
-			m_hasAcceptedImpossibleChallenge = accepted;
 		}
 	}
 }
