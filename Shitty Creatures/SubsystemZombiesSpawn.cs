@@ -464,6 +464,8 @@ namespace Game
 			int daysLeft = GetDaysUntilNextGreenNight();
 			if (daysLeft == 0)
 				m_countdownLabel.Text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
+			else if (daysLeft == 1)
+				m_countdownLabel.Text = LanguageControl.Get("ZombiesSpawn", "TheyComeIn1Day");
 			else
 				m_countdownLabel.Text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
 
