@@ -359,6 +359,7 @@
   "WaveMessage": "You are in wave {0}!",
   "TheyComeTonight": "They are coming…",
   "TheyComeInXDays": "They come in {0} days",
+  "TheyComeIn1Day": "They arrive in 1 day",
   "CurrentDifficulty": "Mental State: {0}",
   "FinalWave": "Final Wave has begun!",
   "BossTank": "A Tank has appeared!",
