@@ -28,6 +28,9 @@ namespace Game
 		public float m_launchAnimationTimer = 0f;
 		public bool m_isLaunching = false;
 
+		// Distancia mínima para lanzar (si la presa está más cerca, no lanza)
+		public Vector2 m_minimumLaunchDistance = new Vector2(5f, 0f);
+
 		// Referencias a otros componentes
 		public ComponentCreature m_componentCreature;
 		public ComponentTankModel m_componentTankModel;
@@ -175,6 +178,15 @@ namespace Game
 					Vector3 v = target.ComponentBody.Position - launchPosition;
 					m_distance = v.Length();
 
+					// Verificar distancia mínima - si la presa está muy cerca, no lanza
+					if (m_distance <= m_minimumLaunchDistance.X)
+					{
+						m_ChargeTime = 1.0;
+						m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
+						m_stateMachine.Update();
+						return;
+					}
+
 					// Animación de manos
 					ComponentHumanModel componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
 					bool flag3 = componentHumanModel != null;
@@ -285,6 +297,10 @@ namespace Game
 			if (!HasLineOfSight(target))
 				return false;
 
+			// Verificar distancia mínima
+			if (m_distance <= m_minimumLaunchDistance.X)
+				return false;
+
 			return true;
 		}
 
@@ -311,6 +327,11 @@ namespace Game
 			Vector3 aimPoint = target.ComponentBody.Position + new Vector3(0f, target.ComponentBody.StanceBoxSize.Y * TargetHeightFactor, 0f);
 			Vector3 direction = aimPoint - launchPosition;
 			float distance = direction.Length();
+
+			// Verificar distancia mínima en ForceLaunch también
+			if (distance <= m_minimumLaunchDistance.X)
+				return;
+
 			float speed = MathUtils.Lerp(MinLaunchSpeed, MaxLaunchSpeed, distance / 20f);
 			Vector3 velocity = Vector3.Normalize(direction) * speed + new Vector3(0f, VerticalBoost, 0f);
 
