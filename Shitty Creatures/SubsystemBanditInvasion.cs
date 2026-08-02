@@ -17,20 +17,14 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private SubsystemPlayers m_subsystemPlayers;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
+		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
 		private Random m_random = new Random();
 
 		public event Action InvasionCompleted;
 
 		private List<BanditSpawnData> m_bandits = new List<BanditSpawnData>();
 		private float m_totalProbabilitySum;
-
-		// ===== OPTIMIZACIÓN: pesos acumulados =====
 		private float[] m_cumulativeProbabilities;
-
-		// ===== OPTIMIZACIÓN: caché de conteo =====
-		private int m_cachedBanditCount = 0;
-		private float m_cacheUpdateTimer = 0f;
-		private const float CacheUpdateInterval = 2f;
 
 		private bool m_acceptedWar;
 		private bool m_invasionActive;
@@ -51,13 +45,16 @@ namespace Game
 		{
 			"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
 			"Bandit6", "Bandit8", "Bandit9", "Bandit10",
-	        "Bandit13", "Bandit14", "Bandit15", "Bandit16"
+			"Bandit13", "Bandit14", "Bandit15", "Bandit16"
 		};
 
 		private int m_killsByPlayer;
 		private bool m_bossUnlocked;
 		private bool m_bossSpawnedThisWar;
-		private HashSet<int> m_banditDeathCounted = new HashSet<int>();
+
+		private float m_spawnTimer;
+		private float m_spawnInterval = 2.0f;
+		private const int MaxSpawnsPerFrame = 2;
 
 		public bool IsWarAccepted => m_acceptedWar;
 		public bool IsWarRejected => m_wasRejected;
@@ -65,12 +62,6 @@ namespace Game
 		public bool WasGreenNightActiveDuringInvasion => m_greenNightWasActiveDuringInvasion;
 		public bool IsInInitialDelay => m_inInitialDelay;
 		public float RemainingInitialDelay => m_inInitialDelay ? Math.Max(0f, InitialSpawnDelay - m_initialDelayTimer) : 0f;
-
-		private float m_spawnTimer;
-		private float m_spawnInterval = 3.0f;
-		private const int MaxBanditsPerArea = 8;
-		private const int MaxGlobalBandits = 35;
-		private const int MaxSpawnsPerFrame = 2;
 
 		private bool m_wasEffectiveInvasionTime;
 
@@ -98,6 +89,7 @@ namespace Game
 				m_bossUnlocked = false;
 				m_bossSpawnedThisWar = false;
 
+				RegisterBanditsForSpawn();
 				return;
 			}
 
@@ -112,7 +104,69 @@ namespace Game
 				m_initialDelayTimer = 0f;
 
 				m_bossSpawnedThisWar = false;
+
+				RegisterBanditsForSpawn();
 			}
+		}
+
+		private void RegisterBanditsForSpawn()
+		{
+			if (m_subsystemCreatureSpawn == null) return;
+
+			foreach (var banditData in m_bandits)
+			{
+				string name = banditData.Name;
+				bool exists = m_subsystemCreatureSpawn.m_creatureTypes.Any(ct => ct.Name == name);
+				if (!exists)
+				{
+					var creatureType = new SubsystemCreatureSpawn.CreatureType(name, SpawnLocationType.Surface, true, true)
+					{
+						SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+						{
+							if (m_invasionActive && IsValidSpawnPoint(point))
+								return 1.0f;
+							return 0f;
+						},
+						SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+						{
+							int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+							Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+							List<Entity> entities = m_subsystemCreatureSpawn.SpawnCreatures(ct, name, correctedPoint, 1);
+							if (entities.Count > 0 && m_invasionActive)
+							{
+								Entity entity = entities[0];
+								var banditChase = entity.FindComponent<ComponentBanditChaseBehavior>();
+								if (banditChase != null)
+								{
+									banditChase.IsDrugTraffickerMode = true;
+								}
+							}
+							return entities.Count;
+						}
+					};
+					m_subsystemCreatureSpawn.m_creatureTypes.Add(creatureType);
+				}
+			}
+		}
+
+		private bool IsValidSpawnPoint(Point3 point)
+		{
+			if (point.Y <= 3 || point.Y >= 253)
+				return false;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			bool isValidGround = block is GrassBlock || block is DirtBlock || block is SandBlock || block is GravelBlock;
+			bool currentEmpty = (!block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock));
+			bool aboveEmpty = (!block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock));
+
+			return isValidGround && currentEmpty && aboveEmpty;
 		}
 
 		private void SetAllBanditsDrugTraffickerMode(bool enabled)
@@ -152,6 +206,7 @@ namespace Game
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(false);
+			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
 
 			LoadBanditsFromXml();
 
@@ -173,10 +228,6 @@ namespace Game
 			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 			m_restoredFromSave = true;
 
-			// ===== OPTIMIZACIÓN: inicializar caché =====
-			m_cachedBanditCount = CountBanditsFromBodies();
-			m_cacheUpdateTimer = 0f;
-
 			if (m_invasionCompleted)
 			{
 				m_invasionActive = false;
@@ -192,6 +243,7 @@ namespace Game
 				m_inInitialDelay = false;
 				m_initialDelayTimer = 0f;
 				m_needsInitialSync = true;
+				RegisterBanditsForSpawn();
 			}
 			else
 			{
@@ -266,29 +318,27 @@ namespace Game
 
 			if (root == null)
 			{
-				m_bandits.Add(new BanditSpawnData("Bandit1", 2, 0.45f));
-				m_bandits.Add(new BanditSpawnData("Bandit2", 2, 0.40f));
-				m_bandits.Add(new BanditSpawnData("Bandit3", 1, 0.25f));
-				m_bandits.Add(new BanditSpawnData("Bandit8", 3, 0.55f));
-				m_bandits.Add(new BanditSpawnData("Bandit9", 2, 0.45f));
+				m_bandits.Add(new BanditSpawnData("Bandit1", 0.45f));
+				m_bandits.Add(new BanditSpawnData("Bandit2", 0.40f));
+				m_bandits.Add(new BanditSpawnData("Bandit3", 0.25f));
+				m_bandits.Add(new BanditSpawnData("Bandit8", 0.55f));
+				m_bandits.Add(new BanditSpawnData("Bandit9", 0.45f));
 			}
 			else
 			{
 				foreach (var element in root.Elements("Bandit"))
 				{
 					string name = (string)element.Attribute("name");
-					int count = (int)element.Attribute("count");
 					float probability = (float)element.Attribute("probability");
 
-					if (!string.IsNullOrEmpty(name) && count > 0 && probability > 0f)
+					if (!string.IsNullOrEmpty(name) && probability > 0f)
 					{
 						if (name != "FirearmsDealer")
-							m_bandits.Add(new BanditSpawnData(name, count, probability));
+							m_bandits.Add(new BanditSpawnData(name, probability));
 					}
 				}
 			}
 
-			// ===== OPTIMIZACIÓN: precalcular pesos acumulados =====
 			m_totalProbabilitySum = m_bandits.Sum(b => b.Probability);
 			m_cumulativeProbabilities = new float[m_bandits.Count];
 			float cum = 0f;
@@ -310,14 +360,6 @@ namespace Game
 			if (m_invasionCompleted)
 				return;
 
-			// ===== OPTIMIZACIÓN: actualizar caché de conteo =====
-			m_cacheUpdateTimer += dt;
-			if (m_cacheUpdateTimer >= CacheUpdateInterval)
-			{
-				m_cacheUpdateTimer = 0f;
-				m_cachedBanditCount = CountBanditsFromBodies();
-			}
-
 			bool effectiveInvasionTime = CalculateEffectiveInvasionTime();
 
 			if (!m_acceptedWar)
@@ -328,6 +370,7 @@ namespace Game
 					m_inInitialDelay = false;
 					m_initialDelayTimer = 0f;
 					SetAllBanditsDrugTraffickerMode(false);
+					m_spawnTimer = 0f;
 				}
 				m_wasEffectiveInvasionTime = effectiveInvasionTime;
 				m_restoredFromSave = false;
@@ -347,6 +390,7 @@ namespace Game
 					m_initialDelayTimer = 0f;
 
 					m_bossSpawnedThisWar = false;
+					RegisterBanditsForSpawn();
 				}
 			}
 
@@ -362,6 +406,7 @@ namespace Game
 				m_inInitialDelay = false;
 				m_initialDelayTimer = 0f;
 				SetAllBanditsDrugTraffickerMode(false);
+				m_spawnTimer = 0f;
 
 				m_killsByPlayer = 0;
 				m_bossUnlocked = false;
@@ -384,16 +429,15 @@ namespace Game
 					m_inInitialDelay = false;
 					m_initialDelayTimer = 0f;
 					m_spawnTimer = 0f;
-				}
-				else
-				{
-					return;
-				}
-			}
 
-			// ===== USAR CACHÉ EN VEZ DE COUNTBANDITS() =====
-			if (m_cachedBanditCount >= MaxGlobalBandits)
+					if (!m_bossSpawnedThisWar)
+					{
+						SpawnBoss();
+						m_bossSpawnedThisWar = true;
+					}
+				}
 				return;
+			}
 
 			m_spawnTimer += dt;
 			int spawnsThisFrame = 0;
@@ -430,13 +474,8 @@ namespace Game
 
 		private bool TrySpawnBanditGroup()
 		{
-			// --- NUEVA LÓGICA: probabilidad de spawnear al jefe ---
-			if (!m_bossSpawnedThisWar && m_random.Float(0f, 1f) < 0.1f) // 10% de probabilidad
-			{
-				SpawnBoss();
-				m_bossSpawnedThisWar = true;
-				return true; // Se considera que se ha generado un grupo (el jefe)
-			}
+			int totalBandits = CountActiveBandits();
+			if (totalBandits >= 35) return false;
 
 			BanditSpawnData selected = GetRandomBandit();
 			if (selected == null)
@@ -444,12 +483,6 @@ namespace Game
 
 			Vector3 spawnPos = GetValidSpawnPoint();
 			if (spawnPos == Vector3.Zero)
-				return false;
-
-			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
-			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
-			int nearby = CountBanditsInArea(areaMin, areaMax);
-			if (nearby >= MaxBanditsPerArea)
 				return false;
 
 			int spawned = 0;
@@ -470,7 +503,18 @@ namespace Game
 			return spawned > 0;
 		}
 
-		// ===== OPTIMIZACIÓN: GetRandomBandit con búsqueda binaria =====
+		private int CountActiveBandits()
+		{
+			int count = 0;
+			foreach (var body in m_subsystemBodies.Bodies)
+			{
+				var creature = body.Entity.FindComponent<ComponentCreature>();
+				if (creature != null && IsBanditTemplate(body.Entity.ValuesDictionary.DatabaseObject?.Name))
+					count++;
+			}
+			return count;
+		}
+
 		private BanditSpawnData GetRandomBandit()
 		{
 			if (m_bandits.Count == 0 || m_totalProbabilitySum <= 0f)
@@ -478,10 +522,9 @@ namespace Game
 
 			float roll = m_random.Float(0f, m_totalProbabilitySum);
 
-			// Búsqueda binaria en los pesos acumulados
 			int index = Array.BinarySearch(m_cumulativeProbabilities, roll);
 			if (index < 0)
-				index = ~index; // primer elemento mayor que roll
+				index = ~index;
 
 			if (index >= m_bandits.Count)
 				index = m_bandits.Count - 1;
@@ -716,41 +759,6 @@ namespace Game
 			return Vector3.Zero;
 		}
 
-		// ===== OPTIMIZACIÓN: CountBandits usa caché =====
-		private int CountBandits()
-		{
-			return m_cachedBanditCount;
-		}
-
-		// ===== OPTIMIZACIÓN: método real de conteo =====
-		private int CountBanditsFromBodies()
-		{
-			int count = 0;
-			foreach (var body in m_subsystemBodies.Bodies)
-			{
-				var creature = body.Entity.FindComponent<ComponentCreature>();
-				if (creature != null && IsBanditTemplate(body.Entity.ValuesDictionary.DatabaseObject?.Name))
-					count++;
-			}
-			return count;
-		}
-
-		private int CountBanditsInArea(Vector2 c1, Vector2 c2)
-		{
-			int count = 0;
-			foreach (var body in m_subsystemBodies.Bodies)
-			{
-				var creature = body.Entity.FindComponent<ComponentCreature>();
-				if (creature != null && IsBanditTemplate(body.Entity.ValuesDictionary.DatabaseObject?.Name))
-				{
-					Vector3 pos = body.Position;
-					if (pos.X >= c1.X && pos.X <= c2.X && pos.Z >= c1.Y && pos.Z <= c2.Y)
-						count++;
-				}
-			}
-			return count;
-		}
-
 		public bool IsBanditTemplate(string name)
 		{
 			if (string.IsNullOrEmpty(name)) return false;
@@ -763,10 +771,10 @@ namespace Game
 			public int Count { get; }
 			public float Probability { get; }
 
-			public BanditSpawnData(string name, int count, float probability)
+			public BanditSpawnData(string name, float probability)
 			{
 				Name = name;
-				Count = count;
+				Count = 1;
 				Probability = probability;
 			}
 		}
