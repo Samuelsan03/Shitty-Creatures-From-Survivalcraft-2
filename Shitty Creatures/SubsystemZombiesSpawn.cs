@@ -921,7 +921,7 @@ namespace Game
 				PlayEvilLaugh();
 
 				// ===== NUEVO: Verificar si debemos usar la ola especial =====
-				bool banditInvasionActive = (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive);
+				bool banditInvasionActive = (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive && m_subsystemBanditInvasion.IsWarAccepted);
 				bool isFinalWave = (m_currentWave == MaxWave);
 				if (banditInvasionActive && isFinalWave && m_specialWaveEntries != null && !m_specialWaveActive)
 				{
@@ -1426,17 +1426,14 @@ namespace Game
 
 			int waveKey = m_currentWave;
 			if (m_specialWaveActive)
-				waveKey = -1;
-
-			if (m_waveCumulativeWeights.TryGetValue(waveKey, out int[] cumulative))
 			{
-				int totalWeightCumulative = cumulative[cumulative.Length - 1];
-				if (totalWeightCumulative <= 0) return null;
-				int random = m_random.Int(0, totalWeightCumulative - 1);
-				int index = Array.BinarySearch(cumulative, random);
-				if (index < 0) index = ~index;
-				if (index >= entries.Count) index = entries.Count - 1;
-				return entries[index];
+				bool banditInvasionActive = (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive && m_subsystemBanditInvasion.IsWarAccepted);
+				bool isFinalWave = (m_currentWave == MaxWave);
+				if (!banditInvasionActive || !isFinalWave || m_specialWaveEntries == null)
+				{
+					m_specialWaveActive = false;
+					SetCurrentWave(m_currentWave);
+				}
 			}
 
 			// Fallback (original)
@@ -1874,8 +1871,10 @@ namespace Game
 			m_currentBossEntity = m_subsystemCreatureSpawn.SpawnCreature(bossTemplate, spawnPos, false);
 			if (m_currentBossEntity != null)
 			{
-				string messageKey = GetBossMessageKey(bossTemplate);
-				SendMessageToAllPlayers("ZombiesSpawn", messageKey, new Color(255, 0, 0));
+				// Obtener nombre para mostrar
+				string displayName = GetCreatureDisplayName(m_currentBossEntity);
+				string message = string.Format(LanguageControl.Get("ZombiesSpawn", "BossAppeared"), displayName);
+				SendMessageToAllPlayers(message, new Color(255, 0, 0));
 			}
 			else
 			{
@@ -1911,17 +1910,30 @@ namespace Game
 		{
 			int maxWave = m_waves.Keys.Max();
 
+			// Verificar si realmente debe estar activa la ola especial
 			if (m_specialWaveActive)
 			{
-				string largeText = LanguageControl.Get("ZombiesSpawn", "CombinedWave");
-				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				bool banditInvasionActive = (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive && m_subsystemBanditInvasion.IsWarAccepted);
+				bool isFinalWave = (m_currentWave == MaxWave);
+				if (!banditInvasionActive || !isFinalWave || m_specialWaveEntries == null)
 				{
-					player.ComponentGui.DisplayLargeMessage(largeText, "", 3f, 0f);
+					m_specialWaveActive = false;
+					SetCurrentWave(m_currentWave);
+					// Si se desactivó, mostrar mensaje normal
 				}
-				// No mostrar mensaje de ola ni de final
-				return;
+				else
+				{
+					// Mostrar mensaje especial
+					string largeText = LanguageControl.Get("ZombiesSpawn", "CombinedWave");
+					foreach (var player in m_subsystemPlayers.ComponentPlayers)
+					{
+						player.ComponentGui.DisplayLargeMessage(largeText, "", 3f, 0f);
+					}
+					return;
+				}
 			}
 
+			// Mensaje normal de oleada
 			string waveMessage = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
@@ -2027,29 +2039,12 @@ namespace Game
 			return Vector3.Zero;
 		}
 
-		private void SendMessageToAllPlayers(string className, string key, Color color)
+		private void SendMessageToAllPlayers(string message, Color color)
 		{
-			string message = LanguageControl.Get(className, key);
-			if (string.IsNullOrEmpty(message))
-				message = key;
-
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				player.ComponentGui.DisplaySmallMessage(message, color, false, true);
 			}
-		}
-
-		private string GetBossMessageKey(string bossTemplate)
-		{
-			if (bossTemplate.StartsWith("Tank") || bossTemplate.StartsWith("FrozenTank"))
-				return "BossTank";
-			if (bossTemplate.StartsWith("GhostTank") || bossTemplate.StartsWith("TankGhost") || bossTemplate.StartsWith("FrozenTankGhost"))
-				return "BossGhostTank";
-			if (bossTemplate == "MachineGunInfected")
-				return "BossMachineGun";
-			if (bossTemplate == "FlyingInfectedBoss")
-				return "BossFlying";
-			return "BossGeneric";
 		}
 
 		private string GetRandomMountTemplateForZombie()
@@ -2336,8 +2331,9 @@ namespace Game
 				if (boss != null)
 				{
 					bossesSpawned++;
-					string messageKey = GetBossMessageKey(bossEntry.TemplateName);
-					SendMessageToAllPlayers("ZombiesSpawn", messageKey, new Color(255, 50, 50));
+					string displayName = GetCreatureDisplayName(boss);
+					string message = string.Format(LanguageControl.Get("ZombiesSpawn", "BossAppeared"), displayName);
+					SendMessageToAllPlayers(message, new Color(255, 50, 50));
 				}
 			}
 
@@ -2347,14 +2343,14 @@ namespace Game
 			}
 		}
 
-		private void ShowSpecialWaveMessage()
+		private string GetCreatureDisplayName(Entity entity)
 		{
-			string largeText = LanguageControl.Get("ZombiesSpawn", "CombinedWave");
+			var creature = entity.FindComponent<ComponentCreature>();
+			if (creature != null && !string.IsNullOrEmpty(creature.DisplayName))
+				return creature.DisplayName;
 
-			foreach (var player in m_subsystemPlayers.ComponentPlayers)
-			{
-				player.ComponentGui.DisplayLargeMessage(largeText, "", 3f, 0f);
-			}
+			// Fallback: nombre de la plantilla
+			return entity.ValuesDictionary.DatabaseObject?.Name ?? "Jefe desconocido";
 		}
 	}
 }
