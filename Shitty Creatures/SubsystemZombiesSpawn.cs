@@ -13,6 +13,7 @@ namespace Game
 	public class SubsystemZombiesSpawn : Subsystem, IUpdateable
 	{
 		// Dependencias
+		private SubsystemBanditInvasion m_subsystemBanditInvasion;
 		private SubsystemBlockEntities m_subsystemBlockEntities;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
@@ -28,6 +29,9 @@ namespace Game
 		private SubsystemSky m_subsystemSky;
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
+
+		private List<WaveEntry> m_specialWaveEntries;
+		private bool m_specialWaveActive = false;
 
 		// ===== PROPIEDADES PÚBLICAS PARA DIÁLOGOS Y COMPONENTES =====
 		public bool HasExtremeCompleted => m_extremeCompletionDialogShown;
@@ -265,11 +269,13 @@ namespace Game
 			m_subsystemBlockEntities = Project.FindSubsystem<SubsystemBlockEntities>(true);
 			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
+			m_subsystemBanditInvasion = Project.FindSubsystem<SubsystemBanditInvasion>(false);
 
 			m_letterWarSpawned = valuesDictionary.GetValue<bool>("LetterWarSpawned", false);
 			m_hasShownUnlockMessageLocal = valuesDictionary.GetValue<bool>("HasShownUnlockMessage", false);
 			m_midnightBossesSpawnedThisNight = valuesDictionary.GetValue<bool>("MidnightBossesSpawnedThisNight", false);
 			ImpossibleBlockDisabledForAllies = valuesDictionary.GetValue<bool>("ImpossibleBlockDisabledForAllies", false);
+			m_specialWaveActive = valuesDictionary.GetValue<bool>("SpecialWaveActive", false);
 			m_lastTimeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 
 			if (m_subsystemSpawn != null)
@@ -503,6 +509,7 @@ namespace Game
 			m_nightEndProcessed = true;
 			int oldWave = m_currentWave;
 			int maxWave = m_waves.Keys.Max();
+			
 			bool wasLastWave = (oldWave == maxWave);
 
 			bool completed = AdvanceToNextWave();
@@ -719,6 +726,7 @@ namespace Game
 			valuesDictionary.SetValue("ExtremeCompletionDialogShown", m_extremeCompletionDialogShown);
 			valuesDictionary.SetValue("HasAcceptedImpossibleChallenge", m_hasAcceptedImpossibleChallenge);
 			valuesDictionary.SetValue("ImpossibleBlockDisabledForAllies", ImpossibleBlockDisabledForAllies);
+			valuesDictionary.SetValue("SpecialWaveActive", m_specialWaveActive);
 
 			string bossQueueStr = m_bossQueue.Count > 0 ? string.Join(",", m_bossQueue) : "";
 			valuesDictionary.SetValue("BossQueue", bossQueueStr);
@@ -911,6 +919,18 @@ namespace Game
 				m_nightEndProcessed = false;
 				m_midnightBossesSpawnedThisNight = false;
 				PlayEvilLaugh();
+
+				// ===== NUEVO: Verificar si debemos usar la ola especial =====
+				bool banditInvasionActive = (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive);
+				bool isFinalWave = (m_currentWave == MaxWave);
+				if (banditInvasionActive && isFinalWave && m_specialWaveEntries != null && !m_specialWaveActive)
+				{
+					m_specialWaveActive = true;
+					m_currentWaveEntries = m_specialWaveEntries;
+					m_spawnInterval = Math.Max(1.2f, BaseSpawnInterval - (m_currentWave * 0.04f));
+				}
+
+				// Mostrar mensaje de oleada (ahora maneja el mensaje especial internamente)
 				SendWaveMessage();
 
 				m_greenNightSpawnDelayActive = true;
@@ -1404,7 +1424,11 @@ namespace Game
 		{
 			if (entries == null || entries.Count == 0) return null;
 
-			if (m_waveCumulativeWeights.TryGetValue(m_currentWave, out int[] cumulative))
+			int waveKey = m_currentWave;
+			if (m_specialWaveActive)
+				waveKey = -1;
+
+			if (m_waveCumulativeWeights.TryGetValue(waveKey, out int[] cumulative))
 			{
 				int totalWeightCumulative = cumulative[cumulative.Length - 1];
 				if (totalWeightCumulative <= 0) return null;
@@ -1415,7 +1439,7 @@ namespace Game
 				return entries[index];
 			}
 
-			// Fallback al método original
+			// Fallback (original)
 			int totalWeightFallback = entries.Sum(e => e.Weight);
 			if (totalWeightFallback <= 0) return null;
 
@@ -1653,22 +1677,49 @@ namespace Game
 		{
 			m_waves = WavesData.LoadFromXml();
 
-			if (m_waves.Count == 0)
+			// Guardar la ola especial por separado
+			if (m_waves.TryGetValue(-1, out var specialWave)) // -1 = clave para la ola especial
 			{
-				Log.Error("No se pudieron cargar las oleadas desde Waves.xml. El sistema de aparición de zombis no funcionará correctamente.");
-				var defaultWave = new List<WaveEntry>
-				{
-					new WaveEntry("HumanoidSkeleton", 40),
-					new WaveEntry("InfectedBird", 35),
-					new WaveEntry("InfectedNormal1", 30),
-					new WaveEntry("InfectedNormal2", 30),
-					new WaveEntry("InfectedFly1", 4)
-				};
-				m_waves[1] = defaultWave;
-				Log.Warning("Usando oleada por defecto de emergencia.");
+				m_specialWaveEntries = specialWave;
+				m_waves.Remove(-1);
+			}
+			else
+			{
+				// Fallback si no existe
+				m_specialWaveEntries = new List<WaveEntry>
+		{
+			new WaveEntry("HumanoidSkeleton", 40),
+			new WaveEntry("InfectedBird", 35),
+			new WaveEntry("InfectedNormal1", 30),
+			new WaveEntry("InfectedNormal2", 30),
+			new WaveEntry("InfectedFast1", 25),
+			new WaveEntry("InfectedFast2", 25),
+			new WaveEntry("InfectedMuscle1", 20),
+			new WaveEntry("InfectedMuscle2", 20),
+			new WaveEntry("PoisonousInfected1", 15),
+			new WaveEntry("PoisonousInfected2", 15),
+			new WaveEntry("InfectedFly1", 10),
+			new WaveEntry("InfectedFly2", 10),
+			new WaveEntry("InfectedFly3", 10),
+			new WaveEntry("Boomer1", 8),
+			new WaveEntry("Boomer2", 8),
+			new WaveEntry("Boomer3", 8),
+			new WaveEntry("GhostBoomer1", 6),
+			new WaveEntry("Charger1", 5),
+			new WaveEntry("Charger2", 5),
+			new WaveEntry("InfectedHyena", 4),
+			new WaveEntry("InfectedWildboar", 4),
+			new WaveEntry("InfectedBear", 3),
+			new WaveEntry("PredatoryChameleon", 3),
+			new WaveEntry("InfectedWolf", 3),
+			new WaveEntry("InfectedWerewolf", 3),
+			new WaveEntry("InfectedSpider", 2),
+			new WaveEntry("InfectedFreezer", 1),
+			new WaveEntry("FrozenGhost", 1)
+		};
 			}
 
-			// ===== OPTIMIZACIÓN: PRECALCULAR PESOS ACUMULADOS =====
+			// Precalcular pesos acumulados
 			m_waveCumulativeWeights.Clear();
 			foreach (var kvp in m_waves)
 			{
@@ -1681,6 +1732,19 @@ namespace Game
 					cumulative[i] = sum;
 				}
 				m_waveCumulativeWeights[kvp.Key] = cumulative;
+			}
+
+			// Precalcular pesos para la ola especial también
+			if (m_specialWaveEntries != null && m_specialWaveEntries.Count > 0)
+			{
+				int[] cumulative = new int[m_specialWaveEntries.Count];
+				int sum = 0;
+				for (int i = 0; i < m_specialWaveEntries.Count; i++)
+				{
+					sum += m_specialWaveEntries[i].Weight;
+					cumulative[i] = sum;
+				}
+				m_waveCumulativeWeights[-1] = cumulative;
 			}
 		}
 
@@ -1846,6 +1910,17 @@ namespace Game
 		private void SendWaveMessage()
 		{
 			int maxWave = m_waves.Keys.Max();
+
+			if (m_specialWaveActive)
+			{
+				string largeText = LanguageControl.Get("ZombiesSpawn", "CombinedWave");
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				{
+					player.ComponentGui.DisplayLargeMessage(largeText, "", 3f, 0f);
+				}
+				// No mostrar mensaje de ola ni de final
+				return;
+			}
 
 			string waveMessage = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
@@ -2269,6 +2344,16 @@ namespace Game
 			if (bossesSpawned > 0 && m_subsystemAudio != null)
 			{
 				m_subsystemAudio.PlaySound("Audio/UI/Tank Warning Sound", 1f, 0f, 0f, 0f);
+			}
+		}
+
+		private void ShowSpecialWaveMessage()
+		{
+			string largeText = LanguageControl.Get("ZombiesSpawn", "CombinedWave");
+
+			foreach (var player in m_subsystemPlayers.ComponentPlayers)
+			{
+				player.ComponentGui.DisplayLargeMessage(largeText, "", 3f, 0f);
 			}
 		}
 	}
