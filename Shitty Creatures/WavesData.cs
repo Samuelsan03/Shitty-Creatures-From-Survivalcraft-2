@@ -13,7 +13,7 @@ namespace Game
 			var result = new Dictionary<int, List<WaveEntry>>();
 			XElement root = null;
 
-			// 1. Intentar cargar con ContentManager (recomendado)
+			// 1. Intentar cargar con ContentManager
 			try
 			{
 				root = ContentManager.Get<XElement>("Waves/Waves Programming");
@@ -23,7 +23,7 @@ namespace Game
 				Log.Warning($"Error al cargar con ContentManager: {ex.Message}");
 			}
 
-			// 2. Si no se pudo con ContentManager, intentar con sistema de archivos
+			// 2. Fallback con sistema de archivos
 			if (root == null)
 			{
 				string xmlContent = null;
@@ -79,7 +79,29 @@ namespace Game
 			{
 				foreach (var waveElement in root.Elements("Wave"))
 				{
-					int waveNumber = (int)waveElement.Attribute("number");
+					// ===== NUEVO: Detectar si es la ola especial =====
+					XAttribute numberAttr = waveElement.Attribute("number");
+					XAttribute nameAttr = waveElement.Attribute("name");
+
+					int waveNumber;
+					bool isSpecial = false;
+
+					if (numberAttr != null)
+					{
+						waveNumber = (int)numberAttr;
+					}
+					else if (nameAttr != null && nameAttr.Value == "Special")
+					{
+						waveNumber = -1; // Clave especial
+						isSpecial = true;
+					}
+					else
+					{
+						// Saltar elementos Wave que no tengan número ni nombre especial
+						Log.Warning($"Ola sin número ni nombre 'Special' ignorada.");
+						continue;
+					}
+
 					var entries = new List<WaveEntry>();
 
 					foreach (var entryElement in waveElement.Elements("Entry"))
@@ -103,6 +125,10 @@ namespace Game
 					if (entries.Count > 0)
 					{
 						result[waveNumber] = entries;
+						if (isSpecial)
+						{
+							Log.Information($"Ola especial cargada con {entries.Count} entradas.");
+						}
 					}
 				}
 			}
