@@ -367,7 +367,7 @@
     <Entry template="InfectedFly3"/>
     <Entry template="Boomer1"/>
     <Entry template="Boomer2"/>
-   Entry template="Boomer3"/>
+    <Entry template="Boomer3"/>
     <Entry template="GhostBoomer1"/>
     <Entry template="GhostBoomer2"/>
     <Entry template="GhostBoomer3"/>
@@ -669,4 +669,35 @@
     <Entry template="InfectedFreezer"/>
     <Entry template="FrozenGhost"/>
   </Wave>
+  <!-- NUEVA OLA ESPECIAL (SIN JEFES) -->
+  <Wave name="Special">
+  <Entry template="HumanoidSkeleton"/>
+  <Entry template="InfectedBird"/>
+  <Entry template="InfectedNormal1"/>
+  <Entry template="InfectedNormal2"/>
+  <Entry template="InfectedFast1"/>
+  <Entry template="InfectedFast2"/>
+  <Entry template="InfectedMuscle1"/>
+  <Entry template="InfectedMuscle2"/>
+  <Entry template="PoisonousInfected1"/>
+  <Entry template="PoisonousInfected2"/>
+  <Entry template="InfectedFly1"/>
+  <Entry template="InfectedFly2"/>
+  <Entry template="InfectedFly3"/>
+  <Entry template="Boomer1"/>
+  <Entry template="Boomer2"/>
+  <Entry template="Boomer3"/>
+  <Entry template="GhostBoomer1"/>
+  <Entry template="Charger1"/>
+  <Entry template="Charger2"/>
+  <Entry template="InfectedHyena"/>
+  <Entry template="InfectedWildboar"/>
+  <Entry template="InfectedBear"/>
+  <Entry template="PredatoryChameleon"/>
+  <Entry template="InfectedWolf"/>
+  <Entry template="InfectedWerewolf"/>
+  <Entry template="InfectedSpider"/>
+  <Entry template="InfectedFreezer"/>
+  <Entry template="FrozenGhost"/>
+</Wave>
 </Waves>
