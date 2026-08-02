@@ -1439,16 +1439,6 @@ namespace Game
 			if (entries == null || entries.Count == 0) return null;
 
 			int waveKey = m_currentWave;
-			if (m_specialWaveActive)
-			{
-				bool banditInvasionActive = (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive && m_subsystemBanditInvasion.IsWarAccepted);
-				bool isFinalWave = (m_currentWave == MaxWave);
-				if (!banditInvasionActive || !isFinalWave || m_specialWaveEntries == null)
-				{
-					m_specialWaveActive = false;
-					SetCurrentWave(m_currentWave);
-				}
-			}
 
 			// Fallback (original)
 			int totalWeightFallback = entries.Sum(e => e.Weight);
@@ -1924,36 +1914,38 @@ namespace Game
 		{
 			int maxWave = m_waves.Keys.Max();
 
-			// Verificar si realmente debe estar activa la ola especial
+			// Si la ola especial está activa, mostrar solo el mensaje especial
 			if (m_specialWaveActive)
 			{
 				bool banditInvasionActive = (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive && m_subsystemBanditInvasion.IsWarAccepted);
 				bool isFinalWave = (m_currentWave == MaxWave);
 				if (!banditInvasionActive || !isFinalWave || m_specialWaveEntries == null)
 				{
+					// Si las condiciones fallan, desactivar y continuar con el mensaje normal
 					m_specialWaveActive = false;
 					SetCurrentWave(m_currentWave);
-					// Si se desactivó, mostrar mensaje normal
+					// No retornar, continuar con el mensaje normal
 				}
 				else
 				{
-					// Mostrar mensaje especial
+					// Mostrar mensaje especial y retornar (no mostrar FinalWave)
 					string largeText = LanguageControl.Get("ZombiesSpawn", "CombinedWave");
 					foreach (var player in m_subsystemPlayers.ComponentPlayers)
 					{
 						player.ComponentGui.DisplayLargeMessage(largeText, "", 3f, 0f);
 					}
-					return;
+					return; // <--- Asegurar que no se ejecute el resto
 				}
 			}
 
-			// Mensaje normal de oleada
+			// Mensaje normal de oleada (solo si no está activa la ola especial)
 			string waveMessage = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				player.ComponentGui.DisplayLargeMessage(waveMessage, "", 3f, 0f);
 			}
 
+			// Solo mostrar FinalWave si NO es la ola especial
 			if (m_currentWave == maxWave)
 			{
 				string finalMessage = LanguageControl.Get("ZombiesSpawn", "FinalWave");
