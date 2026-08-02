@@ -959,6 +959,20 @@ namespace Game
 
 			m_wasGreenNightActive = isGreenNightActive;
 
+			// ===== NUEVO: Activar ola especial si guerra aceptada durante Noche Verde activa =====
+			if (isGreenNightActive && !m_specialWaveActive)
+			{
+				bool banditInvasionActive = (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive && m_subsystemBanditInvasion.IsWarAccepted);
+				bool isFinalWave = (m_currentWave == MaxWave);
+				if (banditInvasionActive && isFinalWave && m_specialWaveEntries != null)
+				{
+					m_specialWaveActive = true;
+					m_currentWaveEntries = m_specialWaveEntries;
+					m_spawnInterval = Math.Max(1.2f, BaseSpawnInterval - (m_currentWave * 0.04f));
+					SendWaveMessage(); // Muestra el mensaje especial
+				}
+			}
+
 			float currentTimeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 
 			if (!isGreenNightActive)
