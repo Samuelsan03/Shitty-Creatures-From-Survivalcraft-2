@@ -292,6 +292,13 @@ namespace Game
 			m_currentWave = valuesDictionary.GetValue<int>("CurrentWave", 1);
 			SetCurrentWave(m_currentWave);
 
+			// Si la ola especial estaba activa al guardar, restaurar sus entradas
+			if (m_specialWaveActive && m_specialWaveEntries != null)
+			{
+				m_currentWaveEntries = m_specialWaveEntries;
+				m_spawnInterval = Math.Max(1.2f, BaseSpawnInterval - (m_currentWave * 0.04f));
+			}
+
 			// ===== CARGAR ESTADO COMPLETO DE LA BATALLA DE JEFES =====
 			m_bossBattleActive = valuesDictionary.GetValue<bool>("BossBattleActive", false);
 			m_hasSpawnedBossThisNight = valuesDictionary.GetValue<bool>("HasSpawnedBossThisNight", false);
@@ -2324,14 +2331,6 @@ namespace Game
 				return;
 			}
 
-				// Verificar si la guerra combinada está activa (narcos + infectados)
-				if (m_specialWaveActive && m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.BossPendingForMidnight)
-			{
-				// Spawnear a LaBandida a medianoche en lugar de los jefes de infectados
-				m_subsystemBanditInvasion.SpawnBossNow();
-				return; // No spawnear otros jefes en esta medianoche
-			}
-
 			// Comportamiento normal: spawnear jefes de la oleada actual
 			if (m_currentWaveEntries == null || m_currentWaveEntries.Count == 0)
 				return;
@@ -2344,21 +2343,15 @@ namespace Game
 				return;
 
 			int bossesSpawned = 0;
-
 			foreach (var bossEntry in bossEntries)
 			{
 				Vector3 spawnPos = GetBossSpawnPoint(40f, 70f);
 				if (spawnPos == Vector3.Zero)
-				{
 					spawnPos = GetAlternativeBossSpawnPoint(20f, 100f);
-				}
-
 				if (spawnPos == Vector3.Zero)
 					continue;
-
 				if (!CanSpawnCreature(bossEntry.TemplateName, spawnPos))
 					continue;
-
 				Entity boss = m_subsystemCreatureSpawn.SpawnCreature(bossEntry.TemplateName, spawnPos, false);
 				if (boss != null)
 				{
@@ -2368,11 +2361,8 @@ namespace Game
 					SendMessageToAllPlayers(message, new Color(255, 50, 50));
 				}
 			}
-
 			if (bossesSpawned > 0 && m_subsystemAudio != null)
-			{
 				m_subsystemAudio.PlaySound("Audio/UI/Tank Warning Sound", 1f, 0f, 0f, 0f);
-			}
 		}
 
 		private string GetCreatureDisplayName(Entity entity)
