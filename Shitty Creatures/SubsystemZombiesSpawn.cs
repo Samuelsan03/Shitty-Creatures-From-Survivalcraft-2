@@ -30,6 +30,10 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
+		public bool IsSpecialWaveActive => m_specialWaveActive;
+
+		public bool IsFinalWave => m_currentWave == MaxWave;
+
 		private List<WaveEntry> m_specialWaveEntries;
 		private bool m_specialWaveActive = false;
 
@@ -944,7 +948,7 @@ namespace Game
 				{
 				}
 
-				if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
+				if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive && !m_specialWaveActive)
 				{
 					StartBossBattle();
 					m_bossSpawnDelayed = true;
@@ -981,7 +985,9 @@ namespace Game
 				return;
 			}
 
-			if (!m_midnightBossesSpawnedThisNight && m_currentWave != maxWave)
+			bool shouldSpawnMidnightBosses = !m_midnightBossesSpawnedThisNight;
+			bool isSpecialWaveFinal = m_specialWaveActive && m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.BossPendingForMidnight;
+			if (shouldSpawnMidnightBosses && (m_currentWave != maxWave || isSpecialWaveFinal))
 			{
 				float midnight = m_subsystemTimeOfDay.Midnight;
 				bool passedMidnight = false;
@@ -2307,6 +2313,26 @@ namespace Game
 
 		private void SpawnMidnightBosses()
 		{
+			// Si la ola especial está activa, solo se permite la aparición de LaBandida
+			if (m_specialWaveActive)
+			{
+				if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.BossPendingForMidnight)
+				{
+					m_subsystemBanditInvasion.SpawnBossNow();
+				}
+				// No spawnear ningún otro jefe en esta medianoche
+				return;
+			}
+
+				// Verificar si la guerra combinada está activa (narcos + infectados)
+				if (m_specialWaveActive && m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.BossPendingForMidnight)
+			{
+				// Spawnear a LaBandida a medianoche en lugar de los jefes de infectados
+				m_subsystemBanditInvasion.SpawnBossNow();
+				return; // No spawnear otros jefes en esta medianoche
+			}
+
+			// Comportamiento normal: spawnear jefes de la oleada actual
 			if (m_currentWaveEntries == null || m_currentWaveEntries.Count == 0)
 				return;
 
