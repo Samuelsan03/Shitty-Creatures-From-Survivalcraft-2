@@ -18,6 +18,7 @@ namespace Game
 		private SubsystemPlayers m_subsystemPlayers;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
+		private SubsystemZombiesSpawn m_subsystemZombiesSpawn;
 		private Random m_random = new Random();
 
 		public event Action InvasionCompleted;
@@ -33,6 +34,7 @@ namespace Game
 		private bool m_wasRejected;
 
 		private bool m_greenNightWasActiveDuringInvasion;
+		private bool m_bossPendingForMidnight;
 
 		private bool m_needsInitialSync;
 		private bool m_restoredFromSave;
@@ -62,6 +64,7 @@ namespace Game
 		public bool WasGreenNightActiveDuringInvasion => m_greenNightWasActiveDuringInvasion;
 		public bool IsInInitialDelay => m_inInitialDelay;
 		public float RemainingInitialDelay => m_inInitialDelay ? Math.Max(0f, InitialSpawnDelay - m_initialDelayTimer) : 0f;
+		public bool BossPendingForMidnight => m_bossPendingForMidnight;
 
 		private bool m_wasEffectiveInvasionTime;
 
@@ -81,6 +84,7 @@ namespace Game
 				m_greenNightWasActiveDuringInvasion = false;
 				m_restoredFromSave = false;
 				m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
+				m_bossPendingForMidnight = false;
 
 				m_inInitialDelay = false;
 				m_initialDelayTimer = 0f;
@@ -99,6 +103,7 @@ namespace Game
 				m_wasRejected = false;
 				m_greenNightWasActiveDuringInvasion = false;
 				m_restoredFromSave = false;
+				m_bossPendingForMidnight = false;
 
 				m_inInitialDelay = false;
 				m_initialDelayTimer = 0f;
@@ -106,6 +111,16 @@ namespace Game
 				m_bossSpawnedThisWar = false;
 
 				RegisterBanditsForSpawn();
+			}
+		}
+
+		public void SpawnBossNow()
+		{
+			if (!m_bossSpawnedThisWar)
+			{
+				SpawnBoss();
+				m_bossSpawnedThisWar = true;
+				m_bossPendingForMidnight = false;
 			}
 		}
 
@@ -207,6 +222,7 @@ namespace Game
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(false);
 			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			m_subsystemZombiesSpawn = Project.FindSubsystem<SubsystemZombiesSpawn>(true);
 
 			LoadBanditsFromXml();
 
@@ -224,6 +240,7 @@ namespace Game
 			m_killsByPlayer = valuesDictionary.GetValue<int>("KillsByPlayer", 0);
 			m_bossUnlocked = valuesDictionary.GetValue<bool>("BossUnlocked", false);
 			m_bossSpawnedThisWar = valuesDictionary.GetValue<bool>("BossSpawnedThisWar", false);
+			m_bossPendingForMidnight = valuesDictionary.GetValue<bool>("BossPendingForMidnight", false);
 
 			m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 			m_restoredFromSave = true;
@@ -235,6 +252,7 @@ namespace Game
 				m_inInitialDelay = false;
 				m_initialDelayTimer = 0f;
 				m_needsInitialSync = false;
+				m_bossPendingForMidnight = false;
 			}
 			else if (m_acceptedWar && !m_invasionActive && m_wasEffectiveInvasionTime)
 			{
@@ -264,6 +282,7 @@ namespace Game
 			valuesDictionary.SetValue("KillsByPlayer", m_killsByPlayer);
 			valuesDictionary.SetValue("BossUnlocked", m_bossUnlocked);
 			valuesDictionary.SetValue("BossSpawnedThisWar", m_bossSpawnedThisWar);
+			valuesDictionary.SetValue("BossPendingForMidnight", m_bossPendingForMidnight);
 		}
 
 		public void CancelWar()
@@ -274,6 +293,7 @@ namespace Game
 			m_wasRejected = true;
 			m_greenNightWasActiveDuringInvasion = false;
 			m_restoredFromSave = false;
+			m_bossPendingForMidnight = false;
 
 			if (m_invasionActive)
 			{
@@ -374,6 +394,7 @@ namespace Game
 				}
 				m_wasEffectiveInvasionTime = effectiveInvasionTime;
 				m_restoredFromSave = false;
+				m_bossPendingForMidnight = false;
 				return;
 			}
 
@@ -407,6 +428,7 @@ namespace Game
 				m_initialDelayTimer = 0f;
 				SetAllBanditsDrugTraffickerMode(false);
 				m_spawnTimer = 0f;
+				m_bossPendingForMidnight = false;
 
 				m_killsByPlayer = 0;
 				m_bossUnlocked = false;
@@ -432,8 +454,22 @@ namespace Game
 
 					if (!m_bossSpawnedThisWar)
 					{
-						SpawnBoss();
-						m_bossSpawnedThisWar = true;
+						// Determinar si la Noche Verde está activa o será esta noche
+						bool isGreenNightTonight = m_subsystemGreenNightSky != null &&
+												   m_subsystemGreenNightSky.GreenNightEnabled &&
+												   (m_subsystemGreenNightSky.IsGreenNightActive ||
+													m_subsystemGreenNightSky.DaysSinceLastGreenNight >= m_subsystemGreenNightSky.GreenNightIntervalDays);
+
+						// Si es la oleada final Y hay Noche Verde, LaBandida espera a medianoche
+						if (m_subsystemZombiesSpawn != null && m_subsystemZombiesSpawn.IsFinalWave && isGreenNightTonight)
+						{
+							m_bossPendingForMidnight = true;
+						}
+						else
+						{
+							SpawnBoss();
+							m_bossSpawnedThisWar = true;
+						}
 					}
 				}
 				return;
