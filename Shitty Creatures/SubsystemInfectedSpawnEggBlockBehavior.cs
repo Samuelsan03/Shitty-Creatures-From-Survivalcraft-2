@@ -9,7 +9,7 @@ namespace Game
 	public class SubsystemInfectedSpawnEggBlockBehavior : SubsystemBlockBehavior
 	{
 		// Diccionario que enlaza el NOMBRE del enum con su lista de templates correspondiente
-		private static readonly Dictionary<InfectedSpawnEggBlock.InfectedType, string[]> s_spawnTemplates = new Dictionary<InfectedSpawnEggBlock.InfectedType, string[]>
+		public static readonly Dictionary<InfectedSpawnEggBlock.InfectedType, string[]> s_spawnTemplates = new Dictionary<InfectedSpawnEggBlock.InfectedType, string[]>
 		{
 			{
 				InfectedSpawnEggBlock.InfectedType.Common, new string[]
@@ -59,13 +59,13 @@ namespace Game
 					"InfectedFly1",
 					"InfectedFly2",
 					"InfectedFly3",
-					"InfectedBird",
 					"FlyingInfectedBoss"
 				}
 			},
 			{
 				InfectedSpawnEggBlock.InfectedType.Animal, new string[]
 				{
+					"InfectedBird",
 					"InfectedBear",
 					"InfectedWildboar",
 					"PredatoryChameleon",
