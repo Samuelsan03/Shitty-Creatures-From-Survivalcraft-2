@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using Engine;
 using TemplatesDatabase;
@@ -20,11 +21,10 @@ namespace Game
 		public ContainerWidget m_dropsPanel;
 		public int m_index;
 		public IList<BestiaryCreatureInfo> m_infoList;
-		public const string fName = "BestiaryInfectedDescriptionScreen";
 
 		public BestiaryInfectedDescriptionScreen()
 		{
-			XElement node = ContentManager.Get<XElement>("Screens/BestiaryInfectedDescriptionScreen");
+			XElement node = ContentManager.Get<XElement>("Screens/BestiaryDescriptionScreen");
 			this.LoadContents(this, node);
 			this.m_modelWidget = this.Children.Find<ModelWidget>("Model", true);
 			this.m_nameWidget = this.Children.Find<LabelWidget>("Name", true);
@@ -36,6 +36,9 @@ namespace Game
 			this.m_propertyNames2Widget = this.Children.Find<LabelWidget>("PropertyNames2", true);
 			this.m_propertyValues2Widget = this.Children.Find<LabelWidget>("PropertyValues2", true);
 			this.m_dropsPanel = this.Children.Find<ContainerWidget>("Drops", true);
+
+			// IMPORTANTE: Configurar la auto-rotación del modelo
+			this.m_modelWidget.AutoRotationVector = new Vector3(0f, 1f, 0f);
 		}
 
 		public override void Enter(object[] parameters)
@@ -71,50 +74,109 @@ namespace Game
 			if (this.m_index >= 0 && this.m_index < this.m_infoList.Count)
 			{
 				BestiaryCreatureInfo bestiaryCreatureInfo = this.m_infoList[this.m_index];
+
+				// CLAVE: Restablecer y configurar la rotación del modelo
 				this.m_modelWidget.AutoRotationVector = new Vector3(0f, 1f, 0f);
 				BestiaryScreen.SetupBestiaryModelWidget(bestiaryCreatureInfo, this.m_modelWidget, new Vector3(-1f, 0f, -1f), true, true);
+
 				this.m_nameWidget.Text = bestiaryCreatureInfo.DisplayName;
 				this.m_descriptionWidget.Text = bestiaryCreatureInfo.Description;
 				this.m_propertyNames1Widget.Text = string.Empty;
 				this.m_propertyValues1Widget.Text = string.Empty;
+
 				LabelWidget propertyNames1Widget = this.m_propertyNames1Widget;
-				propertyNames1Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", "resilience");
+				propertyNames1Widget.Text += LanguageControl.Get(new string[]
+				{
+					"BestiaryDescriptionScreen",
+					"resilience"
+				});
 				LabelWidget propertyValues1Widget = this.m_propertyValues1Widget;
-				propertyValues1Widget.Text = propertyValues1Widget.Text + bestiaryCreatureInfo.AttackResilience.ToString("0.0") + "\n";
+				DefaultInterpolatedStringHandler defaultInterpolatedStringHandler = new DefaultInterpolatedStringHandler(1, 2);
+				defaultInterpolatedStringHandler.AppendFormatted(propertyValues1Widget.Text);
+				defaultInterpolatedStringHandler.AppendFormatted<float>(bestiaryCreatureInfo.AttackResilience);
+				defaultInterpolatedStringHandler.AppendLiteral("\n");
+				propertyValues1Widget.Text = defaultInterpolatedStringHandler.ToStringAndClear();
+
 				LabelWidget propertyNames1Widget2 = this.m_propertyNames1Widget;
-				propertyNames1Widget2.Text += LanguageControl.Get("BestiaryDescriptionScreen", "attack");
+				propertyNames1Widget2.Text += LanguageControl.Get(new string[]
+				{
+					"BestiaryDescriptionScreen",
+					"attack"
+				});
 				LabelWidget propertyValues1Widget2 = this.m_propertyValues1Widget;
 				propertyValues1Widget2.Text = propertyValues1Widget2.Text + ((bestiaryCreatureInfo.AttackPower > 0f) ? bestiaryCreatureInfo.AttackPower.ToString("0.0") : LanguageControl.None) + "\n";
+
 				LabelWidget propertyNames1Widget3 = this.m_propertyNames1Widget;
-				propertyNames1Widget3.Text += LanguageControl.Get("BestiaryDescriptionScreen", "herding");
+				propertyNames1Widget3.Text += LanguageControl.Get(new string[]
+				{
+					"BestiaryDescriptionScreen",
+					"herding"
+				});
 				LabelWidget propertyValues1Widget3 = this.m_propertyValues1Widget;
 				propertyValues1Widget3.Text = propertyValues1Widget3.Text + (bestiaryCreatureInfo.IsHerding ? LanguageControl.Yes : LanguageControl.No) + "\n";
+
 				LabelWidget propertyNames1Widget4 = this.m_propertyNames1Widget;
 				propertyNames1Widget4.Text += LanguageControl.Get("BestiaryDescriptionScreen", 1);
 				LabelWidget propertyValues1Widget4 = this.m_propertyValues1Widget;
 				propertyValues1Widget4.Text = propertyValues1Widget4.Text + (bestiaryCreatureInfo.CanBeRidden ? LanguageControl.Yes : LanguageControl.No) + "\n";
+
 				this.m_propertyNames1Widget.Text = this.m_propertyNames1Widget.Text.TrimEnd();
 				this.m_propertyValues1Widget.Text = this.m_propertyValues1Widget.Text.TrimEnd();
+
 				this.m_propertyNames2Widget.Text = string.Empty;
 				this.m_propertyValues2Widget.Text = string.Empty;
+
 				LabelWidget propertyNames2Widget = this.m_propertyNames2Widget;
-				propertyNames2Widget.Text += LanguageControl.Get("BestiaryDescriptionScreen", "speed");
+				propertyNames2Widget.Text += LanguageControl.Get(new string[]
+				{
+					"BestiaryDescriptionScreen",
+					"speed"
+				});
 				LabelWidget propertyValues2Widget = this.m_propertyValues2Widget;
-				propertyValues2Widget.Text = propertyValues2Widget.Text + ((double)bestiaryCreatureInfo.MovementSpeed * 3.6).ToString("0") + LanguageControl.Get("BestiaryDescriptionScreen", "speed unit");
+				propertyValues2Widget.Text = propertyValues2Widget.Text + ((double)bestiaryCreatureInfo.MovementSpeed * 3.6).ToString("0") + LanguageControl.Get(new string[]
+				{
+					"BestiaryDescriptionScreen",
+					"speed unit"
+				});
+
 				LabelWidget propertyNames2Widget2 = this.m_propertyNames2Widget;
-				propertyNames2Widget2.Text += LanguageControl.Get("BestiaryDescriptionScreen", "jump height");
+				propertyNames2Widget2.Text += LanguageControl.Get(new string[]
+				{
+					"BestiaryDescriptionScreen",
+					"jump height"
+				});
 				LabelWidget propertyValues2Widget2 = this.m_propertyValues2Widget;
-				propertyValues2Widget2.Text = propertyValues2Widget2.Text + bestiaryCreatureInfo.JumpHeight.ToString("0.0") + LanguageControl.Get("BestiaryDescriptionScreen", "length unit");
+				propertyValues2Widget2.Text = propertyValues2Widget2.Text + bestiaryCreatureInfo.JumpHeight.ToString("0.0") + LanguageControl.Get(new string[]
+				{
+					"BestiaryDescriptionScreen",
+					"length unit"
+				});
+
 				LabelWidget propertyNames2Widget3 = this.m_propertyNames2Widget;
-				propertyNames2Widget3.Text += LanguageControl.Get("BestiaryDescriptionScreen", "weight");
+				propertyNames2Widget3.Text += LanguageControl.Get(new string[]
+				{
+					"BestiaryDescriptionScreen",
+					"weight"
+				});
 				LabelWidget propertyValues2Widget3 = this.m_propertyValues2Widget;
-				propertyValues2Widget3.Text = propertyValues2Widget3.Text + bestiaryCreatureInfo.Mass.ToString() + LanguageControl.Get("BestiaryDescriptionScreen", "weight unit");
+				propertyValues2Widget3.Text = propertyValues2Widget3.Text + bestiaryCreatureInfo.Mass.ToString() + LanguageControl.Get(new string[]
+				{
+					"BestiaryDescriptionScreen",
+					"weight unit"
+				});
+
 				LabelWidget propertyNames2Widget4 = this.m_propertyNames2Widget;
-				propertyNames2Widget4.Text = propertyNames2Widget4.Text + LanguageControl.Get("BlocksManager", "Spawner Eggs") + ":";
+				propertyNames2Widget4.Text = propertyNames2Widget4.Text + LanguageControl.Get(new string[]
+				{
+					"BlocksManager",
+					"Spawner Eggs"
+				}) + ":";
 				LabelWidget propertyValues2Widget4 = this.m_propertyValues2Widget;
 				propertyValues2Widget4.Text = propertyValues2Widget4.Text + (bestiaryCreatureInfo.HasSpawnerEgg ? LanguageControl.Exists : LanguageControl.None) + "\n";
+
 				this.m_propertyNames2Widget.Text = this.m_propertyNames2Widget.Text.TrimEnd();
 				this.m_propertyValues2Widget.Text = this.m_propertyValues2Widget.Text.TrimEnd();
+
 				this.m_dropsPanel.Children.Clear();
 				ValuesDictionary valuesDictionary = DatabaseManager.FindValuesDictionaryForComponent(bestiaryCreatureInfo.EntityValuesDictionary, typeof(ComponentLoot));
 				if (valuesDictionary != null)
@@ -130,18 +192,26 @@ namespace Game
 							string text;
 							if (loot.MinCount < loot.MaxCount)
 							{
-								text = string.Format(LanguageControl.Get("BestiaryDescriptionScreen", "range"), loot.MinCount, loot.MaxCount);
+								text = string.Format(LanguageControl.Get(new string[]
+								{
+									"BestiaryDescriptionScreen",
+									"range"
+								}), loot.MinCount, loot.MaxCount);
 							}
 							else
 							{
-								text = loot.MinCount.ToString();
+								DefaultInterpolatedStringHandler defaultInterpolatedStringHandler2 = new DefaultInterpolatedStringHandler(0, 1);
+								defaultInterpolatedStringHandler2.AppendFormatted<int>(loot.MinCount);
+								text = defaultInterpolatedStringHandler2.ToStringAndClear();
 							}
 							string text2 = text;
 							if (loot.Probability < 1f)
 							{
 								string str = text2;
 								string format = LanguageControl.Get("BestiaryDescriptionScreen", 2);
-								text2 = str + string.Format(format, (loot.Probability * 100f).ToString("0"));
+								DefaultInterpolatedStringHandler defaultInterpolatedStringHandler3 = new DefaultInterpolatedStringHandler(0, 1);
+								defaultInterpolatedStringHandler3.AppendFormatted<float>(loot.Probability * 100f, "0");
+								text2 = str + string.Format(format, defaultInterpolatedStringHandler3.ToStringAndClear());
 							}
 							this.m_dropsPanel.Children.Add(new StackPanelWidget
 							{
