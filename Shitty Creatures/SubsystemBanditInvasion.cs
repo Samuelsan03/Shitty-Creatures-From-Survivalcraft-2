@@ -655,7 +655,6 @@ namespace Game
 					player.ComponentGui.DisplayLargeMessage(largeMessage, "", 5f, 0f);
 				}
 
-				Log.Information($"[SubsystemBanditInvasion] Jefe spawnado en {spawnPos}");
 			}
 			catch (Exception ex)
 			{
