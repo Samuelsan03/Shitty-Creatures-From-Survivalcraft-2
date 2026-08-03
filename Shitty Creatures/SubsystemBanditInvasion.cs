@@ -454,13 +454,13 @@ namespace Game
 
 					if (!m_bossSpawnedThisWar)
 					{
-						// Determinar si la Noche Verde está activa o será esta noche
+						// Determinar si hay Noche Verde activa o inminente
 						bool isGreenNightTonight = m_subsystemGreenNightSky != null &&
 												   m_subsystemGreenNightSky.GreenNightEnabled &&
 												   (m_subsystemGreenNightSky.IsGreenNightActive ||
 													m_subsystemGreenNightSky.DaysSinceLastGreenNight >= m_subsystemGreenNightSky.GreenNightIntervalDays);
 
-						// Si es la oleada final Y hay Noche Verde, LaBandida espera a medianoche
+						// Si es la oleada final Y hay Noche Verde, esperar a medianoche
 						if (m_subsystemZombiesSpawn != null && m_subsystemZombiesSpawn.IsFinalWave && isGreenNightTonight)
 						{
 							m_bossPendingForMidnight = true;
@@ -647,6 +647,14 @@ namespace Game
 				}
 
 				Project.AddEntity(entity);
+
+				// Mostrar mensaje grande a todos los jugadores (SOLO mensaje grande)
+				string largeMessage = LanguageControl.Get("SubsystemBanditInvasion", 0);
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				{
+					player.ComponentGui.DisplayLargeMessage(largeMessage, "", 5f, 0f);
+				}
+
 				Log.Information($"[SubsystemBanditInvasion] Jefe spawnado en {spawnPos}");
 			}
 			catch (Exception ex)
