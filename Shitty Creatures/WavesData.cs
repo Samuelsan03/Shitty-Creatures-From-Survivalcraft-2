@@ -127,7 +127,6 @@ namespace Game
 						result[waveNumber] = entries;
 						if (isSpecial)
 						{
-							Log.Information($"Ola especial cargada con {entries.Count} entradas.");
 						}
 					}
 				}
