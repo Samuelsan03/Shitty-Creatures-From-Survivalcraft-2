@@ -1,12 +1,12 @@
 using System;
 using Engine;
 using Engine.Graphics;
+using Engine.Media;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-
 	public class SubsystemCreatureHealthBar : Subsystem, IDrawable, IUpdateable
 	{
 		public enum CreatureHealthBarState
@@ -37,9 +37,6 @@ namespace Game
 		{
 			this.m_primitivesRenderer = new PrimitivesRenderer3D();
 			this.m_subsystemCreatureSpawn = base.Project.FindSubsystem<SubsystemCreatureSpawn>(true);
-
-			// ELIMINADO: No necesitamos agregarlo manualmente. 
-			// SubsystemDrawing ya lo detecta automáticamente porque implementamos IDrawable.
 		}
 
 		public virtual void Draw(Camera camera, int drawOrder)
@@ -56,6 +53,7 @@ namespace Game
 			Vector3 forward = new Vector3(invertedViewMatrix.M31, invertedViewMatrix.M32, invertedViewMatrix.M33);
 
 			FlatBatch3D flatBatch = this.m_primitivesRenderer.FlatBatch(m_drawOrders[0], DepthStencilState.DepthRead, RasterizerState.CullNoneScissor);
+			FontBatch3D fontBatch = this.m_primitivesRenderer.FontBatch(LabelWidget.BitmapFont, m_drawOrders[0], DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
 
 			foreach (ComponentCreature componentCreature in this.m_subsystemCreatureSpawn.Creatures)
 			{
@@ -75,7 +73,7 @@ namespace Game
 				Vector3 position = componentBody.Position;
 				float height = componentBody.StanceBoxSize.Y;
 
-				position.Y += height + 0.4f;
+				position.Y += height + 0.095f;
 				position -= forward * 0.2f;
 
 				float barWidth = 0.75f;
@@ -115,6 +113,24 @@ namespace Game
 
 					flatBatch.QueueQuad(fv0, fv1, fv2, fv3, barColor);
 				}
+
+				// Calcular la vida real (Ej: 0.80 * 100 = 80.00)
+				float actualHealth = currentHealth * componentHealth.AttackResilience;
+
+				// Dibujar el texto encima de la barra
+				string creatureName = componentCreature.DisplayName;
+				string healthText = creatureName + " HP: " + actualHealth.ToString("F2");
+
+				Vector3 textPosition = position + up * (halfHeight + 0.085f);
+
+				float textScale = 0.0035f;
+				Vector3 textRight = right * textScale;
+
+				// Se invierte el vector 'up' con el signo negativo para que el texto no se vea boca arriba
+				Vector3 textUp = -up * textScale;
+
+				// Se utiliza barColor para que el texto siga el mismo patrón de estados (Verde, Amarillo, Rojo)
+				fontBatch.QueueText(healthText, textPosition, textRight, textUp, barColor, TextAnchor.HorizontalCenter);
 			}
 
 			Matrix viewProjectionMatrix = camera.ViewMatrix * camera.ProjectionMatrix;
