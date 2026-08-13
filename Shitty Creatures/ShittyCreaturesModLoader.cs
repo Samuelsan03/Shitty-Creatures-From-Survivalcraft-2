@@ -33,12 +33,6 @@ namespace Game
 		private Dictionary<ComponentPlayer, ComponentBody> m_lastHitTarget = new Dictionary<ComponentPlayer, ComponentBody>();
 		private Dictionary<ComponentPlayer, bool> m_fastHitMode = new Dictionary<ComponentPlayer, bool>();
 
-		private Dictionary<ComponentCreature, BloodParticleSystem> m_bleedingSystems = new Dictionary<ComponentCreature, BloodParticleSystem>();
-		private SubsystemModelsRenderer m_healthBarModelsRenderer;
-		private SubsystemCreatureSpawn m_healthBarCreatureSpawn;
-		private SubsystemPlayers m_healthBarPlayers;
-		public float HealthBarVisibilityRadius = 50f;
-
 		private static Dictionary<string, (float AttackPower, float WalkSpeed, float FlySpeed)> m_baseStatsCache = new Dictionary<string, (float, float, float)>();
 
 		// Campos para celebración de logros
@@ -60,7 +54,7 @@ namespace Game
 {
 	"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
 	"Bandit6", "Bandit8", "Bandit9", "Bandit10",
-    "Bandit13", "Bandit14", "Bandit15", "Bandit16", "LaBandida"
+	"Bandit13", "Bandit14", "Bandit15", "Bandit16", "LaBandida"
 };
 
 		// Índices de ropa sin protección (para dificultades bajas)
@@ -219,21 +213,6 @@ namespace Game
 				}
 			}
 			UpdateCoordinateLabelsPosition(project);
-
-			m_healthBarModelsRenderer = project.FindSubsystem<SubsystemModelsRenderer>(true);
-			m_healthBarCreatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
-			m_healthBarPlayers = project.FindSubsystem<SubsystemPlayers>(true);
-			HealthBarDrawable healthBarDrawable = new HealthBarDrawable(this);
-			project.FindSubsystem<SubsystemDrawing>(true).AddDrawable(healthBarDrawable);
-
-			var playersSubsystem = project.FindSubsystem<SubsystemPlayers>(true);
-			if (playersSubsystem != null)
-			{
-				foreach (ComponentPlayer player in playersSubsystem.ComponentPlayers)
-				{
-					SubscribeToPlayerInjured(player);
-				}
-			}
 
 			// ===== SUSCRIBIRSE A ENTIDADES NUEVAS PARA APLICAR DIFICULTAD =====
 			// 1. Suscribirse al evento estático de Project (cuando se añade una entidad al proyecto)
@@ -842,7 +821,7 @@ namespace Game
 				}
 			}
 
-			// ---------- HUD de coordenadas y sangrado ----------
+			// ---------- HUD de coordenadas ----------
 			GameWidget gameWidget = widget as GameWidget;
 			if (gameWidget != null)
 			{
@@ -857,9 +836,6 @@ namespace Game
 					else
 						player.ComponentGui.ModalPanelWidget = new AchievementsWidget(player);
 				}
-
-				// ─── Sistema de sangrado (siempre se ejecuta) ───
-				UpdateBleedingSystems(gameWidget);
 
 				// ─── Hacer bailar a las criaturas durante la celebración ───
 				if (m_celebrationActive)
@@ -1837,228 +1813,6 @@ namespace Game
 				inventory.AddSlotItems(slot, value, canAdd);
 				remaining -= canAdd;
 			}
-		}
-
-		private void DrawHealthBar(Camera camera)
-		{
-			if (!ShittyCreaturesSettingsManager.HealthBarEnabled)
-				return;
-			if (m_healthBarModelsRenderer == null || m_healthBarCreatureSpawn == null)
-				return;
-			var allCreatures = new List<ComponentCreature>(m_healthBarCreatureSpawn.Creatures);
-			if (m_healthBarPlayers != null)
-			{
-				foreach (var player in m_healthBarPlayers.ComponentPlayers)
-				{
-					if (player != null && player.ComponentHealth.Health > 0f)
-						allCreatures.Add(player);
-				}
-			}
-			foreach (var creature in allCreatures)
-			{
-				if (creature == null) continue;
-				var health = creature.ComponentHealth;
-				if (health == null) continue;
-				var body = creature.ComponentBody;
-				if (body == null) continue;
-				if (creature is ComponentPlayer player && camera.GameWidget.IsEntityFirstPersonTarget(player.Entity) && (body.ImmersionFactor > 0f || body.IsCrouching))
-					continue;
-				Vector3 center = (body.BoundingBox.Min + body.BoundingBox.Max) * 0.5f;
-				float height = body.BoundingBox.Max.Y - body.BoundingBox.Min.Y;
-				if (Vector3.Distance(camera.ViewPosition, center) > HealthBarVisibilityRadius) continue;
-				Vector3 textPos = new Vector3(center.X, body.BoundingBox.Max.Y + height * 0.3f, center.Z);
-				Vector3 barPos = new Vector3(center.X, body.BoundingBox.Max.Y + height * 0.2f, center.Z);
-				if (Vector3.Dot(camera.ViewDirection, textPos - camera.ViewPosition) <= 0f) continue;
-				if (Vector3.Dot(camera.ViewDirection, barPos - camera.ViewPosition) <= 0f) continue;
-				Vector3 textViewPos = Vector3.Transform(textPos, camera.ViewMatrix);
-				Vector3 barViewPos = Vector3.Transform(barPos, camera.ViewMatrix);
-				Vector3 horizontalOffset = Vector3.TransformNormal(0.005f * Vector3.Normalize(Vector3.Cross(camera.ViewDirection, camera.ViewUp)), camera.ViewMatrix);
-				Vector3 verticalOffset = Vector3.TransformNormal(-0.005f * Vector3.UnitY, camera.ViewMatrix);
-				float healthPercent = MathUtils.Saturate(health.Health);
-				float attackResilience = health.AttackResilience;
-				float displayedHealth = health.Health * attackResilience;
-				Color color = (healthPercent < 0.3f) ? Color.Red : ((healthPercent < 0.7f) ? Color.Yellow : Color.Green);
-				if (health.Health <= 0f)
-					color = Color.White;
-				string hpText = LanguageControl.Get("HealthBar", "HP", "HP");
-				string text = creature.DisplayName + " " + displayedHealth.ToString("0") + " " + hpText;
-				BitmapFont bitmapFont = ContentManager.Get<BitmapFont>("Fonts/Pericles");
-				FontBatch3D fontBatch = m_healthBarModelsRenderer.PrimitivesRenderer.FontBatch(bitmapFont, 1, DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
-				fontBatch.QueueText(text, textViewPos, horizontalOffset, verticalOffset, color, TextAnchor.Center);
-				fontBatch.Flush(camera.ViewProjectionMatrix, false);
-				float barWidth = 120f;
-				float barHeight = 12.5f;
-				Vector3 barStart = barViewPos - horizontalOffset * (barWidth * 0.5f);
-				Vector3 barEnd = barViewPos + horizontalOffset * (barWidth * 0.5f);
-				Vector3 barTop = barStart + verticalOffset * barHeight;
-				Vector3 barTopEnd = barEnd + verticalOffset * barHeight;
-				FlatBatch3D flatBatch = m_healthBarModelsRenderer.PrimitivesRenderer.FlatBatch(0, null, null, null);
-				flatBatch.QueueQuad(barStart, barTop, Vector3.Lerp(barTop, barTopEnd, healthPercent), Vector3.Lerp(barStart, barEnd, healthPercent), Color.Lerp(Color.Red, Color.Green, healthPercent));
-				if (healthPercent < 1f)
-				{
-					flatBatch.QueueQuad(Vector3.Lerp(barStart, barEnd, healthPercent), Vector3.Lerp(barTop, barTopEnd, healthPercent), barTopEnd, barEnd, new Color(0, 0, 0, 180));
-				}
-				flatBatch.Flush(camera.ViewProjectionMatrix, false);
-			}
-		}
-
-		private void UpdateBleedingSystems(GameWidget gameWidget)
-		{
-			if (!ShittyCreaturesSettingsManager.BleedingEnabled)
-			{
-				// Detener todos los sistemas de sangrado existentes
-				foreach (var kvp in m_bleedingSystems)
-				{
-					kvp.Value.IsStopped = true;
-				}
-				m_bleedingSystems.Clear();
-				return;
-			}
-			var project = gameWidget.PlayerData?.SubsystemPlayers?.Project;
-			if (project == null) return;
-
-			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
-			var particles = project.FindSubsystem<SubsystemParticles>(true);
-			var terrain = project.FindSubsystem<SubsystemTerrain>(true);
-			var players = project.FindSubsystem<SubsystemPlayers>(true);
-
-			if (creatureSpawn == null || particles == null || terrain == null || players == null)
-				return;
-
-			// Lista de nombres de plantilla que NO sangran
-			var noBleedCreatures = new HashSet<string>
-	{
-		"HumanoidSkeleton",
-		"HumanoidSkeletonTamed",
-		"TankGhost1",
-		"TankGhost2",
-		"TankGhost3",
-		"FrozenTankGhost",
-		"GhostNormal",
-		"GhostFast",
-		"PoisonousGhost",
-		"GhostBoomer1",
-		"GhostBoomer2",
-		"GhostBoomer3",
-		"GhostCharger",
-		"FrozenGhost",
-		"FrozenGhostBoomer",
-		"LaMuerteX",
-		"ElSenorDeLasTumbasMoradas",
-		"HombreLava",
-		"HombreAgua",
-		"LiderCalavericoSupremo",
-		"LiderCalavericoSupremoAlfa"
-	};
-
-			var allCreatures = new List<ComponentCreature>(creatureSpawn.Creatures);
-			foreach (var p in players.ComponentPlayers)
-				if (p != null) allCreatures.Add(p);
-
-			var toRemove = new List<ComponentCreature>();
-
-			foreach (var creature in allCreatures)
-			{
-				if (creature == null || creature.Entity == null) continue;
-				var health = creature.ComponentHealth;
-				if (health == null) continue;
-
-				string templateName = creature.Entity.ValuesDictionary?.DatabaseObject?.Name;
-				bool canBleed = !noBleedCreatures.Contains(templateName ?? string.Empty);
-				bool isAlive = health.Health > 0f && health.DeathTime == null;
-
-				// Verificar si la criatura tiene una enfermedad o veneno que cause daño interno (sin sangrado externo)
-				bool hasNonPhysicalAilment = false;
-				if (creature is ComponentPlayer player)
-				{
-					// Jugador: gripe o enfermedad (náuseas)
-					if ((player.ComponentSickness != null && player.ComponentSickness.IsSick) ||
-						(player.ComponentFlu != null && player.ComponentFlu.HasFlu))
-					{
-						hasNonPhysicalAilment = true;
-					}
-				}
-				else
-				{
-					// Criatura no jugador: veneno o gripe de criatura
-					var poison = creature.Entity.FindComponent<ComponentPoisonInfected>();
-					if (poison != null && poison.IsInfected)
-						hasNonPhysicalAilment = true;
-
-					var flu = creature.Entity.FindComponent<ComponentFluInfected>();
-					if (flu != null && flu.IsInfected)
-						hasNonPhysicalAilment = true;
-				}
-
-				// Solo iniciar sangrado si:
-				// - Está viva
-				// - Puede sangrar
-				// - Su salud es menor del 20%
-				// - NO tiene una enfermedad que cause daño interno
-				bool shouldStartBleeding = isAlive && canBleed && health.Health < 0.2f && !hasNonPhysicalAilment;
-
-				if (m_bleedingSystems.TryGetValue(creature, out var bps))
-				{
-					// Si la criatura está viva y su salud ya NO está baja, detenemos el sangrado (se curó)
-					if (isAlive && health.Health >= 0.3f)
-					{
-						bps.IsStopped = true;
-						toRemove.Add(creature);
-					}
-					else
-					{
-						// Mantenemos el sangrado activo (vivo con poca vida, muerto, o incluso enfermo si ya estaba sangrando antes)
-						bps.Position = creature.ComponentBody.Position + new Vector3(0f, 0.4f, 0f);
-					}
-				}
-				else if (shouldStartBleeding)
-				{
-					// Iniciar sangrado solo para criaturas vivas con poca vida por heridas físicas
-					try
-					{
-						var newBps = new BloodParticleSystem(terrain);
-						newBps.Position = creature.ComponentBody.Position + new Vector3(0f, 0.4f, 0f);
-						particles.AddParticleSystem(newBps, false);
-						m_bleedingSystems[creature] = newBps;
-					}
-					catch (Exception ex)
-					{
-						Log.Warning($"[ShittyCreatures] No se pudo crear sangre: {ex.Message}");
-					}
-				}
-				else if (!isAlive && canBleed) // Criatura muerta que puede sangrar (heridas físicas)
-				{
-					// Iniciar sangrado post-mortem (explosiones, proyectiles, etc.)
-					try
-					{
-						var newBps = new BloodParticleSystem(terrain);
-						newBps.Position = creature.ComponentBody.Position + new Vector3(0f, 0.4f, 0f);
-						particles.AddParticleSystem(newBps, false);
-						m_bleedingSystems[creature] = newBps;
-					}
-					catch (Exception ex)
-					{
-						Log.Warning($"[ShittyCreatures] No se pudo crear sangre: {ex.Message}");
-					}
-				}
-			}
-
-			foreach (var c in toRemove)
-				m_bleedingSystems.Remove(c);
-
-			// Limpiar sistemas cuyas criaturas ya no existen (despawned)
-			var activeCreaturesSet = new HashSet<ComponentCreature>(allCreatures);
-			toRemove.Clear();
-			foreach (var kvp in m_bleedingSystems)
-			{
-				if (kvp.Key == null || kvp.Key.Entity == null || !activeCreaturesSet.Contains(kvp.Key))
-				{
-					kvp.Value.IsStopped = true;
-					toRemove.Add(kvp.Key);
-				}
-			}
-			foreach (var c in toRemove)
-				m_bleedingSystems.Remove(c);
 		}
 
 		public override void OnCreatureDied(ComponentHealth health, Injury injury, ref int experienceOrbDropCount, ref bool calculateInKill)
@@ -3686,13 +3440,5 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		public override void SaveSettings(XElement xElement) { }
 		public override void LoadSettings(XElement xElement) { }
-
-		private class HealthBarDrawable : IDrawable
-		{
-			public int[] DrawOrders { get { return new int[] { 1000 }; } }
-			private ShittyCreaturesModLoader m_owner;
-			public HealthBarDrawable(ShittyCreaturesModLoader owner) { m_owner = owner; }
-			public void Draw(Camera camera, int drawOrder) { m_owner.DrawHealthBar(camera); }
-		}
 	}
 }
