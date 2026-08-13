@@ -11,6 +11,7 @@ namespace Game
 		public bool NoExplosionSound = false;
 		public bool PreventExplosion = false;
 
+		public SubsystemAttractNoise m_subsystemAttractNoise;
 		private SubsystemFreezeExplosions m_subsystemFreezeExplosions;
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentHealth m_componentHealth;
@@ -33,6 +34,7 @@ namespace Game
 
 			m_subsystemFreezeExplosions = Project.FindSubsystem<SubsystemFreezeExplosions>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
+			m_subsystemAttractNoise = Project.FindSubsystem<SubsystemAttractNoise>(false);
 
 			m_componentHealth = Entity.FindComponent<ComponentHealth>(true);
 			m_componentBody = Entity.FindComponent<ComponentBody>(true);
@@ -136,6 +138,11 @@ namespace Game
 			if (m_subsystemFreezeExplosions != null)
 			{
 				m_subsystemFreezeExplosions.AddFreezeExplosion(x, y, z, finalPressure, finalFluDuration, NoExplosionSound);
+			}
+
+			if (m_subsystemAttractNoise != null)
+			{
+				m_subsystemAttractNoise.MakeLureNoise(position, 10f, 15f); // Fuerza 10, Rango 15 bloques
 			}
 		}
 

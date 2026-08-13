@@ -17,6 +17,7 @@ namespace Game
 
 		public bool PreventExplosion = false;
 
+		public SubsystemAttractNoise m_subsystemAttractNoise;
 		public SubsystemAudio m_subsystemAudio;
 		public SubsystemTime m_subsystemTime;
 		public SubsystemBodies m_subsystemBodies;
@@ -44,6 +45,7 @@ namespace Game
 			ExplosionPressure = valuesDictionary.GetValue<float>("ExplosionPressure", ExplosionPressure);
 
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			m_subsystemAttractNoise = base.Project.FindSubsystem<SubsystemAttractNoise>(false);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
@@ -159,6 +161,11 @@ namespace Game
 			else
 			{
 				CreatePoisonExplosionLegacy(position, finalPoisonIntensity, poisonRadiusMult);
+			}
+
+			if (m_subsystemAttractNoise != null)
+			{
+				m_subsystemAttractNoise.MakeLureNoise(position, 20f, 25f); // El veneno atrae desde muy lejos
 			}
 		}
 

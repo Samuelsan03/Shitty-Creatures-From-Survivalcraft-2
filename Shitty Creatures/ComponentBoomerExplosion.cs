@@ -22,6 +22,7 @@ namespace Game
 		public bool PreventExplosion = false;
 
 		// ===== REFERENCIAS =====
+		public SubsystemAttractNoise m_subsystemAttractNoise;
 		public SubsystemExplosions m_subsystemExplosions;
 		public SubsystemAudio m_subsystemAudio;
 		public SubsystemTime m_subsystemTime;
@@ -52,6 +53,7 @@ namespace Game
 			DestroyBlocks = valuesDictionary.GetValue<bool>("DestroyBlocks", DestroyBlocks);
 
 			m_subsystemExplosions = base.Project.FindSubsystem<SubsystemExplosions>(true);
+			m_subsystemAttractNoise = base.Project.FindSubsystem<SubsystemAttractNoise>(false);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
@@ -197,6 +199,10 @@ namespace Game
 				{
 					DamageNearbyBlocks(position, finalBlockRadius);
 				}
+			}
+			if (m_subsystemAttractNoise != null)
+			{
+				m_subsystemAttractNoise.MakeLureNoise(position, 10f, 15f);
 			}
 		}
 

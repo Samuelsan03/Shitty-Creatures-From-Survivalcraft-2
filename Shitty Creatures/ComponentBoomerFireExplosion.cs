@@ -21,6 +21,7 @@ namespace Game
 		public float FireDuration = 10f;
 		public bool PreventExplosion = false;
 
+		public SubsystemAttractNoise m_subsystemAttractNoise;
 		public SubsystemExplosions m_subsystemExplosions;
 		public SubsystemAudio m_subsystemAudio;
 		public SubsystemTime m_subsystemTime;
@@ -55,6 +56,7 @@ namespace Game
 			FireDuration = valuesDictionary.GetValue<float>("FireDuration", FireDuration);
 
 			m_subsystemExplosions = base.Project.FindSubsystem<SubsystemExplosions>(true);
+			m_subsystemAttractNoise = base.Project.FindSubsystem<SubsystemAttractNoise>(false);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
@@ -184,6 +186,11 @@ namespace Game
 
 			if (IsIncendiary && m_subsystemFire != null)
 				SpreadFire(position, finalFireChance, finalFireDuration);
+
+			if (m_subsystemAttractNoise != null)
+			{
+				m_subsystemAttractNoise.MakeLureNoise(position, 15f, 20f); // La fuego atrae más
+			}
 		}
 
 		public void CreateScaledExplosion(int centerX, int centerY, int centerZ, float basePressure, bool isIncendiary)
