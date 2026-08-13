@@ -89,36 +89,16 @@ namespace Game
 				difficulty = SubsystemGreenNightSky.Instance.DifficultyMode;
 
 			float pressureMult = 1f, fluDurationMult = 1f;
+			float lureRange = 15f;
 			switch (difficulty)
 			{
-				case DifficultyMode.VeryEasy:
-					pressureMult = 0.4f;
-					fluDurationMult = 0.4f;
-					break;
-				case DifficultyMode.Easy:
-					pressureMult = 0.6f;
-					fluDurationMult = 0.5f;
-					break;
-				case DifficultyMode.Normal:
-					pressureMult = 1.0f;
-					fluDurationMult = 1.0f;
-					break;
-				case DifficultyMode.Medium:
-					pressureMult = 1.2f;
-					fluDurationMult = 1.2f;
-					break;
-				case DifficultyMode.Hard:
-					pressureMult = 1.5f;
-					fluDurationMult = 1.5f;
-					break;
-				case DifficultyMode.Extreme:
-					pressureMult = 2.0f;
-					fluDurationMult = 2.0f;
-					break;
-				case DifficultyMode.Impossible:
-					pressureMult = 3.0f;
-					fluDurationMult = 3.0f;
-					break;
+				case DifficultyMode.VeryEasy: pressureMult = 0.4f; fluDurationMult = 0.4f; lureRange = 5f; break;
+				case DifficultyMode.Easy: pressureMult = 0.6f; fluDurationMult = 0.5f; lureRange = 10f; break;
+				case DifficultyMode.Normal: pressureMult = 1.0f; fluDurationMult = 1.0f; lureRange = 15f; break;
+				case DifficultyMode.Medium: pressureMult = 1.2f; fluDurationMult = 1.2f; lureRange = 22f; break;
+				case DifficultyMode.Hard: pressureMult = 1.5f; fluDurationMult = 1.5f; lureRange = 35f; break;
+				case DifficultyMode.Extreme: pressureMult = 2.0f; fluDurationMult = 2.0f; lureRange = 55f; break;
+				case DifficultyMode.Impossible: pressureMult = 3.0f; fluDurationMult = 3.0f; lureRange = 100f; break;
 			}
 
 			float finalPressure = FreezePressure * pressureMult;
@@ -142,7 +122,7 @@ namespace Game
 
 			if (m_subsystemAttractNoise != null)
 			{
-				m_subsystemAttractNoise.MakeLureNoise(position, 10f, 15f); // Fuerza 10, Rango 15 bloques
+				m_subsystemAttractNoise.MakeLureNoise(position, 10f, lureRange);
 			}
 		}
 

@@ -119,42 +119,16 @@ namespace Game
 			// Factores de dificultad para fuego
 			float pressureMult = 1f, damageMult = 1f, forceMult = 1f, radiusMult = 1f;
 			float fireChanceMult = 1f, fireDurationMult = 1f;
+			float lureRange = 20f; // La de fuego tiene un poco más de base
 			switch (difficulty)
 			{
-				case DifficultyMode.VeryEasy:
-					pressureMult = 0.4f;
-					damageMult = 0.3f;
-					forceMult = 0.5f;
-					radiusMult = 0.7f;
-					fireChanceMult = 0.5f;
-					fireDurationMult = 0.6f;
-					break;
-				case DifficultyMode.Easy:
-					pressureMult = 0.6f; damageMult = 0.5f; forceMult = 0.7f; radiusMult = 0.8f;
-					fireChanceMult = 0.7f; fireDurationMult = 0.8f;
-					break;
-				case DifficultyMode.Normal:
-					pressureMult = 1.0f; damageMult = 1.0f; forceMult = 1.0f; radiusMult = 1.0f;
-					fireChanceMult = 1.0f; fireDurationMult = 1.0f;
-					break;
-				case DifficultyMode.Medium:
-					pressureMult = 1.2f; damageMult = 1.3f; forceMult = 1.2f; radiusMult = 1.1f;
-					fireChanceMult = 1.2f; fireDurationMult = 1.2f;
-					break;
-				case DifficultyMode.Hard:
-					pressureMult = 1.5f; damageMult = 1.6f; forceMult = 1.5f; radiusMult = 1.25f;
-					fireChanceMult = 1.5f; fireDurationMult = 1.4f;
-					break;
-				case DifficultyMode.Extreme:
-					pressureMult = 2.0f; damageMult = 2.0f; forceMult = 2.0f; radiusMult = 1.5f;
-					fireChanceMult = 2.0f; fireDurationMult = 1.8f;
-					break;
-				case DifficultyMode.Impossible:
-					pressureMult = 3.0f;
-					damageMult = 3.0f;
-					forceMult = 2.5f;
-					radiusMult = 2.0f;
-					break;
+				case DifficultyMode.VeryEasy: pressureMult = 0.4f; damageMult = 0.3f; forceMult = 0.5f; radiusMult = 0.7f; fireChanceMult = 0.5f; fireDurationMult = 0.6f; lureRange = 7f; break;
+				case DifficultyMode.Easy: pressureMult = 0.6f; damageMult = 0.5f; forceMult = 0.7f; radiusMult = 0.8f; fireChanceMult = 0.7f; fireDurationMult = 0.8f; lureRange = 12f; break;
+				case DifficultyMode.Normal: pressureMult = 1.0f; damageMult = 1.0f; forceMult = 1.0f; radiusMult = 1.0f; fireChanceMult = 1.0f; fireDurationMult = 1.0f; lureRange = 20f; break;
+				case DifficultyMode.Medium: pressureMult = 1.2f; damageMult = 1.3f; forceMult = 1.2f; radiusMult = 1.1f; fireChanceMult = 1.2f; fireDurationMult = 1.2f; lureRange = 28f; break;
+				case DifficultyMode.Hard: pressureMult = 1.5f; damageMult = 1.6f; forceMult = 1.5f; radiusMult = 1.25f; fireChanceMult = 1.5f; fireDurationMult = 1.4f; lureRange = 40f; break;
+				case DifficultyMode.Extreme: pressureMult = 2.0f; damageMult = 2.0f; forceMult = 2.0f; radiusMult = 1.5f; fireChanceMult = 2.0f; fireDurationMult = 1.8f; lureRange = 60f; break;
+				case DifficultyMode.Impossible: pressureMult = 3.0f; damageMult = 3.0f; forceMult = 2.5f; radiusMult = 2.0f; lureRange = 110f; break;
 			}
 
 			float finalPressure = ExplosionPressure * pressureMult;
@@ -189,7 +163,7 @@ namespace Game
 
 			if (m_subsystemAttractNoise != null)
 			{
-				m_subsystemAttractNoise.MakeLureNoise(position, 15f, 20f); // La fuego atrae más
+				m_subsystemAttractNoise.MakeLureNoise(position, 15f, lureRange);
 			}
 		}
 

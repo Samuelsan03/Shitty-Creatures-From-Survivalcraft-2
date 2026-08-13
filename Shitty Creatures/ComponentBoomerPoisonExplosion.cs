@@ -106,43 +106,16 @@ namespace Game
 				difficulty = SubsystemGreenNightSky.Instance.DifficultyMode;
 
 			float pressureMult = 1f, poisonIntensityMult = 1f, poisonRadiusMult = 1f;
+			float lureRange = 25f; // El veneno es el que más atrae en base
 			switch (difficulty)
 			{
-				case DifficultyMode.VeryEasy:
-					pressureMult = 0.4f;
-					poisonIntensityMult = 0.3f;
-					poisonRadiusMult = 0.7f;
-					break;
-				case DifficultyMode.Easy:
-					pressureMult = 0.6f;
-					poisonIntensityMult = 0.5f;
-					poisonRadiusMult = 0.8f;
-					break;
-				case DifficultyMode.Normal:
-					pressureMult = 1.0f;
-					poisonIntensityMult = 1.0f;
-					poisonRadiusMult = 1.0f;
-					break;
-				case DifficultyMode.Medium:
-					pressureMult = 1.2f;
-					poisonIntensityMult = 1.3f;
-					poisonRadiusMult = 1.1f;
-					break;
-				case DifficultyMode.Hard:
-					pressureMult = 1.5f;
-					poisonIntensityMult = 1.6f;
-					poisonRadiusMult = 1.25f;
-					break;
-				case DifficultyMode.Extreme:
-					pressureMult = 2.0f;
-					poisonIntensityMult = 2.0f;
-					poisonRadiusMult = 1.5f;
-					break;
-				case DifficultyMode.Impossible:
-					pressureMult = 3.0f;
-					poisonIntensityMult = 3.0f;
-					poisonRadiusMult = 2.0f;
-					break;
+				case DifficultyMode.VeryEasy: pressureMult = 0.4f; poisonIntensityMult = 0.3f; poisonRadiusMult = 0.7f; lureRange = 8f; break;
+				case DifficultyMode.Easy: pressureMult = 0.6f; poisonIntensityMult = 0.5f; poisonRadiusMult = 0.8f; lureRange = 15f; break;
+				case DifficultyMode.Normal: pressureMult = 1.0f; poisonIntensityMult = 1.0f; poisonRadiusMult = 1.0f; lureRange = 25f; break;
+				case DifficultyMode.Medium: pressureMult = 1.2f; poisonIntensityMult = 1.3f; poisonRadiusMult = 1.1f; lureRange = 35f; break;
+				case DifficultyMode.Hard: pressureMult = 1.5f; poisonIntensityMult = 1.6f; poisonRadiusMult = 1.25f; lureRange = 45f; break;
+				case DifficultyMode.Extreme: pressureMult = 2.0f; poisonIntensityMult = 2.0f; poisonRadiusMult = 1.5f; lureRange = 65f; break;
+				case DifficultyMode.Impossible: pressureMult = 3.0f; poisonIntensityMult = 3.0f; poisonRadiusMult = 2.0f; lureRange = 120f; break;
 			}
 
 			float finalPressure = ExplosionPressure * pressureMult;
@@ -165,7 +138,7 @@ namespace Game
 
 			if (m_subsystemAttractNoise != null)
 			{
-				m_subsystemAttractNoise.MakeLureNoise(position, 20f, 25f); // El veneno atrae desde muy lejos
+				m_subsystemAttractNoise.MakeLureNoise(position, 20f, lureRange);
 			}
 		}
 
