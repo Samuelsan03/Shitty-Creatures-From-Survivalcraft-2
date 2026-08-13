@@ -6,6 +6,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
+
 	public class SubsystemCreatureHealthBar : Subsystem, IDrawable, IUpdateable
 	{
 		public enum CreatureHealthBarState
@@ -15,6 +16,7 @@ namespace Game
 			AboutToDie,
 			Dead
 		}
+
 		public int[] DrawOrders
 		{
 			get
@@ -76,8 +78,8 @@ namespace Game
 				position.Y += height + 0.4f;
 				position -= forward * 0.2f;
 
-				float barWidth = 0.35f;
-				float barHeight = 0.12f;
+				float barWidth = 0.75f;
+				float barHeight = 0.1f;
 
 				CreatureHealthBarState state = this.GetState(componentHealth.Health);
 				Color barColor = this.GetColor(state);
