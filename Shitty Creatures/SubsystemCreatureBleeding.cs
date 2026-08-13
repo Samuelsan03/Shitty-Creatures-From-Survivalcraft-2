@@ -15,6 +15,32 @@ namespace Game
 		private Dictionary<ComponentCreature, BloodParticleSystem> m_bleedingCreatures = new Dictionary<ComponentCreature, BloodParticleSystem>();
 		private List<ComponentCreature> m_creaturesToStopBleeding = new List<ComponentCreature>();
 
+		// Criaturas que no deben sangrar
+		private static readonly HashSet<string> m_excludedCreatures = new HashSet<string>
+		{
+			"HumanoidSkeleton",
+			"HumanoidSkeletonTamed",
+			"TankGhost1",
+			"TankGhost2",
+			"TankGhost3",
+			"FrozenTankGhost",
+			"GhostNormal",
+			"GhostFast",
+			"PoisonousGhost",
+			"GhostBoomer1",
+			"GhostBoomer2",
+			"GhostBoomer3",
+			"GhostCharger",
+			"FrozenGhost",
+			"FrozenGhostBoomer",
+			"LaMuerteX",
+			"ElSenorDeLasTumbasMoradas",
+			"HombreLava",
+			"HombreAgua",
+			"LiderCalavericoSupremo",
+			"LiderCalavericoSupremoAlfa"
+		};
+
 		public UpdateOrder UpdateOrder
 		{
 			get
@@ -44,6 +70,20 @@ namespace Game
 		{
 			m_creaturesToStopBleeding.Clear();
 
+			// Si el sistema está desactivado, detener todo el sangrado existente
+			if (!ShittyCreaturesSettingsManager.BleedingEnabled)
+			{
+				foreach (var kvp in m_bleedingCreatures)
+				{
+					if (kvp.Value != null)
+					{
+						kvp.Value.IsStopped = true;
+					}
+				}
+				m_bleedingCreatures.Clear();
+				return;
+			}
+
 			if (m_subsystemCreatureSpawn == null)
 			{
 				return;
@@ -53,6 +93,17 @@ namespace Game
 			{
 				if (creature == null || creature.Entity == null)
 				{
+					continue;
+				}
+
+				// Verificar si la criatura está en la lista de exclusión
+				string creatureName = creature.Entity.ValuesDictionary.DatabaseObject.Name;
+				if (m_excludedCreatures.Contains(creatureName))
+				{
+					if (m_bleedingCreatures.ContainsKey(creature))
+					{
+						m_creaturesToStopBleeding.Add(creature);
+					}
 					continue;
 				}
 
