@@ -62,17 +62,32 @@ namespace Game
 
 			foreach (ComponentCreature componentCreature in this.m_subsystemCreatureSpawn.Creatures)
 			{
-				if (componentCreature.Entity.FindComponent<ComponentPlayer>() != null)
-				{
-					continue;
-				}
-
 				ComponentBody componentBody = componentCreature.ComponentBody;
 				ComponentHealth componentHealth = componentCreature.ComponentHealth;
 
 				if (componentBody == null || componentHealth == null)
 				{
 					continue;
+				}
+
+				// ============================================
+				// LÓGICA MEJORADA: Ocultar SOLO si es primera persona real
+				// ============================================
+				ComponentPlayer componentPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>();
+
+				if (componentPlayer != null)
+				{
+					// Calculamos la distancia entre la cámara y el cuerpo del jugador
+					float distance = Vector3.Distance(camera.ViewPosition, componentBody.Position);
+
+					// Si la distancia es menor a 1.5 bloques, significa que la cámara
+					// está dentro de la cabeza/cuerpo (Primera Persona o Cámara Fija clavada).
+					// En estas situaciones el modelo del jugador no se dibuja, por lo tanto
+					// tampoco debemos dibujar la barra de vida flotando en el aire.
+					if (distance < 1.5f)
+					{
+						continue;
+					}
 				}
 
 				Vector3 position = componentBody.Position;
@@ -119,10 +134,10 @@ namespace Game
 					flatBatch.QueueQuad(fv0, fv1, fv2, fv3, barColor);
 				}
 
-				// Calcular la vida real (Ej: 0.80 * 100 = 80.00)
+				// Calcular la vida real
 				float actualHealth = currentHealth * componentHealth.AttackResilience;
 
-				// Dibujar el texto encima de la barra aplicando el idioma
+				// Dibujar el texto encima de la barra
 				string creatureName = componentCreature.DisplayName;
 				string healthText = creatureName + " " + LanguageControl.Get(new string[] { "HealthBar", "HP" }) + ": " + actualHealth.ToString("F2");
 
@@ -130,11 +145,8 @@ namespace Game
 
 				float textScale = 0.0035f;
 				Vector3 textRight = right * textScale;
-
-				// Se invierte el vector 'up' con el signo negativo para que el texto no se vea boca arriba
 				Vector3 textUp = -up * textScale;
 
-				// Se utiliza barColor para que el texto siga el mismo patrón de estados (Verde, Amarillo, Rojo)
 				fontBatch.QueueText(healthText, textPosition, textRight, textUp, barColor, TextAnchor.HorizontalCenter);
 			}
 
