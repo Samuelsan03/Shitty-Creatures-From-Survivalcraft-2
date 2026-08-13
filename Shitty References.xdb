@@ -92,6 +92,7 @@
 
     <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
   <Parameter Name="Class" Guid="dbbfd94b-2a9e-45bd-81c0-7a2b6dbb06ec" Value="Game.ComponentCreatureClothing" Type="string"/>
+  <Parameter Name="SkinTextureName" Guid="6e885186-3281-449e-8628-c134ea49931c" Value="DefaultSkin" Type="string" Description="Name of the skin texture to use for this creature. Default: DefaultSkin"/>
   <ParameterSet Name="CreatureClothes" Description="Contains clothes worn by creature" Guid="4f57a2eb-2f66-4c72-8005-8fd1f9c65b35">
     <Parameter Name="Head" Description="List of head clothes" Guid="9804f8ee-6d1e-44e0-be01-fbabf8db806e" Value="" Type="string"/>
     <Parameter Name="Torso" Description="List of torso clothes" Guid="ff15bccf-2691-4ba3-8e6b-004139829abc" Value="" Type="string"/>
@@ -638,6 +639,15 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="CreatureBleeding" Guid="bb8ccb86-fe3d-49ab-ac45-ad68e75c6bd2" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+          <Parameter Name="Class" Guid="952e6a4a-decf-4b40-ac0e-e534cca3205d" Value="Game.SubsystemCreatureBleeding" Type="string" />
+        </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="CreatureHealthBar" Guid="4773f331-7304-46a2-9cb0-16ea607c01ce" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+          <Parameter Name="Class" Guid="49c07223-74e0-41f4-9c03-6d15fc11b295" Value="Game.SubsystemCreatureHealthBar" Type="string" />
+        </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="AttractNoise" Guid="d4b726bf-66d9-42b4-8bb6-ed1736c67e1d" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+          <Parameter Name="Class" Guid="3b95bed2-944c-44e7-9606-849939622477" Value="Game.SubsystemAttractNoise" Type="string" />
+        </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="InfectedSpawnEggBlockBehavior" Guid="43199bab-04c6-42ce-b73f-8c87ca93477a" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemInfectedSpawnEggBlockBehavior" Type="string" Guid="99fea780-15f1-4fb1-87e6-288dcf67d2aa"/>
 </MemberSubsystemTemplate>
