@@ -46,6 +46,11 @@ namespace Game
 				return;
 			}
 
+			if (!ShittyCreaturesSettingsManager.HealthBarEnabled)
+			{
+				return;
+			}
+
 			Matrix invertedViewMatrix = camera.InvertedViewMatrix;
 
 			Vector3 right = new Vector3(invertedViewMatrix.M11, invertedViewMatrix.M12, invertedViewMatrix.M13);
@@ -117,9 +122,9 @@ namespace Game
 				// Calcular la vida real (Ej: 0.80 * 100 = 80.00)
 				float actualHealth = currentHealth * componentHealth.AttackResilience;
 
-				// Dibujar el texto encima de la barra
+				// Dibujar el texto encima de la barra aplicando el idioma
 				string creatureName = componentCreature.DisplayName;
-				string healthText = creatureName + " HP: " + actualHealth.ToString("F2");
+				string healthText = creatureName + " " + LanguageControl.Get(new string[] { "HealthBar", "HP" }) + ": " + actualHealth.ToString("F2");
 
 				Vector3 textPosition = position + up * (halfHeight + 0.085f);
 
