@@ -60,6 +60,10 @@ namespace Game
 			FlatBatch3D flatBatch = this.m_primitivesRenderer.FlatBatch(m_drawOrders[0], DepthStencilState.DepthRead, RasterizerState.CullNoneScissor);
 			FontBatch3D fontBatch = this.m_primitivesRenderer.FontBatch(LabelWidget.BitmapFont, m_drawOrders[0], DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
 
+			// Verificamos si es EXACTAMENTE la cámara de primera persona base del juego.
+			// Usar GetType() evita que se bloqueen cámaras de mods (como Debug) que hereden de FppCamera.
+			bool hideForThisCamera = (camera.GetType() == typeof(FppCamera));
+
 			foreach (ComponentCreature componentCreature in this.m_subsystemCreatureSpawn.Creatures)
 			{
 				ComponentBody componentBody = componentCreature.ComponentBody;
@@ -70,24 +74,10 @@ namespace Game
 					continue;
 				}
 
-				// ============================================
-				// LÓGICA MEJORADA: Ocultar SOLO si es primera persona real
-				// ============================================
-				ComponentPlayer componentPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>();
-
-				if (componentPlayer != null)
+				// Si es un jugador y estamos en la cámara de primera persona exacta, ocultamos la barra
+				if (hideForThisCamera && componentCreature.Entity.FindComponent<ComponentPlayer>() != null)
 				{
-					// Calculamos la distancia entre la cámara y el cuerpo del jugador
-					float distance = Vector3.Distance(camera.ViewPosition, componentBody.Position);
-
-					// Si la distancia es menor a 1.5 bloques, significa que la cámara
-					// está dentro de la cabeza/cuerpo (Primera Persona o Cámara Fija clavada).
-					// En estas situaciones el modelo del jugador no se dibuja, por lo tanto
-					// tampoco debemos dibujar la barra de vida flotando en el aire.
-					if (distance < 1.5f)
-					{
-						continue;
-					}
+					continue;
 				}
 
 				Vector3 position = componentBody.Position;
