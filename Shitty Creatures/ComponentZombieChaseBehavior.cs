@@ -29,11 +29,17 @@ namespace Game
 
 		public string CurrentState => this.m_stateMachine?.CurrentState;
 
-		// Variables de atracción divididas en 2 fases
-		private Vector3? m_attractPosition;
-		private bool m_isInvestigating = false;
+		// Variables de atracción por ruido
+		private Vector3 m_attractPosition;
 		private float m_investigationTimeRemaining = 0f;
 		private ComponentPathfinding m_zombiePathfinding;
+
+		// Variables para guardar el estado anterior y poder retomar la persecución
+		private string m_stateBeforeNoise;
+		private ComponentCreature m_targetBeforeNoise;
+		private float m_chaseTimeBeforeNoise;
+		private bool m_wasPersistentBeforeNoise;
+		private float m_rangeBeforeNoise;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -67,6 +73,7 @@ namespace Game
 			}
 			this.SetupZombieInjuryHandler();
 			this.AddFleeState();
+			this.AddNoiseAttractionStates();
 
 			this.m_previousGreenNightActive = false;
 			m_defaultTargetInRangeTime = this.TargetInRangeTimeToChase;
@@ -84,72 +91,210 @@ namespace Game
 			}
 		}
 
-		// --- MÉTODO DE LA INTERFAZ INoiseAttractListener ---
+		// ==========================================
+		// MÉTODO DE LA INTERFAZ INoiseAttractListener
+		// ==========================================
 		public void AttractedToNoise(ComponentBody sourceBody, Vector3 sourcePosition, float lureStrength)
 		{
-			// Solo si el zombi NO está persiguiendo a nadie ni retaliando
-			if (m_target == null && !m_isRetaliating)
-			{
-				this.StopAttack();
-				if (m_zombiePathfinding != null) m_zombiePathfinding.Stop();
+			m_attractPosition = sourcePosition;
+			string currentState = this.m_stateMachine?.CurrentState;
 
-				// SOBREESCRIBE la posición. Si hay otra explosión, irá a la más reciente
-				m_attractPosition = sourcePosition;
-				m_isInvestigating = false;           // Cancela investigación previa si estaba mirando
+			// Si ya está siendo atraído, solo actualizar el destino (explosión más reciente)
+			if (currentState == "AttractedToNoise")
+			{
+				if (m_zombiePathfinding != null)
+				{
+					m_zombiePathfinding.SetDestination(m_attractPosition, 1f, 1f, 10, true, false, false, null);
+				}
+				return;
+			}
+
+			// No interrumpir si ya está investigando otra explosión
+			if (currentState == "InvestigatingNoise")
+			{
+				return;
+			}
+
+			// Guardar estado actual para poder retomar después
+			m_stateBeforeNoise = !string.IsNullOrEmpty(currentState) ? currentState : "LookingForTarget";
+			m_targetBeforeNoise = m_target;
+			m_chaseTimeBeforeNoise = m_chaseTime;
+			m_wasPersistentBeforeNoise = m_isPersistent;
+			m_rangeBeforeNoise = m_range;
+
+			// Transicionar al estado de atracción (INCLUSO si está persiguiendo a alguien)
+			this.m_stateMachine.TransitionTo("AttractedToNoise");
+		}
+
+		// ==========================================
+		// ESTADOS DE ATRACCIÓN POR RUIDO
+		// ==========================================
+		private void AddNoiseAttractionStates()
+		{
+			// ==========================================
+			// ESTADO 1: CAMINAR HACIA LA EXPLOSIÓN
+			// ==========================================
+			this.m_stateMachine.AddState("AttractedToNoise",
+				delegate
+				{
+					// ENTER: Limpiar estado de persecución SIN llamar StopAttack()
+					// (StopAttack() haría TransitionTo("LookingForTarget") y cancelaría este estado)
+					m_target = null;
+					this.IsActive = false;
+					this.m_range = 0f;
+					this.m_chaseTime = 0f;
+					this.m_isPersistent = false;
+					this.m_importanceLevel = 0f;
+					this.m_nextUpdateTime = 0.0;
+					this.m_componentCreatureModel.AttackOrder = false;
+					this.m_componentCreature.ComponentCreatureModel.LookAtOrder = null;
+
+					// Empezar a caminar hacia el ruido
+					if (m_zombiePathfinding != null && m_componentCreature.ComponentBody != null)
+					{
+						m_zombiePathfinding.Stop();
+						m_zombiePathfinding.SetDestination(m_attractPosition, 1f, 1f, 10, true, false, false, null);
+					}
+				},
+				delegate
+				{
+					// UPDATE: Seguir caminando hasta llegar al punto de la explosión
+					if (m_zombiePathfinding != null && m_componentCreature.ComponentBody != null)
+					{
+						float distToAttract = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_attractPosition);
+
+						if (distToAttract <= 2f)
+						{
+							// Llegó al punto, pasar a investigar
+							m_zombiePathfinding.Stop();
+							m_stateMachine.TransitionTo("InvestigatingNoise");
+						}
+						else if (m_zombiePathfinding.Destination == null || m_zombiePathfinding.IsStuck)
+						{
+							// Si se quedó atascado o perdió el destino, reiniciar pathfinding
+							m_zombiePathfinding.SetDestination(m_attractPosition, 1f, 1f, 10, true, false, false, null);
+						}
+					}
+				},
+				delegate
+				{
+					// LEAVE: Detener pathfinding al salir del estado
+					if (m_zombiePathfinding != null)
+					{
+						m_zombiePathfinding.Stop();
+					}
+				}
+			);
+
+			// ==========================================
+			// ESTADO 2: INVESTIGAR EN EL LUGAR
+			// ==========================================
+			this.m_stateMachine.AddState("InvestigatingNoise",
+				delegate
+				{
+					// ENTER: Iniciar temporizador de investigación
+					m_investigationTimeRemaining = 2.5f;
+				},
+				delegate
+				{
+					// UPDATE: Esperar y luego decidir qué hacer
+					m_investigationTimeRemaining -= m_dt;
+
+					if (m_investigationTimeRemaining <= 0f)
+					{
+						// Intentar retomar la persecución anterior si es posible
+						bool resumedChase = TryResumePreviousChase();
+
+						if (!resumedChase)
+						{
+							// No se pudo retomar, ir a buscar objetivo
+							m_stateMachine.TransitionTo("LookingForTarget");
+						}
+
+						// Limpiar variables guardadas
+						m_targetBeforeNoise = null;
+						m_stateBeforeNoise = null;
+					}
+				},
+				delegate
+				{
+					// LEAVE: Limpiar temporizador
+					m_investigationTimeRemaining = 0f;
+				}
+			);
+		}
+
+		// ==========================================
+		// INTENTAR RETOMAR PERSECUCIÓN ANTERIOR
+		// ==========================================
+		private bool TryResumePreviousChase()
+		{
+			// Solo intentar si estaba en estado Chasing y tenía un target válido
+			if (m_stateBeforeNoise != "Chasing" || m_targetBeforeNoise == null)
+			{
+				return false;
+			}
+
+			// Verificar que el target sigue vivo
+			if (m_targetBeforeNoise.ComponentHealth == null || m_targetBeforeNoise.ComponentHealth.Health <= 0f)
+			{
+				return false;
+			}
+
+			// Verificar que el target sigue en rango razonable
+			float dist = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_targetBeforeNoise.ComponentBody.Position);
+			float maxResumeRange = m_rangeBeforeNoise * 1.3f; // Dar un poco de margen extra
+
+			if (dist > maxResumeRange)
+			{
+				return false;
+			}
+
+			// Restaurar la persecución
+			m_target = m_targetBeforeNoise;
+			m_chaseTime = MathUtils.Max(m_chaseTimeBeforeNoise - 3f, 2f); // Restar tiempo investigando, mínimo 2s
+			m_isPersistent = m_wasPersistentBeforeNoise;
+			m_range = m_rangeBeforeNoise;
+			m_importanceLevel = m_isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent;
+			this.IsActive = true;
+
+			// Transicionar a Chasing
+			m_stateMachine.TransitionTo("Chasing");
+			return true;
+		}
+
+		// ==========================================
+		// MÉTODO AUXILIAR: SALIR DE ESTADOS DE RUIDO
+		// ==========================================
+		private void ExitNoiseAttractionStates()
+		{
+			string currentState = this.m_stateMachine?.CurrentState;
+			if (currentState == "AttractedToNoise" || currentState == "InvestigatingNoise")
+			{
+				// Limpiar variables guardadas
+				m_targetBeforeNoise = null;
+				m_stateBeforeNoise = null;
 				m_investigationTimeRemaining = 0f;
+
+				m_stateMachine.TransitionTo("LookingForTarget");
 			}
 		}
 
 		public override void Update(float dt)
 		{
 			// ==========================================
-			// FASE 1: CAMINAR HACIA LA EXPLOSIÓN
+			// SI ESTÁ EN ESTADOS DE ATRACCIÓN POR RUIDO,
+			// SOLO ACTUALIZAR LA MÁQUINA DE ESTADOS
 			// ==========================================
-			if (m_attractPosition.HasValue && !m_isInvestigating)
+			string currentState = this.m_stateMachine?.CurrentState;
+			if (currentState == "AttractedToNoise" || currentState == "InvestigatingNoise")
 			{
-				if (m_zombiePathfinding != null && m_componentCreature.ComponentBody != null)
-				{
-					float distToAttract = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_attractPosition.Value);
-
-					if (distToAttract > 2f)
-					{
-						// Seguir caminando...
-						m_zombiePathfinding.SetDestination(m_attractPosition, 1f, 1f, 10, true, false, false, null);
-					}
-					else
-					{
-						// LLEGÓ al punto. Pasar a Fase 2
-						m_zombiePathfinding.Stop();
-						m_attractPosition = null; // Limpia el destino
-						m_isInvestigating = true;
-						m_investigationTimeRemaining = 2.5f; // 2.5 segundos mirando el cráter
-					}
-				}
-				return; // Ignora el resto del Update normal mientras camina
+				m_dt = dt;
+				this.m_stateMachine.Update();
+				return;
 			}
 
-			// ==========================================
-			// FASE 2: INVESTIGAR EN EL LUGAR
-			// ==========================================
-			if (m_isInvestigating)
-			{
-				m_investigationTimeRemaining -= dt;
-
-				// Aquí podrías reproducir una animación o sonido de "curiosidad" si quisieras
-
-				if (m_investigationTimeRemaining <= 0f)
-				{
-					// Terminó de investigar, volver a la normalidad
-					m_isInvestigating = false;
-					if (this.m_stateMachine.CurrentState != "LookingForTarget")
-					{
-						this.m_stateMachine.TransitionTo("LookingForTarget");
-					}
-				}
-				return; // Ignora el resto del Update mientras investiga
-			}
-
-			// --- RESTO DEL CÓDIGO ORIGINAL DE UPDATE (SIN CAMBIOS) ---
+			// --- RESTO DEL CÓDIGO ORIGINAL DE UPDATE ---
 			if (m_subsystemGreenNightSky != null)
 			{
 				ApplyDifficultyToChase();
@@ -293,11 +438,8 @@ namespace Game
 					{
 						if (this.m_target != attacker)
 						{
-							this.StopAttack();
-							// LIMPIAR AMBAS FASES SI LO ATACAN
-							m_attractPosition = null;
-							m_isInvestigating = false;
-							m_investigationTimeRemaining = 0f;
+							// SALIR DE LOS ESTADOS DE ATRACCIÓN POR RUIDO SI LO ATACAN
+							ExitNoiseAttractionStates();
 
 							bool isGreenNightActive = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive;
 							float chaseTime = isGreenNightActive ? 120f : 60f;
@@ -333,10 +475,8 @@ namespace Game
 		{
 			if (target == null) return;
 
-			// LIMPIAR AMBAS FASES AL ATACAR
-			m_attractPosition = null;
-			m_isInvestigating = false;
-			m_investigationTimeRemaining = 0f;
+			// SALIR DE LOS ESTADOS DE ATRACCIÓN POR RUIDO AL ATACAR
+			ExitNoiseAttractionStates();
 
 			bool isRetaliating = this.m_isRetaliating && target == this.m_retaliationTarget;
 			bool isSameHerdTarget = !isRetaliating && !this.m_attacksSameHerd && this.IsSameHerd(target);
