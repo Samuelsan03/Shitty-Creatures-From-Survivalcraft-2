@@ -21,6 +21,8 @@ namespace Game
 		private int m_AntiTanksBulletBlockIndex;
 		private int m_DoubleMusketBlockIndex;
 
+		public static string fName = "SubsystemDoubleMusketBlockBehavior";
+
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
@@ -60,115 +62,141 @@ namespace Game
 			int newValue = slotValue;
 			int durabilityCost = 0;
 
-			if (!m_aimStartTimes.TryGetValue(componentMiner, out double startTime))
+			double gameTime;
+			if (!m_aimStartTimes.TryGetValue(componentMiner, out gameTime))
 			{
-				startTime = m_subsystemTime.GameTime;
-				m_aimStartTimes[componentMiner] = startTime;
+				gameTime = m_subsystemTime.GameTime;
+				m_aimStartTimes[componentMiner] = gameTime;
 			}
-			float aimDuration = (float)(m_subsystemTime.GameTime - startTime);
+			float aimDuration = (float)(m_subsystemTime.GameTime - gameTime);
 
 			float noiseTime = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-			float baseSway = componentMiner.ComponentCreature.ComponentBody.IsCrouching ? 0.01f : 0.03f;
-			float aimFactor = 0.2f * MathUtils.Saturate((aimDuration - 2.5f) / 6f);
-			Vector3 noise = new Vector3(
-				SimplexNoise.OctavedNoise(noiseTime, 2f, 3, 2f, 0.5f, false),
-				SimplexNoise.OctavedNoise(noiseTime + 100f, 2f, 3, 2f, 0.5f, false),
-				SimplexNoise.OctavedNoise(noiseTime + 200f, 2f, 3, 2f, 0.5f, false)
-			);
-			Vector3 sway = new Vector3(baseSway) + aimFactor * noise;
-			aim.Direction = Vector3.Normalize(aim.Direction + sway);
+			Vector3 v = ((componentMiner.ComponentCreature.ComponentBody.IsCrouching ? 0.01f : 0.03f) + 0.2f * MathUtils.Saturate((aimDuration - 2.5f) / 6f)) * new Vector3
+			{
+				X = SimplexNoise.OctavedNoise(noiseTime, 2f, 3, 2f, 0.5f, false),
+				Y = SimplexNoise.OctavedNoise(noiseTime + 100f, 2f, 3, 2f, 0.5f, false),
+				Z = SimplexNoise.OctavedNoise(noiseTime + 200f, 2f, 3, 2f, 0.5f, false)
+			};
+			aim.Direction = Vector3.Normalize(aim.Direction + v);
 
 			switch (state)
 			{
 				case AimState.InProgress:
-					if (aimDuration >= 10f)
 					{
-						componentMiner.ComponentCreature.ComponentCreatureSounds.PlayMoanSound();
-						return true;
+						if (aimDuration >= 10f)
+						{
+							componentMiner.ComponentCreature.ComponentCreatureSounds.PlayMoanSound();
+							return true;
+						}
+						if (aimDuration > 0.5f && !DoubleMusketBlock.GetHammerState(Terrain.ExtractData(newValue)))
+						{
+							newValue = Terrain.MakeBlockValue(contents, 0, DoubleMusketBlock.SetHammerState(Terrain.ExtractData(newValue), true));
+							m_subsystemAudio.PlaySound("Audio/Items/Hammer Cock Remake", 1f, m_random.Float(-0.1f, 0.1f), 0f, 0f);
+						}
+						ComponentFirstPersonModel componentFirstPersonModel = componentMiner.Entity.FindComponent<ComponentFirstPersonModel>();
+						if (componentFirstPersonModel != null)
+						{
+							ComponentPlayer componentPlayer = componentMiner.ComponentPlayer;
+							if (componentPlayer != null)
+							{
+								componentPlayer.ComponentAimingSights.ShowAimingSights(aim.Position, aim.Direction);
+							}
+							componentFirstPersonModel.ItemOffsetOrder = new Vector3(-0.21f, 0.15f, 0.08f);
+							componentFirstPersonModel.ItemRotationOrder = new Vector3(-0.7f, 0f, 0f);
+						}
+						componentMiner.ComponentCreature.ComponentCreatureModel.AimHandAngleOrder = 1.4f;
+						componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+						componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						break;
 					}
-					if (aimDuration > 0.5f && !DoubleMusketBlock.GetHammerState(data))
-					{
-						newValue = Terrain.MakeBlockValue(contents, 0, DoubleMusketBlock.SetHammerState(data, true));
-						m_subsystemAudio.PlaySound("Audio/Items/Hammer Cock Remake", 1f, m_random.Float(-0.1f, 0.1f), 0f, 0f);
-					}
-
-					if (componentMiner.Entity.FindComponent<ComponentFirstPersonModel>() is ComponentFirstPersonModel fpModel)
-					{
-						componentMiner.ComponentPlayer?.ComponentAimingSights.ShowAimingSights(aim.Position, aim.Direction);
-						fpModel.ItemOffsetOrder = new Vector3(-0.21f, 0.15f, 0.08f);
-						fpModel.ItemRotationOrder = new Vector3(-0.7f, 0f, 0f);
-					}
-					componentMiner.ComponentCreature.ComponentCreatureModel.AimHandAngleOrder = 1.4f;
-					componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-					componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-					break;
-
 				case AimState.Cancelled:
-					if (DoubleMusketBlock.GetHammerState(data))
+					if (DoubleMusketBlock.GetHammerState(Terrain.ExtractData(newValue)))
 					{
-						newValue = Terrain.MakeBlockValue(contents, 0, DoubleMusketBlock.SetHammerState(data, false));
+						newValue = Terrain.MakeBlockValue(contents, 0, DoubleMusketBlock.SetHammerState(Terrain.ExtractData(newValue), false));
 						m_subsystemAudio.PlaySound("Audio/Items/Hammer Uncock Remake", 1f, m_random.Float(-0.1f, 0.1f), 0f, 0f);
 					}
 					m_aimStartTimes.Remove(componentMiner);
 					break;
-
 				case AimState.Completed:
-					bool isLoaded = DoubleMusketBlock.IsLoaded(data);
-					int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
-
-					if (DoubleMusketBlock.GetHammerState(data) && isLoaded && shotsRemaining > 0)
 					{
-						int projectileValue = Terrain.MakeBlockValue(m_AntiTanksBulletBlockIndex, 0, 0);
-						Vector3 spread = new Vector3(0.04f, 0.04f, 0f);
-						float speed = 180f;
+						bool fired = false;
+						int projectileValue = 0;
+						int projectileCount = 0;
+						float projectileSpeed = 0f;
+						Vector3 projectileSpread = Vector3.Zero;
 
-						Vector3 muzzlePos = componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition +
-											componentMiner.ComponentCreature.ComponentBody.Matrix.Right * 0.3f -
-											componentMiner.ComponentCreature.ComponentBody.Matrix.Up * 0.2f;
-						Vector3 dirNorm = Vector3.Normalize(aim.Direction);
-						Vector3 right = Vector3.Normalize(Vector3.Cross(dirNorm, Vector3.UnitY));
-						Vector3 up = Vector3.Normalize(Vector3.Cross(dirNorm, right));
+						bool isLoaded = DoubleMusketBlock.IsLoaded(data);
+						int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
 
-						Vector3 offset = m_random.Float(-spread.X, spread.X) * right +
-										 m_random.Float(-spread.Y, spread.Y) * up +
-										 m_random.Float(-spread.Z, spread.Z) * dirNorm;
-						Vector3 velocity = componentMiner.ComponentCreature.ComponentBody.Velocity + speed * (dirNorm + offset);
-						Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, muzzlePos, velocity, Vector3.Zero, componentMiner.ComponentCreature);
-						if (projectile != null)
-							projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-
-						m_subsystemAudio.PlaySound("Audio/Items/GunShot Musket Remake", 1f, m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
-						m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(m_subsystemTerrain, muzzlePos + 0.3f * dirNorm, dirNorm), false);
-						m_subsystemNoise.MakeNoise(muzzlePos, 1f, 40f);
-
-						shotsRemaining--;
-						if (shotsRemaining <= 0)
+						if (DoubleMusketBlock.GetHammerState(Terrain.ExtractData(newValue)))
 						{
-							data = DoubleMusketBlock.SetLoaded(data, false);
-							data = DoubleMusketBlock.SetShotsRemaining(data, 0);
-							data = DoubleMusketBlock.SetAntiTanksBullet(data, false);
+							if (!isLoaded || shotsRemaining <= 0)
+							{
+								ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
+								if (componentPlayer2 != null)
+								{
+									componentPlayer2.ComponentGui.DisplaySmallMessage(LanguageControl.Get(fName, 0), Color.White, true, false);
+								}
+							}
+							else
+							{
+								fired = true;
+								projectileValue = Terrain.MakeBlockValue(m_AntiTanksBulletBlockIndex, 0, 0);
+								projectileCount = 1;
+								projectileSpeed = 180f;
+								projectileSpread = new Vector3(0.04f, 0.04f, 0f);
+							}
 						}
-						else
+
+						if (fired)
 						{
-							data = DoubleMusketBlock.SetShotsRemaining(data, shotsRemaining);
+							Vector3 muzzlePos = componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition +
+												componentMiner.ComponentCreature.ComponentBody.Matrix.Right * 0.3f -
+												componentMiner.ComponentCreature.ComponentBody.Matrix.Up * 0.2f;
+							Vector3 dirNorm = Vector3.Normalize(aim.Direction);
+							Vector3 right = Vector3.Normalize(Vector3.Cross(dirNorm, Vector3.UnitY));
+							Vector3 up = Vector3.Normalize(Vector3.Cross(dirNorm, right));
+
+							for (int i = 0; i < projectileCount; i++)
+							{
+								Vector3 offset = m_random.Float(-projectileSpread.X, projectileSpread.X) * right +
+												 m_random.Float(-projectileSpread.Y, projectileSpread.Y) * up +
+												 m_random.Float(-projectileSpread.Z, projectileSpread.Z) * dirNorm;
+								Vector3 velocity = componentMiner.ComponentCreature.ComponentBody.Velocity + projectileSpeed * (dirNorm + offset);
+								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, muzzlePos, velocity, Vector3.Zero, componentMiner.ComponentCreature);
+								if (projectile != null)
+								{
+									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+								}
+							}
+							m_subsystemAudio.PlaySound("Audio/Items/GunShot Musket Remake", 1f, m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
+							m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(m_subsystemTerrain, muzzlePos + 0.3f * dirNorm, dirNorm), false);
+							m_subsystemNoise.MakeNoise(muzzlePos, 1f, 40f);
+
+							shotsRemaining--;
+							int newData = data;
+							if (shotsRemaining <= 0)
+							{
+								newData = DoubleMusketBlock.SetLoaded(newData, false);
+								newData = DoubleMusketBlock.SetShotsRemaining(newData, 0);
+								newData = DoubleMusketBlock.SetAntiTanksBullet(newData, false);
+							}
+							else
+							{
+								newData = DoubleMusketBlock.SetShotsRemaining(newData, shotsRemaining);
+							}
+							newValue = Terrain.MakeBlockValue(Terrain.ExtractContents(newValue), 0, newData);
+							durabilityCost = 1;
 						}
-						newValue = Terrain.MakeBlockValue(contents, 0, data);
-						durabilityCost = 1;
-					}
-					else
-					{
-						if (DoubleMusketBlock.GetHammerState(data) && (!isLoaded || shotsRemaining == 0))
-							componentMiner.ComponentPlayer?.ComponentGui.DisplaySmallMessage(LanguageControl.Get("SubsystemDoubleMusketBlockBehavior", 0), Color.White, true, false);
-					}
 
-					if (DoubleMusketBlock.GetHammerState(Terrain.ExtractData(newValue)))
-					{
-						newValue = Terrain.MakeBlockValue(Terrain.ExtractContents(newValue), 0, DoubleMusketBlock.SetHammerState(Terrain.ExtractData(newValue), false));
-						m_subsystemAudio.PlaySound("Audio/Items/Hammer Release Remake", 1f, m_random.Float(-0.1f, 0.1f), 0f, 0f);
+						if (DoubleMusketBlock.GetHammerState(Terrain.ExtractData(newValue)))
+						{
+							newValue = Terrain.MakeBlockValue(Terrain.ExtractContents(newValue), 0, DoubleMusketBlock.SetHammerState(Terrain.ExtractData(newValue), false));
+							m_subsystemAudio.PlaySound("Audio/Items/Hammer Release Remake", 1f, m_random.Float(-0.1f, 0.1f), 0f, 0f);
+						}
+						m_aimStartTimes.Remove(componentMiner);
+						break;
 					}
-
-					m_aimStartTimes.Remove(componentMiner);
-					break;
 			}
 
 			if (newValue != slotValue)
@@ -177,8 +205,9 @@ namespace Game
 				inventory.AddSlotItems(activeSlotIndex, newValue, 1);
 			}
 			if (durabilityCost > 0)
+			{
 				componentMiner.DamageActiveTool(durabilityCost);
-
+			}
 			return false;
 		}
 
@@ -189,9 +218,11 @@ namespace Game
 			int data = Terrain.ExtractData(slotValue);
 			int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
 
-			if (shotsRemaining < 2 && contents == m_AntiTanksBulletBlockIndex)
+			// Solo permite cargar cuando está completamente vacío con 1 bala anti-tanque
+			if (shotsRemaining == 0 && contents == m_AntiTanksBulletBlockIndex)
+			{
 				return 1;
-
+			}
 			return 0;
 		}
 
@@ -206,12 +237,11 @@ namespace Game
 			int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
 			int ammoContents = Terrain.ExtractContents(value);
 
-			if (shotsRemaining < 2 && ammoContents == m_AntiTanksBulletBlockIndex)
+			// Al colocar 1 bala anti-tanque, carga 2 disparos automáticamente
+			if (shotsRemaining == 0 && ammoContents == m_AntiTanksBulletBlockIndex)
 			{
-				shotsRemaining++;
-
-				int newData = DoubleMusketBlock.SetLoaded(data, shotsRemaining > 0);
-				newData = DoubleMusketBlock.SetShotsRemaining(newData, shotsRemaining);
+				int newData = DoubleMusketBlock.SetLoaded(data, true);
+				newData = DoubleMusketBlock.SetShotsRemaining(newData, 2);
 				newData = DoubleMusketBlock.SetAntiTanksBullet(newData, true);
 
 				processedValue = 0;
