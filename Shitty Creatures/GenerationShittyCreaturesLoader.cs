@@ -393,7 +393,7 @@ namespace Game
 			// BANDIDOS DE LA INVASIÓN (SOLO DE NOCHE Y SI HAY GUERRA)
 			// Respetan las probabilidades del XML
 			// ==========================================
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit1", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit1", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -410,7 +410,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit2", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit2", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -427,7 +427,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit3", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit3", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -444,7 +444,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit4", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit4", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -461,7 +461,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit5", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit5", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -478,7 +478,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit6", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit6", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -495,7 +495,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit8", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit8", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -512,7 +512,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit9", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit9", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -529,7 +529,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit10", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit10", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -546,7 +546,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit13", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit13", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -563,7 +563,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit14", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit14", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -580,7 +580,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit15", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit15", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
@@ -597,7 +597,7 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit16", SpawnLocationType.Surface, true, true)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit16", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
