@@ -1478,7 +1478,11 @@ namespace Game
 				return 0;
 
 			var entry = GetRandomWeightedEntry(m_currentWaveEntries);
-			if (entry == null || BossTemplates.Contains(entry.TemplateName))
+			if (entry == null)
+				return 0;
+
+			// AHORA (CORREGIDO) - Bloquea jefes, deja pasar criaturas normales:
+			if (BossTemplates.Contains(entry.TemplateName))
 				return 0;
 
 			// EXCLUIR esqueletos (ya tienen su propio sistema)
