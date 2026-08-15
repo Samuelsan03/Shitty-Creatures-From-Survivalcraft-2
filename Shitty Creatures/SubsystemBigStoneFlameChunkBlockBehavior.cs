@@ -46,8 +46,8 @@ namespace Game
 				bool toRemove = projectile.ToRemove;
 				if (toRemove)
 				{
-					// 10% de probabilidad de explosión incendiaria similar a un barril mediano
-					if (this.m_random.Float(0f, 1f) < 0.1f)
+					// 5% de probabilidad de explosión incendiaria similar a un barril mediano
+					if (this.m_random.Float(0f, 1f) < 0.05f)
 					{
 						int x = (int)MathF.Floor(projectile.Position.X);
 						int y = (int)MathF.Floor(projectile.Position.Y);
