@@ -12,20 +12,15 @@ namespace Game
 	{
 		private SubsystemGameInfo m_subsystemGameInfo;
 		private SubsystemTimeOfDay m_subsystemTimeOfDay;
-		private SubsystemSky m_subsystemSky;
-		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemBodies m_subsystemBodies;
 		private SubsystemPlayers m_subsystemPlayers;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
-		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
 		private SubsystemZombiesSpawn m_subsystemZombiesSpawn;
 		private Random m_random = new Random();
 
 		public event Action InvasionCompleted;
 
 		private List<BanditSpawnData> m_bandits = new List<BanditSpawnData>();
-		private float m_totalProbabilitySum;
-		private float[] m_cumulativeProbabilities;
 
 		private bool m_acceptedWar;
 		private bool m_invasionActive;
@@ -38,38 +33,44 @@ namespace Game
 
 		private bool m_needsInitialSync;
 		private bool m_restoredFromSave;
+		private bool m_wasEffectiveInvasionTime;
 
-		private const float InitialSpawnDelay = 5.0f;
-		private bool m_inInitialDelay;
-		private float m_initialDelayTimer;
+		private const float BossSpawnDelay = 5.0f;
+		private bool m_inBossDelay;
+		private float m_bossDelayTimer;
+
+		private bool m_bossSpawnedThisWar;
+
+		// Spawn activo de invasión
+		private const float InvasionSpawnInterval = 2.5f;
+		private float m_invasionSpawnTimer;
+		private const int MaxInvasionBandits = 15;
 
 		private static readonly HashSet<string> m_banditNames = new HashSet<string>
 		{
 			"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
-			"Bandit6", "Bandit8", "Bandit9", "Bandit10",
-			"Bandit13", "Bandit14", "Bandit15", "Bandit16"
+			"Bandit6", "Bandit7", "Bandit8", "Bandit9", "Bandit10",
+			"Bandit11", "Bandit12", "Bandit13", "Bandit14", "Bandit15",
+			"Bandit16", "Bandit17", "FirearmsDealer"
 		};
-
-		private int m_killsByPlayer;
-		private bool m_bossUnlocked;
-		private bool m_bossSpawnedThisWar;
-
-		private float m_spawnTimer;
-		private float m_spawnInterval = 2.0f;
-		private const int MaxSpawnsPerFrame = 2;
 
 		public bool IsWarAccepted => m_acceptedWar;
 		public bool IsWarRejected => m_wasRejected;
 		public bool IsWarCompleted => m_invasionCompleted;
 		public bool WasGreenNightActiveDuringInvasion => m_greenNightWasActiveDuringInvasion;
-		public bool IsInInitialDelay => m_inInitialDelay;
-		public float RemainingInitialDelay => m_inInitialDelay ? Math.Max(0f, InitialSpawnDelay - m_initialDelayTimer) : 0f;
+		public bool IsInBossDelay => m_inBossDelay;
+		public float RemainingBossDelay => m_inBossDelay ? Math.Max(0f, BossSpawnDelay - m_bossDelayTimer) : 0f;
 		public bool BossPendingForMidnight => m_bossPendingForMidnight;
-
-		private bool m_wasEffectiveInvasionTime;
+		public bool BossSpawnedThisWar => m_bossSpawnedThisWar;
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 		public bool IsInvasionActive => m_invasionActive;
+
+		public float GetBanditProbability(string name)
+		{
+			var data = m_bandits.FirstOrDefault(b => b.Name == name);
+			return data != null ? data.Probability : 1.0f;
+		}
 
 		public void AcceptWar()
 		{
@@ -80,20 +81,15 @@ namespace Game
 				m_invasionStarted = false;
 				m_acceptedWar = true;
 				m_wasRejected = false;
-				m_spawnTimer = 0f;
 				m_greenNightWasActiveDuringInvasion = false;
-				m_restoredFromSave = false;
-				m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 				m_bossPendingForMidnight = false;
-
-				m_inInitialDelay = false;
-				m_initialDelayTimer = 0f;
-
-				m_killsByPlayer = 0;
-				m_bossUnlocked = false;
+				m_inBossDelay = false;
+				m_bossDelayTimer = 0f;
 				m_bossSpawnedThisWar = false;
-
-				RegisterBanditsForSpawn();
+				m_needsInitialSync = false;
+				m_restoredFromSave = false;
+				m_invasionSpawnTimer = 0f;
+				m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 				return;
 			}
 
@@ -102,86 +98,26 @@ namespace Game
 				m_acceptedWar = true;
 				m_wasRejected = false;
 				m_greenNightWasActiveDuringInvasion = false;
-				m_restoredFromSave = false;
 				m_bossPendingForMidnight = false;
-
-				m_inInitialDelay = false;
-				m_initialDelayTimer = 0f;
-
+				m_inBossDelay = false;
+				m_bossDelayTimer = 0f;
 				m_bossSpawnedThisWar = false;
-
-				RegisterBanditsForSpawn();
+				m_restoredFromSave = false;
+				m_invasionSpawnTimer = 0f;
+				m_wasEffectiveInvasionTime = CalculateEffectiveInvasionTime();
 			}
 		}
 
 		public void SpawnBossNow()
 		{
-			if (!m_bossSpawnedThisWar)
+			if (!m_bossSpawnedThisWar && m_invasionActive)
 			{
 				SpawnBoss();
 				m_bossSpawnedThisWar = true;
 				m_bossPendingForMidnight = false;
+				m_inBossDelay = false;
+				m_bossDelayTimer = 0f;
 			}
-		}
-
-		private void RegisterBanditsForSpawn()
-		{
-			if (m_subsystemCreatureSpawn == null) return;
-
-			foreach (var banditData in m_bandits)
-			{
-				string name = banditData.Name;
-				bool exists = m_subsystemCreatureSpawn.m_creatureTypes.Any(ct => ct.Name == name);
-				if (!exists)
-				{
-					var creatureType = new SubsystemCreatureSpawn.CreatureType(name, SpawnLocationType.Surface, true, true)
-					{
-						SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-						{
-							if (m_invasionActive && IsValidSpawnPoint(point))
-								return 1.0f;
-							return 0f;
-						},
-						SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-						{
-							int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
-							Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
-							List<Entity> entities = m_subsystemCreatureSpawn.SpawnCreatures(ct, name, correctedPoint, 1);
-							if (entities.Count > 0 && m_invasionActive)
-							{
-								Entity entity = entities[0];
-								var banditChase = entity.FindComponent<ComponentBanditChaseBehavior>();
-								if (banditChase != null)
-								{
-									banditChase.IsDrugTraffickerMode = true;
-								}
-							}
-							return entities.Count;
-						}
-					};
-					m_subsystemCreatureSpawn.m_creatureTypes.Add(creatureType);
-				}
-			}
-		}
-
-		private bool IsValidSpawnPoint(Point3 point)
-		{
-			if (point.Y <= 3 || point.Y >= 253)
-				return false;
-
-			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
-			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
-			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
-
-			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
-			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
-			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
-
-			bool isValidGround = block is GrassBlock || block is DirtBlock || block is SandBlock || block is GravelBlock;
-			bool currentEmpty = (!block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock));
-			bool aboveEmpty = (!block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock));
-
-			return isValidGround && currentEmpty && aboveEmpty;
 		}
 
 		private void SetAllBanditsDrugTraffickerMode(bool enabled)
@@ -216,12 +152,9 @@ namespace Game
 		{
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
 			m_subsystemTimeOfDay = Project.FindSubsystem<SubsystemTimeOfDay>(true);
-			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
-			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(false);
-			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			m_subsystemZombiesSpawn = Project.FindSubsystem<SubsystemZombiesSpawn>(true);
 
 			LoadBanditsFromXml();
@@ -230,15 +163,10 @@ namespace Game
 			m_invasionCompleted = valuesDictionary.GetValue<bool>("InvasionCompleted", false);
 			m_wasRejected = valuesDictionary.GetValue<bool>("WasRejected", false);
 			m_greenNightWasActiveDuringInvasion = valuesDictionary.GetValue<bool>("GreenNightWasActiveDuringInvasion", false);
-
 			m_invasionActive = valuesDictionary.GetValue<bool>("InvasionActive", false);
 			m_invasionStarted = valuesDictionary.GetValue<bool>("InvasionStarted", false);
-
-			m_inInitialDelay = valuesDictionary.GetValue<bool>("InInitialDelay", false);
-			m_initialDelayTimer = valuesDictionary.GetValue<float>("InitialDelayTimer", 0f);
-
-			m_killsByPlayer = valuesDictionary.GetValue<int>("KillsByPlayer", 0);
-			m_bossUnlocked = valuesDictionary.GetValue<bool>("BossUnlocked", false);
+			m_inBossDelay = valuesDictionary.GetValue<bool>("InBossDelay", false);
+			m_bossDelayTimer = valuesDictionary.GetValue<float>("BossDelayTimer", 0f);
 			m_bossSpawnedThisWar = valuesDictionary.GetValue<bool>("BossSpawnedThisWar", false);
 			m_bossPendingForMidnight = valuesDictionary.GetValue<bool>("BossPendingForMidnight", false);
 
@@ -249,8 +177,8 @@ namespace Game
 			{
 				m_invasionActive = false;
 				m_invasionStarted = false;
-				m_inInitialDelay = false;
-				m_initialDelayTimer = 0f;
+				m_inBossDelay = false;
+				m_bossDelayTimer = 0f;
 				m_needsInitialSync = false;
 				m_bossPendingForMidnight = false;
 			}
@@ -258,10 +186,9 @@ namespace Game
 			{
 				m_invasionActive = true;
 				m_invasionStarted = true;
-				m_inInitialDelay = false;
-				m_initialDelayTimer = 0f;
+				m_inBossDelay = false;
+				m_bossDelayTimer = 0f;
 				m_needsInitialSync = true;
-				RegisterBanditsForSpawn();
 			}
 			else
 			{
@@ -277,10 +204,8 @@ namespace Game
 			valuesDictionary.SetValue("GreenNightWasActiveDuringInvasion", m_greenNightWasActiveDuringInvasion);
 			valuesDictionary.SetValue("InvasionActive", m_invasionActive);
 			valuesDictionary.SetValue("InvasionStarted", m_invasionStarted);
-			valuesDictionary.SetValue("InInitialDelay", m_inInitialDelay);
-			valuesDictionary.SetValue("InitialDelayTimer", m_initialDelayTimer);
-			valuesDictionary.SetValue("KillsByPlayer", m_killsByPlayer);
-			valuesDictionary.SetValue("BossUnlocked", m_bossUnlocked);
+			valuesDictionary.SetValue("InBossDelay", m_inBossDelay);
+			valuesDictionary.SetValue("BossDelayTimer", m_bossDelayTimer);
 			valuesDictionary.SetValue("BossSpawnedThisWar", m_bossSpawnedThisWar);
 			valuesDictionary.SetValue("BossPendingForMidnight", m_bossPendingForMidnight);
 		}
@@ -299,9 +224,9 @@ namespace Game
 			{
 				m_invasionActive = false;
 				m_invasionStarted = false;
-				m_spawnTimer = 0f;
-				m_inInitialDelay = false;
-				m_initialDelayTimer = 0f;
+				m_inBossDelay = false;
+				m_bossDelayTimer = 0f;
+				m_invasionSpawnTimer = 0f;
 				SetAllBanditsDrugTraffickerMode(false);
 			}
 
@@ -322,6 +247,28 @@ namespace Game
 				return true;
 
 			return IsInvasionTime();
+		}
+
+		private bool IsInvasionTime()
+		{
+			TimeOfDayMode mode = m_subsystemGameInfo.WorldSettings.TimeOfDayMode;
+
+			if (mode == TimeOfDayMode.Day || mode == TimeOfDayMode.Sunrise)
+				return false;
+
+			if (mode == TimeOfDayMode.Night || mode == TimeOfDayMode.Sunset)
+				return true;
+
+			if (mode == TimeOfDayMode.Changing)
+			{
+				float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+				float duskStart = m_subsystemTimeOfDay.DuskStart;
+				float middawn = m_subsystemTimeOfDay.Middawn;
+
+				return timeOfDay >= duskStart || timeOfDay < middawn;
+			}
+
+			return false;
 		}
 
 		private void LoadBanditsFromXml()
@@ -353,19 +300,114 @@ namespace Game
 
 					if (!string.IsNullOrEmpty(name) && probability > 0f)
 					{
-						if (name != "FirearmsDealer")
-							m_bandits.Add(new BanditSpawnData(name, probability));
+						m_bandits.Add(new BanditSpawnData(name, probability));
 					}
 				}
 			}
+		}
 
-			m_totalProbabilitySum = m_bandits.Sum(b => b.Probability);
-			m_cumulativeProbabilities = new float[m_bandits.Count];
-			float cum = 0f;
+		private int CountInvasionBandits()
+		{
+			int count = 0;
+			foreach (var body in m_subsystemBodies.Bodies)
+			{
+				if (body.Entity?.ValuesDictionary?.DatabaseObject?.Name != null)
+				{
+					string name = body.Entity.ValuesDictionary.DatabaseObject.Name;
+					if (m_banditNames.Contains(name))
+					{
+						count++;
+					}
+				}
+			}
+			return count;
+		}
+
+		private void SpawnInvasionBandit()
+		{
+			if (m_bandits.Count == 0) return;
+
+			ComponentPlayer targetPlayer = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
+			if (targetPlayer == null) return;
+
+			// Seleccionar bandido aleatorio basado en probabilidad del XML
+			float totalWeight = 0f;
 			for (int i = 0; i < m_bandits.Count; i++)
 			{
-				cum += m_bandits[i].Probability;
-				m_cumulativeProbabilities[i] = cum;
+				totalWeight += m_bandits[i].Probability;
+			}
+
+			float roll = m_random.Float(0f, totalWeight);
+			float cumulative = 0f;
+			string selectedName = null;
+			for (int i = 0; i < m_bandits.Count; i++)
+			{
+				cumulative += m_bandits[i].Probability;
+				if (roll < cumulative)
+				{
+					selectedName = m_bandits[i].Name;
+					break;
+				}
+			}
+			if (selectedName == null) return;
+
+			Vector3 playerPos = targetPlayer.ComponentBody.Position;
+			SubsystemTerrain terrain = Project.FindSubsystem<SubsystemTerrain>(true);
+
+			// Intentar encontrar punto de spawn válido
+			for (int attempt = 0; attempt < 5; attempt++)
+			{
+				float angle = m_random.Float(0f, 2f * MathF.PI);
+				float distance = m_random.Float(25f, 45f);
+				int targetX = (int)(playerPos.X + MathF.Cos(angle) * distance);
+				int targetZ = (int)(playerPos.Z + MathF.Sin(angle) * distance);
+
+				TerrainChunk chunk = terrain.Terrain.GetChunkAtCell(targetX, targetZ);
+				if (chunk == null || chunk.State <= TerrainChunkState.InvalidPropagatedLight)
+					continue;
+
+				int topY = terrain.Terrain.GetTopHeight(targetX, targetZ);
+
+				if (topY > 3 && topY < 253)
+				{
+					int below = terrain.Terrain.GetCellValueFast(targetX, topY - 1, targetZ);
+					int current = terrain.Terrain.GetCellValueFast(targetX, topY, targetZ);
+					int above = terrain.Terrain.GetCellValueFast(targetX, topY + 1, targetZ);
+
+					Block blockBelow = BlocksManager.Blocks[Terrain.ExtractContents(below)];
+					Block blockCurrent = BlocksManager.Blocks[Terrain.ExtractContents(current)];
+					Block blockAbove = BlocksManager.Blocks[Terrain.ExtractContents(above)];
+
+					bool validGround = blockBelow is GrassBlock || blockBelow is DirtBlock || blockBelow is SandBlock || blockBelow is GravelBlock;
+					bool currentEmpty = !blockCurrent.IsCollidable_(current) && !(blockCurrent is WaterBlock);
+					bool aboveEmpty = !blockAbove.IsCollidable_(above) && !(blockAbove is WaterBlock);
+
+					if (validGround && currentEmpty && aboveEmpty)
+					{
+						try
+						{
+							Entity entity = DatabaseManager.CreateEntity(Project, selectedName, true);
+							var body = entity.FindComponent<ComponentBody>(true);
+							body.Position = new Vector3(targetX + 0.5f, topY + 1.1f, targetZ + 0.5f);
+							body.Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, m_random.Float(0f, 2f * MathF.PI));
+							var creature = entity.FindComponent<ComponentCreature>(true);
+							creature.ConstantSpawn = false;
+
+							var banditChase = entity.FindComponent<ComponentBanditChaseBehavior>();
+							if (banditChase != null)
+							{
+								banditChase.IsDrugTraffickerMode = true;
+							}
+
+							Project.AddEntity(entity);
+						}
+						catch (Exception ex)
+						{
+							Log.Error($"Error spawning invasion bandit {selectedName}: {ex.Message}");
+						}
+						return;
+					}
+				}
 			}
 		}
 
@@ -387,10 +429,10 @@ namespace Game
 				if (m_invasionActive)
 				{
 					m_invasionActive = false;
-					m_inInitialDelay = false;
-					m_initialDelayTimer = 0f;
+					m_inBossDelay = false;
+					m_bossDelayTimer = 0f;
+					m_invasionSpawnTimer = 0f;
 					SetAllBanditsDrugTraffickerMode(false);
-					m_spawnTimer = 0f;
 				}
 				m_wasEffectiveInvasionTime = effectiveInvasionTime;
 				m_restoredFromSave = false;
@@ -404,14 +446,12 @@ namespace Game
 				{
 					m_invasionActive = true;
 					m_invasionStarted = true;
-					m_spawnTimer = 0f;
+					m_invasionSpawnTimer = 0f;
 					SetAllBanditsDrugTraffickerMode(true);
 
-					m_inInitialDelay = true;
-					m_initialDelayTimer = 0f;
-
+					m_inBossDelay = true;
+					m_bossDelayTimer = 0f;
 					m_bossSpawnedThisWar = false;
-					RegisterBanditsForSpawn();
 				}
 			}
 
@@ -424,14 +464,11 @@ namespace Game
 			{
 				m_invasionActive = false;
 				m_invasionCompleted = true;
-				m_inInitialDelay = false;
-				m_initialDelayTimer = 0f;
+				m_inBossDelay = false;
+				m_bossDelayTimer = 0f;
+				m_invasionSpawnTimer = 0f;
 				SetAllBanditsDrugTraffickerMode(false);
-				m_spawnTimer = 0f;
 				m_bossPendingForMidnight = false;
-
-				m_killsByPlayer = 0;
-				m_bossUnlocked = false;
 				m_bossSpawnedThisWar = false;
 
 				InvasionCompleted?.Invoke();
@@ -443,25 +480,34 @@ namespace Game
 			if (!m_invasionActive)
 				return;
 
-			if (m_inInitialDelay)
+			// SPAWN ACTIVO DE INVASIÓN
+			m_invasionSpawnTimer += dt;
+			if (m_invasionSpawnTimer >= InvasionSpawnInterval)
 			{
-				m_initialDelayTimer += dt;
-				if (m_initialDelayTimer >= InitialSpawnDelay)
+				m_invasionSpawnTimer -= InvasionSpawnInterval;
+
+				if (CountInvasionBandits() < MaxInvasionBandits)
 				{
-					m_inInitialDelay = false;
-					m_initialDelayTimer = 0f;
-					m_spawnTimer = 0f;
+					SpawnInvasionBandit();
+				}
+			}
 
-					if (!m_bossSpawnedThisWar)
+			// Lógica del jefe: solo aparece durante noche verde
+			if (m_inBossDelay && !m_bossSpawnedThisWar)
+			{
+				m_bossDelayTimer += dt;
+				if (m_bossDelayTimer >= BossSpawnDelay)
+				{
+					m_inBossDelay = false;
+					m_bossDelayTimer = 0f;
+
+					bool isGreenNightActive = m_subsystemGreenNightSky != null &&
+											   m_subsystemGreenNightSky.GreenNightEnabled &&
+											   m_subsystemGreenNightSky.IsGreenNightActive;
+
+					if (isGreenNightActive)
 					{
-						// Determinar si hay Noche Verde activa o inminente
-						bool isGreenNightTonight = m_subsystemGreenNightSky != null &&
-												   m_subsystemGreenNightSky.GreenNightEnabled &&
-												   (m_subsystemGreenNightSky.IsGreenNightActive ||
-													m_subsystemGreenNightSky.DaysSinceLastGreenNight >= m_subsystemGreenNightSky.GreenNightIntervalDays);
-
-						// Si es la oleada final Y hay Noche Verde, esperar a medianoche
-						if (m_subsystemZombiesSpawn != null && m_subsystemZombiesSpawn.IsFinalWave && isGreenNightTonight)
+						if (m_subsystemZombiesSpawn != null && m_subsystemZombiesSpawn.IsFinalWave)
 						{
 							m_bossPendingForMidnight = true;
 						}
@@ -472,127 +518,6 @@ namespace Game
 						}
 					}
 				}
-				return;
-			}
-
-			m_spawnTimer += dt;
-			int spawnsThisFrame = 0;
-
-			while (m_spawnTimer >= m_spawnInterval && spawnsThisFrame < MaxSpawnsPerFrame)
-			{
-				m_spawnTimer -= m_spawnInterval;
-				if (TrySpawnBanditGroup())
-					spawnsThisFrame++;
-			}
-		}
-
-		private bool IsInvasionTime()
-		{
-			TimeOfDayMode mode = m_subsystemGameInfo.WorldSettings.TimeOfDayMode;
-
-			if (mode == TimeOfDayMode.Day || mode == TimeOfDayMode.Sunrise)
-				return false;
-
-			if (mode == TimeOfDayMode.Night || mode == TimeOfDayMode.Sunset)
-				return true;
-
-			if (mode == TimeOfDayMode.Changing)
-			{
-				float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-				float duskStart = m_subsystemTimeOfDay.DuskStart;
-				float middawn = m_subsystemTimeOfDay.Middawn;
-
-				return timeOfDay >= duskStart || timeOfDay < middawn;
-			}
-
-			return false;
-		}
-
-		private bool TrySpawnBanditGroup()
-		{
-			int totalBandits = CountActiveBandits();
-			if (totalBandits >= 35) return false;
-
-			BanditSpawnData selected = GetRandomBandit();
-			if (selected == null)
-				return false;
-
-			Vector3 spawnPos = GetValidSpawnPoint();
-			if (spawnPos == Vector3.Zero)
-				return false;
-
-			int spawned = 0;
-			for (int i = 0; i < selected.Count && spawned < MaxSpawnsPerFrame; i++)
-			{
-				Vector3 offsetPos = spawnPos;
-				if (i > 0)
-				{
-					offsetPos = GetNearbySpawnPoint(spawnPos, 3f, 8f);
-					if (offsetPos == Vector3.Zero)
-						break;
-				}
-
-				if (SpawnBandit(selected.Name, offsetPos))
-					spawned++;
-			}
-
-			return spawned > 0;
-		}
-
-		private int CountActiveBandits()
-		{
-			int count = 0;
-			foreach (var body in m_subsystemBodies.Bodies)
-			{
-				var creature = body.Entity.FindComponent<ComponentCreature>();
-				if (creature != null && IsBanditTemplate(body.Entity.ValuesDictionary.DatabaseObject?.Name))
-					count++;
-			}
-			return count;
-		}
-
-		private BanditSpawnData GetRandomBandit()
-		{
-			if (m_bandits.Count == 0 || m_totalProbabilitySum <= 0f)
-				return null;
-
-			float roll = m_random.Float(0f, m_totalProbabilitySum);
-
-			int index = Array.BinarySearch(m_cumulativeProbabilities, roll);
-			if (index < 0)
-				index = ~index;
-
-			if (index >= m_bandits.Count)
-				index = m_bandits.Count - 1;
-
-			return m_bandits[index];
-		}
-
-		private bool SpawnBandit(string templateName, Vector3 position)
-		{
-			try
-			{
-				Entity entity = DatabaseManager.CreateEntity(Project, templateName, true);
-				var body = entity.FindComponent<ComponentBody>(true);
-				body.Position = position;
-				body.Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, m_random.Float(0f, 2f * MathF.PI));
-				var creature = entity.FindComponent<ComponentCreature>(true);
-				creature.ConstantSpawn = false;
-
-				var banditChase = entity.FindComponent<ComponentBanditChaseBehavior>();
-				if (banditChase != null && m_invasionActive)
-				{
-					banditChase.IsDrugTraffickerMode = true;
-				}
-
-				Project.AddEntity(entity);
-
-				return true;
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"Error spawning bandit {templateName}: {ex.Message}");
-				return false;
 			}
 		}
 
@@ -603,28 +528,9 @@ namespace Game
 				return;
 
 			Vector3 playerPos = targetPlayer.ComponentBody.Position;
+			SubsystemTerrain terrain = Project.FindSubsystem<SubsystemTerrain>(true);
 
-			float angle = m_random.Float(0f, 2f * MathF.PI);
-			float distance = m_random.Float(25f, 50f);
-
-			Vector2 offset2D = new Vector2(MathF.Cos(angle) * distance, MathF.Sin(angle) * distance);
-			Vector2 candidatePos2D = new Vector2(playerPos.X + offset2D.X, playerPos.Z + offset2D.Y);
-
-			Vector3 spawnPos = FindValidSpawnPointNear(candidatePos2D, playerPos.Y);
-			if (spawnPos == Vector3.Zero)
-			{
-				for (int i = 0; i < 5; i++)
-				{
-					float newDist = m_random.Float(15f, 40f);
-					float newAngle = m_random.Float(0f, 2f * MathF.PI);
-					Vector2 newOffset = new Vector2(MathF.Cos(newAngle) * newDist, MathF.Sin(newAngle) * newDist);
-					Vector2 newCandidate = new Vector2(playerPos.X + newOffset.X, playerPos.Z + newOffset.Y);
-					spawnPos = FindValidSpawnPointNear(newCandidate, playerPos.Y);
-					if (spawnPos != Vector3.Zero)
-						break;
-				}
-			}
-
+			Vector3 spawnPos = FindValidBossSpawnPoint(terrain, playerPos);
 			if (spawnPos == Vector3.Zero)
 			{
 				Log.Warning("[SubsystemBanditInvasion] No se pudo encontrar un punto de spawn válido para el jefe.");
@@ -648,13 +554,11 @@ namespace Game
 
 				Project.AddEntity(entity);
 
-				// Mostrar mensaje grande a todos los jugadores (SOLO mensaje grande)
 				string largeMessage = LanguageControl.Get("SubsystemBanditInvasion", 0);
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
 					player.ComponentGui.DisplayLargeMessage(largeMessage, "", 5f, 0f);
 				}
-
 			}
 			catch (Exception ex)
 			{
@@ -662,144 +566,79 @@ namespace Game
 			}
 		}
 
-		private Vector3 FindValidSpawnPointNear(Vector2 position2D, float referenceY)
+		private Vector3 FindValidBossSpawnPoint(SubsystemTerrain terrain, Vector3 playerPos)
 		{
-			int x = (int)position2D.X;
-			int z = (int)position2D.Y;
-			int y = (int)referenceY;
-
-			for (int i = 0; i < 20; i++)
+			for (int attempt = 0; attempt < 10; attempt++)
 			{
-				Point3 pointUp = new Point3(x, y + i, z);
-				if (TestSpawnPoint(pointUp))
-				{
-					return new Vector3(pointUp.X + 0.5f, pointUp.Y + 1.1f, pointUp.Z + 0.5f);
-				}
+				float angle = m_random.Float(0f, 2f * MathF.PI);
+				float distance = m_random.Float(25f, 50f);
 
-				Point3 pointDown = new Point3(x, y - i, z);
-				if (TestSpawnPoint(pointDown))
-				{
-					return new Vector3(pointDown.X + 0.5f, pointDown.Y + 1.1f, pointDown.Z + 0.5f);
-				}
+				int targetX = (int)(playerPos.X + MathF.Cos(angle) * distance);
+				int targetZ = (int)(playerPos.Z + MathF.Sin(angle) * distance);
+
+				Vector3 pos = FindValidSpawnAtColumn(terrain, targetX, targetZ, playerPos.Y);
+				if (pos != Vector3.Zero) return pos;
 			}
 
-			for (int dx = -2; dx <= 2; dx++)
+			for (int attempt = 0; attempt < 20; attempt++)
 			{
-				for (int dz = -2; dz <= 2; dz++)
-				{
-					if (dx == 0 && dz == 0) continue;
-					int testX = x + dx;
-					int testZ = z + dz;
-					for (int i = 0; i < 20; i++)
-					{
-						Point3 pointUp = new Point3(testX, y + i, testZ);
-						if (TestSpawnPoint(pointUp))
-						{
-							return new Vector3(pointUp.X + 0.5f, pointUp.Y + 1.1f, pointUp.Z + 0.5f);
-						}
-						Point3 pointDown = new Point3(testX, y - i, testZ);
-						if (TestSpawnPoint(pointDown))
-						{
-							return new Vector3(pointDown.X + 0.5f, pointDown.Y + 1.1f, pointDown.Z + 0.5f);
-						}
-					}
-				}
+				float angle = m_random.Float(0f, 2f * MathF.PI);
+				float distance = m_random.Float(15f, 60f);
+
+				int targetX = (int)(playerPos.X + MathF.Cos(angle) * distance);
+				int targetZ = (int)(playerPos.Z + MathF.Sin(angle) * distance);
+
+				Vector3 pos = FindValidSpawnAtColumn(terrain, targetX, targetZ, playerPos.Y);
+				if (pos != Vector3.Zero) return pos;
 			}
 
 			return Vector3.Zero;
 		}
 
-		private Vector3 GetValidSpawnPoint()
+		private Vector3 FindValidSpawnAtColumn(SubsystemTerrain terrain, int x, int z, float referenceY)
 		{
-			foreach (var player in m_subsystemPlayers.ComponentPlayers)
-			{
-				Vector3 playerPos = player.ComponentBody.Position;
-				for (int i = 0; i < 15; i++)
-				{
-					float angle = m_random.Float(0f, 2f * MathF.PI);
-					float distance = m_random.Float(20f, 50f);
-					int x = (int)(playerPos.X + MathF.Cos(angle) * distance);
-					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
-					int y = m_random.Int(10, 246);
-
-					Point3? spawnPoint = ProcessSpawnPoint(new Point3(x, y, z));
-					if (spawnPoint.HasValue)
-					{
-						return new Vector3(spawnPoint.Value.X + 0.5f, spawnPoint.Value.Y + 1.1f, spawnPoint.Value.Z + 0.5f);
-					}
-				}
-			}
-			return Vector3.Zero;
-		}
-
-		private Point3? ProcessSpawnPoint(Point3 spawnPoint)
-		{
-			int x = spawnPoint.X;
-			int num = Math.Clamp(spawnPoint.Y, 1, 254);
-			int z = spawnPoint.Z;
-
-			TerrainChunk chunkAtCell = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
-			if (chunkAtCell == null || chunkAtCell.State <= TerrainChunkState.InvalidPropagatedLight)
-				return null;
+			int baseY = (int)referenceY;
 
 			for (int i = 0; i < 30; i++)
 			{
-				Point3 pointUp = new Point3(x, num + i, z);
-				if (TestSpawnPoint(pointUp))
-					return pointUp;
+				int yUp = baseY + i;
+				if (yUp > 3 && yUp < 253 && IsValidSpawnBlock(terrain, x, yUp, z))
+					return new Vector3(x + 0.5f, yUp + 1.1f, z + 0.5f);
 
-				Point3 pointDown = new Point3(x, num - i, z);
-				if (TestSpawnPoint(pointDown))
-					return pointDown;
+				int yDown = baseY - i;
+				if (yDown > 3 && yDown < 253 && IsValidSpawnBlock(terrain, x, yDown, z))
+					return new Vector3(x + 0.5f, yDown + 1.1f, z + 0.5f);
 			}
-			return null;
-		}
 
-		private bool TestSpawnPoint(Point3 spawnPoint)
-		{
-			int x = spawnPoint.X;
-			int y = spawnPoint.Y;
-			int z = spawnPoint.Z;
-
-			if (y <= 3 || y >= 253)
-				return false;
-
-			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
-			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
-			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
-
-			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
-			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
-			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
-
-			bool isValidGround = block is GrassBlock || block is DirtBlock || block is SandBlock || block is GravelBlock;
-
-			bool currentEmpty = (!block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock));
-			bool aboveEmpty = (!block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock));
-
-			if (!isValidGround || !currentEmpty || !aboveEmpty)
-				return false;
-
-			return true;
-		}
-
-		private Vector3 GetNearbySpawnPoint(Vector3 center, float minDist, float maxDist)
-		{
-			for (int i = 0; i < 5; i++)
+			int topY = terrain.Terrain.GetTopHeight(x, z);
+			if (topY > 3 && topY < 253)
 			{
-				float angle = m_random.Float(0f, 2f * MathF.PI);
-				float dist = m_random.Float(minDist, maxDist);
-				int x = (int)(center.X + MathF.Cos(angle) * dist);
-				int z = (int)(center.Z + MathF.Sin(angle) * dist);
-				int y = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
-				if (y > 2 && y < 254)
+				for (int i = 0; i < 10; i++)
 				{
-					Point3? validPoint = ProcessSpawnPoint(new Point3(x, y, z));
-					if (validPoint.HasValue)
-						return new Vector3(validPoint.Value.X + 0.5f, validPoint.Value.Y + 1.1f, validPoint.Value.Z + 0.5f);
+					int y = topY - i;
+					if (y > 3 && IsValidSpawnBlock(terrain, x, y, z))
+						return new Vector3(x + 0.5f, y + 1.1f, z + 0.5f);
 				}
 			}
+
 			return Vector3.Zero;
+		}
+
+		private bool IsValidSpawnBlock(SubsystemTerrain terrain, int x, int y, int z)
+		{
+			int below = terrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int current = terrain.Terrain.GetCellValueFast(x, y, z);
+			int above = terrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block blockBelow = BlocksManager.Blocks[Terrain.ExtractContents(below)];
+			Block blockCurrent = BlocksManager.Blocks[Terrain.ExtractContents(current)];
+			Block blockAbove = BlocksManager.Blocks[Terrain.ExtractContents(above)];
+
+			bool validGround = blockBelow is GrassBlock || blockBelow is DirtBlock || blockBelow is SandBlock || blockBelow is GravelBlock;
+			bool currentEmpty = !blockCurrent.IsCollidable_(current) && !(blockCurrent is WaterBlock);
+			bool aboveEmpty = !blockAbove.IsCollidable_(above) && !(blockAbove is WaterBlock);
+
+			return validGround && currentEmpty && aboveEmpty;
 		}
 
 		public bool IsBanditTemplate(string name)
@@ -811,13 +650,11 @@ namespace Game
 		private class BanditSpawnData
 		{
 			public string Name { get; }
-			public int Count { get; }
 			public float Probability { get; }
 
 			public BanditSpawnData(string name, float probability)
 			{
 				Name = name;
-				Count = 1;
 				Probability = probability;
 			}
 		}
