@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using Engine;
 using GameEntitySystem;
@@ -179,21 +181,14 @@ namespace Game
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
-
 					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
 					if (currentSeason != Season.Spring && currentSeason != Season.Summer)
 						return 0f;
-
 					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-					if (blockUnder != GrassBlock.Index &&
-						blockUnder != DirtBlock.Index &&
-						blockUnder != SandBlock.Index &&
-						blockUnder != GravelBlock.Index)
+					if (blockUnder != GrassBlock.Index && blockUnder != DirtBlock.Index && blockUnder != SandBlock.Index && blockUnder != GravelBlock.Index)
 						return 0f;
-
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					if (point.Y < topHeight - 2) return 0f;
-
 					return 2.5f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
@@ -209,26 +204,18 @@ namespace Game
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
-
 					double totalDays = timeOfDay.CalculateDay(gameInfo.TotalElapsedGameTime);
 					if (totalDays < 2.0) return 0f;
-
 					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-					if (blockUnder != GrassBlock.Index &&
-						blockUnder != DirtBlock.Index &&
-						blockUnder != SandBlock.Index &&
-						blockUnder != GravelBlock.Index)
+					if (blockUnder != GrassBlock.Index && blockUnder != DirtBlock.Index && blockUnder != SandBlock.Index && blockUnder != GravelBlock.Index)
 						return 0f;
-
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					if (point.Y < topHeight - 2) return 0f;
-
 					bool sonicNearby = false;
 					Vector3 center = new Vector3(point.X, point.Y, point.Z);
 					var bodiesSubsystem = subsystemCreatureSpawn.m_subsystemBodies;
 					DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
 					bodiesSubsystem.FindBodiesAroundPoint(new Vector2(center.X, center.Z), 8f, bodies);
-
 					for (int i = 0; i < bodies.Count; i++)
 					{
 						ComponentBody body = bodies.Array[i];
@@ -242,7 +229,6 @@ namespace Game
 							}
 						}
 					}
-
 					return sonicNearby ? 15f : 1.5f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
@@ -258,14 +244,11 @@ namespace Game
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
-
 					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
 					if (currentSeason != Season.Winter) return 0f;
-
 					float mountainFactor = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateMountainRangeFactor((float)point.X, (float)point.Z);
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					bool nearTop = (point.Y >= topHeight - 5);
-
 					if (mountainFactor >= 0.95f && topHeight >= 120 && nearTop)
 						return 5000f;
 					else
@@ -284,20 +267,15 @@ namespace Game
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
-
 					int humidity = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetHumidity(point.X, point.Z);
 					int temperature = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTemperature(point.X, point.Z);
 					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-
 					if (humidity >= 8 || temperature <= 8 || blockUnder != SandBlock.Index)
 						return 0f;
-
 					float shoreDistance = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 					if (shoreDistance <= 20f) return 0f;
-
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					if (point.Y < topHeight - 2) return 0f;
-
 					return 2.5f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
@@ -313,20 +291,15 @@ namespace Game
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
 					if (sky.SkyLightIntensity >= 0.1f) return 0f;
-
 					int humidity = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetHumidity(point.X, point.Z);
 					int temperature = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTemperature(point.X, point.Z);
 					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-
 					if (humidity >= 8 || temperature <= 8 || blockUnder != SandBlock.Index)
 						return 0f;
-
 					float shoreDistance = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 					if (shoreDistance <= 20f) return 0f;
-
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					if (point.Y < topHeight - 2) return 0f;
-
 					return 2.5f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
@@ -337,6 +310,89 @@ namespace Game
 				}
 			});
 
+			// ==========================================
+			// BANDIDOS CON APARICIÓN NORMAL (DÍA Y NOCHE)
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit7", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+					if (isValidGround(point))
+						return 0.25f; // Probabilidad normal
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit7");
+				}
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit11", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+					if (isValidGround(point))
+						return 0.25f; // Probabilidad normal
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit11");
+				}
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit12", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+					if (isValidGround(point))
+						return 0.25f; // Probabilidad normal
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit12");
+				}
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit17", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+					if (isValidGround(point))
+						return 0.25f; // Probabilidad normal
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "Bandit17");
+				}
+			});
+
+			// VENDEDOR DE ARMAS (Aparición normal diurna)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FirearmsDealer", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+					if (isValidGround(point))
+						return 0.05f; // Muy raro, aparición normal
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					return spawnBandit(ct, point, "FirearmsDealer");
+				}
+			});
+
+			// ==========================================
+			// BANDIDOS DE LA INVASIÓN (SOLO DE NOCHE Y SI HAY GUERRA)
+			// Respetan las probabilidades del XML
+			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit1", SpawnLocationType.Surface, true, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
@@ -344,7 +400,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit1");
 					}
 					return 0f;
 				},
@@ -361,7 +417,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit2");
 					}
 					return 0f;
 				},
@@ -378,7 +434,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit3");
 					}
 					return 0f;
 				},
@@ -395,7 +451,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit4");
 					}
 					return 0f;
 				},
@@ -412,7 +468,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit5");
 					}
 					return 0f;
 				},
@@ -429,30 +485,13 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit6");
 					}
 					return 0f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
 					return spawnBanditWithMode(ct, point, "Bandit6");
-				}
-			});
-
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit7", SpawnLocationType.Surface, true, true)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
-					{
-						if (isValidGround(point))
-							return 1.0f;
-					}
-					return 0f;
-				},
-				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					return spawnBanditWithMode(ct, point, "Bandit7");
 				}
 			});
 
@@ -463,7 +502,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit8");
 					}
 					return 0f;
 				},
@@ -480,7 +519,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit9");
 					}
 					return 0f;
 				},
@@ -497,47 +536,13 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit10");
 					}
 					return 0f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
 					return spawnBanditWithMode(ct, point, "Bandit10");
-				}
-			});
-
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit11", SpawnLocationType.Surface, true, true)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
-					{
-						if (isValidGround(point))
-							return 1.0f;
-					}
-					return 0f;
-				},
-				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					return spawnBanditWithMode(ct, point, "Bandit11");
-				}
-			});
-
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit12", SpawnLocationType.Surface, true, true)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
-					{
-						if (isValidGround(point))
-							return 1.0f;
-					}
-					return 0f;
-				},
-				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					return spawnBanditWithMode(ct, point, "Bandit12");
 				}
 			});
 
@@ -548,7 +553,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit13");
 					}
 					return 0f;
 				},
@@ -565,7 +570,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit14");
 					}
 					return 0f;
 				},
@@ -582,7 +587,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit15");
 					}
 					return 0f;
 				},
@@ -599,7 +604,7 @@ namespace Game
 					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
 					{
 						if (isValidGround(point))
-							return 1.0f;
+							return m_subsystemBanditInvasion.GetBanditProbability("Bandit16");
 					}
 					return 0f;
 				},
@@ -609,52 +614,18 @@ namespace Game
 				}
 			});
 
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Bandit17", SpawnLocationType.Surface, true, true)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
-					{
-						if (isValidGround(point))
-							return 1.0f;
-					}
-					return 0f;
-				},
-				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					return spawnBanditWithMode(ct, point, "Bandit17");
-				}
-			});
-
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FirearmsDealer", SpawnLocationType.Surface, true, true)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
-					{
-						if (isValidGround(point))
-							return 1.0f;
-					}
-					return 0f;
-				},
-				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					return spawnBanditWithMode(ct, point, "FirearmsDealer");
-				}
-			});
-
+			// ==========================================
+			// CRIATURAS DE CUEVA Y AGUA
+			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("CaveSpider", SpawnLocationType.Cave, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
 					if (!ShittyCreaturesSettingsManager.SpiderSpawnEnabled)
 						return 0f;
-
 					int cellValue = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(cellValue);
-
-					if (contents == 2 || contents == 3 || contents == 4 ||
-						contents == 66 || contents == 67 || contents == 7)
+					if (contents == 2 || contents == 3 || contents == 4 || contents == 66 || contents == 67 || contents == 7)
 					{
 						return 1.0f;
 					}
@@ -666,6 +637,9 @@ namespace Game
 				}
 			});
 
+			// ==========================================
+			// CRIATURAS DE LA NOCHE VERDE
+			// ==========================================
 			string[] greenNightCreatures = new string[]
 			{
 				"InfectedBird", "InfectedNormal1", "InfectedNormal2",
@@ -678,20 +652,12 @@ namespace Game
 				"GhostFast", "Charger2",
 				"GhostNormal", "GhostBoomer1", "InfectedWildboar",
 				"GhostBoomer2", "InfectedBear",
-				"GhostBoomer3", "FlyingInfectedBoss",
-				"BoomerFrozen", "FrozenGhostBoomer", "GhostCharger",
-				"Tank1", "Tank2", "Tank3", "FrozenTank",
-				"TankGhost1", "TankGhost2", "TankGhost3",
-				"FrozenTankGhost", "MachineGunInfected"
+				"GhostBoomer3", "GhostCharger"
 			};
 
 			foreach (string creatureName in greenNightCreatures)
 			{
-				if (creatureName == "HumanoidSkeleton" || creatureName == "InfectedSpider")
-					continue;
-
-				bool isFlying = creatureName == "InfectedFly1" || creatureName == "InfectedFly2" || creatureName == "InfectedFly3" ||
-								creatureName == "FlyingInfectedBoss" || creatureName == "InfectedBird";
+				bool isFlying = creatureName == "InfectedFly1" || creatureName == "InfectedFly2" || creatureName == "InfectedFly3" || creatureName == "InfectedBird";
 
 				creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType(creatureName, SpawnLocationType.Surface, false, true)
 				{
@@ -700,7 +666,6 @@ namespace Game
 						SubsystemGreenNightSky greenNight = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 						if (greenNight == null || !greenNight.IsGreenNightActive)
 							return 0f;
-
 						if (sky.SkyLightIntensity >= 0.1f)
 							return 0f;
 
@@ -743,7 +708,7 @@ namespace Game
 					},
 					SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 					{
-						return 0;
+						return subsystemCreatureSpawn.SpawnCreatures(ct, creatureName, point, 1).Count;
 					}
 				});
 			}
