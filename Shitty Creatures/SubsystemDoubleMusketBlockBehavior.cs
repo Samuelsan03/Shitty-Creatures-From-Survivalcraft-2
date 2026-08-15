@@ -218,8 +218,8 @@ namespace Game
 			int data = Terrain.ExtractData(slotValue);
 			int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
 
-			// Solo permite cargar cuando está completamente vacío con 1 bala anti-tanque
-			if (shotsRemaining == 0 && contents == m_AntiTanksBulletBlockIndex)
+			// Cambiado a < 2: Permite cargar si está vacío (0) o si queda poca bala (1)
+			if (shotsRemaining < 2 && contents == m_AntiTanksBulletBlockIndex)
 			{
 				return 1;
 			}
@@ -237,8 +237,8 @@ namespace Game
 			int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
 			int ammoContents = Terrain.ExtractContents(value);
 
-			// Al colocar 1 bala anti-tanque, carga 2 disparos automáticamente
-			if (shotsRemaining == 0 && ammoContents == m_AntiTanksBulletBlockIndex)
+			// Cambiado a < 2: Al colocar 1 bala anti-tanque, siempre recarga al máximo (2 disparos)
+			if (shotsRemaining < 2 && ammoContents == m_AntiTanksBulletBlockIndex)
 			{
 				int newData = DoubleMusketBlock.SetLoaded(data, true);
 				newData = DoubleMusketBlock.SetShotsRemaining(newData, 2);
