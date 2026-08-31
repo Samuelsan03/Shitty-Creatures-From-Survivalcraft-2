@@ -207,56 +207,8 @@
     <Parameter Name="Class" Guid="d5880224-096d-4a58-982c-86756e12670f" Value="Game.ComponentNewRider" Type="string"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="BoomerExplosion" Description="Comportamiento que hace que el Boomer explote al morir, con configuración de daño, radio y efectos incendiarios." Guid="bf245bcc-8786-4839-9528-87f3f7ff4833" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Guid="a3967efb-2f42-48c0-af6d-d2d133469681" Value="Game.ComponentBoomerExplosion" Type="string"/>
-    <Parameter Name="ActivationRange" Description="Distancia a la que el Boomer detecta al jugador para activarse (actualmente no se usa, la explosión es solo por muerte)" Guid="ffb2f590-7aaa-4195-9892-8558be629e76" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Description="Indica si se debe usar la explosión estándar del juego (con presión)" Guid="1caef662-17e4-4aa5-be7b-064c196b4514" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Description="Indica si se debe usar la onda expansiva personalizada (daño y empuje a entidades)" Guid="d95f1324-bcbd-4b27-bba3-a588b2681a6f" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Description="Presión de la explosión estándar. Afecta el daño a bloques y entidades." Guid="2a413648-c81e-42cf-9802-cf10daca4fef" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Description="Determina si la explosión prende fuego a los bloques circundantes." Guid="812d187b-fc8d-4f2a-81c6-ad1d0a153291" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Description="Radio total de la explosión. Afecta el alcance de las explosiones secundarias escaladas." Guid="0de2cf52-1dae-40cf-9bb4-56f4c4ea1239" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Description="Radio en el que se dañan o destruyen los bloques por la onda personalizada." Guid="c7bff956-433d-4a85-90e4-5d6c664678f1" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Description="Radio en el que las entidades reciben daño por la onda personalizada." Guid="87f94ade-17f5-4902-8a8a-ffc590799d60" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Description="Cantidad de daño base que causa la onda expansiva personalizada a las entidades." Guid="830909b9-1ee9-44f5-9c9f-d620f95c6961" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Description="Fuerza de empuje de la onda expansiva personalizada sobre las entidades." Guid="fba7b351-8b23-4d28-8c30-d8bdf1a9a1c5" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Description="Si la onda personalizada debe destruir bloques (requiere UseCustomShockwave=true)." Guid="e9abf1f6-38d4-4f05-a9b2-6fda78fab3f7" Value="true" Type="bool"/>
-    <Parameter Name="PreventExplosion" Description="Si es true, evita que el Boomer explote al morir. Útil para depuración o estados especiales." Guid="743b92f5-2f46-4bb6-bb8e-1b24c5c7f210" Value="false" Type="bool"/>
-</ComponentTemplate>
-
-<ComponentTemplate Name="BoomerFireExplosion" Description="Comportamiento para un Boomer incendiario. Explota al morir, causa daño y propaga fuego." Guid="aeba3d06-e20a-4a04-bd51-ae8d5b2d03c0" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Guid="a51dc7a0-3313-4d63-843f-bd667c5e3137" Value="Game.ComponentBoomerFireExplosion" Type="string"/>
-    <Parameter Name="ActivationRange" Description="Distancia de activación (no usado, la explosión es por muerte)" Guid="4c5ded94-60d4-421f-96c2-677461c03c67" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Description="Usar la explosión estándar del juego." Guid="4bebf7b4-2e57-4d82-b543-039bb4147aca" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Description="Usar onda expansiva personalizada." Guid="4a39c103-eaf8-4c0f-92a9-ffbd091a2d01" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Description="Presión de la explosión." Guid="4ff5b265-bfa7-417d-beec-790bbb53a002" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Description="Si la explosión es incendiaria. Por defecto es true." Guid="6df9da3e-82f3-4246-b5af-994e1530dd9c" Value="true" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Description="Radio de la explosión." Guid="d94dae61-0788-45ac-8f41-79b02d8e71b5" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Description="Radio de daño a bloques." Guid="74060485-9b97-47ba-b47c-ab3066081669" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Description="Radio de daño a entidades." Guid="bbe2d5f8-eaa5-46a5-b660-333e8e30ecc7" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Description="Daño base de la onda." Guid="7dec45d4-eff2-4c3a-a5b5-90a48ec4ee12" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Description="Fuerza de empuje." Guid="e69308a2-660c-4da5-91b3-8cee27de9615" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Description="Destruir bloques." Guid="4496ef05-0025-4a25-93d9-feb83ad36c36" Value="true" Type="bool"/>
-    <Parameter Name="FireSpreadChance" Description="Probabilidad (0-1) de que un bloque cercano se incendie." Guid="90a2f76c-b813-48ec-9d73-ccf7961dcd19" Value="0.4" Type="float"/>
-    <Parameter Name="FireDuration" Description="Duración del fuego en segundos." Guid="19059953-365b-4f83-8c02-4b732766e974" Value="10" Type="float"/>
-    <Parameter Name="PreventExplosion" Description="Prevenir la explosión." Guid="10347c1f-141a-45e2-8c3c-4b787eb34ca2" Value="false" Type="bool"/>
-</ComponentTemplate>
-
-<ComponentTemplate Name="BoomerPoisonExplosion" Description="Comportamiento para un Boomer de veneno. Al morir, libera una nube tóxica que infecta a las criaturas." Guid="b1966e3c-5e1f-4483-acc9-90f88c0e0748" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Guid="619845df-80f9-4577-ba25-eb670f46e3dd" Value="Game.ComponentBoomerPoisonExplosion" Type="string"/>
-    <Parameter Name="PoisonRadius" Description="Radio máximo en el que la nube de veneno puede infectar a las entidades." Guid="f1684bba-406f-46b1-970a-a49271f83d04" Value="15" Type="float"/>
-    <Parameter Name="PoisonIntensity" Description="Intensidad de la infección (duración/gravedad del efecto de veneno)." Guid="78a93819-fb3c-4a5b-b526-51d994012328" Value="300" Type="float"/>
-    <Parameter Name="CloudDuration" Description="Duración de la nube de veneno en segundos." Guid="cc78dadd-65bf-4999-920c-493ebfdfd3de" Value="4" Type="float"/>
-    <Parameter Name="CloudRadius" Description="Radio visual y de efecto inicial de la nube de veneno." Guid="0fda2ac8-c667-4db1-9463-360ef51112d9" Value="12" Type="float"/>
-    <Parameter Name="ExplosionPressure" Description="Presión de la explosión, que genera un empuje a las entidades sin dañar bloques." Guid="6f8e90cc-eb9b-4e72-bbff-8d54222c0aa8" Value="40" Type="float"/>
-    <Parameter Name="PreventExplosion" Description="Prevenir la explosión de veneno." Guid="c18781d2-2e1a-44a5-b934-e0c8e9c0ecd8" Value="false" Type="bool"/>
-</ComponentTemplate>
-
-<ComponentTemplate Name="BoomerFrozenExplosion" Description="Comportamiento que hace que el Boomer explote al morir, liberando una nube congelante que infecta de gripe a las criaturas cercanas sin dañar bloques." Guid="af664dea-7587-4464-b0a6-4c6df93bbe4f" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Guid="8161c069-3500-4645-b93c-d5e14ff87105" Value="Game.ComponentBoomerFrozenExplosion" Type="string"/>
-    <Parameter Name="FreezePressure" Description="Presión de la explosión congelante. Determina el radio de la nube (3 a 10 bloques)." Guid="4240e3c6-9d38-480f-bfb0-86e5ebb6ba27" Value="50" Type="float"/>
-    <Parameter Name="FluDuration" Description="Duración de la gripe en segundos que se aplica a las criaturas afectadas." Guid="ceaf7623-2c37-463c-8571-a0dcea2cee8a" Value="300" Type="float"/>
-    <Parameter Name="NoExplosionSound" Description="Si es true, suprime el sonido de la explosión congelante." Guid="2fd680d5-5c76-44a2-8b15-57d1f0608704" Value="false" Type="bool"/>
-    <Parameter Name="PreventExplosion" Description="Si es true, evita que el Boomer explote al morir. Útil para depuración." Guid="030f08c8-9216-45c9-b84e-df882d2799e6" Value="false" Type="bool"/>
+<ComponentTemplate Name="BoomerExplosion" Description="Unified boomer explosion component handling Normal, Fire, Poison and Frozen explosions based on entity name" Guid="dd21e80d-3b5a-4c02-9dbc-897a0989a49b" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="8d2a87e0-bec3-4fd0-bbdf-3cc6829a5ff0" Value="Game.ComponentBoomerExplosion" Type="string" />
 </ComponentTemplate>
 
 <ComponentTemplate Name="CreatureInventory" Description="Permite que una criatura tenga un inventario de objetos. Se puede abrir interactuando con ella." Guid="b0d27f89-dc61-4c44-b675-63d6a6f8bf78" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
