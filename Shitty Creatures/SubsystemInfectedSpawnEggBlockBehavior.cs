@@ -36,7 +36,9 @@ namespace Game
 					"Boomer3",
 					"GhostBoomer1",
 					"GhostBoomer2",
-					"GhostBoomer3"
+					"GhostBoomer3",
+					"FrozenGhostBoomer",
+					"BoomerFrozen"
 				}
 			},
 			{
