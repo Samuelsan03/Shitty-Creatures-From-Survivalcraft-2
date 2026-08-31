@@ -34,7 +34,6 @@ namespace Game
 
 		private BoomerExplosionType m_explosionType;
 
-		// Normal
 		public float ActivationRange = 3f;
 		public bool UseStandardExplosion = true;
 		public bool UseCustomShockwave = false;
@@ -48,24 +47,20 @@ namespace Game
 		public bool DestroyBlocks = true;
 		public bool PreventExplosion = false;
 
-		// Fire
 		public float FireSpreadChance = 0.4f;
 		public float FireDuration = 10f;
 
-		// Poison
 		public float PoisonRadius = 15f;
 		public float PoisonIntensity = 300f;
 		public float CloudDuration = 20.0f;
 		public float CloudRadius = 12f;
 
-		// Frozen
 		public float FreezePressure = 50f;
 		public float FluDuration = 300f;
 		public bool NoExplosionSound = false;
 
 		public SubsystemAttractNoise m_subsystemAttractNoise;
 		public SubsystemExplosions m_subsystemExplosions;
-		public SubsystemAudio m_subsystemAudio;
 		public SubsystemTime m_subsystemTime;
 		public SubsystemBodies m_subsystemBodies;
 		public SubsystemTerrain m_subsystemTerrain;
@@ -91,7 +86,6 @@ namespace Game
 
 			m_subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
 			m_subsystemAttractNoise = Project.FindSubsystem<SubsystemAttractNoise>(false);
-			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
@@ -189,7 +183,7 @@ namespace Game
 			m_lastHealth = m_componentHealth.Health;
 		}
 
-		#region Normal Explosion - Lógica original de ComponentBoomerExplosion
+		#region Normal Explosion
 		public void CreateNormalExplosion()
 		{
 			if (m_exploded || m_componentBody == null) return;
@@ -302,7 +296,7 @@ namespace Game
 		}
 		#endregion
 
-		#region Fire Explosion - Lógica original de ComponentBoomerFireExplosion
+		#region Fire Explosion
 		public void CreateFireExplosion()
 		{
 			if (m_exploded || m_componentBody == null) return;
@@ -497,7 +491,7 @@ namespace Game
 		}
 		#endregion
 
-		#region Poison Explosion - Lógica original de ComponentBoomerPoisonExplosion
+		#region Poison Explosion
 		public void CreatePoisonExplosion()
 		{
 			if (m_exploded || m_componentBody == null) return;
@@ -535,25 +529,15 @@ namespace Game
 			}
 			else
 			{
-				CreatePoisonExplosionLegacy(position, finalPoisonIntensity, poisonRadiusMult);
+				CreatePoisonPressureEffect(position);
+				float finalPoisonRadius = PoisonRadius * poisonRadiusMult;
+				InfectNearbyEntities(position, finalPoisonIntensity, finalPoisonRadius);
 			}
 
 			if (m_subsystemAttractNoise != null)
 			{
 				m_subsystemAttractNoise.MakeLureNoise(position, 20f, lureRange);
 			}
-		}
-
-		public void CreatePoisonExplosionLegacy(Vector3 position, float poisonIntensity, float radiusMult)
-		{
-			if (m_subsystemAudio != null)
-			{
-				m_subsystemAudio.PlaySound("Audio/Explosion De Mierda/Smoke Explosion", 1f, 0f, position, 15f, true);
-			}
-
-			CreatePoisonPressureEffect(position);
-			float finalPoisonRadius = PoisonRadius * radiusMult;
-			InfectNearbyEntities(position, poisonIntensity, finalPoisonRadius);
 		}
 
 		public void CreatePoisonPressureEffect(Vector3 center)
@@ -623,7 +607,7 @@ namespace Game
 		}
 		#endregion
 
-		#region Frozen Explosion - Lógica original de ComponentBoomerFrozenExplosion
+		#region Frozen Explosion
 		private void CreateFrozenExplosion()
 		{
 			if (m_exploded || m_componentBody == null)
@@ -655,12 +639,6 @@ namespace Game
 			int x = (int)MathUtils.Floor(position.X);
 			int y = (int)MathUtils.Floor(position.Y);
 			int z = (int)MathUtils.Floor(position.Z);
-
-			if (!NoExplosionSound && m_subsystemAudio != null)
-			{
-				float pitch = m_random.Float(-0.1f, 0.1f);
-				m_subsystemAudio.PlaySound("Audio/explosion congelante", 1f, pitch, position, 15f, false);
-			}
 
 			if (m_subsystemFreezeExplosions != null)
 			{
