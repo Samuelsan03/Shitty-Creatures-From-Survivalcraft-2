@@ -6,7 +6,6 @@ using TemplatesDatabase;
 
 namespace Game
 {
-
 	public class ComponentCreatureVomit : Component, IUpdateable
 	{
 		private SubsystemTerrain m_subsystemTerrain;
@@ -27,7 +26,6 @@ namespace Game
 		public bool VomitFrozen { get; set; }
 		public bool VomitBlood { get; set; }
 
-		public float VomitProbability { get; set; } = 0.1f;
 		public float VomitCooldown { get; set; } = 5f;
 		public Vector2 VomitDistanceRange { get; set; } = new Vector2(2f, 12f);
 
@@ -61,7 +59,6 @@ namespace Game
 			VomitFire = valuesDictionary.GetValue<bool>("VomitFire", false);
 			VomitFrozen = valuesDictionary.GetValue<bool>("VomitFrozen", false);
 			VomitBlood = valuesDictionary.GetValue<bool>("VomitBlood", false);
-			VomitProbability = valuesDictionary.GetValue<float>("VomitProbability", 0.1f);
 			VomitCooldown = valuesDictionary.GetValue<float>("VomitCooldown", 5f);
 			VomitDistanceRange = valuesDictionary.GetValue<Vector2>("VomitDistanceRange", new Vector2(2f, 12f));
 		}
@@ -130,7 +127,7 @@ namespace Game
 
 			ComponentCreature target = GetCurrentChaseTarget();
 
-			// Actualizar vómito activo
+			// Actualizar vómito activo de veneno
 			if (m_activePoisonVomit != null)
 			{
 				bool shouldStop = false;
@@ -158,6 +155,7 @@ namespace Game
 				return;
 			}
 
+			// Actualizar vómito activo de fuego
 			if (m_activeFireVomit != null)
 			{
 				bool shouldStop = false;
@@ -185,6 +183,7 @@ namespace Game
 				return;
 			}
 
+			// Actualizar vómito activo de hielo
 			if (m_activeFrozenVomit != null)
 			{
 				bool shouldStop = false;
@@ -212,6 +211,7 @@ namespace Game
 				return;
 			}
 
+			// Actualizar vómito activo de sangre
 			if (m_activeBloodVomit != null)
 			{
 				bool shouldStop = false;
@@ -248,9 +248,6 @@ namespace Game
 			if (!IsTargetInDistanceRange(target))
 				return;
 
-			if (m_random.Float(0f, 1f) > VomitProbability * dt)
-				return;
-
 			double currentTime = m_subsystemTime.GameTime;
 			if (currentTime - m_lastVomitTime < (double)VomitCooldown)
 				return;
@@ -265,6 +262,7 @@ namespace Game
 				return;
 
 			VomitType chosenType = availableTypes[m_random.Int(availableTypes.Count)];
+			m_activeType = chosenType;
 
 			Vector3 mouthPos = GetVomitMouthPosition();
 			Vector3 direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - mouthPos);
@@ -272,47 +270,39 @@ namespace Game
 			switch (chosenType)
 			{
 				case VomitType.Poison:
-					var poison = new PoisonVomitParticleSystem(
+					m_activePoisonVomit = new PoisonVomitParticleSystem(
 						m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
 						m_subsystemTime, m_subsystemParticles, m_componentCreature);
-					poison.Position = mouthPos;
-					poison.Direction = direction;
-					poison.PoisonIntensity = 180f;
-					m_activePoisonVomit = poison;
-					m_subsystemParticles.AddParticleSystem(poison, false);
+					m_activePoisonVomit.Position = mouthPos;
+					m_activePoisonVomit.Direction = direction;
+					m_subsystemParticles.AddParticleSystem(m_activePoisonVomit, false);
 					break;
 
 				case VomitType.Fire:
-					var fire = new FireVomitParticleSystem(
+					m_activeFireVomit = new FireVomitParticleSystem(
 						m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
 						m_subsystemTime, m_componentCreature);
-					fire.Position = mouthPos;
-					fire.Direction = direction;
-					fire.FireDuration = 30f;
-					fire.ImpactDamage = 0.01f;
-					m_activeFireVomit = fire;
-					m_subsystemParticles.AddParticleSystem(fire, false);
+					m_activeFireVomit.Position = mouthPos;
+					m_activeFireVomit.Direction = direction;
+					m_subsystemParticles.AddParticleSystem(m_activeFireVomit, false);
 					break;
 
 				case VomitType.Frozen:
-					var frozen = new FrozenVomitParticleSystem(
+					m_activeFrozenVomit = new FrozenVomitParticleSystem(
 						m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
 						m_subsystemTime, m_componentCreature);
-					frozen.Position = mouthPos;
-					frozen.Direction = direction;
-					m_activeFrozenVomit = frozen;
-					m_subsystemParticles.AddParticleSystem(frozen, false);
+					m_activeFrozenVomit.Position = mouthPos;
+					m_activeFrozenVomit.Direction = direction;
+					m_subsystemParticles.AddParticleSystem(m_activeFrozenVomit, false);
 					break;
 
 				case VomitType.Blood:
-					var blood = new BloodVomitParticleSystem(
+					m_activeBloodVomit = new BloodVomitParticleSystem(
 						m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
 						m_subsystemTime, m_subsystemParticles, m_componentCreature);
-					blood.Position = mouthPos;
-					blood.Direction = direction;
-					blood.BleedingIntensity = 180f;
-					m_activeBloodVomit = blood;
-					m_subsystemParticles.AddParticleSystem(blood, false);
+					m_activeBloodVomit.Position = mouthPos;
+					m_activeBloodVomit.Direction = direction;
+					m_subsystemParticles.AddParticleSystem(m_activeBloodVomit, false);
 					break;
 			}
 
