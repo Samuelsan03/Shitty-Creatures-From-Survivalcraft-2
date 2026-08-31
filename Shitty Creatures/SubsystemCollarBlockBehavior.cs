@@ -191,14 +191,9 @@ namespace Game
 
 		private void SetExplosionPrevention(Entity entity, bool prevent)
 		{
-			var boom1 = entity.FindComponent<ComponentBoomerExplosion>();
-			var boom2 = entity.FindComponent<ComponentBoomerFireExplosion>();
-			var boom3 = entity.FindComponent<ComponentBoomerPoisonExplosion>();
-			var boom4 = entity.FindComponent<ComponentBoomerFrozenExplosion>();
-			if (boom1 != null) boom1.PreventExplosion = prevent;
-			if (boom2 != null) boom2.PreventExplosion = prevent;
-			if (boom3 != null) boom3.PreventExplosion = prevent;
-			if (boom4 != null) boom4.PreventExplosion = prevent;
+			ComponentBoomerExplosion boomExplosion = entity.FindComponent<ComponentBoomerExplosion>();
+			if (boomExplosion != null)
+				boomExplosion.PreventExplosion = prevent;
 		}
 
 		// ==========================================
