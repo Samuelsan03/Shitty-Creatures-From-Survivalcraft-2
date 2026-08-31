@@ -87,7 +87,6 @@
   <Parameter Name="TeleportationDistance" Description="Minimum distance from the target before teleportation can occur." Guid="9b438247-0aeb-4342-8401-378d51182986" Value="15" Type="float" />
   <Parameter Name="TeleportationCooldown" Description="Time in seconds before another teleport can occur." Guid="5b0c5ac5-130e-4c0b-a1ef-99789e0c3bb6" Value="5" Type="float" />
   <Parameter Name="DisappearanceTime" Description="Duration in seconds the creature remains vanished." Guid="1f9780a0-aba9-4564-8340-52756e8652c2" Value="0.75" Type="float" />
-  <Parameter Name="ChanceToTeleport" Description="Probability of teleporting when the distance condition is met." Guid="bf84bf82-4e56-4ac9-adbf-6d99e7b892b7" Value="0.3" Type="float" />
 </ComponentTemplate>
 
     <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
@@ -123,7 +122,6 @@
   <Parameter Name="VomitFire" Description="Activa el vómito de fuego (daño tipo fuego)." Guid="c23d5b82-4e9f-5a6b-8c7d-2b3c4d5e6f72" Value="false" Type="bool"/>
   <Parameter Name="VomitFrozen" Description="Activa el vómito congelante (causa gripe, reduce temperatura y daño leve)." Guid="a78451cc-725e-4165-b091-6fdd3fa124fe" Value="false" Type="bool"/>
   <Parameter Name="VomitBlood" Description="Activa el vómito de sangre (daño progresivo a criaturas)." Guid="5e087060-f114-4852-b8d4-fb9470b6c1df" Value="false" Type="bool"/>
-  <Parameter Name="VomitProbability" Description="Probabilidad por segundo de ejecutar el ataque de vómito cuando el objetivo está a distancia válida." Guid="d34e6c93-5f0a-6b7c-9d8e-3c4d5e6f7a83" Value="0.1" Type="float"/>
   <Parameter Name="VomitCooldown" Description="Tiempo mínimo en segundos entre cada uso del ataque de vómito." Guid="e45f7da4-6a1b-7c8d-0e9f-4d5e6f7a8b94" Value="5" Type="float"/>
   <Parameter Name="VomitDistanceRange" Description="Rango de distancia (mínima, máxima) en bloques a la que la criatura puede vomitar. Formato: X,Y donde X es la distancia mínima e Y la máxima." Guid="e93d0f52-5283-41f1-8fa2-9516d5c32b71" Value="2,12" Type="Vector2"/>
   <Parameter Name="Class" Description="Clase que implementa el comportamiento de vómito en la criatura." Guid="f56a8eb5-7b2c-8d9e-1f0a-5e6f7a8b9c05" Value="Game.ComponentCreatureVomit" Type="string"/>
