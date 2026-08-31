@@ -10,11 +10,24 @@ namespace Game
 	/// </summary>
 	public class Teleport : Component, IUpdateable
 	{
+		/// <summary>
+		/// Estados del teletransporte.
+		/// </summary>
+		public enum TeleportState
+		{
+			/// <summary>La criatura no está teletransportándose.</summary>
+			Inactive,
+			/// <summary>La criatura está desapareciendo.</summary>
+			Disappearing,
+			/// <summary>La criatura está apareciendo en la nueva posición.</summary>
+			Appearing
+		}
+
 		// ===== PARÁMETROS CONFIGURABLES =====
 		public float TeleportationDistance = 15f;
 		public float TeleportationCooldown = 5f;
 		public float DisappearanceTime = 0.75f;
-		public float ChanceToTeleport = 0.3f;
+		public float AppearanceTime = 0.75f;
 
 		// ===== REFERENCIAS =====
 		private SubsystemTime m_subsystemTime;
@@ -38,15 +51,12 @@ namespace Game
 
 		// ===== ESTADO INTERNO =====
 		private ComponentCreature m_targetCreature;
-		private bool m_isDisappeared;
-		private float m_disappearRemaining;
+		private TeleportState m_state = TeleportState.Inactive;
+		private float m_stateTimer;
 		private float m_cooldownRemaining;
 		private Vector3 m_originalPosition;
 		private bool m_originalBodyCollidable;
 		private bool m_originalIsRaycastTransparent;
-
-		// Temporizador para evaluar la probabilidad una vez por segundo (no cada frame)
-		private float m_checkTimer;
 
 		// ===== PROPIEDADES PÚBLICAS =====
 		public ComponentCreature Target
@@ -55,12 +65,14 @@ namespace Game
 			set => m_targetCreature = value;
 		}
 
+		public TeleportState State => m_state;
+
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		// ===== MÉTODOS PÚBLICOS =====
 		public void ForceTeleport(ComponentCreature target)
 		{
-			if (target == null || m_isDisappeared)
+			if (target == null || m_state != TeleportState.Inactive)
 				return;
 			if (IsMountedOrMounting())
 				return;
@@ -70,9 +82,18 @@ namespace Game
 
 		public void StopTeleport()
 		{
-			if (m_isDisappeared)
-				Reappear();
+			if (m_state == TeleportState.Inactive)
+				return;
+
+			if (m_state == TeleportState.Disappearing)
+			{
+				m_componentBody.Position = m_originalPosition;
+				m_componentBody.MoveToFreeSpace();
+			}
+
+			RestoreCreatureState();
 			m_cooldownRemaining = TeleportationCooldown;
+			m_state = TeleportState.Inactive;
 			m_targetCreature = null;
 		}
 
@@ -90,7 +111,6 @@ namespace Game
 			m_componentCreatureModel = Entity.FindComponent<ComponentCreatureModel>();
 			m_chaseBehavior = Entity.FindComponent<ComponentNewChaseBehavior>();
 
-			// Obtener todos los componentes relacionados con montura
 			m_componentRider = Entity.FindComponent<ComponentRider>();
 			m_componentMount = Entity.FindComponent<ComponentMount>();
 			m_componentNewMount = Entity.FindComponent<ComponentNewMount>();
@@ -100,7 +120,7 @@ namespace Game
 			TeleportationDistance = valuesDictionary.GetValue<float>("TeleportationDistance", TeleportationDistance);
 			TeleportationCooldown = valuesDictionary.GetValue<float>("TeleportationCooldown", TeleportationCooldown);
 			DisappearanceTime = valuesDictionary.GetValue<float>("DisappearanceTime", DisappearanceTime);
-			ChanceToTeleport = valuesDictionary.GetValue<float>("ChanceToTeleport", ChanceToTeleport);
+			AppearanceTime = valuesDictionary.GetValue<float>("AppearanceTime", AppearanceTime);
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap) { }
@@ -110,21 +130,33 @@ namespace Game
 			if (m_cooldownRemaining > 0f)
 				m_cooldownRemaining -= dt;
 
-			if (m_isDisappeared)
+			switch (m_state)
 			{
-				m_disappearRemaining -= dt;
-				if (m_disappearRemaining <= 0f)
-					Reappear();
-				return;
+				case TeleportState.Inactive:
+					UpdateInactive();
+					break;
+				case TeleportState.Disappearing:
+					UpdateDisappearing(dt);
+					break;
+				case TeleportState.Appearing:
+					UpdateAppearing(dt);
+					break;
 			}
+		}
 
-			// Verificar estado de montura (jinete o montura)
+		// ===== MÉTODOS DE ACTUALIZACIÓN POR ESTADO =====
+
+		private void UpdateInactive()
+		{
+			if (m_cooldownRemaining > 0f)
+				return;
+
 			if (IsMountedOrMounting())
 				return;
 
 			UpdateTargetFromChaseBehavior();
 
-			if (m_targetCreature == null || m_cooldownRemaining > 0f)
+			if (m_targetCreature == null)
 				return;
 
 			bool isChasing = m_chaseBehavior != null && m_chaseBehavior.IsActive && m_chaseBehavior.Target != null;
@@ -134,43 +166,115 @@ namespace Game
 			float distance = Vector3.Distance(m_componentBody.Position, m_targetCreature.ComponentBody.Position);
 			if (distance >= TeleportationDistance)
 			{
-				m_checkTimer -= dt;
-				if (m_checkTimer <= 0f)
-				{
-					m_checkTimer = 1f;
-					if (m_random.Float(0f, 1f) < ChanceToTeleport)
-						StartTeleport();
-				}
+				StartTeleport();
 			}
-			else
+		}
+
+		private void UpdateDisappearing(float dt)
+		{
+			m_stateTimer -= dt;
+			if (m_stateTimer <= 0f)
 			{
-				m_checkTimer = 0f;
+				BeginAppearing();
 			}
+		}
+
+		private void UpdateAppearing(float dt)
+		{
+			m_stateTimer -= dt;
+
+			if (m_componentCreatureModel != null && AppearanceTime > 0f)
+			{
+				float progress = 1f - MathUtils.Max(0f, m_stateTimer / AppearanceTime);
+				m_componentCreatureModel.Opacity = MathUtils.Saturate(progress);
+			}
+
+			if (m_stateTimer <= 0f)
+			{
+				FinishTeleport();
+			}
+		}
+
+		// ===== MÉTODOS DE TRANSICIÓN DE ESTADO =====
+
+		private void StartTeleport()
+		{
+			if (m_targetCreature == null || m_state != TeleportState.Inactive)
+				return;
+			if (IsMountedOrMounting())
+				return;
+
+			m_originalPosition = m_componentBody.Position;
+			m_originalBodyCollidable = m_componentBody.BodyCollidable;
+			m_originalIsRaycastTransparent = m_componentBody.IsRaycastTransparent;
+
+			PlaySound("Audio/teleport 1", m_originalPosition);
+			AddTeleportParticles(m_originalPosition, false);
+
+			m_componentBody.BodyCollidable = false;
+			m_componentBody.IsRaycastTransparent = true;
+
+			if (m_componentCreatureModel != null)
+				m_componentCreatureModel.Opacity = 0f;
+
+			if (m_componentPathfinding != null)
+				m_componentPathfinding.Stop();
+
+			m_componentBody.Position = new Vector3(0f, -1000f, 0f);
+
+			m_state = TeleportState.Disappearing;
+			m_stateTimer = DisappearanceTime;
+		}
+
+		private void BeginAppearing()
+		{
+			Vector3 finalPosition;
+			if (m_targetCreature != null && m_targetCreature.ComponentHealth.Health > 0f)
+				finalPosition = FindTeleportPositionNearTarget(m_targetCreature.ComponentBody.Position);
+			else
+				finalPosition = m_originalPosition;
+
+			m_componentBody.Position = finalPosition;
+			m_componentBody.MoveToFreeSpace();
+
+			PlaySound("Audio/teleport 2", finalPosition);
+			AddTeleportParticles(finalPosition, true);
+
+			m_state = TeleportState.Appearing;
+			m_stateTimer = AppearanceTime;
+		}
+
+		private void FinishTeleport()
+		{
+			RestoreCreatureState();
+			m_cooldownRemaining = TeleportationCooldown;
+			m_state = TeleportState.Inactive;
+		}
+
+		private void RestoreCreatureState()
+		{
+			m_componentBody.BodyCollidable = m_originalBodyCollidable;
+			m_componentBody.IsRaycastTransparent = m_originalIsRaycastTransparent;
+
+			if (m_componentCreatureModel != null)
+				m_componentCreatureModel.Opacity = null;
 		}
 
 		// ===== MÉTODOS PRIVADOS =====
 
-		/// <summary>
-		/// Detecta si la criatura está montada (es jinete) o es una montura (tiene un jinete).
-		/// </summary>
 		private bool IsMountedOrMounting()
 		{
-			// 1. Es jinete (está montando algo)
 			if (m_componentRider != null && m_componentRider.Mount != null)
 				return true;
 
-			// 2. Es montura (alguien lo está montando) - ComponentMount tradicional
 			if (m_componentMount != null && m_componentMount.Rider != null)
 				return true;
 
-			// 3. Es montura - ComponentNewMount (nuevo sistema)
 			if (m_componentNewMount != null && m_componentNewMount.Rider != null)
 				return true;
 
-			// 4. ComponentSteedBehavior (base) - puede tener un jinete
 			if (m_componentSteed != null)
 			{
-				// Intentar obtener la propiedad pública "Rider"
 				var riderProp = m_componentSteed.GetType().GetProperty("Rider");
 				if (riderProp != null)
 				{
@@ -178,7 +282,6 @@ namespace Game
 					if (rider != null)
 						return true;
 				}
-				// Intentar obtener el campo privado "m_rider" (por si la propiedad no es pública)
 				var riderField = m_componentSteed.GetType().GetField("m_rider",
 					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 				if (riderField != null)
@@ -189,7 +292,6 @@ namespace Game
 				}
 			}
 
-			// 5. ComponentNewSteedBehavior (derivado) - mismo proceso
 			if (m_componentNewSteed != null)
 			{
 				var riderProp = m_componentNewSteed.GetType().GetProperty("Rider");
@@ -223,93 +325,96 @@ namespace Game
 				m_targetCreature = null;
 		}
 
-		private void StartTeleport()
-		{
-			if (m_targetCreature == null || m_isDisappeared)
-				return;
-			// Doble verificación por si cambió durante el frame
-			if (IsMountedOrMounting())
-				return;
-
-			m_originalPosition = m_componentBody.Position;
-			m_originalBodyCollidable = m_componentBody.BodyCollidable;
-			m_originalIsRaycastTransparent = m_componentBody.IsRaycastTransparent;
-
-			PlaySound("Audio/teleport 1", m_originalPosition);
-			AddTeleportParticles(m_originalPosition, false);
-
-			m_componentBody.BodyCollidable = false;
-			m_componentBody.IsRaycastTransparent = true;
-
-			if (m_componentCreatureModel != null)
-				m_componentCreatureModel.Opacity = 0f;
-
-			if (m_componentPathfinding != null)
-				m_componentPathfinding.Stop();
-
-			m_componentBody.Position = new Vector3(0f, -1000f, 0f);
-
-			m_isDisappeared = true;
-			m_disappearRemaining = DisappearanceTime;
-		}
-
-		private void Reappear()
-		{
-			Vector3 finalPosition;
-			if (m_targetCreature != null && m_targetCreature.ComponentHealth.Health > 0f)
-				finalPosition = FindTeleportPositionNearTarget(m_targetCreature.ComponentBody.Position);
-			else
-				finalPosition = m_originalPosition;
-
-			m_componentBody.Position = finalPosition;
-			m_componentBody.MoveToFreeSpace();
-
-			m_componentBody.BodyCollidable = m_originalBodyCollidable;
-			m_componentBody.IsRaycastTransparent = m_originalIsRaycastTransparent;
-			if (m_componentCreatureModel != null)
-				m_componentCreatureModel.Opacity = null;
-
-			PlaySound("Audio/teleport 2", finalPosition);
-			AddTeleportParticles(finalPosition, true);
-
-			m_cooldownRemaining = TeleportationCooldown;
-			m_isDisappeared = false;
-		}
-
 		private Vector3 FindTeleportPositionNearTarget(Vector3 targetPos)
 		{
-			int cx = Terrain.ToCell(targetPos.X);
-			int cz = Terrain.ToCell(targetPos.Z);
-			int startY = Terrain.ToCell(targetPos.Y + 1.5f);
+			Vector3 boxSize = m_componentBody.StanceBoxSize;
+			float bestDistSq = float.MaxValue;
+			Vector3 bestPos = m_originalPosition;
 
-			for (int dx = -1; dx <= 1; dx++)
+			int cx = Terrain.ToCell(targetPos.X);
+			int cy = Terrain.ToCell(targetPos.Y);
+			int cz = Terrain.ToCell(targetPos.Z);
+
+			for (int dx = -3; dx <= 3; dx++)
 			{
-				for (int dz = -1; dz <= 1; dz++)
+				for (int dz = -3; dz <= 3; dz++)
 				{
 					int x = cx + dx;
 					int z = cz + dz;
-					for (int yOffset = 0; yOffset <= 3; yOffset++)
+					for (int dy = -2; dy <= 3; dy++)
 					{
-						int y = startY - yOffset;
+						int y = cy + dy;
 						if (y < 0 || y > 255) continue;
 
-						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
-						int content = Terrain.ExtractContents(cellValue);
-						Block block = BlocksManager.Blocks[content];
-						if (block.IsCollidable_(cellValue))
+						Vector3 candidatePos = new Vector3(x + 0.5f, y, z + 0.5f);
+
+						if (IsPositionFreeForCreature(candidatePos, boxSize))
 						{
-							BoundingBox[] boxes = block.GetCustomCollisionBoxes(m_subsystemTerrain, cellValue);
-							if (boxes != null && boxes.Length > 0)
+							float distSq = Vector3.DistanceSquared(candidatePos, targetPos);
+							if (distSq < bestDistSq)
 							{
-								float surfaceY = y + boxes[0].Max.Y;
-								return new Vector3(x + 0.5f, surfaceY + 0.05f, z + 0.5f);
+								bestDistSq = distSq;
+								bestPos = candidatePos;
 							}
-							return new Vector3(x + 0.5f, y + 1.0f, z + 0.5f);
 						}
 					}
 				}
 			}
-			return targetPos + new Vector3(0f, 1.5f, 0f);
+
+			return bestPos;
+		}
+
+		private bool IsPositionFreeForCreature(Vector3 position, Vector3 boxSize)
+		{
+			BoundingBox box = new BoundingBox(
+				position - new Vector3(boxSize.X / 2f, 0f, boxSize.Z / 2f),
+				position + new Vector3(boxSize.X / 2f, boxSize.Y, boxSize.Z / 2f)
+			);
+
+			box.Min += new Vector3(0.05f, 0.05f, 0.05f);
+			box.Max -= new Vector3(0.05f, 0.05f, 0.05f);
+
+			Point3 minCell = Terrain.ToCell(box.Min);
+			Point3 maxCell = Terrain.ToCell(box.Max);
+
+			minCell.Y = MathUtils.Max(minCell.Y, 0);
+			maxCell.Y = MathUtils.Min(maxCell.Y, 255);
+
+			if (minCell.Y > maxCell.Y) return false;
+
+			for (int x = minCell.X; x <= maxCell.X; x++)
+			{
+				for (int y = minCell.Y; y <= maxCell.Y; y++)
+				{
+					for (int z = minCell.Z; z <= maxCell.Z; z++)
+					{
+						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+						int content = Terrain.ExtractContents(cellValue);
+
+						if (content != 0)
+						{
+							Block block = BlocksManager.Blocks[content];
+							if (block.IsCollidable_(cellValue))
+							{
+								BoundingBox[] customBoxes = block.GetCustomCollisionBoxes(m_subsystemTerrain, cellValue);
+								Vector3 cellPos = new Vector3(x, y, z);
+
+								for (int i = 0; i < customBoxes.Length; i++)
+								{
+									BoundingBox blockBox = new BoundingBox(cellPos + customBoxes[i].Min, cellPos + customBoxes[i].Max);
+
+									if (box.Intersection(blockBox))
+									{
+										return false;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			return true;
 		}
 
 		private void PlaySound(string soundName, Vector3 position)
