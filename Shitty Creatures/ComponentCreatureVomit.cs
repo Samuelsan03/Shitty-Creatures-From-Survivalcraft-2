@@ -22,7 +22,7 @@ namespace Game
 		private ComponentChaseBehavior m_oldChaseBehavior;
 		private ComponentZombieChaseBehavior m_zombieChaseBehavior;
 
-		public bool VomitPoison { get; set; }
+		public bool VomitShit { get; set; }
 		public bool VomitFire { get; set; }
 		public bool VomitFrozen { get; set; }
 		public bool VomitBlood { get; set; }
@@ -57,7 +57,7 @@ namespace Game
 			m_oldChaseBehavior = Entity.FindComponent<ComponentChaseBehavior>();
 			m_zombieChaseBehavior = Entity.FindComponent<ComponentZombieChaseBehavior>();
 
-			VomitPoison = valuesDictionary.GetValue<bool>("VomitPoison", false);
+			VomitShit = valuesDictionary.GetValue<bool>("VomitShit", false);
 			VomitFire = valuesDictionary.GetValue<bool>("VomitFire", false);
 			VomitFrozen = valuesDictionary.GetValue<bool>("VomitFrozen", false);
 			VomitBlood = valuesDictionary.GetValue<bool>("VomitBlood", false);
@@ -256,7 +256,7 @@ namespace Game
 				return;
 
 			List<VomitType> availableTypes = new List<VomitType>();
-			if (VomitPoison) availableTypes.Add(VomitType.Poison);
+			if (VomitShit) availableTypes.Add(VomitType.Poison);
 			if (VomitFire) availableTypes.Add(VomitType.Fire);
 			if (VomitFrozen) availableTypes.Add(VomitType.Frozen);
 			if (VomitBlood) availableTypes.Add(VomitType.Blood);
