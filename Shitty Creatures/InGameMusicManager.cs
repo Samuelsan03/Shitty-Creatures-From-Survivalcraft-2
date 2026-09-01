@@ -23,9 +23,11 @@ namespace Game
 		private static float m_currentPlaybackPosition;
 		private static bool m_isFadingOut;
 		private static MusicContext m_currentContext;
+		private static bool m_isPausedByScreenChange;
 
 		public static bool IsPlaying => m_sound != null && m_sound.State > SoundState.Stopped;
 		public static bool IsFadingOut => m_isFadingOut;
+		public static bool IsPaused => m_isPausedByScreenChange;
 		public static string CurrentTrack => m_currentTrackName;
 		public static float CurrentPosition => m_currentPlaybackPosition;
 		public static MusicContext CurrentContext => m_currentContext;
@@ -38,7 +40,7 @@ namespace Game
 
 		public static bool CanPlayInContext(MusicContext context)
 		{
-			if (!IsPlaying && !IsFadingOut)
+			if (!IsPlaying && !IsFadingOut && !m_isPausedByScreenChange)
 				return true;
 
 			int requestedPriority = GetContextPriority(context);
@@ -83,6 +85,7 @@ namespace Game
 
 		public static void Update()
 		{
+			// Handle fade out
 			if (m_fadeSound != null)
 			{
 				float newVolume = m_fadeSound.Volume - 0.33f * Volume * Time.FrameDuration;
@@ -100,6 +103,22 @@ namespace Game
 					m_fadeSound.Volume = newVolume;
 				}
 			}
+
+			// Handle pause/resume based on screen state
+			bool isGameScreenActive = ScreensManager.CurrentScreen is GameScreen;
+
+			if (!m_isPausedByScreenChange && IsPlaying && !m_isFadingOut && !isGameScreenActive)
+			{
+				// Leaving game screen - pause
+				SavePositionAndStop();
+				m_isPausedByScreenChange = true;
+			}
+			else if (m_isPausedByScreenChange && isGameScreenActive && !string.IsNullOrEmpty(m_currentTrackName))
+			{
+				// Returning to game screen - resume
+				RestartFromSavedPosition();
+				m_isPausedByScreenChange = false;
+			}
 		}
 
 		public static void FadeOutAndStop()
@@ -107,6 +126,7 @@ namespace Game
 			if (m_sound == null && m_fadeSound == null) return;
 
 			m_isFadingOut = true;
+			m_isPausedByScreenChange = false;
 
 			if (m_sound != null)
 			{
@@ -142,6 +162,7 @@ namespace Game
 				m_currentTrackName = name;
 				m_currentPlaybackPosition = startPercentage;
 				m_isFadingOut = false;
+				m_isPausedByScreenChange = false;
 				m_currentContext = context;
 
 				if (m_sound != null)
@@ -190,6 +211,7 @@ namespace Game
 			}
 			m_currentSource = null;
 			m_isFadingOut = false;
+			m_isPausedByScreenChange = false;
 			m_currentContext = MusicContext.None;
 		}
 
@@ -202,14 +224,30 @@ namespace Game
 				float percent = (float)currentPos / (float)totalBytes;
 				m_currentPlaybackPosition = MathUtils.Saturate(percent);
 			}
-			StopMusic();
+
+			// Stop playback but preserve track name, position, and context
+			if (m_sound != null)
+			{
+				m_sound.Stop();
+				m_sound.Dispose();
+				m_sound = null;
+			}
+			if (m_fadeSound != null)
+			{
+				m_fadeSound.Stop();
+				m_fadeSound.Dispose();
+				m_fadeSound = null;
+			}
+			m_currentSource = null;
+			m_isFadingOut = false;
+			// NOTE: Don't reset m_currentTrackName, m_currentPlaybackPosition, m_currentContext
 		}
 
 		public static void RestartFromSavedPosition()
 		{
 			if (!string.IsNullOrEmpty(m_currentTrackName))
 			{
-				PlayMusic(m_currentTrackName, m_currentPlaybackPosition);
+				PlayMusic(m_currentTrackName, m_currentPlaybackPosition, m_currentContext);
 			}
 		}
 	}
