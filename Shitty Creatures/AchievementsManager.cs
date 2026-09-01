@@ -851,7 +851,7 @@ namespace Game
 
 				if (needsRestart)
 				{
-					InGameMusicManager.PlayMusic(musicPath, 0f);
+					InGameMusicManager.PlayMusic(musicPath, 0f, InGameMusicManager.MusicContext.Achievement);
 					firstPlay = false;
 				}
 
