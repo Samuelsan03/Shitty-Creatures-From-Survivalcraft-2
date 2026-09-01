@@ -164,6 +164,7 @@ namespace Game
 			ModsManager.RegisterHook("OnWidgetConstruct", this);
 			ModsManager.RegisterHook("OnVitalStatsUpdateTemperature", this);
 			ModsManager.RegisterHook("CraftingRecipesManagerInitialize", this);
+			ModsManager.RegisterHook("ClothingProcessSlotItems", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -171,6 +172,74 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		// Métodos auxiliares privados
 		// ---------------------------------------------------------------------------------
+
+		/// <summary>
+		/// Hook para reemplazar bowls consumidas por bowl vacía (misma lógica que vanilla con buckets).
+		/// </summary>
+		public override void ClothingProcessSlotItems(
+			ComponentClothing clothing,
+			int slotIndex,
+			ref int value,
+			ref int count,
+			ref int processedValue,
+			ref int processedCount,
+			bool skippedByMods,
+			out bool skip)
+		{
+			skip = false;
+
+			// Si otro mod ya manejó esto, no interferir
+			if (skippedByMods) return;
+
+			int blockIndex = Terrain.ExtractContents(value);
+
+			// Verificar si es una bowl consumible
+			if (IsConsumableBowlBlock(blockIndex))
+			{
+				// Solo reemplazar si se consume UNA sola bowl (igual que comportamiento vanilla de buckets)
+				if (count <= 1)
+				{
+					Block block = BlocksManager.Blocks[blockIndex];
+					ComponentVitalStats vitalStats = clothing.m_componentVitalStats;
+
+					if (block != null && vitalStats != null)
+					{
+						// Intentar consumir el item (misma lógica que vanilla)
+						bool eaten = block.Eat(vitalStats, value);
+						if (!eaten)
+						{
+							eaten = vitalStats.Eat(value);
+						}
+
+						if (eaten)
+						{
+							// Consumido exitosamente - reemplazar con bowl vacía
+							int emptyBowlIndex = BlocksManager.GetBlockIndex<EmptyBowlBlock>(false);
+							if (emptyBowlIndex >= 0)
+							{
+								processedValue = emptyBowlIndex;
+								processedCount = 1;
+								skip = true; // Evitar que vanilla sobreescriba nuestros valores
+							}
+						}
+					}
+				}
+				// Si count > 1, vanilla maneja la comida sin reemplazo (igual que buckets)
+			}
+		}
+
+		/// <summary>
+		/// Verifica si el índice de bloque corresponde a una bowl consumible que debe dejar bowl vacía.
+		/// </summary>
+		private static bool IsConsumableBowlBlock(int blockIndex)
+		{
+			return blockIndex == CactusJuiceBowlBlock.Index ||
+				   blockIndex == TeaAntifluBowlBlock.Index ||
+				   blockIndex == WaterBowlBlock.Index ||
+				   blockIndex == AntidoteBowlBlock.Index ||
+				   blockIndex == BoiledWaterBowlBlock.Index;
+		}
+
 		public override void CraftingRecipesManagerInitialize(List<CraftingRecipe> recipes, ref bool sort)
 		{
 			int waterBucketIndex = BlocksManager.GetBlockIndex<WaterBucketBlock>(false);
