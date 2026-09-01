@@ -64,8 +64,11 @@ namespace Game
 		// ==================
 
 		private bool m_isPlaying = false;
-		private bool m_isPaused = false;
 		private double m_playStartTime = 0.0;
+
+		// Timer adjustment for pause
+		private bool m_wasPaused = false;
+		private double m_pauseStartTime = 0.0;
 
 		private readonly List<InGameMusicWidget> m_widgets = new List<InGameMusicWidget>();
 
@@ -94,7 +97,6 @@ namespace Game
 
 			InGameMusicManager.StopMusic();
 			m_isPlaying = false;
-			m_isPaused = false;
 
 			base.Dispose();
 		}
@@ -158,8 +160,8 @@ namespace Game
 				var track = m_playlist[m_currentTrackIndex];
 				InGameMusicManager.PlayMusic(track.Path, 0f, InGameMusicManager.MusicContext.InGame);
 				m_isPlaying = true;
-				m_isPaused = false;
 				m_playStartTime = Time.RealTime;
+				m_wasPaused = false;
 
 				string nowPlaying = LanguageControl.Get("InGameMusic", "NowPlaying");
 				string trackName = GetDisplayNameFromPath(track.Path);
@@ -183,7 +185,7 @@ namespace Game
 			{
 				InGameMusicManager.PlayMusic(track.Path, 0f, InGameMusicManager.MusicContext.InGame);
 				m_playStartTime = Time.RealTime;
-				m_isPaused = false;
+				m_wasPaused = false;
 
 				string nowPlaying = LanguageControl.Get("InGameMusic", "NowPlaying");
 				string trackName = GetDisplayNameFromPath(track.Path);
@@ -201,7 +203,6 @@ namespace Game
 		{
 			InGameMusicManager.StopMusic();
 			m_isPlaying = false;
-			m_isPaused = false;
 			ShowMessage(playerData, LanguageControl.Get("InGameMusic", "MusicDisabled"));
 		}
 
@@ -222,30 +223,29 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// Detectar si la pantalla actual es la del juego (mundo visible)
-			bool isGameScreenActive = (ScreensManager.CurrentScreen is GameScreen);
+			bool isPaused = InGameMusicManager.IsPaused;
+			bool isActuallyPlaying = m_isPlaying && !isPaused;
 
+			// Adjust timer for pause/resume (handled by InGameMusicManager)
 			if (m_isPlaying)
 			{
-				if (!isGameScreenActive && !m_isPaused)
+				if (!m_wasPaused && isPaused)
 				{
-					// Guardar posición actual de la canción y detener
-					InGameMusicManager.SavePositionAndStop();
-					m_isPaused = true;
+					// Just paused - record pause start time
+					m_pauseStartTime = Time.RealTime;
 				}
-				else if (isGameScreenActive && m_isPaused)
+				else if (m_wasPaused && !isPaused)
 				{
-					// Reanudar desde la posición guardada
-					InGameMusicManager.RestartFromSavedPosition();
-					m_isPaused = false;
-					m_playStartTime = Time.RealTime;
+					// Just resumed - adjust play start time to account for pause duration
+					m_playStartTime += (Time.RealTime - m_pauseStartTime);
 				}
 			}
+			m_wasPaused = isPaused;
 
 			foreach (var w in m_widgets)
-				w?.UpdateState(m_isPlaying && !m_isPaused);
+				w?.UpdateState(isActuallyPlaying);
 
-			if (!m_isPlaying || m_isPaused) return;
+			if (!isActuallyPlaying) return;
 
 			double currentDuration = m_playlist[m_currentTrackIndex].Duration;
 			if (Time.RealTime - m_playStartTime >= currentDuration)
