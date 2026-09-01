@@ -24,6 +24,9 @@ namespace Game
 		private bool m_musicPlaying = false;
 		private bool m_wasMusicEnabled = true;
 
+		// Timer adjustment for pause
+		private bool m_wasPaused = false;
+
 		private SubsystemTime m_subsystemTime;
 		private SubsystemPlayers m_subsystemPlayers;
 
@@ -64,7 +67,9 @@ namespace Game
 
 			m_timeSinceLastCheck += dt;
 
-			if (m_musicPlaying)
+			// Only update music timer when not paused
+			bool isPaused = InGameMusicManager.IsPaused;
+			if (m_musicPlaying && !isPaused)
 			{
 				m_timeSinceMusicStarted += dt;
 
@@ -73,6 +78,7 @@ namespace Game
 					RestartMusicImmediately();
 				}
 			}
+			m_wasPaused = isPaused;
 
 			if (m_timeSinceLastCheck >= CHECK_INTERVAL)
 			{
@@ -199,6 +205,7 @@ namespace Game
 				InGameMusicManager.PlayMusic(MUSIC_PATH, 0f, InGameMusicManager.MusicContext.Chase);
 				m_musicPlaying = true;
 				m_timeSinceMusicStarted = 0f;
+				m_wasPaused = false;
 
 				Log.Debug("[GhostMusic] Música de persecución iniciada");
 			}
@@ -228,6 +235,7 @@ namespace Game
 				Log.Debug($"[GhostMusic] Reiniciando música a los {m_timeSinceMusicStarted:F2}s");
 				InGameMusicManager.PlayMusic(MUSIC_PATH, 0f, InGameMusicManager.MusicContext.Chase);
 				m_timeSinceMusicStarted = 0f;
+				m_wasPaused = false;
 			}
 			catch (System.Exception ex)
 			{
