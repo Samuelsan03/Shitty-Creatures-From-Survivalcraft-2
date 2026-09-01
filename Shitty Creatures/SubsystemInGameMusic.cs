@@ -156,7 +156,7 @@ namespace Game
 			try
 			{
 				var track = m_playlist[m_currentTrackIndex];
-				InGameMusicManager.PlayMusic(track.Path, 0f);
+				InGameMusicManager.PlayMusic(track.Path, 0f, InGameMusicManager.MusicContext.InGame);
 				m_isPlaying = true;
 				m_isPaused = false;
 				m_playStartTime = Time.RealTime;
@@ -181,7 +181,7 @@ namespace Game
 
 			try
 			{
-				InGameMusicManager.PlayMusic(track.Path, 0f);
+				InGameMusicManager.PlayMusic(track.Path, 0f, InGameMusicManager.MusicContext.InGame);
 				m_playStartTime = Time.RealTime;
 				m_isPaused = false;
 
@@ -265,7 +265,7 @@ namespace Game
 		private SubsystemInGameMusic m_subsystem;
 		private BevelledButtonWidget m_button;
 		private bool m_currentState = false;
-		private bool m_processedClick = false; // Evita procesar el mismo clic varias veces
+		private bool m_processedClick = false;
 
 		public InGameMusicWidget(PlayerData playerData, SubsystemInGameMusic subsystem)
 		{
@@ -292,7 +292,6 @@ namespace Game
 
 		public override void Update()
 		{
-			// Usar IsClicked con bandera para evitar múltiples activaciones
 			if (m_button.IsClicked && !m_processedClick)
 			{
 				m_processedClick = true;
