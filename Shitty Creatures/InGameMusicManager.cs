@@ -9,8 +9,9 @@ namespace Game
 	{
 		public enum MusicContext
 		{
-			InTheGame,
-			Pursuit,
+			None,
+			InGame,
+			Chase,
 			Achievement
 		}
 
@@ -35,15 +36,26 @@ namespace Game
 			set => m_volume = value;
 		}
 
-		/// <summary>
-		/// Determina si es posible reproducir música en el contexto dado.
-		/// Solo contextos de mayor prioridad pueden reemplazar al actual.
-		/// Prioridad: Achievement > Pursuit > InTheGame
-		/// </summary>
 		public static bool CanPlayInContext(MusicContext context)
 		{
-			if (!IsPlaying) return true;
-			return (int)context > (int)m_currentContext;
+			if (!IsPlaying && !IsFadingOut)
+				return true;
+
+			int requestedPriority = GetContextPriority(context);
+			int currentPriority = GetContextPriority(m_currentContext);
+
+			return requestedPriority >= currentPriority;
+		}
+
+		private static int GetContextPriority(MusicContext context)
+		{
+			switch (context)
+			{
+				case MusicContext.InGame: return 0;
+				case MusicContext.Chase: return 1;
+				case MusicContext.Achievement: return 2;
+				default: return -1;
+			}
 		}
 
 		public static bool IsPlaybackComplete()
@@ -81,7 +93,7 @@ namespace Game
 					m_fadeSound.Dispose();
 					m_fadeSound = null;
 					m_isFadingOut = false;
-					m_currentContext = MusicContext.InTheGame;
+					m_currentContext = MusicContext.None;
 				}
 				else
 				{
@@ -112,7 +124,12 @@ namespace Game
 			m_currentSource = null;
 		}
 
-		public static void PlayMusic(string name, float startPercentage, MusicContext context = MusicContext.InTheGame)
+		public static void PlayMusic(string name, float startPercentage)
+		{
+			PlayMusic(name, startPercentage, MusicContext.InGame);
+		}
+
+		public static void PlayMusic(string name, float startPercentage, MusicContext context)
 		{
 			if (string.IsNullOrEmpty(name))
 			{
@@ -173,7 +190,7 @@ namespace Game
 			}
 			m_currentSource = null;
 			m_isFadingOut = false;
-			m_currentContext = MusicContext.InTheGame;
+			m_currentContext = MusicContext.None;
 		}
 
 		public static void SavePositionAndStop()
@@ -192,7 +209,7 @@ namespace Game
 		{
 			if (!string.IsNullOrEmpty(m_currentTrackName))
 			{
-				PlayMusic(m_currentTrackName, m_currentPlaybackPosition, m_currentContext);
+				PlayMusic(m_currentTrackName, m_currentPlaybackPosition);
 			}
 		}
 	}
