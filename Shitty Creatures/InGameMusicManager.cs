@@ -7,6 +7,13 @@ namespace Game
 {
 	public static class InGameMusicManager
 	{
+		public enum MusicContext
+		{
+			InTheGame,
+			Pursuit,
+			Achievement
+		}
+
 		private static StreamingSound m_sound;
 		private static StreamingSound m_fadeSound;
 		private static StreamingSource m_currentSource;
@@ -14,16 +21,29 @@ namespace Game
 		private static string m_currentTrackName;
 		private static float m_currentPlaybackPosition;
 		private static bool m_isFadingOut;
+		private static MusicContext m_currentContext;
 
 		public static bool IsPlaying => m_sound != null && m_sound.State > SoundState.Stopped;
 		public static bool IsFadingOut => m_isFadingOut;
 		public static string CurrentTrack => m_currentTrackName;
 		public static float CurrentPosition => m_currentPlaybackPosition;
+		public static MusicContext CurrentContext => m_currentContext;
 
 		public static float Volume
 		{
 			get => m_volume ?? SettingsManager.MusicVolume * 1f;
 			set => m_volume = value;
+		}
+
+		/// <summary>
+		/// Determina si es posible reproducir música en el contexto dado.
+		/// Solo contextos de mayor prioridad pueden reemplazar al actual.
+		/// Prioridad: Achievement > Pursuit > InTheGame
+		/// </summary>
+		public static bool CanPlayInContext(MusicContext context)
+		{
+			if (!IsPlaying) return true;
+			return (int)context > (int)m_currentContext;
 		}
 
 		public static bool IsPlaybackComplete()
@@ -53,16 +73,15 @@ namespace Game
 		{
 			if (m_fadeSound != null)
 			{
-				// Reducir volumen gradualmente
 				float newVolume = m_fadeSound.Volume - 0.33f * Volume * Time.FrameDuration;
 
 				if (newVolume <= 0f)
 				{
-					// Fade terminado - ahora sí detener y liberar
 					m_fadeSound.Stop();
 					m_fadeSound.Dispose();
 					m_fadeSound = null;
 					m_isFadingOut = false;
+					m_currentContext = MusicContext.InTheGame;
 				}
 				else
 				{
@@ -79,7 +98,6 @@ namespace Game
 
 			if (m_sound != null)
 			{
-				// Limpiar fade anterior si existe
 				if (m_fadeSound != null)
 				{
 					m_fadeSound.Stop();
@@ -87,7 +105,6 @@ namespace Game
 					m_fadeSound = null;
 				}
 
-				// MOVER sin llamar Stop() - el sonido sigue reproduciéndose
 				m_fadeSound = m_sound;
 				m_sound = null;
 			}
@@ -95,7 +112,7 @@ namespace Game
 			m_currentSource = null;
 		}
 
-		public static void PlayMusic(string name, float startPercentage)
+		public static void PlayMusic(string name, float startPercentage, MusicContext context = MusicContext.InTheGame)
 		{
 			if (string.IsNullOrEmpty(name))
 			{
@@ -108,8 +125,8 @@ namespace Game
 				m_currentTrackName = name;
 				m_currentPlaybackPosition = startPercentage;
 				m_isFadingOut = false;
+				m_currentContext = context;
 
-				// No llamar StopMusic() completo si hay fade activo
 				if (m_sound != null)
 				{
 					m_sound.Stop();
@@ -118,7 +135,6 @@ namespace Game
 				}
 				m_currentSource = null;
 
-				// Si hay fade, no interrumpirlo (igual que MusicManager)
 				float volume = (m_fadeSound != null) ? 0f : Volume;
 
 				StreamingSource source = ContentManager.Get<StreamingSource>(name);
@@ -157,6 +173,7 @@ namespace Game
 			}
 			m_currentSource = null;
 			m_isFadingOut = false;
+			m_currentContext = MusicContext.InTheGame;
 		}
 
 		public static void SavePositionAndStop()
@@ -175,7 +192,7 @@ namespace Game
 		{
 			if (!string.IsNullOrEmpty(m_currentTrackName))
 			{
-				PlayMusic(m_currentTrackName, m_currentPlaybackPosition);
+				PlayMusic(m_currentTrackName, m_currentPlaybackPosition, m_currentContext);
 			}
 		}
 	}
