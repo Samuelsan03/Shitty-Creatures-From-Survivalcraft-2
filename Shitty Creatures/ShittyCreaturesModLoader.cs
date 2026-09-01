@@ -163,6 +163,7 @@ namespace Game
 			ModsManager.RegisterHook("ProcessAttackment", this);
 			ModsManager.RegisterHook("OnWidgetConstruct", this);
 			ModsManager.RegisterHook("OnVitalStatsUpdateTemperature", this);
+			ModsManager.RegisterHook("CraftingRecipesManagerInitialize", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -3433,6 +3434,12 @@ namespace Game
 				skipVanilla = true;
 			}
 			// Si no hay cobertura, no intervenimos (dejamos que el juego maneje la temperatura)
+		}
+
+		public override void CraftingRecipesManagerInitialize(List<CraftingRecipe> recipes, ref bool sort)
+		{
+			CraftingRecipe item = recipes.Find((CraftingRecipe recipe) => recipe.ResultValue == EmptyBucketBlock.Index && recipe.Ingredients[0] == "waterbucket");
+			recipes.Remove(item);
 		}
 
 		// ---------------------------------------------------------------------------------
