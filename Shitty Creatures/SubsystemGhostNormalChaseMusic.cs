@@ -1,9 +1,7 @@
 using Engine;
-using Engine.Audio;
-using Engine.Media;
+using GameEntitySystem;
 using TemplatesDatabase;
 using System.Collections.Generic;
-using GameEntitySystem;
 
 namespace Game
 {
@@ -14,7 +12,7 @@ namespace Game
 		private const string MUSIC_PATH = "MenuMusic/ChaseTheme/Hotel Insanity Chase Theme";
 		private const float MUSIC_DURATION = 32.0f;
 		private const float CHECK_INTERVAL = 0.1f;
-		private const float DETECTION_RADIUS = 50f;  // Radio de 50
+		private const float DETECTION_RADIUS = 50f;
 
 		#endregion
 
@@ -55,7 +53,6 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// Verificar si la configuración cambió mientras la música sonaba
 			if (m_wasMusicEnabled != ChaseMusicConfig.GhostMusicEnabled)
 			{
 				m_wasMusicEnabled = ChaseMusicConfig.GhostMusicEnabled;
@@ -131,11 +128,9 @@ namespace Game
 					if (health != null && health.Health <= 0f)
 						continue;
 
-					// Primero verificar si ya está persiguiendo activamente
 					ComponentZombieChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
 					if (chaseBehavior != null && chaseBehavior.IsActive)
 					{
-						// Verificar también que esté dentro del radio de detección
 						ComponentBody ghostBody = entity.FindComponent<ComponentBody>();
 						if (ghostBody != null)
 						{
@@ -145,7 +140,7 @@ namespace Game
 								if (playerBody != null)
 								{
 									float distance = (ghostBody.Position - playerBody.Position).Length();
-									if (distance < DETECTION_RADIUS)  // Usa el radio de 50f
+									if (distance < DETECTION_RADIUS)
 									{
 										return true;
 									}
@@ -156,7 +151,6 @@ namespace Game
 				}
 				catch (System.Exception)
 				{
-					// Ignorar errores
 				}
 			}
 
@@ -194,36 +188,15 @@ namespace Game
 				return;
 			}
 
+			if (!InGameMusicManager.CanPlayInContext(InGameMusicManager.MusicContext.Chase))
+			{
+				Log.Debug("[GhostMusic] No se puede reproducir: contexto de mayor prioridad activo");
+				return;
+			}
+
 			try
 			{
-				if (MusicManager.m_sound != null)
-				{
-					MusicManager.m_sound.Stop();
-					MusicManager.m_sound.Dispose();
-					MusicManager.m_sound = null;
-				}
-
-				if (MusicManager.m_fadeSound != null)
-				{
-					MusicManager.m_fadeSound.Dispose();
-					MusicManager.m_fadeSound = null;
-				}
-
-				var streamingSource = ContentManager.Get<StreamingSource>(MUSIC_PATH);
-				if (streamingSource == null)
-				{
-					Log.Warning($"[GhostMusic] Música no encontrada: {MUSIC_PATH}");
-					return;
-				}
-
-				var duplicateSource = streamingSource.Duplicate();
-				var sound = new StreamingSound(duplicateSource, 1f, 1f, 0f, false, true, 1f);
-
-				MusicManager.m_sound = sound;
-				MusicManager.m_currentMix = MusicManager.Mix.Other;
-				MusicManager.m_fadeStartTime = 0.0;
-
-				sound.Play();
+				InGameMusicManager.PlayMusic(MUSIC_PATH, 0f, InGameMusicManager.MusicContext.Chase);
 				m_musicPlaying = true;
 				m_timeSinceMusicStarted = 0f;
 
@@ -247,10 +220,14 @@ namespace Game
 				return;
 			}
 
+			if (!InGameMusicManager.CanPlayInContext(InGameMusicManager.MusicContext.Chase))
+				return;
+
 			try
 			{
 				Log.Debug($"[GhostMusic] Reiniciando música a los {m_timeSinceMusicStarted:F2}s");
-				StartChaseMusicImmediately();
+				InGameMusicManager.PlayMusic(MUSIC_PATH, 0f, InGameMusicManager.MusicContext.Chase);
+				m_timeSinceMusicStarted = 0f;
 			}
 			catch (System.Exception ex)
 			{
@@ -265,17 +242,9 @@ namespace Game
 			{
 				try
 				{
-					if (MusicManager.m_sound != null)
+					if (InGameMusicManager.CurrentContext == InGameMusicManager.MusicContext.Chase)
 					{
-						MusicManager.m_sound.Stop();
-						MusicManager.m_sound.Dispose();
-						MusicManager.m_sound = null;
-					}
-
-					if (MusicManager.m_fadeSound != null)
-					{
-						MusicManager.m_fadeSound.Dispose();
-						MusicManager.m_fadeSound = null;
+						InGameMusicManager.StopMusic();
 					}
 
 					m_musicPlaying = false;
