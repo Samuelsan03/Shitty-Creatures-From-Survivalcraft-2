@@ -171,6 +171,18 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		// Métodos auxiliares privados
 		// ---------------------------------------------------------------------------------
+		public override void CraftingRecipesManagerInitialize(List<CraftingRecipe> recipes, ref bool sort)
+		{
+			int waterBucketIndex = BlocksManager.GetBlockIndex<WaterBucketBlock>(false);
+			if (waterBucketIndex < 0) return;
+
+			CraftingRecipe recipe = new CraftingRecipe
+			{
+				ResultValue = Terrain.MakeBlockValue(waterBucketIndex),
+				ResultCount = 1
+			};
+			recipes.Add(recipe);
+		}
 
 		public override void OnProjectLoaded(Project project)
 		{
@@ -3434,12 +3446,6 @@ namespace Game
 				skipVanilla = true;
 			}
 			// Si no hay cobertura, no intervenimos (dejamos que el juego maneje la temperatura)
-		}
-
-		public override void CraftingRecipesManagerInitialize(List<CraftingRecipe> recipes, ref bool sort)
-		{
-			CraftingRecipe item = recipes.Find((CraftingRecipe recipe) => recipe.ResultValue == EmptyBucketBlock.Index && recipe.Ingredients[0] == "waterbucket");
-			recipes.Remove(item);
 		}
 
 		// ---------------------------------------------------------------------------------
