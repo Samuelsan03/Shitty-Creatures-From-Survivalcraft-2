@@ -806,13 +806,10 @@ namespace Game
 		{
 			double endTime = Time.RealTime + totalDurationSeconds;
 			bool firstPlay = true;
-			bool wasActive = true;
 
 			Action loop = null;
 			loop = () => {
 				// ========== VERIFICACIÓN DE SEGURIDAD ==========
-				// Si la celebración fue cancelada (ej: al crear un mundo nuevo), detener inmediatamente
-				// Esto protege contra acciones ya encoladas en el dispatcher que intentarían continuar
 				if (!s_isGeneratingFireworks || !IsCelebrationActive)
 				{
 					try
@@ -827,23 +824,13 @@ namespace Game
 				if (s_currentProject == null || Time.RealTime >= endTime)
 					return;
 
-				bool isActive = IsGameActiveForCelebration();
-
-				if (wasActive && !isActive)
-				{
-					InGameMusicManager.StopMusic();
-				}
-
-				wasActive = isActive;
-
-				if (!isActive)
+				// InGameMusicManager.Update() maneja la pausa/reanudación automáticamente
+				// Solo necesitamos verificar si NO está en pausa para reproducir/reiniciar
+				if (InGameMusicManager.IsPaused || InGameMusicManager.IsFadingOut)
 				{
 					GameManager.SyncDispatcher.Add(() => { loop(); return true; });
 					return;
 				}
-
-				if (InGameMusicManager.IsFadingOut)
-					return;
 
 				bool needsRestart = firstPlay
 					|| !InGameMusicManager.IsPlaying
@@ -859,20 +846,6 @@ namespace Game
 			};
 
 			loop();
-		}
-
-		private static bool IsGameActive(ComponentPlayer player)
-		{
-			if (player?.Project == null) return false;
-
-			var currentScreen = ScreensManager.CurrentScreen;
-			if (currentScreen == null) return false;
-
-			string screenName = currentScreen.GetType().Name;
-
-			// La música solo suena si la pantalla actual es GameScreen
-			// En cualquier otra pantalla (Settings, Help, Bestiary, etc.) se detiene
-			return screenName == "GameScreen";
 		}
 
 		private static void StartContinuousFireworks(ComponentPlayer player, double durationSeconds)
@@ -1164,15 +1137,9 @@ namespace Game
 
 		private static bool IsGameActiveForCelebration()
 		{
-			if (s_currentProject == null) return false;
-
-			var currentScreen = ScreensManager.CurrentScreen;
-			if (currentScreen == null) return false;
-
-			string screenName = currentScreen.GetType().Name;
-
-			// Los fuegos artificiales y música suenan en GameScreen (incluida la pantalla de muerte)
-			return screenName == "GameScreen";
+			// InGameMusicManager.Update() maneja la pausa automáticamente
+			// Solo verificar que no esté en pausa (lo cual ya implica estar en GameScreen)
+			return !InGameMusicManager.IsPaused;
 		}
 	}
 }
