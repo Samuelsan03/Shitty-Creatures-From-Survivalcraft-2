@@ -809,6 +809,14 @@ namespace Game
 
 			Action loop = null;
 			loop = () => {
+				// ========== PRIORIDAD: NO INTERFERIR CON FADEOUT ==========
+				// Si está en fadeout, NO hacer nada - dejar que termine naturalmente
+				if (InGameMusicManager.IsFadingOut)
+				{
+					return;
+				}
+				// ========== FIN PRIORIDAD FADEOUT ==========
+
 				// ========== VERIFICACIÓN DE SEGURIDAD ==========
 				if (!s_isGeneratingFireworks || !IsCelebrationActive)
 				{
@@ -825,8 +833,7 @@ namespace Game
 					return;
 
 				// InGameMusicManager.Update() maneja la pausa/reanudación automáticamente
-				// Solo necesitamos verificar si NO está en pausa para reproducir/reiniciar
-				if (InGameMusicManager.IsPaused || InGameMusicManager.IsFadingOut)
+				if (InGameMusicManager.IsPaused)
 				{
 					GameManager.SyncDispatcher.Add(() => { loop(); return true; });
 					return;
