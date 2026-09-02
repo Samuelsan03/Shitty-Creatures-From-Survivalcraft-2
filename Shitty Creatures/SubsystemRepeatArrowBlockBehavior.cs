@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Game;
 using TemplatesDatabase;
@@ -24,6 +24,14 @@ namespace Game
 			{
 				this.m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
 				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+			}
+
+			// Virote de fuego - nuevo comportamiento
+			if (arrowType == RepeatArrowBlock.ArrowType.FireArrow)
+			{
+				this.m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				projectile.IsIncendiary = true;
 			}
 
 			// Virote de diamante - vuela recto en agua (sin resistencia)
@@ -84,6 +92,9 @@ namespace Game
 					case RepeatArrowBlock.ArrowType.SeriousPoisonArrow:
 						breakChance = 0.05f;
 						break;
+					case RepeatArrowBlock.ArrowType.FireArrow:
+						breakChance = 0.5f;
+						break;
 					default:
 						breakChance = 0.05f;
 						break;
@@ -98,7 +109,7 @@ namespace Game
 					{
 						worldItem.Value = Terrain.MakeBlockValue(RepeatArrowBlock.Index, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.CopperArrow));
 					}
-					else if (arrowType != RepeatArrowBlock.ArrowType.ExplosiveArrow)
+					else if (arrowType != RepeatArrowBlock.ArrowType.ExplosiveArrow && arrowType != RepeatArrowBlock.ArrowType.FireArrow)
 					{
 						return true;
 					}

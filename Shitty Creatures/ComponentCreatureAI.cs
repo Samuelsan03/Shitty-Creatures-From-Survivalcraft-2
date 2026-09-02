@@ -189,7 +189,8 @@ namespace Game
 			RepeatArrowBlock.ArrowType.DiamondArrow,
 			RepeatArrowBlock.ArrowType.ExplosiveArrow,
 			RepeatArrowBlock.ArrowType.PoisonArrow,
-			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+			RepeatArrowBlock.ArrowType.SeriousPoisonArrow,
+			RepeatArrowBlock.ArrowType.FireArrow
 		};
 
 		static readonly FlameBulletBlock.FlameBulletType[] s_flameBulletTypes = new FlameBulletBlock.FlameBulletType[]

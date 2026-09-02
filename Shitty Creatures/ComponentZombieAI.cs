@@ -1318,7 +1318,8 @@ namespace Game
 				RepeatArrowBlock.ArrowType.DiamondArrow,
 				RepeatArrowBlock.ArrowType.ExplosiveArrow,
 				RepeatArrowBlock.ArrowType.PoisonArrow,
-				RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+				RepeatArrowBlock.ArrowType.SeriousPoisonArrow,
+				RepeatArrowBlock.ArrowType.FireArrow
 			};
 
 			RepeatArrowBlock.ArrowType arrowType;
@@ -1336,7 +1337,8 @@ namespace Game
 					RepeatArrowBlock.ArrowType.IronArrow,
 					RepeatArrowBlock.ArrowType.DiamondArrow,
 					RepeatArrowBlock.ArrowType.PoisonArrow,
-					RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+					RepeatArrowBlock.ArrowType.SeriousPoisonArrow,
+					RepeatArrowBlock.ArrowType.FireArrow
 				};
 				arrowType = nonExplosiveTypes[m_random.Int(0, nonExplosiveTypes.Length - 1)];
 			}

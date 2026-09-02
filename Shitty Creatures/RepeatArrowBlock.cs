@@ -20,8 +20,16 @@ namespace Game
 				Matrix boneAbsoluteTransform = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh(RepeatArrowBlock.m_shaftNames[num], true).ParentBone);
 				Matrix boneAbsoluteTransform2 = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh(RepeatArrowBlock.m_stabilizerNames[num], true).ParentBone);
 				Matrix boneAbsoluteTransform3 = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh(RepeatArrowBlock.m_tipNames[num], true).ParentBone);
+
+				// Color de la punta - por defecto blanco, pero veneno grave usa color diferente
+				Color tipColor = Color.White;
+				if (num == (int)RepeatArrowBlock.ArrowType.SeriousPoisonArrow)
+				{
+					tipColor = new Color(0,102,0); // Verde oscuro para veneno grave
+				}
+
 				BlockMesh blockMesh = new BlockMesh();
-				blockMesh.AppendModelMeshPart(model.FindMesh(RepeatArrowBlock.m_tipNames[num], true).MeshParts[0], boneAbsoluteTransform3 * Matrix.CreateTranslation(0f, RepeatArrowBlock.m_offsets[num], 0f), false, false, false, false, Color.White);
+				blockMesh.AppendModelMeshPart(model.FindMesh(RepeatArrowBlock.m_tipNames[num], true).MeshParts[0], boneAbsoluteTransform3 * Matrix.CreateTranslation(0f, RepeatArrowBlock.m_offsets[num], 0f), false, false, false, false, tipColor);
 				blockMesh.TransformTextureCoordinates(Matrix.CreateTranslation((float)(RepeatArrowBlock.m_tipTextureSlots[num] % 16) / 16f, (float)(RepeatArrowBlock.m_tipTextureSlots[num] / 16) / 16f, 0f), -1);
 				BlockMesh blockMesh2 = new BlockMesh();
 				blockMesh2.AppendModelMeshPart(model.FindMesh(RepeatArrowBlock.m_shaftNames[num], true).MeshParts[0], boneAbsoluteTransform * Matrix.CreateTranslation(0f, RepeatArrowBlock.m_offsets[num], 0f), false, false, false, false, Color.White);
@@ -89,6 +97,7 @@ namespace Game
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.ExplosiveArrow));
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.PoisonArrow));
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.SeriousPoisonArrow));
+			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.FireArrow));
 		}
 
 		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
@@ -123,12 +132,12 @@ namespace Game
 
 		static RepeatArrowBlock()
 		{
-			float[] array = new float[6];
+			float[] array = new float[7];
 			array[3] = 50f;
 			RepeatArrowBlock.m_explosionPressures = array;
 		}
 
-		public static int Index = 503;
+		public static int Index = 597;
 		public List<BlockMesh> m_standaloneBlockMeshes = new List<BlockMesh>();
 		public static int[] m_order = new int[]
 		{
@@ -137,10 +146,12 @@ namespace Game
 			2,
 			3,
 			4,
-			5
+			5,
+			6
 		};
 		public static string[] m_tipNames = new string[]
 		{
+			"ArrowTip",
 			"ArrowTip",
 			"ArrowTip",
 			"ArrowTip",
@@ -155,10 +166,12 @@ namespace Game
 			182,
 			225,
 			100,
-			60
+			100,  // Misma textura que veneno normal
+            62
 		};
 		public static string[] m_shaftNames = new string[]
 		{
+			"ArrowShaft",
 			"ArrowShaft",
 			"ArrowShaft",
 			"ArrowShaft",
@@ -173,10 +186,12 @@ namespace Game
 			51,
 			51,
 			51,
+			51,
 			51
 		};
 		public static string[] m_stabilizerNames = new string[]
 		{
+			"ArrowStabilizer",
 			"ArrowStabilizer",
 			"ArrowStabilizer",
 			"ArrowStabilizer",
@@ -191,10 +206,12 @@ namespace Game
 			15,
 			15,
 			15,
+			15,
 			15
 		};
 		public static float[] m_offsets = new float[]
 		{
+			-0.45f,
 			-0.45f,
 			-0.45f,
 			-0.45f,
@@ -206,13 +223,15 @@ namespace Game
 		{
 			18f,
 			26f,
-			40f,
+			60f,
 			10f,
 			3f,
+			4f,
 			4f
 		};
 		public static float[] m_iconViewScales = new float[]
 		{
+			0.8f,
 			0.8f,
 			0.8f,
 			0.8f,
@@ -228,7 +247,8 @@ namespace Game
 			DiamondArrow,
 			ExplosiveArrow,
 			PoisonArrow,
-			SeriousPoisonArrow
+			SeriousPoisonArrow,
+			FireArrow
 		}
 	}
 }

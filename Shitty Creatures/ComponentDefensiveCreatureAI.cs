@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using System.Reflection;
@@ -2034,7 +2034,8 @@ namespace Game
 				RepeatArrowBlock.ArrowType.IronArrow,
 				RepeatArrowBlock.ArrowType.DiamondArrow,
 				RepeatArrowBlock.ArrowType.PoisonArrow,
-				RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+				RepeatArrowBlock.ArrowType.SeriousPoisonArrow,
+				RepeatArrowBlock.ArrowType.FireArrow
 			};
 			if (distanceToTarget >= ExplosiveSafeRange.X)
 			{
