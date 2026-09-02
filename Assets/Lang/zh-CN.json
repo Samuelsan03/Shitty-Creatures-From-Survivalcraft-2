@@ -1,4 +1,10 @@
 {
+  "SubsystemAntidotePillBehavior": {
+  "1": "流感治好了！",
+  "2": "恶心治好了！",
+  "3": "{0}的流感治好了！",
+  "4": "{0}的中毒治好了！"
+},
   "ComponentFirearmsShooters": {
     "0": "已治疗！",
     "1": "装填中！",
@@ -680,6 +686,11 @@
     }
   },
   "Blocks": {
+    "AntidotePillBlock:0": {
+  "DisplayName": "解毒药丸",
+  "Description": "一种可以治愈流感和中毒的药丸。可对自己使用，也可以对准生病的生物。",
+  "CRDescription:0": "治愈自己或生物的流感和中毒"
+},
     "WatermelonSeedBlock:0": {
   "DisplayName": "西瓜种子",
   "Description": "西瓜种子可用于种植西瓜。它们需要合适的土壤和充足的光照才能完全成熟。",
@@ -1603,10 +1614,10 @@
     "0": "Shitty Creatures - 版本历史"
   },
     "DoubleMusketWidget": {
-  "0": "未装填。拖动子弹进行装填（最多2发）。",
+  "0": "装填子弹",
   "1": "双管火枪",
   "2": "物品栏",
-  "3": "已装填（剩余 {0} 发）"
+  "3": "弹药：{0}/2"
 },
     "Trader": {
     "BuyButton": "购买",
