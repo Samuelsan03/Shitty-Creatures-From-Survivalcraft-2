@@ -1211,6 +1211,11 @@
       "Description": "用于连发弩的高强度毒素弩箭，可施加100秒剧毒效果，适合通过快速叠加负面状态削弱敌方群体。",
       "CRDescription:5": "连发弩的剧毒版本，造成更长时间的剧毒效果。"
     },
+    "RepeatArrowBlock:6": {
+"DisplayName": "火焰连发弩矢",
+"Description": "能够点燃目标的燃烧连发弩矢。命中后消失。",
+"CRDescription:6": "使用铜制连发弩矢、硫磺块和羽毛制作火焰连发弩矢"
+},
     "AKBlock:0": {
     "DisplayName": "AK-47突击步枪",
     "Description": "传奇突击步枪，发射7.62×39毫米弹药。精度良好，后坐力适中。使用AK47Bullet弹药。射速约350发/分钟。",
