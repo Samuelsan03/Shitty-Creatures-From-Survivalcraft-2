@@ -121,6 +121,11 @@
     " a "
     " c "
 </Recipe>
+<Recipe Result="RepeatArrowBlock:6" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:0" b="sulphurchunk" c="feather" Description="[6]">
+    " b "
+    " a "
+    " c "
+</Recipe>
 <Recipe Result="FlameThrowerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="musket" b="ironingot" c="string" d="sulphurchunk" Description="[0]">
             " b "
             "dad"
