@@ -217,7 +217,7 @@ namespace Game
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_walkAroundBehavior = Entity.FindComponent<ComponentWalkAroundBehavior>();
-			m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>(true);
+			m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>();
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
 			m_componentRider = Entity.FindComponent<ComponentRider>();   // NUEVO

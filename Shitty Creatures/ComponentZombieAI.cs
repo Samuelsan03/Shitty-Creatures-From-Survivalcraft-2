@@ -391,7 +391,7 @@ namespace Game
 				return;
 			}
 
-			ComponentCreature target = m_chaseBehavior.m_target;
+			ComponentCreature target = m_chaseBehavior.Target;
 			bool hasTarget = (target != null && target.ComponentHealth.Health > 0f);
 
 			// ========== ACTUALIZAR IMPORTANCIA DINÁMICA ==========
@@ -565,9 +565,9 @@ namespace Game
 		// Método auxiliar para equipar el mejor arma según la distancia actual
 		private void EquipBestWeaponForCurrentDistance(float distToTarget)
 		{
-			if (m_chaseBehavior == null || m_chaseBehavior.m_target == null) return;
+			if (m_chaseBehavior == null || m_chaseBehavior.Target == null) return;
 
-			float meleeDist = GetMeleeDistanceToTarget(m_chaseBehavior.m_target.ComponentBody);
+			float meleeDist = GetMeleeDistanceToTarget(m_chaseBehavior.Target.ComponentBody);
 			if (meleeDist <= AttackRange.X)
 			{
 				if (TryEquipBestMeleeWeapon())
@@ -636,7 +636,7 @@ namespace Game
 			// Si es lanzable, verificamos visibilidad (pero esto ya debería manejarse en el bloque de lanzables)
 			if (isThrowable)
 			{
-				if (!HasLineOfSightToTarget(m_chaseBehavior.m_target) || (m_pathfinding != null && m_pathfinding.IsStuck))
+				if (!HasLineOfSightToTarget(m_chaseBehavior.Target) || (m_pathfinding != null && m_pathfinding.IsStuck))
 				{
 					StopAiming();
 					return;
@@ -751,8 +751,8 @@ namespace Game
 								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 							}
 						}
-						if (m_chaseBehavior != null && m_chaseBehavior.m_target != null)
-							m_creatureModel.LookAtOrder = m_chaseBehavior.m_target.ComponentCreatureModel.EyePosition;
+						if (m_chaseBehavior != null && m_chaseBehavior.Target != null)
+							m_creatureModel.LookAtOrder = m_chaseBehavior.Target.ComponentCreatureModel.EyePosition;
 					}
 
 					if (!m_hasCompletedInitialAim)
@@ -814,8 +814,8 @@ namespace Game
 							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 							// Hacer que mire al objetivo
-							if (m_chaseBehavior != null && m_chaseBehavior.m_target != null)
-								m_creatureModel.LookAtOrder = m_chaseBehavior.m_target.ComponentCreatureModel.EyePosition;
+							if (m_chaseBehavior != null && m_chaseBehavior.Target != null)
+								m_creatureModel.LookAtOrder = m_chaseBehavior.Target.ComponentCreatureModel.EyePosition;
 						}
 						else if (m_creatureModel != null)
 						{
@@ -1071,7 +1071,7 @@ namespace Game
 				int draw = CrossbowBlock.GetDraw(data);
 				ArrowBlock.ArrowType? arrow = CrossbowBlock.GetArrowType(data);
 				if (draw != 15 || arrow == null)
-					ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, m_chaseBehavior.m_target.ComponentBody.Position));
+					ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, m_chaseBehavior.Target.ComponentBody.Position));
 			}
 			else if (activeBlock is RepeatCrossbowBlock)
 			{
@@ -1080,7 +1080,7 @@ namespace Game
 				RepeatArrowBlock.ArrowType? arrow = RepeatCrossbowBlock.GetArrowType(data);
 				int loadCount = RepeatCrossbowBlock.GetLoadCount(activeValue);
 				if (draw != 15 || arrow == null || loadCount == 0)
-					ReloadRepeatCrossbowInstantly(Vector3.Distance(m_componentBody.Position, m_chaseBehavior.m_target.ComponentBody.Position));
+					ReloadRepeatCrossbowInstantly(Vector3.Distance(m_componentBody.Position, m_chaseBehavior.Target.ComponentBody.Position));
 			}
 			else if (activeBlock is BowBlock)
 			{
@@ -1543,10 +1543,10 @@ namespace Game
 			if (m_chaseBehavior != null)
 			{
 				m_chaseBehavior.Suppressed = false;
-				if (m_chaseBehavior.m_target != null && m_chaseBehavior.m_target.ComponentHealth.Health > 0f)
+				if (m_chaseBehavior.Target != null && m_chaseBehavior.Target.ComponentHealth.Health > 0f)
 				{
 					m_chaseBehavior.StopAttack();
-					m_chaseBehavior.Attack(m_chaseBehavior.m_target, 100f, 10f, false);
+					m_chaseBehavior.Attack(m_chaseBehavior.Target, 100f, 10f, false);
 				}
 			}
 		}
@@ -1620,7 +1620,7 @@ namespace Game
 			ComponentSteedBehavior steed = mountComp.Entity.FindComponent<ComponentSteedBehavior>();
 			if (steed == null) return;
 
-			ComponentCreature target = m_chaseBehavior?.m_target;
+			ComponentCreature target = m_chaseBehavior.Target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
 				StopMountCompletely();

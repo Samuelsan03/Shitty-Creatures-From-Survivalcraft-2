@@ -92,9 +92,8 @@ namespace Game
 				if (health == null || health.Health <= 0f)
 					continue;
 
-				ComponentChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
+				ComponentZombieChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
 				if (chaseBehavior == null)
-					chaseBehavior = entity.FindComponent<ComponentChaseBehavior>();
 
 				if (chaseBehavior == null)
 					continue;
