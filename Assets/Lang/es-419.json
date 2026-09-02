@@ -1,4 +1,10 @@
 {
+  "SubsystemAntidotePillBehavior": {
+    "1": "¡Gripa curada!",
+    "2": "¡Náuseas curadas!",
+    "3": "¡{0} curado de gripa!",
+    "4": "¡{0} curado de veneno!"
+  },
   "ComponentFirearmsShooters": {
     "0": "¡CURADO!",
     "1": "¡RECARGANDO!",
@@ -680,6 +686,11 @@
     }
   },
   "Blocks": {
+    "AntidotePillBlock:0": {
+  "DisplayName": "Píldora Antídoto",
+  "Description": "Una píldora que cura la gripe y el veneno. Úsala contigo mismo o apunta a una criatura enferma.",
+  "CRDescription:0": "Cura la gripe y el veneno en ti mismo o en las criaturas"
+},
     "WatermelonSeedBlock:0": {
   "DisplayName": "Semilla de Sandía",
   "Description": "Las semillas de sandía se utilizan para cultivar sandías. Requieren suelo adecuado y suficiente luz para alcanzar su tamaño completo.",
@@ -1602,10 +1613,10 @@
     "0": "Shitty Creatures - Historial de versiones"
   },
     "DoubleMusketWidget": {
-  "0": "No cargado. Arrastra balas para cargar (máx. 2).",
+  "0": "Cargar balas",
   "1": "Mosquete de doble cañón",
   "2": "Inventario",
-  "3": "Cargado ({0} disparo(s) restante(s))"
+  "3": "Munición: {0}/2"
 },
     "Trader": {
     "BuyButton": "Comprar",
