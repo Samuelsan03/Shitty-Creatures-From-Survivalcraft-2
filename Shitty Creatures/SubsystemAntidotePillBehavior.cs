@@ -53,7 +53,12 @@ namespace Game
 			if (hasFlu)
 			{
 				componentPlayer.ComponentFlu.m_fluDuration = 0f;
-				componentPlayer.ComponentGui.DisplaySmallMessage("¡Gripa curada!", Color.White, true, false);
+
+				// Usar el MessageWidget original del ComponentGui con nuestro Message arcoíris
+				componentPlayer.ComponentGui.DisplaySmallMessage(
+					new EnchantedMessageWidget.Message("¡Gripa curada!", Color.White, false, 1f, true),
+					false
+				);
 			}
 
 			if (hasSickness)
@@ -65,7 +70,12 @@ namespace Game
 				{
 					componentPlayer.ComponentSickness.m_pukeParticleSystem = null;
 				}
-				componentPlayer.ComponentGui.DisplaySmallMessage("¡Náuseas curadas!", Color.White, true, false);
+
+				// Usar el MessageWidget original del ComponentGui con nuestro Message arcoíris
+				componentPlayer.ComponentGui.DisplaySmallMessage(
+					new EnchantedMessageWidget.Message("¡Náuseas curadas!", Color.White, false, 1f, true),
+					false
+				);
 			}
 
 			componentMiner.RemoveActiveTool(1);
