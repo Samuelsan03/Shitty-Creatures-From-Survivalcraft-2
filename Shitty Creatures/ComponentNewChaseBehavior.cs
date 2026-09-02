@@ -33,10 +33,7 @@ namespace Game
 		public bool PlayAngrySoundWhenChasing = true;
 		public float TargetInRangeTimeToChase = 3f;
 		public bool DestroyBlocksWhenStuck = false;
-		public bool InvokeLightningOnHit = false;
 		public bool PushWhileAttacking = false;
-		public bool ExplodeOnHit = false;
-		public bool PlaceBlocksWhenTargetHigh = false;
 		private float m_greenNightProtectionTimer;
 		private bool m_wasGreenNightActiveForProtection;
 
@@ -81,12 +78,6 @@ namespace Game
 		private double m_stuckDetectionStartTime;
 		private double m_lastLateralMoveTime;
 
-		private List<Point3> m_placedDirtBlocks = new List<Point3>();
-		private double m_lastBlockPlaceTime;
-		private const float BlockPlaceCooldown = 0.5f;
-
-		private bool m_waitingForDestructionBeforeBuild;
-
 		private double m_stuckStartTime;
 
 		private float m_dayChaseRange;
@@ -128,7 +119,6 @@ namespace Game
 			if (!ShouldProtectPlayer) return false;
 			if (m_subsystemBanditInvasion == null) return false;
 			if (!m_subsystemBanditInvasion.IsInvasionActive) return false;
-			// Noche normal (mismo umbral que en SubsystemBanditInvasion)
 			return m_subsystemSky.SkyLightIntensity < 0.1f;
 		}
 
@@ -166,7 +156,6 @@ namespace Game
 		// ===== MÉTODOS PÚBLICOS =====
 		public virtual void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent, bool isForced = false)
 		{
-			// === NUEVO: En Impossible, no atacar zombies ===
 			if (IsImpossibleModeActive() && IsZombieCreature(target))
 				return;
 
@@ -185,7 +174,6 @@ namespace Game
 				maxRange = Math.Max(maxRange, SpecialChaseRange);
 			}
 
-			// Protección extrema: override para bandidos
 			if (IsExtremeProtectionActive() && IsBanditCreature(target))
 			{
 				isPersistent = true;
@@ -228,7 +216,6 @@ namespace Game
 		// ===== UPDATE =====
 		public virtual void Update(float dt)
 		{
-
 			if (Suppressed)
 			{
 				if (IsGreenNightExtremeProtectionActive())
@@ -350,22 +337,6 @@ namespace Game
 								m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 								m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 
-								if (ExplodeOnHit && m_random.Float(0f, 1f) < 0.1f)
-								{
-									SubsystemExplosions subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
-									if (subsystemExplosions != null)
-									{
-										subsystemExplosions.AddExplosion(
-											Terrain.ToCell(hitPoint.X),
-											Terrain.ToCell(hitPoint.Y),
-											Terrain.ToCell(hitPoint.Z),
-											255f,
-											false,
-											false
-										);
-									}
-								}
-
 								if (PushWhileAttacking && m_random.Float(0f, 1f) < 0.5f)
 								{
 									Vector3 direction = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
@@ -381,32 +352,9 @@ namespace Game
 									m_target.ComponentBody.ApplyImpulse(direction * pushForce);
 									m_target.ComponentBody.MaxSpeed = originalMaxSpeed;
 								}
-
-								if (InvokeLightningOnHit && m_subsystemSky != null && m_random.Float(0f, 1f) < 0.05f)
-								{
-									m_subsystemSky.MakeLightningStrike(m_target.ComponentBody.Position, true);
-								}
 							}
 						}
 					}
-				}
-
-				if (PlaceBlocksWhenTargetHigh)
-				{
-					bool isStuck = m_componentPathfinding.IsStuck;
-					bool targetIsHigh = (m_target.ComponentBody.Position.Y - m_componentCreature.ComponentBody.Position.Y) > 2.0f;
-					bool canDestroy = DestroyBlocksWhenStuck;
-
-					if (isStuck && targetIsHigh && canDestroy)
-					{
-						m_waitingForDestructionBeforeBuild = true;
-					}
-					else
-					{
-						m_waitingForDestructionBeforeBuild = false;
-					}
-
-					TryPlaceDirtBlocksToReachTarget();
 				}
 			}
 
@@ -686,10 +634,7 @@ namespace Game
 			m_chaseWhenAttackedProbability = valuesDictionary.GetValue<float>("ChaseWhenAttackedProbability");
 			m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability");
 			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
-			PlaceBlocksWhenTargetHigh = valuesDictionary.GetValue<bool>("PlaceBlocksWhenTargetHigh", false);
-			InvokeLightningOnHit = valuesDictionary.GetValue<bool>("InvokeLightningOnHit", false);
 			PushWhileAttacking = valuesDictionary.GetValue<bool>("PushWhileAttacking", false);
-			ExplodeOnHit = valuesDictionary.GetValue<bool>("ExplodeOnHit", false);
 
 			RegisterEvents();
 
@@ -718,7 +663,6 @@ namespace Game
 
 		private void OnPlayerInjured(Injury injury)
 		{
-			// === NUEVO: En Impossible, ignorar daño de zombies ===
 			if (IsImpossibleModeActive() && injury.Attacker != null && IsZombieCreature(injury.Attacker))
 				return;
 
@@ -741,7 +685,6 @@ namespace Game
 
 		public void OnPlayerHitWithFist(ComponentCreature hitCreature, ComponentPlayer player)
 		{
-			// === NUEVO: En Impossible, ignorar golpe a zombie ===
 			if (IsImpossibleModeActive() && IsZombieCreature(hitCreature))
 				return;
 
@@ -768,7 +711,6 @@ namespace Game
 			if (creature == null) return false;
 			if (m_componentHireable != null && !m_componentHireable.IsHired) return false;
 
-			// NUEVO: No atacar a Infinite durante su duelo activo
 			var infiniteChallenge = creature.Entity.FindComponent<ComponentInfiniteChallenge>();
 			if (infiniteChallenge != null && infiniteChallenge.IsDuelActive)
 				return false;
@@ -843,94 +785,6 @@ namespace Game
 					}
 				}
 			};
-		}
-
-		private void TryPlaceDirtBlocksToReachTarget()
-		{
-			if (!PlaceBlocksWhenTargetHigh || m_target == null || m_componentCreature == null || m_subsystemTerrain == null)
-				return;
-
-			if (m_subsystemTime.GameTime - m_lastBlockPlaceTime < BlockPlaceCooldown)
-				return;
-
-			Vector3 myPos = m_componentCreature.ComponentBody.Position;
-			Vector3 targetPos = m_target.ComponentBody.Position;
-
-			float verticalDiff = targetPos.Y - myPos.Y;
-			if (verticalDiff < 2.0f)
-				return;
-
-			for (int i = m_placedDirtBlocks.Count - 1; i >= 0; i--)
-			{
-				Point3 p = m_placedDirtBlocks[i];
-				int contents = m_subsystemTerrain.Terrain.GetCellContents(p.X, p.Y, p.Z);
-				if (contents != DirtBlock.Index)
-					m_placedDirtBlocks.RemoveAt(i);
-			}
-
-			if (m_placedDirtBlocks.Count >= 2)
-				return;
-
-			int feetX = Terrain.ToCell(myPos.X);
-			int feetY = Terrain.ToCell(myPos.Y - 0.1f);
-			int feetZ = Terrain.ToCell(myPos.Z);
-
-			int belowY = feetY - 1;
-			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, belowY, feetZ))
-				return;
-			int belowContents = m_subsystemTerrain.Terrain.GetCellContents(feetX, belowY, feetZ);
-			Block belowBlock = BlocksManager.Blocks[belowContents];
-			if (!belowBlock.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, belowY, feetZ)))
-				return;
-
-			int targetY1 = feetY;
-			int targetY2 = feetY + 1;
-
-			int headY1 = Terrain.ToCell(myPos.Y + m_componentCreature.ComponentBody.BoxSize.Y - 0.1f);
-			int headY2 = headY1 + 1;
-			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, headY1, feetZ) ||
-				!m_subsystemTerrain.Terrain.IsCellValid(feetX, headY2, feetZ))
-				return;
-			int headContents1 = m_subsystemTerrain.Terrain.GetCellContents(feetX, headY1, feetZ);
-			int headContents2 = m_subsystemTerrain.Terrain.GetCellContents(feetX, headY2, feetZ);
-			Block headBlock1 = BlocksManager.Blocks[headContents1];
-			Block headBlock2 = BlocksManager.Blocks[headContents2];
-			if (headBlock1.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, headY1, feetZ)) ||
-				headBlock2.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, headY2, feetZ)))
-			{
-				return;
-			}
-
-			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, targetY1, feetZ) ||
-				!m_subsystemTerrain.Terrain.IsCellValid(feetX, targetY2, feetZ))
-				return;
-			int contents1 = m_subsystemTerrain.Terrain.GetCellContents(feetX, targetY1, feetZ);
-			int contents2 = m_subsystemTerrain.Terrain.GetCellContents(feetX, targetY2, feetZ);
-			if (contents1 != 0 || contents2 != 0)
-				return;
-
-			int dirtValue = Terrain.MakeBlockValue(DirtBlock.Index);
-			m_subsystemTerrain.ChangeCell(feetX, targetY1, feetZ, dirtValue, true);
-			m_subsystemTerrain.ChangeCell(feetX, targetY2, feetZ, dirtValue, true);
-
-			TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(feetX, feetZ);
-			if (chunk != null)
-			{
-				chunk.State = TerrainChunkState.InvalidLight;
-				m_subsystemTerrain.TerrainUpdater.DowngradeChunkNeighborhoodState(
-					chunk.Coords, 1, TerrainChunkState.InvalidLight, true);
-			}
-
-			SubsystemSoundMaterials soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
-			if (soundMaterials != null)
-			{
-				soundMaterials.PlayImpactSound(dirtValue, new Vector3(feetX + 0.5f, targetY1 + 0.5f, feetZ + 0.5f), 1f);
-				soundMaterials.PlayImpactSound(dirtValue, new Vector3(feetX + 0.5f, targetY2 + 0.5f, feetZ + 0.5f), 1f);
-			}
-
-			m_placedDirtBlocks.Add(new Point3(feetX, targetY1, feetZ));
-			m_placedDirtBlocks.Add(new Point3(feetX, targetY2, feetZ));
-			m_lastBlockPlaceTime = m_subsystemTime.GameTime;
 		}
 
 		private void SetupStateMachine()
@@ -1009,8 +863,6 @@ namespace Game
 					m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
 				}
 				m_nextUpdateTime = 0.0;
-
-				m_placedDirtBlocks.Clear();
 			}, () =>
 			{
 				if (!IsActive)
@@ -1268,22 +1120,19 @@ namespace Game
 
 		private float ScoreTarget(ComponentCreature creature)
 		{
-			// === NUEVO: En Impossible, ignorar zombies ===
 			if (IsImpossibleModeActive() && IsZombieCreature(creature))
 				return 0f;
 
-			// NUEVO: No considerar a Infinite durante el duelo
 			var infiniteChallenge = creature.Entity.FindComponent<ComponentInfiniteChallenge>();
 			if (infiniteChallenge != null && infiniteChallenge.IsDuelActive)
-
 				return 0f;
+
 			if (m_componentHireable != null && !m_componentHireable.IsHired)
 				return 0f;
 
 			if (!CanAttackCreature(creature))
 				return 0f;
 
-			// Protección extrema: bandidos obtienen prioridad muy alta (comparable a noche verde)
 			if (IsExtremeProtectionActive() && IsBanditCreature(creature))
 			{
 				return float.MaxValue / 2;
@@ -1301,7 +1150,6 @@ namespace Game
 			bool probabilityMatch = creature == Target || (categoryMatch &&
 				MathUtils.Remainder(randomSeed, 1.0) < m_chaseNonPlayerProbability);
 
-			// Prioridad máxima para jugadores durante noche verde (zombies) o banda (bandidos)
 			if (isPlayer && ((IsZombie && IsGreenNightActive) || IsBanditType))
 			{
 				return float.MaxValue / 2;
@@ -1347,12 +1195,10 @@ namespace Game
 			float protectionRange = GetProtectionRange();
 			float protectionChaseTime = GetProtectionChaseTime();
 
-			// Si ya hay un objetivo, verificar que no sea zombie (en Impossible)
 			if (m_target != null && m_target.ComponentHealth.Health > 0f && IsGreenNightEnemy(m_target))
 			{
 				if (IsImpossibleModeActive() && IsZombieCreature(m_target))
 				{
-					// Si es zombie, descartarlo y buscar otro
 					m_target = null;
 				}
 				else
@@ -1374,7 +1220,6 @@ namespace Game
 				enemy = FindNearestEnemy(protectionRange);
 			}
 
-			// En Impossible, no atacar zombies
 			if (enemy != null && !(IsImpossibleModeActive() && IsZombieCreature(enemy)))
 			{
 				StopAttack();
@@ -1423,7 +1268,6 @@ namespace Game
 				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f) continue;
 				if (!IsEnemy(creature)) continue;
 
-				// === NUEVO: En Impossible, ignorar zombies ===
 				if (IsImpossibleModeActive() && IsZombieCreature(creature)) continue;
 
 				float dist = Vector3.Distance(position, creature.ComponentBody.Position);
@@ -1448,7 +1292,6 @@ namespace Game
 			if (!ShouldProtectPlayer) return false;
 			if (m_subsystemGreenNightSky == null) return false;
 
-			// === NUEVO: En Impossible, NO activar protección contra zombies ===
 			if (IsImpossibleModeActive())
 				return false;
 
@@ -1499,7 +1342,6 @@ namespace Game
 				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f) continue;
 				if (!IsGreenNightEnemy(creature)) continue;
 
-				// === NUEVO: En Impossible, ignorar zombies ===
 				if (IsImpossibleModeActive() && IsZombieCreature(creature)) continue;
 
 				bool isAttackingPlayer = IsDirectlyAttackingPlayer(creature);
@@ -1658,7 +1500,6 @@ namespace Game
 			}
 		}
 
-		// ===== AÑADIR ESTE MÉTODO EN LA CLASE =====
 		private bool IsImpossibleModeActive()
 		{
 			if (m_subsystemGreenNightSky == null) return false;
@@ -1668,7 +1509,6 @@ namespace Game
 			var zombiesSpawn = Project.FindSubsystem<SubsystemZombiesSpawn>(true);
 			if (zombiesSpawn != null && zombiesSpawn.IsAllWavesCompleted) return false;
 
-			// ===== NUEVO: Si el flag está activo, NO bloquear =====
 			if (zombiesSpawn != null && zombiesSpawn.ImpossibleBlockDisabledForAllies)
 				return false;
 
@@ -1678,7 +1518,6 @@ namespace Game
 		private bool IsZombieCreature(ComponentCreature creature)
 		{
 			if (creature == null) return false;
-			// Comprobar si tiene componentes de zombi
 			return creature.Entity.FindComponent<ComponentZombieChaseBehavior>() != null ||
 				   creature.Entity.FindComponent<ComponentZombieHerdBehavior>() != null ||
 				   (creature.Entity.FindComponent<ComponentHerdBehavior>() is ComponentHerdBehavior h && h.HerdName == "Zombie") ||
