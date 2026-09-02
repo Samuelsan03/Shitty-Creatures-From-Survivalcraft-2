@@ -589,6 +589,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="AntidotePillBehavior" Guid="54055563-0aa5-4286-a290-5e7f032a8cdc" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+          <Parameter Name="Class" Guid="ddfc3e5a-2b2b-4c7b-bf8f-3f2e4c545f29" Value="Game.SubsystemAntidotePillBehavior" Type="string" />
+        </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="CreatureBleeding" Guid="bb8ccb86-fe3d-49ab-ac45-ad68e75c6bd2" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
           <Parameter Name="Class" Guid="952e6a4a-decf-4b40-ac0e-e534cca3205d" Value="Game.SubsystemCreatureBleeding" Type="string" />
         </MemberSubsystemTemplate>
