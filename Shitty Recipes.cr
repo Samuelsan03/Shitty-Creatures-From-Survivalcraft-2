@@ -1,5 +1,8 @@
-<ShittyRecipes>
+<ShittyRecipes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CraftingRecipes.xsd">
     <Recipes>
+    <Recipe Result="AntidotePillBlock" ResultCount="2" RequiredHeatLevel="0" RequiredPlayerLevel="2" a="purpleflower" b="whiteflower" Description="[0]">
+    "ab"
+</Recipe>
     <Recipe Result="WatermelonSeedBlock" ResultCount="1" RequiredHeatLevel="0" a="sliceofwatermelon" Description="[0]">
     "a"
     </Recipe>
@@ -515,6 +518,9 @@
 <Recipe Result="BananaSaplingBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="bananaleaves" Description="[0]">
     "a"
 </Recipe>
+<Recipe Result="BoiledWaterBucketBlock" ResultCount="1" RequiredHeatLevel="2" a="waterbucket" Description="[0]">
+    "a"
+</Recipe>
         <Smelting>
         <Recipe Result="LavaMacheteBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondmachete" b="magmabucket" Description="[0]">
         "ab"
@@ -551,9 +557,6 @@
         </Recipe>
         <Recipe Result="AntidoteBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="teaantiflubucket" b="purpleflower" Description="[0]">
     "ab"
-</Recipe>
-<Recipe Result="BoiledWaterBucketBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
-    "aa"
 </Recipe>
 <Recipe Result="TeaAntifluBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="waterbucket" b="tallgrass" Description="[0]">
     "ab"
