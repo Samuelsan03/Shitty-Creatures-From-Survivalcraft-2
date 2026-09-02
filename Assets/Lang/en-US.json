@@ -1,4 +1,10 @@
 {
+  "SubsystemAntidotePillBehavior": {
+  "1": "Flu cured!",
+  "2": "Nausea cured!",
+  "3": "{0} cured of flu!",
+  "4": "{0} cured of poison!"
+},
   "ComponentFirearmsShooters": {
     "0": "HEALED!",
     "1": "RELOADING!",
@@ -680,6 +686,11 @@
   }
 },
   "Blocks": {
+    "AntidotePillBlock:0": {
+    "DisplayName": "Antidote Pill",
+    "Description": "A pill that cures flu and poison. Use on yourself or point at a sick creature.",
+    "CRDescription:0": "Cure flu and poison from yourself or creatures"
+},
     "WatermelonSeedBlock:0": {
   "DisplayName": "Watermelon Seed",
   "Description": "Watermelon seeds are used to grow watermelons. They require suitable soil and enough light to reach full size.",
@@ -1601,11 +1612,11 @@
     "0": "Shitty Creatures - Version History"
   },
         "DoubleMusketWidget": {
-    "0": "Not loaded. Drag bullets to load (max 2).",
-    "1": "Double-Barrel Musket",
-    "2": "Inventory",
-    "3": "Loaded ({0} shot(s) left)"
-  },
+  "0": "Load bullets",
+  "1": "Double-Barrel Musket",
+  "2": "Inventory",
+  "3": "Ammunition: {0}/2"
+},
         "Trader": {
     "BuyButton": "Buy",
     "CoinSlotHint": "Coin",
