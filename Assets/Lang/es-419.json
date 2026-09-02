@@ -1211,6 +1211,11 @@
       "Description": "Virote altamente tóxico para ballestas repetidoras. Aplica un efecto de veneno severo durante 100 segundos. Pensado para debilitar grupos completos mediante aplicación rápida de estados negativos.",
       "CRDescription:5": "Virote de veneno grave para ballesta repetidora. Aplica veneno severo durante 100 segundos."
     },
+    "RepeatArrowBlock:6": {
+"DisplayName": "Virote incendiario de repetición",
+"Description": "Virote incendiario de repetición que prende fuego a los objetivos. Desaparece al impactar.",
+"CRDescription:6": "Fabricar un virote incendiario de repetición a partir de un virote de repetición de cobre, un trozo de azufre y plumas"
+},
     "M249Block:0": {
       "DisplayName": "M249 SAW",
       "Description": "El M249 Squad Automatic Weapon (SAW) es una ametralladora ligera alimentada por cinta que proporciona fuego automático sostenido para escuadrones de infantería. Dispara munición 5.56×45mm OTAN a una cadencia de 750-1000 RPM. Tiene una capacidad de 100 balas en cinta y utiliza cartuchos intermedios para un retroceso manejable durante el fuego automático. Requiere bloques de munición M249 para recargar.",
