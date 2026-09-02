@@ -1196,6 +1196,11 @@
       "Description": "Highly toxic bolt for repeating crossbows. Applies a severe poison effect for 100 seconds. Designed to weaken entire groups through rapid status application.",
       "CRDescription:5": "Highly poisonous bolt for repeating crossbows. Applies severe poison effect."
     },
+    "RepeatArrowBlock:6": {
+    "DisplayName": "Fire Repeat Bolt",
+    "Description": "Incendiary repeat bolt that sets targets on fire. Disappears on impact.",
+    "CRDescription:6": "Make fire repeat bolt from copper repeat bolt, sulphur chunk and feathers"
+},
     "AA12Block:0": {
   "DisplayName": "Atchisson AA-12 Auto Shotgun",
   "Description": "A gas-operated, magazine-fed automatic shotgun with an open-bolt design. Originally designed by Maxwell Atchisson in 1972 for military and law enforcement applications, it fires 12-gauge shotgun shells at a rate of 300 RPM with a magazine capacity of 8 to 20 rounds depending on the magazine. Its bullpup configuration and improved recoil system significantly reduce felt recoil, allowing controllable automatic fire even with powerful ammunition. In this mod, it uses AA12Bullet cartridges and fires 8 pellets per shell, being devastating at close to medium range.",
