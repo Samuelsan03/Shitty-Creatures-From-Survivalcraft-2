@@ -1,4 +1,17 @@
 {
+  "FlameBulletBlock": [
+  "火焰子弹",
+  "毒子弹"
+],
+"RepeatArrowBlock": [
+  "重复铜弩箭",
+  "重复铁弩箭",
+  "重复钻石弩箭",
+  "重复爆炸弩箭",
+  "重复毒性弩箭",
+  "重复剧毒弩箭",
+  "重复火焰弩箭"
+],
   "CandyBlock": [
     "火焰糖果",
     "毒药糖果",
@@ -1065,12 +1078,10 @@
       "CRDescription:0": "改进型火枪，带有燃料箱和点火系统。 使用燃烧弹或毒气弹。"
     },
     "FlameBulletBlock:0": {
-  "DisplayName": "燃烧弹投射物",
   "Description": "用于喷火器的火焰投射物。命中时会点燃环境和生物，在高速下可能引发爆炸，并造成火焰伤害。",
   "CRDescription:0": "火焰喷射器的燃烧弹药。撞击时燃烧。"
 },
 "FlameBulletBlock:1": {
-  "DisplayName": "毒气投射物",
   "Description": "用于喷火器的化学投射物。释放有毒气体，使生物感染中毒或疾病，逐渐削弱目标并造成额外伤害。",
   "CRDescription:1": "火焰喷射器的有毒弹药。撞击时感染目标。"
 },
@@ -1188,37 +1199,30 @@
       "CRDescription:0": "增强型弩，内置弹仓支持连续射击。兼容多种特殊弩箭。"
     },
     "RepeatArrowBlock:0": {
-      "DisplayName": "连发铜弩箭",
       "Description": "用于连发弩的轻型铜制弩箭。提供中等伤害，并在高速连射时保持良好稳定性。适合持续自动射击。",
       "CRDescription:0": "连发弩的铜制版本，适合持续射击。"
     },
     "RepeatArrowBlock:1": {
-      "DisplayName": "连发铁弩箭",
       "Description": "用于连发弩的强化铁制弩箭。相比普通铁弩箭拥有更高伤害和更强穿透力，并能在连续射击中保持精度。",
       "CRDescription:1": "连发弩的铁制版本，提供更高伤害和穿透力。"
     },
     "RepeatArrowBlock:2": {
-  "DisplayName": "连发钻石弩箭",
   "Description": "采用钻石箭头打造的高级弩箭，专为先进连发弩设计。拥有极强的护甲穿透能力和持续高额伤害。其强化结构可防止撞击时断裂，并在穿过水体时保持大部分飞行速度。",
   "CRDescription:2": "用于连发弩的钻石弩箭。撞击时不会断裂，并能在水中保持飞行速度。"
 },
     "RepeatArrowBlock:3": {
-      "DisplayName": "连发爆炸弩箭",
       "Description": "用于连发弩的爆炸弩箭，命中后产生小型爆炸。单发伤害低于普通爆炸弩箭，但可进行爆炸连射，适合清理群体与区域封锁。",
       "CRDescription:3": "连发弩的爆炸版本，适合群体控制和区域封锁。"
     },
     "RepeatArrowBlock:4": {
-      "DisplayName": "连发毒弩箭",
       "Description": "低致命性毒素弩箭，初始伤害低，但可造成30秒中毒效果，适合削弱敌人而非立刻击杀。",
       "CRDescription:4": "连发弩的毒素版本，造成持续中毒效果。"
     },
     "RepeatArrowBlock:5": {
-      "DisplayName": "连发剧毒弩箭",
       "Description": "用于连发弩的高强度毒素弩箭，可施加100秒剧毒效果，适合通过快速叠加负面状态削弱敌方群体。",
       "CRDescription:5": "连发弩的剧毒版本，造成更长时间的剧毒效果。"
     },
     "RepeatArrowBlock:6": {
-"DisplayName": "火焰连发弩矢",
 "Description": "能够点燃目标的燃烧连发弩矢。命中后消失。",
 "CRDescription:6": "使用铜制连发弩矢、硫磺块和羽毛制作火焰连发弩矢"
 },
