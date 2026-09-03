@@ -1,4 +1,10 @@
 {
+  "CandyBlock": [
+    "Caramelo de Fuego",
+    "Caramelo de Veneno",
+    "Caramelo Congelado",
+    "Caramelo de Sangre"
+  ],
   "SubsystemAntidotePillBehavior": {
     "1": "¡Gripa curada!",
     "2": "¡Náuseas curadas!",
@@ -1215,6 +1221,22 @@
 "DisplayName": "Virote incendiario de repetición",
 "Description": "Virote incendiario de repetición que prende fuego a los objetivos. Desaparece al impactar.",
 "CRDescription:6": "Fabricar un virote incendiario de repetición a partir de un virote de repetición de cobre, un trozo de azufre y plumas"
+},
+"CandyBlock:0": {
+    "Description": "Un caramelo mágico de fuego. ¡Cómelo para obtener aliento de vómito de fuego que prende fuego a los enemigos!",
+    "CRDescription:0": "Combina semillas con azufre y carbón para crear un caramelo de fuego"
+},
+"CandyBlock:1": {
+    "Description": "Un caramelo mágico de veneno. ¡Cómelo para obtener aliento de vómito venenoso que enferma a los enemigos!",
+    "CRDescription:1": "Combina semillas con toxina y flores moradas para crear un caramelo tóxico"
+},
+"CandyBlock:2": {
+    "Description": "Un caramelo mágico de hielo. ¡Cómelo para obtener aliento de vómito helado que congela a los enemigos!",
+    "CRDescription:2": "Combina semillas con nieve y hielo para crear un caramelo congelante"
+},
+"CandyBlock:3": {
+    "Description": "Un caramelo mágico de sangre. ¡Cómelo para obtener aliento de vómito de sangre que daña a los enemigos!",
+    "CRDescription:3": "Combina semillas con flores rojas y carne cruda para crear un caramelo sangriento"
 },
     "M249Block:0": {
       "DisplayName": "M249 SAW",
