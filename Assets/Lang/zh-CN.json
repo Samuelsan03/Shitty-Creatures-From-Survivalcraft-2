@@ -1223,20 +1223,20 @@
 "CRDescription:6": "使用铜制连发弩矢、硫磺块和羽毛制作火焰连发弩矢"
 },
 "CandyBlock:0": {
-    "Description": "一种神奇的火焰糖果。吃下它即可获得火焰呕吐吐息，点燃敌人！",
-    "CRDescription:0": "将种子与硫磺和煤炭结合，制作火焰糖果"
+"Description": "一种神奇的火焰糖果。吃下它即可获得火焰呕吐吐息，点燃敌人！",
+"CRDescription:0": "将种子与硫磺熔炼，制作火焰糖果"
 },
 "CandyBlock:1": {
-    "Description": "一种神奇的毒药糖果。吃下它即可获得毒液呕吐吐息，使敌人中毒！",
-    "CRDescription:1": "将种子与毒素和紫色花朵结合，制作毒性糖果"
+"Description": "一种神奇的毒药糖果。吃下它即可获得毒液呕吐吐息，使敌人生病！",
+"CRDescription:1": "将种子与毒素熔炼，制作毒药糖果"
 },
 "CandyBlock:2": {
-    "Description": "一种神奇的冰冻糖果。吃下它即可获得冰霜呕吐吐息，冻结敌人！",
-    "CRDescription:2": "将种子与雪和冰结合，制作冰冻糖果"
+"Description": "一种神奇的冰冻糖果。吃下它即可获得冰霜呕吐吐息，冻结敌人！",
+"CRDescription:2": "将种子与雪熔炼，制作冰冻糖果"
 },
 "CandyBlock:3": {
-    "Description": "一种神奇的血液糖果。吃下它即可获得血液呕吐吐息，对敌人造成伤害！",
-    "CRDescription:3": "将种子与红色花朵和生肉结合，制作血腥糖果"
+"Description": "一种神奇的血液糖果。吃下它即可获得血液呕吐吐息，对敌人造成伤害！",
+"CRDescription:3": "将种子与红花熔炼，制作血液糖果"
 },
     "AKBlock:0": {
     "DisplayName": "AK-47突击步枪",
