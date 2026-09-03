@@ -1209,19 +1209,19 @@
 },
 "CandyBlock:0": {
     "Description": "A magical fire candy. Eat it to gain fire vomit breath that ignites enemies!",
-    "CRDescription:0": "Combine seeds with sulphur and coal to create a fiery candy"
+    "CRDescription:0": "Smelt seeds with sulphur to create a fire candy"
 },
 "CandyBlock:1": {
     "Description": "A magical poison candy. Eat it to gain poison vomit breath that sickens enemies!",
-    "CRDescription:1": "Combine seeds with toxin and purple flowers to create a toxic candy"
+    "CRDescription:1": "Smelt seeds with toxin to create a poison candy"
 },
 "CandyBlock:2": {
     "Description": "A magical frozen candy. Eat it to gain ice vomit breath that freezes enemies!",
-    "CRDescription:2": "Combine seeds with snow and ice to create a freezing candy"
+    "CRDescription:2": "Smelt seeds with snow to create a frozen candy"
 },
 "CandyBlock:3": {
     "Description": "A magical blood candy. Eat it to gain blood vomit breath that damages enemies!",
-    "CRDescription:3": "Combine seeds with red flowers and raw meat to create a bloody candy"
+    "CRDescription:3": "Smelt seeds with red flowers to create a blood candy"
 },
     "AA12Block:0": {
   "DisplayName": "Atchisson AA-12 Auto Shotgun",
