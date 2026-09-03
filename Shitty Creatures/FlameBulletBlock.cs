@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
@@ -11,6 +11,9 @@ namespace Game
 	{
 		public override void Initialize()
 		{
+			// Inicializamos la lista de mallas para evitar errores si el bloque intenta renderizarse
+			this.m_standaloneBlockMeshes = new List<BlockMesh>();
+
 			base.Initialize();
 			this.m_texture = ContentManager.Get<Texture2D>("Textures/WonderfulEra", null);
 			this.m_texturePoison = ContentManager.Get<Texture2D>("Textures/WonderfulEra", null);
@@ -69,6 +72,17 @@ namespace Game
 			return FlameBulletBlock.PoisonTextureSlot;
 		}
 
+		// Método agregado para soportar LanguageControl como en ArrowBlock
+		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
+		{
+			int bulletType = (int)FlameBulletBlock.GetBulletType(Terrain.ExtractData(value));
+			if (bulletType < 0 || bulletType >= Enum.GetValues<FlameBulletBlock.FlameBulletType>().Length)
+			{
+				return string.Empty;
+			}
+			return LanguageControl.Get("FlameBulletBlock", bulletType);
+		}
+
 		public static FlameBulletBlock.FlameBulletType GetBulletType(int data)
 		{
 			return (FlameBulletBlock.FlameBulletType)(data & 15);
@@ -83,6 +97,7 @@ namespace Game
 		public Texture2D m_texture;
 		public Texture2D m_texturePoison;
 		public BlockMesh[] m_blockMeshes;
+		public List<BlockMesh> m_standaloneBlockMeshes; // Agregado para consistencia
 		public static int TextureSlot = 68;
 		public static int PoisonTextureSlot = 69;
 
