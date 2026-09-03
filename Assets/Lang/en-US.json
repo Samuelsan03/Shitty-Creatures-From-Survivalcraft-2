@@ -1,4 +1,17 @@
 {
+  "FlameBulletBlock": [
+    "Flame Bullet",
+    "Poison Bullet"
+  ],
+  "RepeatArrowBlock": [
+    "Repeating Copper Bolt",
+    "Repeating Iron Bolt",
+    "Repeating Diamond Bolt",
+    "Repeating Explosive Bolt",
+    "Repeating Poison Bolt",
+    "Repeating Severe Poison Bolt",
+    "Repeating Fire Bolt"
+  ],
   "CandyBlock": [
     "Fire Candy",
     "Poison Candy",
@@ -1173,37 +1186,30 @@
       "CRDescription:0": "Automatic crossbow with 8-arrow magazine - complex mechanical design"
     },
     "RepeatArrowBlock:0": {
-      "DisplayName": "Repeating Copper Bolt",
       "Description": "Lightweight bolt for repeating crossbows, made of copper. Provides moderate damage and high stability during rapid firing. Optimized to maintain accuracy in sustained automatic fire.",
       "CRDescription:0": "Copper bolt for repeating crossbows. Moderate damage and high stability."
     },
     "RepeatArrowBlock:1": {
-      "DisplayName": "Repeating Iron Bolt",
       "Description": "Reinforced iron bolt for repeating crossbows. Deals higher damage and better armor penetration than standard iron bolts while maintaining accuracy in sustained bursts.",
       "CRDescription:1": "Iron bolt for repeating crossbows. Higher damage and better armor penetration."
     },
     "RepeatArrowBlock:2": {
-  "DisplayName": "Repeating Diamond Bolt",
   "Description": "A high-tier bolt tipped with diamond, designed for advanced repeating crossbows. It delivers exceptional armor penetration and consistently high damage. Its reinforced construction prevents breakage on impact and retains much of its velocity while traveling through water.",
   "CRDescription:2": "Diamond bolt for repeating crossbows. Does not break on impact and retains its velocity in water."
 },
     "RepeatArrowBlock:3": {
-      "DisplayName": "Repeating Explosive Bolt",
       "Description": "Explosive bolt for repeating crossbows. Creates small explosions on impact. While individual damage is lower than standard explosive bolts, it allows rapid explosive bursts, ideal for crowd control and area denial.",
       "CRDescription:3": "Explosive bolt for repeating crossbows. Rapid explosive bursts for crowd control."
     },
     "RepeatArrowBlock:4": {
-      "DisplayName": "Repeating Poison Bolt",
       "Description": "Low-lethality poison bolt. Deals low initial damage but applies poison for 30 seconds. Ideal for weakening enemies without killing them instantly.",
       "CRDescription:4": "Poisonous bolt for repeating crossbows. Low damage but applies poison effect."
     },
     "RepeatArrowBlock:5": {
-      "DisplayName": "Repeating Severe Poison Bolt",
       "Description": "Highly toxic bolt for repeating crossbows. Applies a severe poison effect for 100 seconds. Designed to weaken entire groups through rapid status application.",
       "CRDescription:5": "Highly poisonous bolt for repeating crossbows. Applies severe poison effect."
     },
     "RepeatArrowBlock:6": {
-    "DisplayName": "Fire Repeat Bolt",
     "Description": "Incendiary repeat bolt that sets targets on fire. Disappears on impact.",
     "CRDescription:6": "Make fire repeat bolt from copper repeat bolt, sulphur chunk and feathers"
 },
