@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
@@ -103,21 +103,11 @@ namespace Game
 		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
 		{
 			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
-			if (arrowType < 0 || arrowType >= Enum.GetValues(typeof(RepeatArrowBlock.ArrowType)).Length)
+			if (arrowType < 0 || arrowType >= Enum.GetValues<RepeatArrowBlock.ArrowType>().Length)
 			{
 				return string.Empty;
 			}
-			return LanguageControl.GetBlock("RepeatArrowBlock:" + arrowType.ToString(), "DisplayName");
-		}
-
-		public override string GetDescription(int value)
-		{
-			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
-			if (arrowType < 0 || arrowType >= Enum.GetValues(typeof(RepeatArrowBlock.ArrowType)).Length)
-			{
-				return string.Empty;
-			}
-			return LanguageControl.GetBlock("RepeatArrowBlock:" + arrowType.ToString(), "Description");
+			return LanguageControl.Get("RepeatArrowBlock", arrowType);
 		}
 
 		public static RepeatArrowBlock.ArrowType GetArrowType(int data)
