@@ -571,10 +571,7 @@
   <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir automáticamente" Guid="5da7f87c-19be-463b-930e-57df04a0fd04" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de perseguir objetivos no jugadores" Guid="0b3b2584-ce25-4c73-8269-cd1ebd5df44d" Value="1" Type="float"/>
   <Parameter Name="DestroyBlocksWhenStuck" Description="Si está activado, la criatura destruirá bloques para liberarse cuando esté atascada durante más de 2 segundos" Guid="5b766c40-2a37-4027-9da1-c3218e109aa6" Value="false" Type="bool"/>
-  <Parameter Name="PlaceBlocksWhenTargetHigh" Description="Si está activado, la criatura colocará bloques de tierra para alcanzar a su presa cuando esta se encuentre en una altura elevada (máximo 2 bloques verticales a la vez)" Guid="f6ffc52c-883d-4e29-a333-c413ccd864d7" Value="false" Type="bool"/>
-  <Parameter Name="InvokeLightningOnHit" Description="Si está activado, la criatura invocará un rayo sobre el objetivo cada vez que realice un golpe cuerpo a cuerpo exitoso" Guid="9ffef00f-7ee4-4fec-b94c-24ac538f344a" Value="false" Type="bool"/>
   <Parameter Name="PushWhileAttacking" Description="Empuja al objetivo al golpear en cuerpo a cuerpo" Guid="51b107e6-f019-4b2b-a4f0-1e231b534d84" Value="false" Type="bool"/>
-  <Parameter Name="ExplodeOnHit" Description="Provoca una explosión al golpear cuerpo a cuerpo" Guid="d1b75fea-9371-4af9-811f-85db7ff478b0" Value="false" Type="bool"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada mejorado con reconocimiento del jugador y protección entre aliados" Guid="24c8a629-49be-4cb4-b829-78d5a5a14204" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -589,6 +586,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="CandyBlockBehavior" Guid="88f43c3a-e0b7-427f-97ae-261815115fb0" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+          <Parameter Name="Class" Guid="98b00b10-7e1d-4c29-8498-f4e3aac0a419" Value="Game.SubsystemCandyBlockBehavior" Type="string" />
+        </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="AntidotePillBehavior" Guid="54055563-0aa5-4286-a290-5e7f032a8cdc" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
           <Parameter Name="Class" Guid="ddfc3e5a-2b2b-4c7b-bf8f-3f2e4c545f29" Value="Game.SubsystemAntidotePillBehavior" Type="string" />
         </MemberSubsystemTemplate>
