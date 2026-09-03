@@ -1,4 +1,17 @@
 {
+  "FlameBulletBlock": [
+  "Bala de fuego",
+  "Bala venenosa"
+],
+  "RepeatArrowBlock": [
+  "Perno de cobre repetitivo",
+  "Perno de hierro repetitivo",
+  "Perno de diamante repetitivo",
+  "Perno explosivo repetitivo",
+  "Perno venenoso repetitivo",
+  "Perno de veneno severo repetitivo",
+  "Perno de fuego repetitivo"
+],
   "CandyBlock": [
     "Caramelo de Fuego",
     "Caramelo de Veneno",
@@ -1173,12 +1186,10 @@
       "CRDescription:0": "Mosquete mejorado con tanque de combustible y sistema de ignición. Utiliza proyectiles incendiarios o proyectiles de gas venenoso."
     },
     "FlameBulletBlock:0": {
-  "DisplayName": "Proyectil Incendiario",
   "Description": "Proyectil de fuego para el lanzallamas. Al impactar, prende fuego al entorno y a las criaturas, pudiendo causar explosiones a alta velocidad e infligir daño por quemaduras.",
   "CRDescription:0": "Munición incendiaria para lanzallamas. Quema al impactar."
 },
 "FlameBulletBlock:1": {
-  "DisplayName": "Proyectil de Gas Venenoso",
   "Description": "Proyectil químico para el lanzallamas. Libera un gas tóxico que infecta a las criaturas con veneno o enfermedad, debilitándolas con el tiempo y causando daño adicional.",
   "CRDescription:1": "Munición venenosa para el lanzallamas. Infecta a los objetivos al impactar."
 },
@@ -1188,37 +1199,30 @@
       "CRDescription:0": "Ballesta mejorada con cargador de 8 virotes. Dispara continuamente sin recargar después de cada disparo."
     },
     "RepeatArrowBlock:0": {
-      "DisplayName": "Virote de Cobre Repetidor",
       "Description": "Virote ligero para ballestas repetidoras, fabricado en cobre. Ofrece daño moderado y alta estabilidad durante disparos rápidos. Optimizado para mantener precisión en fuego automático prolongado.",
       "CRDescription:0": "Virote de cobre para ballesta repetidora. Daño moderado, alta estabilidad en ráfagas."
     },
     "RepeatArrowBlock:1": {
-      "DisplayName": "Virote de Hierro Repetidor",
       "Description": "Virote de hierro reforzado para ballestas repetidoras. Inflige mayor daño y mejor penetración que los virotes de hierro normales, manteniendo buena precisión durante ráfagas continuas.",
       "CRDescription:1": "Virote de hierro reforzado para ballesta repetidora. Mayor daño y penetración que los virotes de hierro normales."
     },
     "RepeatArrowBlock:2": {
-  "DisplayName": "Virote de Diamante Repetidor",
   "Description": "Virote de alto nivel con punta de diamante, diseñado para ballestas repetidoras avanzadas. Presenta altísima penetración de armadura y daño elevado sostenido. Su estructura reforzada evita la ruptura al impactar y conserva gran parte de su velocidad al atravesar el agua.",
   "CRDescription:2": "Virote de diamante para ballesta repetidora. No se rompe al impactar y mantiene su velocidad en el agua."
 },
     "RepeatArrowBlock:3": {
-      "DisplayName": "Virote Explosivo Repetidor",
       "Description": "Virote explosivo para ballestas repetidoras. Genera pequeñas explosiones al impactar. Aunque su daño individual es menor que el virote explosivo estándar, permite explosiones en ráfaga, ideal para control de áreas y grupos.",
       "CRDescription:3": "Virote explosivo para ballesta repetidora. Causa pequeñas explosiones al impactar, ideal para control de áreas."
     },
     "RepeatArrowBlock:4": {
-      "DisplayName": "Virote Venenoso Repetidor",
       "Description": "Virote con veneno de baja letalidad. Inflige poco daño inicial pero aplica efecto de veneno durante 30 segundos. Ideal para debilitar enemigos sin matarlos rápidamente.",
       "CRDescription:4": "Virote venenoso para ballesta repetidora. Aplica veneno durante 30 segundos."
     },
     "RepeatArrowBlock:5": {
-      "DisplayName": "Virote de Veneno Grave Repetidor",
       "Description": "Virote altamente tóxico para ballestas repetidoras. Aplica un efecto de veneno severo durante 100 segundos. Pensado para debilitar grupos completos mediante aplicación rápida de estados negativos.",
       "CRDescription:5": "Virote de veneno grave para ballesta repetidora. Aplica veneno severo durante 100 segundos."
     },
     "RepeatArrowBlock:6": {
-"DisplayName": "Virote incendiario de repetición",
 "Description": "Virote incendiario de repetición que prende fuego a los objetivos. Desaparece al impactar.",
 "CRDescription:6": "Fabricar un virote incendiario de repetición a partir de un virote de repetición de cobre, un trozo de azufre y plumas"
 },
