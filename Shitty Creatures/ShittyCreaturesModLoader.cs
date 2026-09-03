@@ -165,6 +165,8 @@ namespace Game
 			ModsManager.RegisterHook("OnVitalStatsUpdateTemperature", this);
 			ModsManager.RegisterHook("CraftingRecipesManagerInitialize", this);
 			ModsManager.RegisterHook("ClothingProcessSlotItems", this);
+			ModsManager.RegisterHook("OnVitalStatsEat", this);
+			ModsManager.RegisterHook("UpdatePlayerInputAim", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -172,6 +174,26 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		// Métodos auxiliares privados
 		// ---------------------------------------------------------------------------------
+
+		public override void OnVitalStatsEat(ComponentVitalStats vitalStats, ref int value, ref bool skipVanilla, out bool eatSuccess)
+		{
+			eatSuccess = false;
+			SubsystemCandyBlockBehavior subsystem = vitalStats.Project.FindSubsystem<SubsystemCandyBlockBehavior>(false);
+			if (subsystem != null)
+			{
+				subsystem.HandleEat(vitalStats, ref value, ref skipVanilla, out eatSuccess);
+			}
+		}
+
+		public override void UpdatePlayerInputAim(ComponentPlayer player, bool isAiming, ref bool flag, ref float timeIntervalAim, bool skipVanilla, out bool outSkipVanilla)
+		{
+			outSkipVanilla = skipVanilla;
+			SubsystemCandyBlockBehavior subsystem = player.Project.FindSubsystem<SubsystemCandyBlockBehavior>(false);
+			if (subsystem != null)
+			{
+				subsystem.HandleAim(player, isAiming, ref flag, ref timeIntervalAim, skipVanilla, out outSkipVanilla);
+			}
+		}
 
 		/// <summary>
 		/// Hook para reemplazar bowls consumidas por bowl vacía (misma lógica que vanilla con buckets).

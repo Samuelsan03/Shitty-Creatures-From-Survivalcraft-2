@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 
@@ -23,11 +23,17 @@ namespace Game
 			}
 		}
 
+		public virtual Texture2D GetTextureForValue(int value)
+		{
+			return m_texture;
+		}
+
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
 		{
-			if (this.m_texture != null)
+			Texture2D texture = GetTextureForValue(value);
+			if (texture != null)
 			{
-				TerrainGeometry customGeometry = geometry.GetGeometry(this.m_texture);
+				TerrainGeometry customGeometry = geometry.GetGeometry(texture);
 				GenerateCrossVertices(generator, value, x, y, z, customGeometry.SubsetAlphaTest);
 			}
 		}
@@ -96,9 +102,10 @@ namespace Game
 
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
-			if (this.m_texture != null)
+			Texture2D texture = GetTextureForValue(value);
+			if (texture != null)
 			{
-				BlocksManager.DrawFlatBlock(primitivesRenderer, value, size * 1f, ref matrix, this.m_texture, Color.White, true, environmentData);
+				BlocksManager.DrawFlatBlock(primitivesRenderer, value, size * 1f, ref matrix, texture, Color.White, true, environmentData);
 			}
 		}
 
@@ -110,13 +117,11 @@ namespace Game
 			return placementData;
 		}
 
-		// Caja de colisión física: vacía (no bloquea al jugador)
 		public override BoundingBox[] GetCustomCollisionBoxes(SubsystemTerrain terrain, int value)
 		{
 			return new BoundingBox[0];
 		}
 
-		// Caja de interacción: pequeña, permite apuntar y romper el bloque
 		public override BoundingBox[] GetCustomInteractionBoxes(SubsystemTerrain terrain, int value)
 		{
 			return new BoundingBox[]
@@ -139,9 +144,6 @@ namespace Game
 		{
 			return 0;
 		}
-
-		// Se elimina la anulación de GetDropValues para que se usen los datos del CSV
-		// (DefaultDropContent, DefaultDropCount, etc.)
 
 		public override int GetTextureSlotCount(int value)
 		{
