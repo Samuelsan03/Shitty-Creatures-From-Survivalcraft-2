@@ -28,6 +28,7 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemNoise m_subsystemNoise;
+		private SubsystemAttractNoise m_subsystemAttractNoise;
 		private ComponentCreature m_componentCreature;
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentMiner m_componentMiner;
@@ -151,6 +152,7 @@ namespace Game
 
 			// Cargar valores específicos del zombie
 			this.m_componentZombieHerdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
+			this.m_subsystemAttractNoise = base.Project.FindSubsystem<SubsystemAttractNoise>(true);
 			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			this.m_attacksSameHerd = valuesDictionary.GetValue<bool>("AttacksSameHerd", false);
 			this.m_attacksAllCategories = valuesDictionary.GetValue<bool>("AttacksAllCategories", true);
@@ -263,7 +265,12 @@ namespace Game
 
 			this.m_stateMachine.AddState("Chasing", delegate
 			{
-				this.m_subsystemNoise.MakeNoise(this.m_componentCreature.ComponentBody, 0.25f, 6f);
+				this.m_subsystemNoise.MakeNoise(this.m_componentCreature.ComponentBody, 0.25f, 6f); // Ruido original
+
+				if (this.m_subsystemAttractNoise != null)
+				{
+					this.m_subsystemAttractNoise.MakeLureNoise(this.m_componentCreature.ComponentBody, 0.5f, 8f); // NUEVO: ruido de atracción para que otros zombis se sientan atraídos
+				}
 				if (this.PlayIdleSoundWhenStartToChase)
 				{
 					this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
