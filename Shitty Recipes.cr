@@ -605,18 +605,6 @@
 <Recipe Result="TeaAntifluBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="boiledwaterbowl" b="tallgrass" Description="[0]">
     "ab"
 </Recipe>
-<Recipe Result="CandyBlock:0" ResultCount="1" RequiredHeatLevel="1" a="seeds" b="sulphurchunk" Description="[0]">
-        "ab"
-    </Recipe>
-    <Recipe Result="CandyBlock:1" ResultCount="1" RequiredHeatLevel="1" a="seeds" b="toxin" Description="[1]">
-        "ab"
-    </Recipe>
-    <Recipe Result="CandyBlock:2" ResultCount="1" RequiredHeatLevel="1" a="seeds" b="snowball" Description="[2]">
-        "ab"
-    </Recipe>
-    <Recipe Result="CandyBlock:3" ResultCount="1" RequiredHeatLevel="1" a="seeds" b="redflower" Description="[3]">
-        "ab"
-    </Recipe>
         </Smelting>
     </Recipes>
 </ShittyRecipes>

@@ -586,9 +586,6 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
-    <MemberSubsystemTemplate Name="CandyBlockBehavior" Guid="88f43c3a-e0b7-427f-97ae-261815115fb0" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
-          <Parameter Name="Class" Guid="98b00b10-7e1d-4c29-8498-f4e3aac0a419" Value="Game.SubsystemCandyBlockBehavior" Type="string" />
-        </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="AntidotePillBehavior" Guid="54055563-0aa5-4286-a290-5e7f032a8cdc" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
           <Parameter Name="Class" Guid="ddfc3e5a-2b2b-4c7b-bf8f-3f2e4c545f29" Value="Game.SubsystemAntidotePillBehavior" Type="string" />
         </MemberSubsystemTemplate>
