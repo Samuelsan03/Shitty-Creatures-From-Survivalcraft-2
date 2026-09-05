@@ -1226,22 +1226,6 @@
 "Description": "Virote incendiario de repetición que prende fuego a los objetivos. Desaparece al impactar.",
 "CRDescription:6": "Fabricar un virote incendiario de repetición a partir de un virote de repetición de cobre, un trozo de azufre y plumas"
 },
-"CandyBlock:0": {
-"Description": "Un caramelo mágico de fuego. ¡Cómelo para obtener un aliento de vómito de fuego que prende fuego a los enemigos!",
-"CRDescription:0": "Funde semillas con azufre para crear un caramelo de fuego"
-},
-"CandyBlock:1": {
-"Description": "Un caramelo mágico de veneno. ¡Cómelo para obtener un aliento de vómito venenoso que enferma a los enemigos!",
-"CRDescription:1": "Funde semillas con toxina para crear un caramelo de veneno"
-},
-"CandyBlock:2": {
-"Description": "Un caramelo mágico congelado. ¡Cómelo para obtener un aliento de vómito de hielo que congela a los enemigos!",
-"CRDescription:2": "Funde semillas con nieve para crear un caramelo congelado"
-},
-"CandyBlock:3": {
-"Description": "Un caramelo mágico de sangre. ¡Cómelo para obtener un aliento de vómito de sangre que daña a los enemigos!",
-"CRDescription:3": "Funde semillas con flores rojas para crear un caramelo de sangre"
-},
     "M249Block:0": {
       "DisplayName": "M249 SAW",
       "Description": "El M249 Squad Automatic Weapon (SAW) es una ametralladora ligera alimentada por cinta que proporciona fuego automático sostenido para escuadrones de infantería. Dispara munición 5.56×45mm OTAN a una cadencia de 750-1000 RPM. Tiene una capacidad de 100 balas en cinta y utiliza cartuchos intermedios para un retroceso manejable durante el fuego automático. Requiere bloques de munición M249 para recargar.",
