@@ -307,15 +307,17 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
-			// Si la celebración está activa, solo bloquear combate, pero permitir equipar ropa
 			bool celebrationActive = AchievementsManager.IsCelebrationActive;
 
+			// Obtener estado del ChaseBehavior para saber si estamos en modo ruido
+			string chaseState = m_chaseBehavior?.CurrentState;
+			bool isNoiseState = (chaseState == "AttractedToNoise" || chaseState == "InvestigatingNoise");
+
 			// Si ya está montado, manejar combate montado (control de la montura)
-			if (!celebrationActive && m_componentRider != null && m_componentRider.Mount != null)
+			if (!celebrationActive && m_componentRider != null && m_componentRider.Mount != null && !isNoiseState)
 			{
-				m_mountedCombatActive = true;  // SIEMPRE true mientras esté montado
+				m_mountedCombatActive = true;
 				HandleMountedCombat(dt);
-				// El combate normal (armas) aún debe ejecutarse
 			}
 			else
 			{
@@ -397,20 +399,18 @@ namespace Game
 			// ========== ACTUALIZAR IMPORTANCIA DINÁMICA ==========
 			if (hasTarget)
 			{
-				// Hay objetivo vivo: la IA debe tomar el control (importancia alta)
 				m_importanceLevel = 100f;
 			}
 			else
 			{
-				// Sin objetivo: dejar que otros comportamientos (walkaround, recolectar, etc.) se ejecuten
 				m_importanceLevel = 0f;
-				// También nos aseguramos de detener cualquier apuntado o combate pendiente
 				StopAiming();
-				if (m_mountedCombatActive && m_componentRider?.Mount != null)
+				// Solo detener la montura si NO estamos en estado de ruido
+				if (!isNoiseState && m_mountedCombatActive && m_componentRider?.Mount != null)
 				{
 					StopMountCompletely();
 				}
-				return; // Salimos pronto para no interferir con la patrulla/recolección
+				return;
 			}
 
 			int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
