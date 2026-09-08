@@ -22,6 +22,8 @@ namespace Game
 		public string CurrentState => this.m_stateMachine?.CurrentState;
 
 		// Campos copiados de ComponentChaseBehavior
+		private ComponentSteedBehavior m_mountSteedBehavior;
+		private bool m_isMountedDuringNoise;
 		private SubsystemGameInfo m_subsystemGameInfo;
 		private SubsystemPlayers m_subsystemPlayers;
 		private SubsystemSky m_subsystemSky;
@@ -833,7 +835,9 @@ namespace Game
 		// ==========================================
 		private void AddNoiseAttractionStates()
 		{
+			// Estado: AttractedToNoise
 			this.m_stateMachine.AddState("AttractedToNoise",
+				// --- ENTRADA ---
 				delegate
 				{
 					m_target = null;
@@ -846,18 +850,88 @@ namespace Game
 					this.m_componentCreatureModel.AttackOrder = false;
 					this.m_componentCreature.ComponentCreatureModel.LookAtOrder = null;
 
-					if (m_zombiePathfinding != null && m_componentCreature.ComponentBody != null)
+					// Verificar si el zombi está montado
+					ComponentRider rider = Entity.FindComponent<ComponentRider>();
+					if (rider != null && rider.Mount != null)
 					{
-						m_zombiePathfinding.Stop();
-						m_zombiePathfinding.SetDestination(m_attractPosition, 1f, 1f, 10, true, false, false, null);
+						m_isMountedDuringNoise = true;
+						m_mountSteedBehavior = rider.Mount.Entity.FindComponent<ComponentSteedBehavior>();
+						if (m_zombiePathfinding != null) m_zombiePathfinding.Stop();
+					}
+					else
+					{
+						m_isMountedDuringNoise = false;
+						m_mountSteedBehavior = null;
+						if (m_zombiePathfinding != null && m_componentCreature.ComponentBody != null)
+						{
+							m_zombiePathfinding.Stop();
+							m_zombiePathfinding.SetDestination(m_attractPosition, 1f, 1f, 10, true, false, false, null);
+						}
 					}
 				},
+				// --- ACTUALIZACIÓN ---
 				delegate
 				{
-					if (m_zombiePathfinding != null && m_componentCreature.ComponentBody != null)
+					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
+					{
+						// DECLARAR UNA SOLA VEZ
+						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
+						if (mountBody != null)
+						{
+							Vector3 toAttract = m_attractPosition - mountBody.Position;
+							float distHorizontal = new Vector2(toAttract.X, toAttract.Z).Length();
+
+							if (distHorizontal <= 2f)
+							{
+								// Detener la montura mediante órdenes
+								m_mountSteedBehavior.SpeedOrder = 0;
+								m_mountSteedBehavior.TurnOrder = 0f;
+								m_mountSteedBehavior.JumpOrder = 0f;
+
+								// FORZAR FRENADO INMEDIATO (REUTILIZAR mountBody)
+								mountBody.Velocity = Vector3.Zero;
+								ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
+								if (loco != null)
+								{
+									loco.WalkOrder = null;
+									loco.FlyOrder = Vector3.Zero;
+									loco.SwimOrder = null;
+								}
+
+								m_stateMachine.TransitionTo("InvestigatingNoise");
+							}
+							else
+							{
+								// Dirección hacia el ruido (plano horizontal)
+								Vector3 targetDir = toAttract;
+								targetDir.Y = 0f;
+								if (targetDir.LengthSquared() > 0.001f)
+									targetDir = Vector3.Normalize(targetDir);
+								else
+									targetDir = Vector3.UnitZ;
+
+								Vector3 forward = mountBody.Rotation.GetForwardVector();
+								forward.Y = 0f;
+								if (forward.LengthSquared() > 0.001f)
+									forward = Vector3.Normalize(forward);
+								else
+									forward = Vector3.UnitZ;
+
+								float angle = MathF.Atan2(forward.X, forward.Z) - MathF.Atan2(targetDir.X, targetDir.Z);
+								angle = MathUtils.NormalizeAngle(angle);
+								float turn = Math.Clamp(angle / (MathF.PI / 2f), -0.5f, 0.5f);
+								m_mountSteedBehavior.TurnOrder = turn;
+
+								if (MathF.Abs(angle) <= 0.8f)
+									m_mountSteedBehavior.SpeedOrder = 1;
+								else
+									m_mountSteedBehavior.SpeedOrder = 0;
+							}
+						}
+					}
+					else if (m_zombiePathfinding != null && m_componentCreature.ComponentBody != null)
 					{
 						float distToAttract = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_attractPosition);
-
 						if (distToAttract <= 2f)
 						{
 							m_zombiePathfinding.Stop();
@@ -869,40 +943,72 @@ namespace Game
 						}
 					}
 				},
+				// --- SALIDA ---
 				delegate
 				{
-					if (m_zombiePathfinding != null)
+					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
+					{
+						m_mountSteedBehavior.SpeedOrder = 0;
+						m_mountSteedBehavior.TurnOrder = 0f;
+					}
+					else if (m_zombiePathfinding != null)
 					{
 						m_zombiePathfinding.Stop();
 					}
 				}
 			);
 
+			// Estado: InvestigatingNoise
 			this.m_stateMachine.AddState("InvestigatingNoise",
+				// --- ENTRADA ---
 				delegate
 				{
 					m_investigationTimeRemaining = 2.5f;
+					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
+					{
+						m_mountSteedBehavior.SpeedOrder = 0;
+						m_mountSteedBehavior.TurnOrder = 0f;
+						m_mountSteedBehavior.JumpOrder = 0f;
+
+						// FORZAR FRENADO INMEDIATO
+						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
+						if (mountBody != null)
+						{
+							mountBody.Velocity = Vector3.Zero;
+							ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
+							if (loco != null)
+							{
+								loco.WalkOrder = null;
+								loco.FlyOrder = Vector3.Zero;
+								loco.SwimOrder = null;
+							}
+						}
+					}
 				},
+				// --- ACTUALIZACIÓN ---
 				delegate
 				{
 					m_investigationTimeRemaining -= m_dt;
-
 					if (m_investigationTimeRemaining <= 0f)
 					{
 						bool resumedChase = TryResumePreviousChase();
-
 						if (!resumedChase)
 						{
 							m_stateMachine.TransitionTo("LookingForTarget");
 						}
-
 						m_targetBeforeNoise = null;
 						m_stateBeforeNoise = null;
 					}
 				},
+				// --- SALIDA ---
 				delegate
 				{
 					m_investigationTimeRemaining = 0f;
+					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
+					{
+						m_mountSteedBehavior.SpeedOrder = 0;
+						m_mountSteedBehavior.TurnOrder = 0f;
+					}
 				}
 			);
 		}
@@ -946,6 +1052,15 @@ namespace Game
 				m_targetBeforeNoise = null;
 				m_stateBeforeNoise = null;
 				m_investigationTimeRemaining = 0f;
+
+				// Detener montura si estaba activa
+				if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
+				{
+					m_mountSteedBehavior.SpeedOrder = 0;
+					m_mountSteedBehavior.TurnOrder = 0f;
+					m_isMountedDuringNoise = false;
+					m_mountSteedBehavior = null;
+				}
 
 				m_stateMachine.TransitionTo("LookingForTarget");
 			}
