@@ -874,35 +874,61 @@ namespace Game
 				{
 					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
 					{
-						// DECLARAR UNA SOLA VEZ
 						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
 						if (mountBody != null)
 						{
 							Vector3 toAttract = m_attractPosition - mountBody.Position;
 							float distHorizontal = new Vector2(toAttract.X, toAttract.Z).Length();
 
-							if (distHorizontal <= 2f)
+							// AUMENTAMOS la distancia de frenado para voladores (de 2f a 5f)
+							// para dar tiempo a reducir la velocidad inercial.
+							if (distHorizontal <= 5f)
 							{
-								// Detener la montura mediante órdenes
-								m_mountSteedBehavior.SpeedOrder = 0;
+								// ENVIAR ORDEN DE FRENO (-1) en lugar de 0
+								m_mountSteedBehavior.SpeedOrder = -1;
 								m_mountSteedBehavior.TurnOrder = 0f;
-								m_mountSteedBehavior.JumpOrder = 0f;
 
-								// FORZAR FRENADO INMEDIATO (REUTILIZAR mountBody)
-								mountBody.Velocity = Vector3.Zero;
-								ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
-								if (loco != null)
+								// Si estamos muy cerca Y la velocidad es baja, detenerse completamente
+								if (distHorizontal <= 1.5f && mountBody.Velocity.Length() < 1.5f)
 								{
-									loco.WalkOrder = null;
-									loco.FlyOrder = Vector3.Zero;
-									loco.SwimOrder = null;
-								}
+									// Cortar órdenes
+									m_mountSteedBehavior.SpeedOrder = 0;
+									m_mountSteedBehavior.JumpOrder = 0f;
 
-								m_stateMachine.TransitionTo("InvestigatingNoise");
+									// Frenado físico forzado
+									mountBody.Velocity = Vector3.Zero;
+									ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
+									if (loco != null)
+									{
+										loco.WalkOrder = null;
+										loco.FlyOrder = Vector3.Zero;
+										loco.SwimOrder = null;
+									}
+
+									m_stateMachine.TransitionTo("InvestigatingNoise");
+								}
+								else
+								{
+									// Si aún nos acercamos rápido, seguir girando suavemente hacia el objetivo mientras frenamos
+									Vector3 targetDir = toAttract;
+									targetDir.Y = 0f;
+									if (targetDir.LengthSquared() > 0.001f)
+										targetDir = Vector3.Normalize(targetDir);
+
+									Vector3 forward = mountBody.Rotation.GetForwardVector();
+									forward.Y = 0f;
+									if (forward.LengthSquared() > 0.001f)
+										forward = Vector3.Normalize(forward);
+
+									float angle = MathF.Atan2(forward.X, forward.Z) - MathF.Atan2(targetDir.X, targetDir.Z);
+									angle = MathUtils.NormalizeAngle(angle);
+									float turn = Math.Clamp(angle / (MathF.PI / 2f), -0.5f, 0.5f);
+									m_mountSteedBehavior.TurnOrder = turn;
+								}
 							}
 							else
 							{
-								// Dirección hacia el ruido (plano horizontal)
+								// Distancia > 5f: Moverse normalmente hacia el ruido
 								Vector3 targetDir = toAttract;
 								targetDir.Y = 0f;
 								if (targetDir.LengthSquared() > 0.001f)
@@ -948,7 +974,7 @@ namespace Game
 				{
 					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
 					{
-						m_mountSteedBehavior.SpeedOrder = 0;
+						m_mountSteedBehavior.SpeedOrder = -1; // Asegurar frenado al salir
 						m_mountSteedBehavior.TurnOrder = 0f;
 					}
 					else if (m_zombiePathfinding != null)
@@ -966,11 +992,10 @@ namespace Game
 					m_investigationTimeRemaining = 2.5f;
 					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
 					{
-						m_mountSteedBehavior.SpeedOrder = 0;
+						m_mountSteedBehavior.SpeedOrder = -1; // Frenar
 						m_mountSteedBehavior.TurnOrder = 0f;
 						m_mountSteedBehavior.JumpOrder = 0f;
 
-						// FORZAR FRENADO INMEDIATO
 						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
 						if (mountBody != null)
 						{
@@ -989,6 +1014,23 @@ namespace Game
 				delegate
 				{
 					m_investigationTimeRemaining -= m_dt;
+
+					// IMPORTANTE: Mantener la montura frenada durante toda la investigación
+					// para evitar que la física o la inercia la muevan.
+					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
+					{
+						m_mountSteedBehavior.SpeedOrder = 0; // Mantener orden de freno activa
+						m_mountSteedBehavior.TurnOrder = 0f;
+						m_mountSteedBehavior.JumpOrder = 0f;
+
+						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
+						if (mountBody != null && mountBody.Velocity.Length() > 0.1f)
+						{
+							// Amortiguar velocidad residual suavemente
+							mountBody.Velocity *= 0.9f;
+						}
+					}
+
 					if (m_investigationTimeRemaining <= 0f)
 					{
 						bool resumedChase = TryResumePreviousChase();
