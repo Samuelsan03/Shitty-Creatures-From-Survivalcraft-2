@@ -1,4 +1,8 @@
 {
+  "FirstAidKitBlock": [
+  "大型急救箱",
+  "中型急救箱"
+],
   "FlameBulletBlock": [
   "火焰子弹",
   "毒子弹"
@@ -12,6 +16,12 @@
   "重复剧毒弩箭",
   "重复火焰弩箭"
 ],
+"SubsystemFirstAidKitBlockBehavior": {
+  "0": "你的生命值已完全恢复！",
+  "1": "{0}的生命值已完全恢复！",
+  "2": "你的生命值已部分恢复！",
+  "3": "{0}的生命值已部分恢复！"
+},
   "SubsystemAntidotePillBehavior": {
   "1": "流感治好了！",
   "2": "恶心治好了！",
@@ -406,14 +416,6 @@
     "GreenMoonBegins": "绿夜已经开始！",
     "GreenMoonEnds": "绿夜已经结束。"
   },
-  "LargeFirstAidKit": {
-    "PlayerHealed": "你已经完全恢复了健康！",
-    "NPCHealedFormat": "{0}的健康已经完全恢复！"
-  },
-  "MediumFirstAidKit": {
-    "PlayerHealed": "¡你已经部分恢复了你的健康！",
-    "NPCHealedFormat": "¡{0}的健康已部分恢复！"
-  },
   "EditTemperatureDialog": {
     "Settings": "空调 - 设置",
     "Ok": "确定",
@@ -699,6 +701,14 @@
     }
   },
   "Blocks": {
+    "FirstAidKitBlock:0": {
+  "Description": "一种大型医疗包，可以完全恢复生命值。",
+  "CRDescription:0": "将两个中型医疗包与额外的材料结合，制作一个大型急救包"
+},
+"FirstAidKitBlock:1": {
+  "Description": "一种可以部分恢复生命值的医疗包。",
+  "CRDescription:1": "使用帆布、绳子和紫色花朵制作一个中型急救包"
+},
     "AntidotePillBlock:0": {
   "DisplayName": "解毒药丸",
   "Description": "一种可以治愈流感和中毒的药丸。可对自己使用，也可以对准生病的生物。",
@@ -914,16 +924,6 @@
     "ToxinBlock:0": {
     "DisplayName": "毒素",
     "Description": "一种极度有毒的材料，充满致命毒素。无法通过合成获得，主要作为战利品掉落自毒性生物，例如 感染者 普通 3、感染者 普通 4、爆浆者 3、飞行感染者 2、飞行感染者首领、Tank 3 和 Tank 幽灵 3。或者，它也可以在商店购买，或与 皮拉塔 霍斯蒂尔 科梅尔西亚恩特 进行交易."
-  },
-    "MediumFirstAidKitBlock:0": {
-    "DisplayName": "中型急救包",
-    "Description": "用于治疗伤势的医疗包，可恢复目标相当一部分生命值，大约恢复至生命值的一半。可用于自己或附近的其他生物。",
-    "CRDescription:0": "一种基本的医疗包，可以治疗高达 50% 的伤口；如果健康状况超过一半，则可以治疗 100%。"
-  },
-  "LargeFirstAidKitBlock:0": {
-    "DisplayName": "大型急救包",
-    "Description": "一种强效医疗包，可将目标的生命值瞬间完全恢复至最大值。可用于自己或附近的其他生物。",
-    "CRDescription:0": "一种先进的医疗包，无论当前健康状况如何，总是能治愈到 100%。"
   },
   "AntidoteBucketBlock:0": {
     "DisplayName": "解毒桶",
