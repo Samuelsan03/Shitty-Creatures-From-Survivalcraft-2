@@ -831,7 +831,7 @@ namespace Game
 		}
 
 		// ==========================================
-		// ESTADOS DE ATRACCIÓN POR RUIDO
+		// ESTADOS DE ATRACCIÓN POR RUIDO (SOLUCIÓN REFLEXIÓN PARA ZOMBIESTEED)
 		// ==========================================
 		private void AddNoiseAttractionStates()
 		{
@@ -880,55 +880,69 @@ namespace Game
 							Vector3 toAttract = m_attractPosition - mountBody.Position;
 							float distHorizontal = new Vector2(toAttract.X, toAttract.Z).Length();
 
-							// AUMENTAMOS la distancia de frenado para voladores (de 2f a 5f)
-							// para dar tiempo a reducir la velocidad inercial.
-							if (distHorizontal <= 5f)
+							// ZONA DE FRENADO (6 bloques de distancia)
+							if (distHorizontal <= 6f)
 							{
-								// ENVIAR ORDEN DE FRENO (-1) en lugar de 0
-								m_mountSteedBehavior.SpeedOrder = -1;
-								m_mountSteedBehavior.TurnOrder = 0f;
+								// ========================================
+								// FRENO DE EMERGENCIA CON REFLEXIÓN
+								// ========================================
 
-								// Si estamos muy cerca Y la velocidad es baja, detenerse completamente
-								if (distHorizontal <= 1.5f && mountBody.Velocity.Length() < 1.5f)
+								// 1. Intentar manejar ComponentZombieSteedBehavior (variables privadas)
+								if (m_mountSteedBehavior.GetType() == typeof(ComponentZombieSteedBehavior))
 								{
-									// Cortar órdenes
-									m_mountSteedBehavior.SpeedOrder = 0;
-									m_mountSteedBehavior.JumpOrder = 0f;
-
-									// Frenado físico forzado
-									mountBody.Velocity = Vector3.Zero;
-									ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
-									if (loco != null)
+									try
 									{
-										loco.WalkOrder = null;
-										loco.FlyOrder = Vector3.Zero;
-										loco.SwimOrder = null;
-									}
+										// Acceso por reflexión a 'm_speed' privada
+										var fieldSpeed = typeof(ComponentZombieSteedBehavior).GetField("m_speed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+										if (fieldSpeed != null) fieldSpeed.SetValue(m_mountSteedBehavior, 0f);
 
-									m_stateMachine.TransitionTo("InvestigatingNoise");
+										// Acceso por reflexión a 'm_speedLevel' privada
+										var fieldLevel = typeof(ComponentZombieSteedBehavior).GetField("m_speedLevel", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+										if (fieldLevel != null) fieldLevel.SetValue(m_mountSteedBehavior, 1); // 1 = Idle/Parado
+
+										// Acceso a 'm_turnSpeed' privada
+										var fieldTurn = typeof(ComponentZombieSteedBehavior).GetField("m_turnSpeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+										if (fieldTurn != null) fieldTurn.SetValue(m_mountSteedBehavior, 0f);
+									}
+									catch
+									{
+										// Si falla la reflexión, fallback a físico directo
+									}
 								}
 								else
 								{
-									// Si aún nos acercamos rápido, seguir girando suavemente hacia el objetivo mientras frenamos
-									Vector3 targetDir = toAttract;
-									targetDir.Y = 0f;
-									if (targetDir.LengthSquared() > 0.001f)
-										targetDir = Vector3.Normalize(targetDir);
+									// 2. Manejo normal para otras monturas (variables públicas)
+									m_mountSteedBehavior.m_speedLevel = 1;
+									m_mountSteedBehavior.m_speed = 0f;
+									m_mountSteedBehavior.m_turnSpeed = 0f;
+								}
 
-									Vector3 forward = mountBody.Rotation.GetForwardVector();
-									forward.Y = 0f;
-									if (forward.LengthSquared() > 0.001f)
-										forward = Vector3.Normalize(forward);
+								// Limpiar órdenes públicas
+								m_mountSteedBehavior.SpeedOrder = 0;
+								m_mountSteedBehavior.TurnOrder = 0f;
+								m_mountSteedBehavior.JumpOrder = 0f;
 
-									float angle = MathF.Atan2(forward.X, forward.Z) - MathF.Atan2(targetDir.X, targetDir.Z);
-									angle = MathUtils.NormalizeAngle(angle);
-									float turn = Math.Clamp(angle / (MathF.PI / 2f), -0.5f, 0.5f);
-									m_mountSteedBehavior.TurnOrder = turn;
+								// 3. Freno Físico Directo
+								mountBody.Velocity = Vector3.Zero;
+
+								// 4. Cortar Locomotion
+								ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
+								if (loco != null)
+								{
+									loco.WalkOrder = null;
+									loco.FlyOrder = Vector3.Zero;
+									loco.SwimOrder = null;
+								}
+
+								// Si está muy cerca, transitar a investigar
+								if (distHorizontal <= 2f)
+								{
+									m_stateMachine.TransitionTo("InvestigatingNoise");
 								}
 							}
 							else
 							{
-								// Distancia > 5f: Moverse normalmente hacia el ruido
+								// Distancia > 6f: Moverse normalmente hacia el ruido
 								Vector3 targetDir = toAttract;
 								targetDir.Y = 0f;
 								if (targetDir.LengthSquared() > 0.001f)
@@ -974,7 +988,7 @@ namespace Game
 				{
 					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
 					{
-						m_mountSteedBehavior.SpeedOrder = -1; // Asegurar frenado al salir
+						m_mountSteedBehavior.SpeedOrder = 0;
 						m_mountSteedBehavior.TurnOrder = 0f;
 					}
 					else if (m_zombiePathfinding != null)
@@ -992,7 +1006,28 @@ namespace Game
 					m_investigationTimeRemaining = 2.5f;
 					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
 					{
-						m_mountSteedBehavior.SpeedOrder = -1; // Frenar
+						// Misma lógica de freno con reflexión al entrar
+						if (m_mountSteedBehavior.GetType() == typeof(ComponentZombieSteedBehavior))
+						{
+							try
+							{
+								var fieldSpeed = typeof(ComponentZombieSteedBehavior).GetField("m_speed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+								if (fieldSpeed != null) fieldSpeed.SetValue(m_mountSteedBehavior, 0f);
+								var fieldLevel = typeof(ComponentZombieSteedBehavior).GetField("m_speedLevel", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+								if (fieldLevel != null) fieldLevel.SetValue(m_mountSteedBehavior, 1);
+								var fieldTurn = typeof(ComponentZombieSteedBehavior).GetField("m_turnSpeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+								if (fieldTurn != null) fieldTurn.SetValue(m_mountSteedBehavior, 0f);
+							}
+							catch { }
+						}
+						else
+						{
+							m_mountSteedBehavior.m_speedLevel = 1;
+							m_mountSteedBehavior.m_speed = 0f;
+							m_mountSteedBehavior.m_turnSpeed = 0f;
+						}
+
+						m_mountSteedBehavior.SpeedOrder = 0;
 						m_mountSteedBehavior.TurnOrder = 0f;
 						m_mountSteedBehavior.JumpOrder = 0f;
 
@@ -1015,19 +1050,48 @@ namespace Game
 				{
 					m_investigationTimeRemaining -= m_dt;
 
-					// IMPORTANTE: Mantener la montura frenada durante toda la investigación
-					// para evitar que la física o la inercia la muevan.
+					// IMPORTANTE: MANTENER EL FRENO MANUAL ACTIVO CADA FRAME
 					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
 					{
-						m_mountSteedBehavior.SpeedOrder = 0; // Mantener orden de freno activa
+						// Forzar parada por reflexión cada frame
+						if (m_mountSteedBehavior.GetType() == typeof(ComponentZombieSteedBehavior))
+						{
+							try
+							{
+								var fieldSpeed = typeof(ComponentZombieSteedBehavior).GetField("m_speed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+								if (fieldSpeed != null) fieldSpeed.SetValue(m_mountSteedBehavior, 0f);
+								var fieldLevel = typeof(ComponentZombieSteedBehavior).GetField("m_speedLevel", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+								if (fieldLevel != null) fieldLevel.SetValue(m_mountSteedBehavior, 1);
+								var fieldTurn = typeof(ComponentZombieSteedBehavior).GetField("m_turnSpeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+								if (fieldTurn != null) fieldTurn.SetValue(m_mountSteedBehavior, 0f);
+							}
+							catch { }
+						}
+						else
+						{
+							m_mountSteedBehavior.m_speedLevel = 1;
+							m_mountSteedBehavior.m_speed = 0f;
+							m_mountSteedBehavior.m_turnSpeed = 0f;
+						}
+
+						m_mountSteedBehavior.SpeedOrder = 0;
 						m_mountSteedBehavior.TurnOrder = 0f;
 						m_mountSteedBehavior.JumpOrder = 0f;
 
 						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
-						if (mountBody != null && mountBody.Velocity.Length() > 0.1f)
+						if (mountBody != null)
 						{
-							// Amortiguar velocidad residual suavemente
-							mountBody.Velocity *= 0.9f;
+							if (mountBody.Velocity.Length() > 0.1f)
+							{
+								mountBody.Velocity = Vector3.Zero;
+							}
+							ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
+							if (loco != null)
+							{
+								loco.WalkOrder = null;
+								loco.FlyOrder = Vector3.Zero;
+								loco.SwimOrder = null;
+							}
 						}
 					}
 
