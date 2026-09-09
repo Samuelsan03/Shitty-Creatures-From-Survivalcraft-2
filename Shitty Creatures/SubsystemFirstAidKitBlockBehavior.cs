@@ -7,14 +7,15 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class SubsystemLargeFirstAidKitBlockBehavior : SubsystemBlockBehavior
+	public class SubsystemFirstAidKitBlockBehavior : SubsystemBlockBehavior
 	{
 		public SubsystemAudio m_subsystemAudio;
 		public SubsystemBodies m_subsystemBodies;
 		public SubsystemGameInfo m_subsystemGameInfo;
 
-		public override int[] HandledBlocks => new int[] {
-			BlocksManager.GetBlockIndex<LargeFirstAidKitBlock>()
+		public override int[] HandledBlocks => new int[]
+		{
+			FirstAidKitBlock.Index
 		};
 
 		public override bool OnInteract(TerrainRaycastResult raycastResult, ComponentMiner componentMiner)
@@ -25,10 +26,12 @@ namespace Game
 			int blockValue = raycastResult.Value;
 			int blockIndex = Terrain.ExtractContents(blockValue);
 
-			if (blockIndex != BlocksManager.GetBlockIndex<LargeFirstAidKitBlock>())
+			if (blockIndex != FirstAidKitBlock.Index)
 				return false;
 
-			bool healed = TryHealTargetFromInteract(raycastResult, componentMiner);
+			FirstAidKitBlock.FirstAidKitType type = FirstAidKitBlock.GetFirstAidKitType(Terrain.ExtractData(blockValue));
+
+			bool healed = TryHealTargetFromInteract(raycastResult, componentMiner, type);
 
 			if (healed)
 			{
@@ -60,8 +63,10 @@ namespace Game
 			int activeBlockValue = componentMiner.ActiveBlockValue;
 			int activeBlockIndex = Terrain.ExtractContents(activeBlockValue);
 
-			if (activeBlockIndex != BlocksManager.GetBlockIndex<LargeFirstAidKitBlock>())
+			if (activeBlockIndex != FirstAidKitBlock.Index)
 				return false;
+
+			FirstAidKitBlock.FirstAidKitType type = FirstAidKitBlock.GetFirstAidKitType(Terrain.ExtractData(activeBlockValue));
 
 			Entity targetEntity = null;
 			ComponentBody hitBody = null;
@@ -117,7 +122,7 @@ namespace Game
 			if (health.DeathTime.HasValue)
 				return false;
 
-			float targetHealth = 1f;
+			float targetHealth = CalculateTargetHealth(health.Health, type);
 			float healAmount = targetHealth - health.Health;
 
 			if (healAmount <= 0)
@@ -133,24 +138,7 @@ namespace Game
 			Vector3 position = componentPlayer.ComponentBody.Position;
 			m_subsystemAudio.PlaySound("Audio/UI/cured", 1f, 0f, position, 5f, false);
 
-			if (targetEntity == componentPlayer.Entity)
-			{
-				string message = LanguageControl.Get("LargeFirstAidKit", "PlayerHealed");
-				componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.Green, true, false);
-			}
-			else
-			{
-				ComponentCreature creature = targetEntity.FindComponent<ComponentCreature>();
-				if (creature != null)
-				{
-					string creatureName = creature.DisplayName;
-					string message = string.Format(
-						LanguageControl.Get("LargeFirstAidKit", "NPCHealedFormat"),
-						creatureName
-					);
-					componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.Green, true, false);
-				}
-			}
+			ShowHealMessage(componentPlayer, targetEntity, type);
 
 			if (componentMiner.Inventory != null)
 			{
@@ -163,18 +151,26 @@ namespace Game
 			return true;
 		}
 
-		private bool IsAlly(ComponentPlayer player, Entity targetEntity)
+		private float CalculateTargetHealth(float currentHealth, FirstAidKitBlock.FirstAidKitType type)
 		{
-			if (targetEntity == player.Entity) return true;
-			var playerHerd = player.Entity.FindComponent<ComponentNewHerdBehavior>();
-			var targetCreature = targetEntity.FindComponent<ComponentCreature>();
-			if (playerHerd == null || targetCreature == null) return false;
-			var targetHerd = targetCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
-			if (targetHerd == null) return false;
-			return playerHerd.IsSameHerdOrGuardian(targetCreature);
+			if (type == FirstAidKitBlock.FirstAidKitType.Large)
+			{
+				return 1f;
+			}
+			else // Medium
+			{
+				if (currentHealth < 0.5f)
+				{
+					return 0.5f;
+				}
+				else
+				{
+					return 1f;
+				}
+			}
 		}
 
-		private bool TryHealTargetFromInteract(TerrainRaycastResult raycastResult, ComponentMiner componentMiner)
+		private bool TryHealTargetFromInteract(TerrainRaycastResult raycastResult, ComponentMiner componentMiner, FirstAidKitBlock.FirstAidKitType type)
 		{
 			ComponentPlayer componentPlayer = componentMiner.ComponentPlayer;
 			if (componentPlayer == null)
@@ -213,7 +209,7 @@ namespace Game
 			if (health.DeathTime.HasValue)
 				return false;
 
-			float targetHealth = 1f;
+			float targetHealth = CalculateTargetHealth(health.Health, type);
 			float healAmount = targetHealth - health.Health;
 
 			if (healAmount <= 0)
@@ -223,10 +219,24 @@ namespace Game
 
 			AchievementsManager.OnHeal(componentPlayer);
 
-			if (targetEntity == componentPlayer.Entity)
+			ShowHealMessage(componentPlayer, targetEntity, type);
+
+			return true;
+		}
+
+		private void ShowHealMessage(ComponentPlayer player, Entity targetEntity, FirstAidKitBlock.FirstAidKitType type)
+		{
+			// Definimos los índices base según el tipo
+			// Grande (Large = 0) -> Mensajes en 0 y 1
+			// Mediano (Medium = 1) -> Mensajes en 2 y 3
+			int messageIndexBase = (int)type * 2;
+
+			if (targetEntity == player.Entity)
 			{
-				string message = LanguageControl.Get("LargeFirstAidKit", "PlayerHealed");
-				componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.Green, true, false);
+				// "FirstAidKitMessages" es la clave del objeto JSON
+				// messageIndexBase es el número (0 o 2) para el jugador
+				string message = LanguageControl.Get("SubsystemFirstAidKitBlockBehavior", messageIndexBase);
+				player.ComponentGui.DisplaySmallMessage(message, Color.Green, true, false);
 			}
 			else
 			{
@@ -234,15 +244,14 @@ namespace Game
 				if (creature != null)
 				{
 					string creatureName = creature.DisplayName;
+					// messageIndexBase + 1 es el número (1 o 3) para el NPC
 					string message = string.Format(
-						LanguageControl.Get("LargeFirstAidKit", "NPCHealedFormat"),
+						LanguageControl.Get("SubsystemFirstAidKitBlockBehavior", messageIndexBase + 1),
 						creatureName
 					);
-					componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.Green, true, false);
+					player.ComponentGui.DisplaySmallMessage(message, Color.Green, true, false);
 				}
 			}
-
-			return true;
 		}
 
 		private float? RayBoxIntersection(Vector3 rayOrigin, Vector3 rayDirection, BoundingBox box)
@@ -279,6 +288,17 @@ namespace Game
 			}
 
 			return tmin;
+		}
+
+		private bool IsAlly(ComponentPlayer player, Entity targetEntity)
+		{
+			if (targetEntity == player.Entity) return true;
+			var playerHerd = player.Entity.FindComponent<ComponentNewHerdBehavior>();
+			var targetCreature = targetEntity.FindComponent<ComponentCreature>();
+			if (playerHerd == null || targetCreature == null) return false;
+			var targetHerd = targetCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
+			if (targetHerd == null) return false;
+			return playerHerd.IsSameHerdOrGuardian(targetCreature);
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary)
