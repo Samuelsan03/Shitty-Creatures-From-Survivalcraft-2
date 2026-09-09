@@ -1,4 +1,8 @@
 {
+  "FirstAidKitBlock": [
+  "Large First Aid Kit",
+  "Medium First Aid Kit"
+],
   "FlameBulletBlock": [
     "Flame Bullet",
     "Poison Bullet"
@@ -12,6 +16,12 @@
     "Repeating Severe Poison Bolt",
     "Repeating Fire Bolt"
   ],
+  "SubsystemFirstAidKitBlockBehavior": {
+    "0": "You have completely restored your health!",
+    "1": "The health of {0} has been completely restored!",
+    "2": "You have partially restored your health!",
+    "3": "The health of {0} has been partially restored!"
+  },
   "SubsystemAntidotePillBehavior": {
   "1": "Flu cured!",
   "2": "Nausea cured!",
@@ -406,14 +416,6 @@
     "GreenMoonBegins": "The Green Night has begun!",
     "GreenMoonEnds": "The Green Night has ended."
   },
-  "LargeFirstAidKit": {
-    "PlayerHealed": "You have completely restored your health!",
-    "NPCHealedFormat": "The health of {0} has been completely restored!"
-  },
-  "MediumFirstAidKit": {
-    "PlayerHealed": "¡You have partially restored your health!",
-    "NPCHealedFormat": "The health of {0} has been partially restored!"
-  },
   "EditTemperatureDialog": {
   "Settings": "Air Conditioner - Settings",
   "Ok": "OK",
@@ -699,6 +701,14 @@
   }
 },
   "Blocks": {
+"FirstAidKitBlock:0": {
+  "Description": "A large medical kit capable of completely restoring health.",
+  "CRDescription:0": "Combine two medium kits with extra supplies to create a large first aid kit"
+},
+"FirstAidKitBlock:1": {
+  "Description": "A medical kit capable of partially restoring health.",
+  "CRDescription:1": "Craft a medium first aid kit using canvas, string, and purple flowers"
+},
     "AntidotePillBlock:0": {
     "DisplayName": "Antidote Pill",
     "Description": "A pill that cures flu and poison. Use on yourself or point at a sick creature.",
@@ -897,16 +907,6 @@
       "DisplayName": "Toxin",
       "Description": "An extremely poisonous material saturated with lethal toxins. It cannot be crafted and is mainly obtained as loot from venomous creatures such as Infected Normal 3, Infected Normal 4, Boomer 3, Flying Infected 2, Flying Infected Boss, Tank 3, and Tank Ghost 3. Alternatively, it can be purchased from shops or traded with Pirata Hostil Comerciante"
     },
-    "MediumFirstAidKitBlock:0": {
-    "DisplayName": "Medium First Aid Kit",
-    "Description": "A medical kit designed to treat injuries by restoring a significant portion of health. Heals the target up to about half of their maximum health. Can be used on yourself or on other nearby creatures.",
-    "CRDescription:0": "A basic medical kit that heals wounds up to 50% or 100% if above half health."
-  },
-  "LargeFirstAidKitBlock:0": {
-    "DisplayName": "Large First Aid Kit",
-    "Description": "A powerful medical kit capable of fully restoring health. Instantly heals the target to maximum health. Can be used on yourself or on other nearby creatures.",
-    "CRDDescription:0": "An advanced medical kit that always heals to 100% regardless of current health."
-  },
     "AntidoteBucketBlock:0": {
     "DisplayName": "Antidote Bucket",
     "Description": "A bucket containing a powerful medicinal antidote made from antiflu tea and purple flowers. Drinking it removes poison and sickness from the body, stopping their harmful effects. It can be used on yourself or on other infected creatures. Also restores some thirst.",
