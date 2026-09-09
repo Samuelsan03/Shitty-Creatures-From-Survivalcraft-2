@@ -267,17 +267,28 @@ namespace Game
 
 			this.m_stateMachine.AddState("Chasing", delegate
 			{
-				this.m_subsystemNoise.MakeNoise(this.m_componentCreature.ComponentBody, 0.25f, 6f); // Ruido original
+				this.m_subsystemNoise.MakeNoise(this.m_componentCreature.ComponentBody, 0.25f, 6f);
 
 				if (this.m_subsystemAttractNoise != null)
 				{
-					this.m_subsystemAttractNoise.MakeLureNoise(this.m_componentCreature.ComponentBody, 0.5f, 8f); // NUEVO: ruido de atracción para que otros zombis se sientan atraídos
+					this.m_subsystemAttractNoise.MakeLureNoise(this.m_componentCreature.ComponentBody, 0.5f, 8f);
 				}
 				if (this.PlayIdleSoundWhenStartToChase)
 				{
 					this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
 				}
 				this.m_nextUpdateTime = 0.0;
+
+				// Inicializar referencia a la montura
+				ComponentRider rider = Entity.FindComponent<ComponentRider>();
+				if (rider != null && rider.Mount != null)
+				{
+					m_mountSteedBehavior = rider.Mount.Entity.FindComponent<ComponentSteedBehavior>();
+				}
+				else
+				{
+					m_mountSteedBehavior = null;
+				}
 			}, delegate
 			{
 				if (!this.IsActive)
@@ -317,6 +328,99 @@ namespace Game
 				}
 				else
 				{
+					// ===== CORRECCIÓN: Control de montura en persecución NORMAL =====
+					if (m_mountSteedBehavior != null)
+					{
+						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
+						if (mountBody != null && this.m_target.ComponentBody != null)
+						{
+							// Verificar si estamos en rango de ataque REAL (no 6f fijos)
+							if (this.IsTargetInAttackRange(this.m_target.ComponentBody))
+							{
+								// Estamos cerca: Frenar para atacar
+								m_mountSteedBehavior.SpeedOrder = 0;
+								m_mountSteedBehavior.TurnOrder = 0f;
+								m_mountSteedBehavior.JumpOrder = 0f;
+
+								// Frenado por reflexión para ZombieSteed
+								if (m_mountSteedBehavior.GetType() == typeof(ComponentZombieSteedBehavior))
+								{
+									try
+									{
+										var fieldSpeed = typeof(ComponentZombieSteedBehavior).GetField("m_speed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+										if (fieldSpeed != null) fieldSpeed.SetValue(m_mountSteedBehavior, 0f);
+										var fieldLevel = typeof(ComponentZombieSteedBehavior).GetField("m_speedLevel", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+										if (fieldLevel != null) fieldLevel.SetValue(m_mountSteedBehavior, 1);
+										var fieldTurn = typeof(ComponentZombieSteedBehavior).GetField("m_turnSpeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+										if (fieldTurn != null) fieldTurn.SetValue(m_mountSteedBehavior, 0f);
+									}
+									catch { }
+								}
+								else
+								{
+									m_mountSteedBehavior.m_speed = 0f;
+									m_mountSteedBehavior.m_turnSpeed = 0f;
+								}
+
+								mountBody.Velocity = Vector3.Zero;
+								if (m_componentPathfinding != null) m_componentPathfinding.Stop();
+							}
+							else
+							{
+								// Estamos lejos: Moverse hacia el objetivo
+								Vector3 toTarget = this.m_target.ComponentBody.Position - mountBody.Position;
+								Vector3 targetDir = toTarget;
+								targetDir.Y = 0f;
+								if (targetDir.LengthSquared() > 0.001f)
+									targetDir = Vector3.Normalize(targetDir);
+								else
+									targetDir = Vector3.UnitZ;
+
+								Vector3 forward = mountBody.Rotation.GetForwardVector();
+								forward.Y = 0f;
+								if (forward.LengthSquared() > 0.001f)
+									forward = Vector3.Normalize(forward);
+								else
+									forward = Vector3.UnitZ;
+
+								float angle = MathF.Atan2(forward.X, forward.Z) - MathF.Atan2(targetDir.X, targetDir.Z);
+								angle = MathUtils.NormalizeAngle(angle);
+								float turn = Math.Clamp(angle / (MathF.PI / 2f), -0.5f, 0.5f);
+								m_mountSteedBehavior.TurnOrder = turn;
+
+								if (MathF.Abs(angle) <= 0.8f)
+									m_mountSteedBehavior.SpeedOrder = 1;
+								else
+									m_mountSteedBehavior.SpeedOrder = 0;
+
+								if (m_componentPathfinding != null) m_componentPathfinding.Stop();
+							}
+
+							// Lógica visual y de ataque
+							this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
+							if (this.IsTargetInAttackRange(this.m_target.ComponentBody))
+							{
+								this.m_componentCreatureModel.AttackOrder = true;
+							}
+							if (this.m_componentCreatureModel.IsAttackHitMoment)
+							{
+								Vector3 hitPoint;
+								ComponentBody hitBody = this.GetHitBody(this.m_target.ComponentBody, out hitPoint);
+								if (hitBody != null)
+								{
+									float chaseTimeBefore = this.m_chaseTime;
+									float x = this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f;
+									this.m_chaseTime = MathUtils.Max(this.m_chaseTime, x);
+									this.m_componentMiner.Hit(hitBody, hitPoint, this.m_componentCreature.ComponentBody.Matrix.Forward);
+									this.m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+								}
+							}
+							return;
+						}
+					}
+					// ===== FIN CORRECCIÓN =====
+
+					// Lógica estándar (si no está montado)
 					if (this.ScoreTarget(this.m_target) <= 0f)
 					{
 						this.m_targetUnsuitableTime += this.m_dt;
