@@ -1,5 +1,14 @@
 <ShittyRecipes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CraftingRecipes.xsd">
     <Recipes>
+    <Recipe Result="FirstAidKitBlock:0" ResultCount="1" RequiredHeatLevel="0" a="string" b="canvas" c="firstaidkit:1" Description="[0]">
+    "cac"
+    "aba"
+    "aba"
+</Recipe>
+    <Recipe Result="FirstAidKitBlock:1" ResultCount="1" RequiredHeatLevel="0" a="string" b="canvas" c="purpleflower" Description="[0]">
+    "cbc"
+    "aba"
+</Recipe>
     <Recipe Result="AntidotePillBlock" ResultCount="2" RequiredHeatLevel="0" RequiredPlayerLevel="2" a="purpleflower" b="whiteflower" Description="[0]">
     "ab"
 </Recipe>
@@ -468,16 +477,6 @@
             "a a"
             "b b"
         </Recipe>
-        <Recipe Result="MediumFirstAidKitBlock" ResultCount="1" RequiredHeatLevel="0" a="canvas" b="string" c="whiteflower" Description="[0]">
-    "aba"
-    "cac"
-    "aba"
-</Recipe>
-<Recipe Result="LargeFirstAidKitBlock" ResultCount="1" RequiredHeatLevel="0" a="canvas" b="string" c="whiteflower" d="purpleflower" Description="[0]">
-    "aba"
-    "cdc"
-    "aba"
-</Recipe>
 <Recipe Result="RemoteControlBlock" ResultCount="1" RequiredHeatLevel="0" a="semiconductorblock" b="wire" c="battery" Description="[0]">
     " a "
     "bcb"
