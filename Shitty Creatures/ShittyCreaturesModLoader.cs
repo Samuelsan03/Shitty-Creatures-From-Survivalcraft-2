@@ -165,8 +165,6 @@ namespace Game
 			ModsManager.RegisterHook("OnVitalStatsUpdateTemperature", this);
 			ModsManager.RegisterHook("CraftingRecipesManagerInitialize", this);
 			ModsManager.RegisterHook("ClothingProcessSlotItems", this);
-			ModsManager.RegisterHook("OnVitalStatsEat", this);
-			ModsManager.RegisterHook("UpdatePlayerInputAim", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -174,26 +172,6 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		// Métodos auxiliares privados
 		// ---------------------------------------------------------------------------------
-
-		public override void OnVitalStatsEat(ComponentVitalStats vitalStats, ref int value, ref bool skipVanilla, out bool eatSuccess)
-		{
-			eatSuccess = false;
-			SubsystemCandyBlockBehavior subsystem = vitalStats.Project.FindSubsystem<SubsystemCandyBlockBehavior>(false);
-			if (subsystem != null)
-			{
-				subsystem.HandleEat(vitalStats, ref value, ref skipVanilla, out eatSuccess);
-			}
-		}
-
-		public override void UpdatePlayerInputAim(ComponentPlayer player, bool isAiming, ref bool flag, ref float timeIntervalAim, bool skipVanilla, out bool outSkipVanilla)
-		{
-			outSkipVanilla = skipVanilla;
-			SubsystemCandyBlockBehavior subsystem = player.Project.FindSubsystem<SubsystemCandyBlockBehavior>(false);
-			if (subsystem != null)
-			{
-				subsystem.HandleAim(player, isAiming, ref flag, ref timeIntervalAim, skipVanilla, out outSkipVanilla);
-			}
-		}
 
 		/// <summary>
 		/// Hook para reemplazar bowls consumidas por bowl vacía (misma lógica que vanilla con buckets).
@@ -574,14 +552,12 @@ namespace Game
 		private bool IsHealingItem(int blockIndex)
 		{
 			int antidoteIndex = BlocksManager.GetBlockIndex<AntidoteBucketBlock>(false, false);
+			int antidoteBowlIndex = BlocksManager.GetBlockIndex<AntidoteBowlBlock>(false, false);
 			int teaIndex = BlocksManager.GetBlockIndex<TeaAntifluBucketBlock>(false, false);
-			int largeKitIndex = BlocksManager.GetBlockIndex<LargeFirstAidKitBlock>(false, false);
-			int mediumKitIndex = BlocksManager.GetBlockIndex<MediumFirstAidKitBlock>(false, false);
+			int antidotepillIndex = BlocksManager.GetBlockIndex<AntidotePillBlock>(false, false);
+			int firstaidIndex = BlocksManager.GetBlockIndex<FirstAidKitBlock>(false, false);
 
-			return blockIndex == antidoteIndex ||
-				   blockIndex == teaIndex ||
-				   blockIndex == largeKitIndex ||
-				   blockIndex == mediumKitIndex;
+			return blockIndex == antidoteIndex || blockIndex == teaIndex || blockIndex == antidoteBowlIndex || blockIndex == teaIndex || blockIndex == antidotepillIndex || blockIndex == firstaidIndex;
 		}
 
 		// ---------------------------------------------------------------------------------
@@ -1821,8 +1797,9 @@ namespace Game
 			int swm500Index = GetBlockIndexByName("SWM500Block");
 			int swm500BulletIndex = GetBlockIndexByName("SWM500Bullet");
 			int stoneAxeBlockIndex = GetBlockIndexByName("StoneAxeBlock");
-			int mediumFirstAidKitIndex = GetBlockIndexByName("MediumFirstAidKitBlock");
+			int firstAidKitIndex = GetBlockIndexByName("FirstAidKitBlock");
 			int CookedMeatBlock = GetBlockIndexByName("CookedMeatBlock");
+			int mediumFirstAidKitValue = Terrain.MakeBlockValue(firstAidKitIndex, 0, 1);
 
 			GiveItemToPlayer(inventory, ironMacheteIndex, 1);
 			GiveItemToPlayer(inventory, boiledWaterBucketIndex, 1);
@@ -1832,7 +1809,7 @@ namespace Game
 			int swm500Value = Terrain.MakeBlockValue(swm500Index, 0, SWM500Block.SetBulletNum(8));
 			GiveItemToPlayer(inventory, swm500Value, 1);
 			GiveItemToPlayer(inventory, swm500BulletIndex, 12);
-			GiveItemToPlayer(inventory, mediumFirstAidKitIndex, 5);
+			GiveItemToPlayer(inventory, mediumFirstAidKitValue, 5);
 			GiveItemToPlayer(inventory, CookedMeatBlock, 5);
 
 			return true;
