@@ -7,7 +7,7 @@ using static Game.SubsystemGreenNightSky;
 
 namespace Game
 {
-	public class ComponentZombieChaseBehavior : ComponentBehavior, IUpdateable
+	public class ComponentZombieChaseBehavior : ComponentBehavior, IUpdateable, INoiseAttractListener
 	{
 		// Propiedades
 		public bool ForceAttackDuringGreenNight => this.m_forceAttackDuringGreenNight;
@@ -76,7 +76,8 @@ namespace Game
 		public bool PlayIdleSoundWhenStartToChase = true;
 		public bool PlayAngrySoundWhenChasing = true;
 		public float TargetInRangeTimeToChase = 3f;
-
+		private Vector3? m_noisePosition;
+		private double m_investigationEndTime;
 		// Campos específicos del zombie
 		private static readonly HashSet<string> s_excludedMountNames = new HashSet<string>
 		{
@@ -333,6 +334,60 @@ namespace Game
 				}
 			}, null);
 
+			// Estado: Investigando Ruido (Interrumpe el chase para ir al origen del sonido)
+			this.m_stateMachine.AddState("InvestigatingNoise", delegate
+			{
+				// Entrada: Detener ataque, fijar destino y tiempo
+				this.m_componentCreatureModel.AttackOrder = false;
+				if (m_noisePosition.HasValue)
+				{
+					float speed = this.m_componentCreature.ComponentLocomotion.WalkSpeed;
+					this.m_componentPathfinding.SetDestination(
+						m_noisePosition,
+						speed * 1.2f, // Un poco más rápido al investigar
+						1f,
+						100, // Pathfinding nodes
+						true,
+						false,
+						true,
+						null
+					);
+					this.m_investigationEndTime = m_subsystemTime.GameTime + 5.0; // Investigar por 5 segundos
+				}
+			}, delegate
+			{
+				// Actualización: Comprobar si llegó o se acabó el tiempo
+				if (m_noisePosition.HasValue)
+				{
+					float distSq = Vector3.DistanceSquared(this.m_componentCreature.ComponentBody.Position, m_noisePosition.Value);
+
+					// Si llegó cerca, se atascó o pasó el tiempo
+					if (distSq < 2f || m_componentPathfinding.IsStuck || m_subsystemTime.GameTime >= m_investigationEndTime)
+					{
+						this.m_noisePosition = null; // Limpiar ruido
+
+						// Volver a perseguir al objetivo original si sigue vivo, sino buscar nuevo
+						if (this.m_target != null && this.m_target.ComponentHealth.Health > 0f)
+						{
+							this.m_stateMachine.TransitionTo("Chasing");
+						}
+						else
+						{
+							this.m_stateMachine.TransitionTo("LookingForTarget");
+						}
+					}
+				}
+				else
+				{
+					// Si por alguna razón se borra la posición, volver a buscar
+					this.m_stateMachine.TransitionTo("LookingForTarget");
+				}
+			}, delegate
+			{
+				// Salida: Detener movimiento
+				this.m_componentPathfinding.Stop();
+			});
+
 			this.m_stateMachine.TransitionTo("LookingForTarget");
 
 			// Configuración específica de GreenNight
@@ -511,6 +566,16 @@ namespace Game
 						this.m_retaliationTarget = nextTarget;
 					}
 				}
+			}
+		}
+
+		public void AttractedToNoise(ComponentBody sourceBody, Vector3 sourcePosition, float lureStrength)
+		{
+			// Si está persiguiendo ("Chasing"), interrumpir e ir por el ruido
+			if (this.m_stateMachine.CurrentState == "Chasing")
+			{
+				this.m_noisePosition = sourcePosition;
+				this.m_stateMachine.TransitionTo("InvestigatingNoise");
 			}
 		}
 
