@@ -165,6 +165,7 @@ namespace Game
 			ModsManager.RegisterHook("OnVitalStatsUpdateTemperature", this);
 			ModsManager.RegisterHook("CraftingRecipesManagerInitialize", this);
 			ModsManager.RegisterHook("ClothingProcessSlotItems", this);
+			ModsManager.RegisterHook("UpdatePlayerInputAim", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -3515,6 +3516,17 @@ namespace Game
 			}
 			// Si no hay cobertura, no intervenimos (dejamos que el juego maneje la temperatura)
 		}
+
+		public override void UpdatePlayerInputAim(ComponentPlayer player, bool isAiming, ref bool flag, ref float timeIntervalAim, bool skippedByMods, out bool skip)
+		{
+			skip = false;
+			if (!skippedByMods)
+			{
+				// Forzar aim rápido en todos los modos
+				timeIntervalAim = 0.1f;
+			}
+		}
+
 
 		// ---------------------------------------------------------------------------------
 		// SaveSettings / LoadSettings (heredados de ChaseMusicModLoader, vacíos)
