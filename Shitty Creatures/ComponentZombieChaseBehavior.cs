@@ -7,7 +7,7 @@ using static Game.SubsystemGreenNightSky;
 
 namespace Game
 {
-	public class ComponentZombieChaseBehavior : ComponentBehavior, IUpdateable, INoiseAttractListener
+	public class ComponentZombieChaseBehavior : ComponentBehavior, IUpdateable
 	{
 		// Propiedades
 		public bool ForceAttackDuringGreenNight => this.m_forceAttackDuringGreenNight;
@@ -22,15 +22,12 @@ namespace Game
 		public string CurrentState => this.m_stateMachine?.CurrentState;
 
 		// Campos copiados de ComponentChaseBehavior
-		private ComponentSteedBehavior m_mountSteedBehavior;
-		private bool m_isMountedDuringNoise;
 		private SubsystemGameInfo m_subsystemGameInfo;
 		private SubsystemPlayers m_subsystemPlayers;
 		private SubsystemSky m_subsystemSky;
 		private SubsystemBodies m_subsystemBodies;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemNoise m_subsystemNoise;
-		private SubsystemAttractNoise m_subsystemAttractNoise;
 		private ComponentCreature m_componentCreature;
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentMiner m_componentMiner;
@@ -92,15 +89,7 @@ namespace Game
 			"Horse_Bay_Saddled"
 		};
 
-		private Vector3 m_attractPosition;
-		private float m_investigationTimeRemaining = 0f;
 		private ComponentPathfinding m_zombiePathfinding;
-
-		private string m_stateBeforeNoise;
-		private ComponentCreature m_targetBeforeNoise;
-		private float m_chaseTimeBeforeNoise;
-		private bool m_wasPersistentBeforeNoise;
-		private float m_rangeBeforeNoise;
 
 		private ComponentZombieHerdBehavior m_componentZombieHerdBehavior;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
@@ -154,7 +143,6 @@ namespace Game
 
 			// Cargar valores específicos del zombie
 			this.m_componentZombieHerdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
-			this.m_subsystemAttractNoise = base.Project.FindSubsystem<SubsystemAttractNoise>(true);
 			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			this.m_attacksSameHerd = valuesDictionary.GetValue<bool>("AttacksSameHerd", false);
 			this.m_attacksAllCategories = valuesDictionary.GetValue<bool>("AttacksAllCategories", true);
@@ -210,7 +198,6 @@ namespace Game
 
 			// Configurar estados
 			this.AddFleeState();
-			this.AddNoiseAttractionStates();
 
 			// Estados base (copiados de ComponentChaseBehavior)
 			this.m_stateMachine.AddState("LookingForTarget", delegate
@@ -268,27 +255,11 @@ namespace Game
 			this.m_stateMachine.AddState("Chasing", delegate
 			{
 				this.m_subsystemNoise.MakeNoise(this.m_componentCreature.ComponentBody, 0.25f, 6f);
-
-				if (this.m_subsystemAttractNoise != null)
-				{
-					this.m_subsystemAttractNoise.MakeLureNoise(this.m_componentCreature.ComponentBody, 0.5f, 8f);
-				}
 				if (this.PlayIdleSoundWhenStartToChase)
 				{
 					this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
 				}
 				this.m_nextUpdateTime = 0.0;
-
-				// Inicializar referencia a la montura
-				ComponentRider rider = Entity.FindComponent<ComponentRider>();
-				if (rider != null && rider.Mount != null)
-				{
-					m_mountSteedBehavior = rider.Mount.Entity.FindComponent<ComponentSteedBehavior>();
-				}
-				else
-				{
-					m_mountSteedBehavior = null;
-				}
 			}, delegate
 			{
 				if (!this.IsActive)
@@ -328,99 +299,6 @@ namespace Game
 				}
 				else
 				{
-					// ===== CORRECCIÓN: Control de montura en persecución NORMAL =====
-					if (m_mountSteedBehavior != null)
-					{
-						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
-						if (mountBody != null && this.m_target.ComponentBody != null)
-						{
-							// Verificar si estamos en rango de ataque REAL (no 6f fijos)
-							if (this.IsTargetInAttackRange(this.m_target.ComponentBody))
-							{
-								// Estamos cerca: Frenar para atacar
-								m_mountSteedBehavior.SpeedOrder = 0;
-								m_mountSteedBehavior.TurnOrder = 0f;
-								m_mountSteedBehavior.JumpOrder = 0f;
-
-								// Frenado por reflexión para ZombieSteed
-								if (m_mountSteedBehavior.GetType() == typeof(ComponentZombieSteedBehavior))
-								{
-									try
-									{
-										var fieldSpeed = typeof(ComponentZombieSteedBehavior).GetField("m_speed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-										if (fieldSpeed != null) fieldSpeed.SetValue(m_mountSteedBehavior, 0f);
-										var fieldLevel = typeof(ComponentZombieSteedBehavior).GetField("m_speedLevel", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-										if (fieldLevel != null) fieldLevel.SetValue(m_mountSteedBehavior, 1);
-										var fieldTurn = typeof(ComponentZombieSteedBehavior).GetField("m_turnSpeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-										if (fieldTurn != null) fieldTurn.SetValue(m_mountSteedBehavior, 0f);
-									}
-									catch { }
-								}
-								else
-								{
-									m_mountSteedBehavior.m_speed = 0f;
-									m_mountSteedBehavior.m_turnSpeed = 0f;
-								}
-
-								mountBody.Velocity = Vector3.Zero;
-								if (m_componentPathfinding != null) m_componentPathfinding.Stop();
-							}
-							else
-							{
-								// Estamos lejos: Moverse hacia el objetivo
-								Vector3 toTarget = this.m_target.ComponentBody.Position - mountBody.Position;
-								Vector3 targetDir = toTarget;
-								targetDir.Y = 0f;
-								if (targetDir.LengthSquared() > 0.001f)
-									targetDir = Vector3.Normalize(targetDir);
-								else
-									targetDir = Vector3.UnitZ;
-
-								Vector3 forward = mountBody.Rotation.GetForwardVector();
-								forward.Y = 0f;
-								if (forward.LengthSquared() > 0.001f)
-									forward = Vector3.Normalize(forward);
-								else
-									forward = Vector3.UnitZ;
-
-								float angle = MathF.Atan2(forward.X, forward.Z) - MathF.Atan2(targetDir.X, targetDir.Z);
-								angle = MathUtils.NormalizeAngle(angle);
-								float turn = Math.Clamp(angle / (MathF.PI / 2f), -0.5f, 0.5f);
-								m_mountSteedBehavior.TurnOrder = turn;
-
-								if (MathF.Abs(angle) <= 0.8f)
-									m_mountSteedBehavior.SpeedOrder = 1;
-								else
-									m_mountSteedBehavior.SpeedOrder = 0;
-
-								if (m_componentPathfinding != null) m_componentPathfinding.Stop();
-							}
-
-							// Lógica visual y de ataque
-							this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
-							if (this.IsTargetInAttackRange(this.m_target.ComponentBody))
-							{
-								this.m_componentCreatureModel.AttackOrder = true;
-							}
-							if (this.m_componentCreatureModel.IsAttackHitMoment)
-							{
-								Vector3 hitPoint;
-								ComponentBody hitBody = this.GetHitBody(this.m_target.ComponentBody, out hitPoint);
-								if (hitBody != null)
-								{
-									float chaseTimeBefore = this.m_chaseTime;
-									float x = this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f;
-									this.m_chaseTime = MathUtils.Max(this.m_chaseTime, x);
-									this.m_componentMiner.Hit(hitBody, hitPoint, this.m_componentCreature.ComponentBody.Matrix.Forward);
-									this.m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
-								}
-							}
-							return;
-						}
-					}
-					// ===== FIN CORRECCIÓN =====
-
-					// Lógica estándar (si no está montado)
 					if (this.ScoreTarget(this.m_target) <= 0f)
 					{
 						this.m_targetUnsuitableTime += this.m_dt;
@@ -484,20 +362,7 @@ namespace Game
 				this.StopAttack();
 			}
 
-			// Si está en estados de ruido, solo actualizar la máquina de estados
-			string currentState = this.m_stateMachine?.CurrentState;
-			if (currentState == "AttractedToNoise" || currentState == "InvestigatingNoise")
-			{
-				this.m_dt = dt;
-				this.m_stateMachine.Update();
-				return;
-			}
-
 			// Lógica de Update copiada de ComponentChaseBehavior
-			if (this.m_suppressed)
-			{
-				this.StopAttack();
-			}
 			this.m_autoChaseSuppressionTime -= dt;
 			if (this.IsActive && this.m_target != null)
 			{
@@ -656,9 +521,6 @@ namespace Game
 		{
 			if (this.m_suppressed)
 				return;
-
-			// Salir de estados de ruido
-			ExitNoiseAttractionStates();
 
 			bool isRetaliating = this.m_isRetaliating && componentCreature == this.m_retaliationTarget;
 			bool isSameHerdTarget = !isRetaliating && !this.m_attacksSameHerd && this.IsSameHerd(componentCreature);
@@ -904,379 +766,6 @@ namespace Game
 		}
 
 		// ==========================================
-		// MÉTODO DE ATRACCIÓN POR RUIDO (INoiseAttractListener)
-		// ==========================================
-		public void AttractedToNoise(ComponentBody sourceBody, Vector3 sourcePosition, float lureStrength)
-		{
-			m_attractPosition = sourcePosition;
-			string currentState = this.m_stateMachine?.CurrentState;
-
-			if (currentState == "AttractedToNoise")
-			{
-				if (m_zombiePathfinding != null)
-				{
-					m_zombiePathfinding.SetDestination(m_attractPosition, 1f, 1f, 10, true, false, false, null);
-				}
-				return;
-			}
-
-			if (currentState == "InvestigatingNoise")
-			{
-				return;
-			}
-
-			m_stateBeforeNoise = !string.IsNullOrEmpty(currentState) ? currentState : "LookingForTarget";
-			m_targetBeforeNoise = m_target;
-			m_chaseTimeBeforeNoise = m_chaseTime;
-			m_wasPersistentBeforeNoise = m_isPersistent;
-			m_rangeBeforeNoise = m_range;
-
-			this.m_stateMachine.TransitionTo("AttractedToNoise");
-		}
-
-		// ==========================================
-		// ESTADOS DE ATRACCIÓN POR RUIDO (SOLUCIÓN REFLEXIÓN PARA ZOMBIESTEED)
-		// ==========================================
-		private void AddNoiseAttractionStates()
-		{
-			// Estado: AttractedToNoise
-			this.m_stateMachine.AddState("AttractedToNoise",
-				// --- ENTRADA ---
-				delegate
-				{
-					m_target = null;
-					this.IsActive = false;
-					this.m_range = 0f;
-					this.m_chaseTime = 0f;
-					this.m_isPersistent = false;
-					this.m_importanceLevel = 0f;
-					this.m_nextUpdateTime = 0.0;
-					this.m_componentCreatureModel.AttackOrder = false;
-					this.m_componentCreature.ComponentCreatureModel.LookAtOrder = null;
-
-					// Verificar si el zombi está montado
-					ComponentRider rider = Entity.FindComponent<ComponentRider>();
-					if (rider != null && rider.Mount != null)
-					{
-						m_isMountedDuringNoise = true;
-						m_mountSteedBehavior = rider.Mount.Entity.FindComponent<ComponentSteedBehavior>();
-						if (m_zombiePathfinding != null) m_zombiePathfinding.Stop();
-					}
-					else
-					{
-						m_isMountedDuringNoise = false;
-						m_mountSteedBehavior = null;
-						if (m_zombiePathfinding != null && m_componentCreature.ComponentBody != null)
-						{
-							m_zombiePathfinding.Stop();
-							m_zombiePathfinding.SetDestination(m_attractPosition, 1f, 1f, 10, true, false, false, null);
-						}
-					}
-				},
-				// --- ACTUALIZACIÓN ---
-				delegate
-				{
-					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
-					{
-						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
-						if (mountBody != null)
-						{
-							Vector3 toAttract = m_attractPosition - mountBody.Position;
-							float distHorizontal = new Vector2(toAttract.X, toAttract.Z).Length();
-
-							// ZONA DE FRENADO (6 bloques de distancia)
-							if (distHorizontal <= 6f)
-							{
-								// ========================================
-								// FRENO DE EMERGENCIA CON REFLEXIÓN
-								// ========================================
-
-								// 1. Intentar manejar ComponentZombieSteedBehavior (variables privadas)
-								if (m_mountSteedBehavior.GetType() == typeof(ComponentZombieSteedBehavior))
-								{
-									try
-									{
-										// Acceso por reflexión a 'm_speed' privada
-										var fieldSpeed = typeof(ComponentZombieSteedBehavior).GetField("m_speed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-										if (fieldSpeed != null) fieldSpeed.SetValue(m_mountSteedBehavior, 0f);
-
-										// Acceso por reflexión a 'm_speedLevel' privada
-										var fieldLevel = typeof(ComponentZombieSteedBehavior).GetField("m_speedLevel", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-										if (fieldLevel != null) fieldLevel.SetValue(m_mountSteedBehavior, 1); // 1 = Idle/Parado
-
-										// Acceso a 'm_turnSpeed' privada
-										var fieldTurn = typeof(ComponentZombieSteedBehavior).GetField("m_turnSpeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-										if (fieldTurn != null) fieldTurn.SetValue(m_mountSteedBehavior, 0f);
-									}
-									catch
-									{
-										// Si falla la reflexión, fallback a físico directo
-									}
-								}
-								else
-								{
-									// 2. Manejo normal para otras monturas (variables públicas)
-									m_mountSteedBehavior.m_speedLevel = 1;
-									m_mountSteedBehavior.m_speed = 0f;
-									m_mountSteedBehavior.m_turnSpeed = 0f;
-								}
-
-								// Limpiar órdenes públicas
-								m_mountSteedBehavior.SpeedOrder = 0;
-								m_mountSteedBehavior.TurnOrder = 0f;
-								m_mountSteedBehavior.JumpOrder = 0f;
-
-								// 3. Freno Físico Directo
-								mountBody.Velocity = Vector3.Zero;
-
-								// 4. Cortar Locomotion
-								ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
-								if (loco != null)
-								{
-									loco.WalkOrder = null;
-									loco.FlyOrder = Vector3.Zero;
-									loco.SwimOrder = null;
-								}
-
-								// Si está muy cerca, transitar a investigar
-								if (distHorizontal <= 2f)
-								{
-									m_stateMachine.TransitionTo("InvestigatingNoise");
-								}
-							}
-							else
-							{
-								// Distancia > 6f: Moverse normalmente hacia el ruido
-								Vector3 targetDir = toAttract;
-								targetDir.Y = 0f;
-								if (targetDir.LengthSquared() > 0.001f)
-									targetDir = Vector3.Normalize(targetDir);
-								else
-									targetDir = Vector3.UnitZ;
-
-								Vector3 forward = mountBody.Rotation.GetForwardVector();
-								forward.Y = 0f;
-								if (forward.LengthSquared() > 0.001f)
-									forward = Vector3.Normalize(forward);
-								else
-									forward = Vector3.UnitZ;
-
-								float angle = MathF.Atan2(forward.X, forward.Z) - MathF.Atan2(targetDir.X, targetDir.Z);
-								angle = MathUtils.NormalizeAngle(angle);
-								float turn = Math.Clamp(angle / (MathF.PI / 2f), -0.5f, 0.5f);
-								m_mountSteedBehavior.TurnOrder = turn;
-
-								if (MathF.Abs(angle) <= 0.8f)
-									m_mountSteedBehavior.SpeedOrder = 1;
-								else
-									m_mountSteedBehavior.SpeedOrder = 0;
-							}
-						}
-					}
-					else if (m_zombiePathfinding != null && m_componentCreature.ComponentBody != null)
-					{
-						float distToAttract = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_attractPosition);
-						if (distToAttract <= 2f)
-						{
-							m_zombiePathfinding.Stop();
-							m_stateMachine.TransitionTo("InvestigatingNoise");
-						}
-						else if (m_zombiePathfinding.Destination == null || m_zombiePathfinding.IsStuck)
-						{
-							m_zombiePathfinding.SetDestination(m_attractPosition, 1f, 1f, 10, true, false, false, null);
-						}
-					}
-				},
-				// --- SALIDA ---
-				delegate
-				{
-					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
-					{
-						m_mountSteedBehavior.SpeedOrder = 0;
-						m_mountSteedBehavior.TurnOrder = 0f;
-					}
-					else if (m_zombiePathfinding != null)
-					{
-						m_zombiePathfinding.Stop();
-					}
-				}
-			);
-
-			// Estado: InvestigatingNoise
-			this.m_stateMachine.AddState("InvestigatingNoise",
-				// --- ENTRADA ---
-				delegate
-				{
-					m_investigationTimeRemaining = 2.5f;
-					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
-					{
-						// Misma lógica de freno con reflexión al entrar
-						if (m_mountSteedBehavior.GetType() == typeof(ComponentZombieSteedBehavior))
-						{
-							try
-							{
-								var fieldSpeed = typeof(ComponentZombieSteedBehavior).GetField("m_speed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-								if (fieldSpeed != null) fieldSpeed.SetValue(m_mountSteedBehavior, 0f);
-								var fieldLevel = typeof(ComponentZombieSteedBehavior).GetField("m_speedLevel", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-								if (fieldLevel != null) fieldLevel.SetValue(m_mountSteedBehavior, 1);
-								var fieldTurn = typeof(ComponentZombieSteedBehavior).GetField("m_turnSpeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-								if (fieldTurn != null) fieldTurn.SetValue(m_mountSteedBehavior, 0f);
-							}
-							catch { }
-						}
-						else
-						{
-							m_mountSteedBehavior.m_speedLevel = 1;
-							m_mountSteedBehavior.m_speed = 0f;
-							m_mountSteedBehavior.m_turnSpeed = 0f;
-						}
-
-						m_mountSteedBehavior.SpeedOrder = 0;
-						m_mountSteedBehavior.TurnOrder = 0f;
-						m_mountSteedBehavior.JumpOrder = 0f;
-
-						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
-						if (mountBody != null)
-						{
-							mountBody.Velocity = Vector3.Zero;
-							ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
-							if (loco != null)
-							{
-								loco.WalkOrder = null;
-								loco.FlyOrder = Vector3.Zero;
-								loco.SwimOrder = null;
-							}
-						}
-					}
-				},
-				// --- ACTUALIZACIÓN ---
-				delegate
-				{
-					m_investigationTimeRemaining -= m_dt;
-
-					// IMPORTANTE: MANTENER EL FRENO MANUAL ACTIVO CADA FRAME
-					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
-					{
-						// Forzar parada por reflexión cada frame
-						if (m_mountSteedBehavior.GetType() == typeof(ComponentZombieSteedBehavior))
-						{
-							try
-							{
-								var fieldSpeed = typeof(ComponentZombieSteedBehavior).GetField("m_speed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-								if (fieldSpeed != null) fieldSpeed.SetValue(m_mountSteedBehavior, 0f);
-								var fieldLevel = typeof(ComponentZombieSteedBehavior).GetField("m_speedLevel", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-								if (fieldLevel != null) fieldLevel.SetValue(m_mountSteedBehavior, 1);
-								var fieldTurn = typeof(ComponentZombieSteedBehavior).GetField("m_turnSpeed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-								if (fieldTurn != null) fieldTurn.SetValue(m_mountSteedBehavior, 0f);
-							}
-							catch { }
-						}
-						else
-						{
-							m_mountSteedBehavior.m_speedLevel = 1;
-							m_mountSteedBehavior.m_speed = 0f;
-							m_mountSteedBehavior.m_turnSpeed = 0f;
-						}
-
-						m_mountSteedBehavior.SpeedOrder = 0;
-						m_mountSteedBehavior.TurnOrder = 0f;
-						m_mountSteedBehavior.JumpOrder = 0f;
-
-						ComponentBody mountBody = m_mountSteedBehavior.Entity.FindComponent<ComponentBody>();
-						if (mountBody != null)
-						{
-							if (mountBody.Velocity.Length() > 0.1f)
-							{
-								mountBody.Velocity = Vector3.Zero;
-							}
-							ComponentLocomotion loco = m_mountSteedBehavior.Entity.FindComponent<ComponentLocomotion>();
-							if (loco != null)
-							{
-								loco.WalkOrder = null;
-								loco.FlyOrder = Vector3.Zero;
-								loco.SwimOrder = null;
-							}
-						}
-					}
-
-					if (m_investigationTimeRemaining <= 0f)
-					{
-						bool resumedChase = TryResumePreviousChase();
-						if (!resumedChase)
-						{
-							m_stateMachine.TransitionTo("LookingForTarget");
-						}
-						m_targetBeforeNoise = null;
-						m_stateBeforeNoise = null;
-					}
-				},
-				// --- SALIDA ---
-				delegate
-				{
-					m_investigationTimeRemaining = 0f;
-					if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
-					{
-						m_mountSteedBehavior.SpeedOrder = 0;
-						m_mountSteedBehavior.TurnOrder = 0f;
-					}
-				}
-			);
-		}
-
-		private bool TryResumePreviousChase()
-		{
-			if (m_stateBeforeNoise != "Chasing" || m_targetBeforeNoise == null)
-			{
-				return false;
-			}
-
-			if (m_targetBeforeNoise.ComponentHealth == null || m_targetBeforeNoise.ComponentHealth.Health <= 0f)
-			{
-				return false;
-			}
-
-			float dist = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_targetBeforeNoise.ComponentBody.Position);
-			float maxResumeRange = m_rangeBeforeNoise * 1.3f;
-
-			if (dist > maxResumeRange)
-			{
-				return false;
-			}
-
-			m_target = m_targetBeforeNoise;
-			m_chaseTime = MathUtils.Max(m_chaseTimeBeforeNoise - 3f, 2f);
-			m_isPersistent = m_wasPersistentBeforeNoise;
-			m_range = m_rangeBeforeNoise;
-			m_importanceLevel = m_isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent;
-			this.IsActive = true;
-
-			m_stateMachine.TransitionTo("Chasing");
-			return true;
-		}
-
-		private void ExitNoiseAttractionStates()
-		{
-			string currentState = this.m_stateMachine?.CurrentState;
-			if (currentState == "AttractedToNoise" || currentState == "InvestigatingNoise")
-			{
-				m_targetBeforeNoise = null;
-				m_stateBeforeNoise = null;
-				m_investigationTimeRemaining = 0f;
-
-				// Detener montura si estaba activa
-				if (m_isMountedDuringNoise && m_mountSteedBehavior != null)
-				{
-					m_mountSteedBehavior.SpeedOrder = 0;
-					m_mountSteedBehavior.TurnOrder = 0f;
-					m_isMountedDuringNoise = false;
-					m_mountSteedBehavior = null;
-				}
-
-				m_stateMachine.TransitionTo("LookingForTarget");
-			}
-		}
-
-		// ==========================================
 		// MANEJO DE HERIDAS Y RETALIACIÓN
 		// ==========================================
 		private void SetupZombieInjuryHandler()
@@ -1301,8 +790,6 @@ namespace Game
 					{
 						if (this.m_target != attacker)
 						{
-							ExitNoiseAttractionStates();
-
 							bool isGreenNightActive = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive;
 							float chaseTime = isGreenNightActive ? 120f : 60f;
 
