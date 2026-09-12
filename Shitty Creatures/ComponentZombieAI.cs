@@ -8,7 +8,7 @@ using static Game.SubsystemGreenNightSky;
 
 namespace Game
 {
-	public class ComponentZombieAI : ComponentBehavior, IUpdateable
+	public class ComponentZombieAI : Component, IUpdateable
 	{
 		public static float MusketCooldown = 0.02f;
 		public static float MusketAimTime = 1.5f;
@@ -176,7 +176,7 @@ namespace Game
 			Add(typeof(BK43Block), typeof(NuevaBala3), "Audio/Armas/bk 43", 1.5, 280f, 8, new Vector3(0.1f, 0.1f, 0.03f), 2);
 		}
 
-		public override float ImportanceLevel => m_importanceLevel;
+		public float ImportanceLevel => m_importanceLevel;
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
@@ -309,12 +309,25 @@ namespace Game
 		{
 			bool celebrationActive = AchievementsManager.IsCelebrationActive;
 
+			// ========== ACTUALIZACIÓN: Lógica de Atracción de Ruido ==========
 			// Obtener estado del ChaseBehavior para saber si estamos en modo ruido
 			string chaseState = m_chaseBehavior?.CurrentState;
-			bool isNoiseState = (chaseState == "AttractedToNoise" || chaseState == "InvestigatingNoise");
+
+			// Nota: "AttractedToNoise" no existe en ComponentZombieChaseBehavior actual, 
+			// el estado es "InvestigatingNoise"
+			bool isNoiseState = (chaseState == "InvestigatingNoise");
+
+			// Si estamos investigando un ruido, detener todas las acciones de combate inmediatamente
+			if (isNoiseState)
+			{
+				StopAiming();
+				m_importanceLevel = 0f;
+				return; // Salir del update para no procesar ataques ni movimiento de combate
+			}
+			// ================================================================
 
 			// Si ya está montado, manejar combate montado (control de la montura)
-			if (!celebrationActive && m_componentRider != null && m_componentRider.Mount != null && !isNoiseState)
+			if (!celebrationActive && m_componentRider != null && m_componentRider.Mount != null)
 			{
 				m_mountedCombatActive = true;
 				HandleMountedCombat(dt);
@@ -1708,6 +1721,15 @@ namespace Game
 					mountBody.Velocity = new Vector3(0f, vel.Y, 0f);
 				}
 			}
+		}
+
+		public override void Dispose()
+		{
+			if (m_subsystemProjectiles != null)
+			{
+				m_subsystemProjectiles.ProjectileAdded -= OnProjectileAdded;
+			}
+			base.Dispose();
 		}
 	}
 }
