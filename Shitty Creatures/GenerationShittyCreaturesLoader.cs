@@ -49,11 +49,61 @@ namespace Game
 			SubsystemTerrain terrain = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemTerrain>(true);
 			Season currentSeason = seasons.Season;
 
-			Func<Point3, bool> isNearWater = delegate (Point3 point)
+			// ==========================================
+			// VALIDACIÓN DE SPAWN DE PIRATAS (COSTAS)
+			// ==========================================
+
+			// Lista de bloques donde SÍ pueden aparecer los piratas.
+			// Agrega o elimina bloques de aquí según lo indicado:
+			int[] validPirateBlocks = new int[]
+			{
+	SandBlock.Index,    // Arena (playas)
+    GravelBlock.Index,   // Grava (orillas)
+	DirtBlock.Index,
+	GrassBlock.Index
+			};
+
+			// Verifica que el bloque bajo los pies esté en la lista permitida
+			// y que cuerpo y cabeza tengan espacio libre
+			Func<Point3, bool> isValidPirateGround = delegate (Point3 point)
+			{
+				int cellValueGround = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+				int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+				bool allowed = false;
+				for (int i = 0; i < validPirateBlocks.Length; i++)
+				{
+					if (groundBlock == validPirateBlocks[i])
+					{
+						allowed = true;
+						break;
+					}
+				}
+				if (!allowed) return false;
+
+				// Espacio libre para el cuerpo y la cabeza (sin bloques sólidos ni agua)
+				int cellValueBody = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+				int cellValueHead = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+				Block blockBody = BlocksManager.Blocks[Terrain.ExtractContents(cellValueBody)];
+				Block blockHead = BlocksManager.Blocks[Terrain.ExtractContents(cellValueHead)];
+				if (blockBody.IsCollidable_(cellValueBody) || blockBody is WaterBlock) return false;
+				if (blockHead.IsCollidable_(cellValueHead) || blockHead is WaterBlock) return false;
+
+				return true;
+			};
+
+			// Cerca de la costa en tierra firme (se eliminó el "|| WaterBlock"
+			// que permitía aparecer flotando sobre el agua)
+			Func<Point3, bool> isNearCoast = delegate (Point3 point)
 			{
 				float shoreDistance = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
-				int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-				return (shoreDistance >= -5f && shoreDistance <= 15f) || (BlocksManager.Blocks[blockUnder] is WaterBlock);
+				return shoreDistance >= -5f && shoreDistance <= 15f;
+			};
+
+			// Condición completa: cerca del agua Y sobre un bloque permitido
+			Func<Point3, bool> isValidPirateSpawnPoint = delegate (Point3 point)
+			{
+				return isNearCoast(point) && isValidPirateGround(point);
 			};
 
 			Func<SubsystemCreatureSpawn, SubsystemCreatureSpawn.CreatureType, Point3, string, int> spawnGroup = delegate (SubsystemCreatureSpawn spawnSys, SubsystemCreatureSpawn.CreatureType ct, Point3 point, string templateName)
@@ -105,10 +155,11 @@ namespace Game
 				{
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
 					if (timeOfDay.CalculateDay(gameInfo.TotalElapsedGameTime) < 5.0) return 0f;
-					return isNearWater(point) ? 2.5f : 0f;
+					return isValidPirateSpawnPoint(point) ? 2.5f : 0f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
+					if (!isValidPirateSpawnPoint(point)) return 0; // doble verificación
 					return spawnGroup(subsystemCreatureSpawn, ct, point, "PirataNormal");
 				}
 			});
@@ -119,10 +170,11 @@ namespace Game
 				{
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
 					if (timeOfDay.CalculateDay(gameInfo.TotalElapsedGameTime) < 15.0) return 0f;
-					return isNearWater(point) ? 2.5f : 0f;
+					return isValidPirateSpawnPoint(point) ? 2.5f : 0f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
+					if (!isValidPirateSpawnPoint(point)) return 0;
 					return spawnGroup(subsystemCreatureSpawn, ct, point, "PirataElite");
 				}
 			});
@@ -133,10 +185,11 @@ namespace Game
 				{
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
 					if (timeOfDay.CalculateDay(gameInfo.TotalElapsedGameTime) < 35.0) return 0f;
-					return isNearWater(point) ? 2.5f : 0f;
+					return isValidPirateSpawnPoint(point) ? 2.5f : 0f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
+					if (!isValidPirateSpawnPoint(point)) return 0;
 					return subsystemCreatureSpawn.SpawnCreatures(ct, "PirataHostilComerciante", point, 1).Count;
 				}
 			});
@@ -147,10 +200,11 @@ namespace Game
 				{
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
 					if (timeOfDay.CalculateDay(gameInfo.TotalElapsedGameTime) < 55.0) return 0f;
-					return isNearWater(point) ? 2.5f : 0f;
+					return isValidPirateSpawnPoint(point) ? 2.5f : 0f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
+					if (!isValidPirateSpawnPoint(point)) return 0;
 					return subsystemCreatureSpawn.SpawnCreatures(ct, "CapitanPirata", point, 1).Count;
 				}
 			});
