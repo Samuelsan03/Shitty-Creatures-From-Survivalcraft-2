@@ -571,7 +571,15 @@ namespace Game
 
 		public void AttractedToNoise(ComponentBody sourceBody, Vector3 sourcePosition, float lureStrength)
 		{
-			// Si está persiguiendo ("Chasing"), interrumpir e ir por el ruido
+			// Mínimo cambio: si el zombi está MONTADO, el ruido NO interrumpe la persecución
+			// (la montura sigue persiguiendo). Los zombis a pie conservan el comportamiento original.
+			ComponentRider rider = base.Entity.FindComponent<ComponentRider>(false);
+			if (rider != null && rider.Mount != null)
+			{
+				return;
+			}
+
+			// ORIGINAL (sin cambios)
 			if (this.m_stateMachine.CurrentState == "Chasing")
 			{
 				this.m_noisePosition = sourcePosition;
