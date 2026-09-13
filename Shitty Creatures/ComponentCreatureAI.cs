@@ -33,6 +33,11 @@ namespace Game
 		public bool CanUseInventory = false;
 		public bool CanEquipClothing = false;
 		public bool CanBeMounted = false;
+		public bool CanDestroyBlocks = false;
+
+		private SubsystemSoundMaterials m_subsystemSoundMaterials;
+		private float m_blockDestroyTimer = 0f;
+		private const float BlockDestroyInterval = 0.35f;
 
 		// Lista de nombres de plantillas de entidades que pueden ser montadas
 		private static readonly HashSet<string> MountableCreatureTemplates = new HashSet<string>
@@ -224,7 +229,8 @@ namespace Game
 
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory");
 			CanEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing");
-			CanBeMounted = valuesDictionary.GetValue<bool>("CanBeMounted");   // NUEVO
+			CanBeMounted = valuesDictionary.GetValue<bool>("CanBeMounted");
+			CanDestroyBlocks = valuesDictionary.GetValue<bool>("CanDestroyBlocks");
 
 			if (m_componentRider != null && m_componentRider.Mount != null)
 			{
@@ -670,8 +676,14 @@ namespace Game
 				return;
 			}
 
+			if (m_blockDestroyTimer > 0f)
+				m_blockDestroyTimer -= dt;   // NUEVO
+
 			if (m_componentPathfinding.IsStuck)
 			{
+				if (CanDestroyBlocks)          // NUEVO
+					TryDestroyBlocksWhenStuck();
+
 				CancelAiming(inventory);
 				m_isThrowing = false;
 				return;
@@ -1541,6 +1553,114 @@ namespace Game
 			ComponentClothing playerClothing = Entity.FindComponent<ComponentClothing>();
 			if (playerClothing != null) return playerClothing;
 			return null;
+		}
+
+		// NUEVO: Destruye bloques verticalmente cuando la criatura está atascada.
+		// No depende de herramientas. Usa DestroyCell (partículas + pickables + drops)
+		// y PlayImpactSound (sonido según material del bloque).
+		private void TryDestroyBlocksWhenStuck()
+		{
+			if (m_blockDestroyTimer > 0f) return;
+			if (m_subsystemTerrain == null) return;
+
+			m_blockDestroyTimer = BlockDestroyInterval;
+
+			// Índices por NOMBRE (sin números hardcodeados, sin diccionarios nuevos)
+			int airBlockIndex = BlocksManager.GetBlockIndex("AirBlock", false);
+			int bedrockBlockIndex = BlocksManager.GetBlockIndex("BedrockBlock", false);
+
+			Vector3 pos = m_componentCreature.ComponentBody.Position;
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			forward.Y = 0f;
+			if (forward.LengthSquared() < 0.0001f) forward = Vector3.UnitZ;
+			forward = Vector3.Normalize(forward);
+
+			// Decidir la dirección según la presa
+			ComponentCreature target = m_chaseBehavior?.Target;
+
+			// 0 = frente, +1 = arriba, -1 = abajo
+			int verticalDir = 0;
+			const float VerticalThreshold = 1.5f;
+
+			if (target != null)
+			{
+				float dy = target.ComponentBody.Position.Y - pos.Y;
+				if (dy > VerticalThreshold)
+					verticalDir = 1;          // presa arriba
+				else if (dy < -VerticalThreshold)
+					verticalDir = -1;         // presa abajo
+				else
+					verticalDir = 0;          // presa al frente (mismo nivel)
+			}
+
+			// Celda base según la dirección elegida
+			Point3 baseCell;
+			if (verticalDir > 0)
+			{
+				// Arriba: empezar justo por encima de la cabeza
+				baseCell = Terrain.ToCell(pos + new Vector3(0f, 1.5f, 0f));
+			}
+			else if (verticalDir < 0)
+			{
+				// Abajo: empezar justo por debajo de los pies
+				baseCell = Terrain.ToCell(pos + new Vector3(0f, -1.5f, 0f));
+			}
+			else
+			{
+				// Frente: 1 celda hacia adelante a la altura del cuerpo
+				baseCell = Terrain.ToCell(pos + forward * 1.1f);
+			}
+
+			// Destruir 2 bloques consecutivos en la dirección elegida
+			for (int i = 0; i < 2; i++)
+			{
+				int x = baseCell.X;
+				int y = baseCell.Y;
+				int z = baseCell.Z;
+
+				if (verticalDir > 0)
+				{
+					// Hacia arriba: y + i
+					y = baseCell.Y + i;
+				}
+				else if (verticalDir < 0)
+				{
+					// Hacia abajo: y - i
+					y = baseCell.Y - i;
+				}
+				else
+				{
+					// Frente: el bloque de enfrente (i=0) y el de arriba de ese (i=1)
+					y = baseCell.Y + i;
+				}
+
+				if (!m_subsystemTerrain.Terrain.IsCellValid(x, y, z)) continue;
+
+				int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+				int contents = Terrain.ExtractContents(cellValue);
+
+				// NO destruir aire ni bedrock (comprobado por nombre)
+				if (contents == airBlockIndex || contents == bedrockBlockIndex)
+					continue;
+				if (contents == 0) continue; // seguridad extra (por si GetBlockIndex devolviera -1)
+
+				Vector3 blockPos = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
+
+				// Sonido según material (impacto / destrucción)
+				if (m_subsystemSoundMaterials != null)
+				{
+					try { m_subsystemSoundMaterials.PlayImpactSound(cellValue, blockPos, 1.4f); }
+					catch { }
+				}
+
+				// toolLevel 15 (cualquier bloque), newValue 0 (aire),
+				// noDrop=false -> suelta pickables, noParticleSystem=false -> partículas
+				try
+				{
+					m_subsystemTerrain.DestroyCell(15, x, y, z, 0, false, false);
+				}
+				catch (Exception) { }
+			}
 		}
 	}
 }
