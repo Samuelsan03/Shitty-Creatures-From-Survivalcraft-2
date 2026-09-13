@@ -1,6 +1,7 @@
 <Zombie xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
 <EntityTemplate Name="InfectedNormal1" Guid="0077d291-fd9a-425a-b08f-d423e1bd57c1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="390abd0e-8c33-429f-99cb-11247c681b52" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="DeathSpawner" Guid="0388f4c3-3233-440a-8385-ddfc048ac8b0" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="9447c9cb-6b17-4a86-a4bf-39223a3e2772"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal:0.01" Type="string" Guid="c8f3136b-d71f-484b-bfa4-8dbd9c76105b"/>
@@ -306,6 +307,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedNormal2" Guid="cfbb6a98-d6a1-42b8-a459-80c3e44b78c1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="ce840f99-910e-4f78-850d-ba61198201c7" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="Rider" Guid="06ea33f6-5c52-4d21-989f-adf4d5134f41" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
               <Parameter Name="RiderOffset" Guid="2d13ae23-bbd5-4436-83f3-c0f9c92209a5" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
@@ -612,6 +614,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFast1" Guid="7d0d1036-b3fe-45ae-921b-be488111412f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="45a661eb-f404-4f39-9e92-48c3b2a7632c" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="DeathSpawner" Guid="2f432d32-dec0-4086-a4bc-affacfafbb7e" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="583b6965-983e-4ded-9c3c-7fecb3b34582"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostFast:0.01" Type="string" Guid="e18bbb5e-5105-490a-bd28-d08f014488a9"/>
@@ -863,6 +866,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFast2" Guid="efeba1bd-19a6-465f-8fed-bf7737b4f011" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="195f92b8-24ef-4153-9db8-c0e86188d94d" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="DeathSpawner" Guid="74dc0ce8-01bc-4bca-8a41-6bd5178d4f2e" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="95c24a7f-80cf-4a68-b41a-d8bd38ae2372"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostFast:0.01" Type="string" Guid="d8cfcbf6-11f4-4c50-81b2-6b4e4b75de76"/>
@@ -1114,6 +1118,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscle1" Guid="d11a472b-c681-43f2-a2a7-f779ceee8b5e" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="522ecccb-6782-4cf0-8710-3a494d0e2a68" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="DeathSpawner" Guid="82ab898c-c459-421d-84b5-387287cc0a65" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="46449690-f7c5-4540-b845-4459ca96868a"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal:0.01" Type="string" Guid="a178e383-e3b9-4685-a20e-b6fbe20575d4"/>
@@ -1388,6 +1393,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscle2" Guid="cf56e0f6-2c40-46fa-8f8a-4225a1a5be28" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="13892275-a1a0-4f0e-a6af-ed7e847f3354" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="DeathSpawner" Guid="fd2a9264-11ce-4c4d-87df-8a3f24e2c0a8" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="13f2cff3-3d39-4f96-b1b1-53af7a003d75"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal:0.01" Type="string" Guid="045168a0-a6c1-4d2f-bb42-a82d70b0da00"/>
@@ -1662,6 +1668,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousInfected1" Guid="c431a439-532b-4460-ac1e-df6fa2d783b1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="c0cb8485-1f08-4613-8a35-353a15bc0a2c" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="871b17bb-9d73-4773-aa13-62a640aa8791" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="7b22f2f9-e70e-4001-8b5c-f2556e5d31c8" Value="true" Type="bool"/>
   <Parameter Name="VomitCooldown" Guid="67d76f73-ca2f-4244-a1c7-407ce30d19b5" Value="35" Type="float"/>
@@ -1932,6 +1939,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousInfected2" Guid="926580df-3c33-4d94-8e36-eb64ae703ab1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="0d0c6ef5-4a01-47dd-b8ce-6ecbea40c18a" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="64aadfc2-d6c5-4028-9330-6ffcfd12a757" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="1ccd6b19-0a19-4edb-a181-49162a458693" Value="true" Type="bool"/>
   <Parameter Name="VomitCooldown" Guid="de659066-e2f4-4d1e-9095-3e9d919bf245" Value="35" Type="float"/>
@@ -2202,6 +2210,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFly1" Guid="fb860ae9-04c2-4c12-a721-3fe7157db639" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="4e03b348-2af3-46a6-9fae-de21903a9643" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="ZombieMount" Guid="172d7e6b-6e74-4ef7-a53c-f60298106b8f" InheritanceParent="043a41d8-4a2e-447f-b735-88cc3082132a">
         <Parameter Name="DismountOffset" Guid="d8448ebf-c1df-410f-a367-f99a18caf831" Value="1.5,0.3,0" Type="Vector3"/>
         <Parameter Name="MountOffset" Guid="0ad548f5-a8b7-4475-b0c9-b395e098c820" Value="0.0, 1.0, 0.0" Type="Vector3"/>
@@ -2401,6 +2410,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFly2" Guid="e1fed65e-13fb-4b05-94c9-4c5b0010e2d1" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="4a94660c-4b01-4cc9-bff3-a2e83df4825e" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="FlyAwayBehavior" Guid="ee2f7df1-e218-4a3a-a572-d4722e6071f2" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
     <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="d7d9b6c7-d7df-4088-ad3a-9ce5f2c5b5aa" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="cfa56cae-632a-457a-bce0-0a4b275024bb" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -2596,6 +2606,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFly3" Guid="3592cbed-fb5e-4365-adf8-507037de0a3a" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="58bdea59-a77b-4b75-a681-785d164a588b" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="12da5513-6e19-4219-8bed-c4515d19e6cd" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="db8206db-a73f-4ce1-9362-7d381a67beb7" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
 <MemberComponentTemplate Name="Inventory" Guid="f3430937-d0c5-4682-89d5-9a2410e08218" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
@@ -2783,6 +2794,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FlyingInfectedBoss" Guid="d73bb1db-bab9-4e99-a634-be27df70796a" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="759b8742-bbc3-4068-8601-4651cacf9a77" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="FlyAwayBehavior" Guid="40f97640-6837-4ef8-960e-368b59bc5713" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
     <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="586f6189-9b1b-4ea6-881d-f2b3c19f2757" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="2674aa8b-9d5b-4415-bc14-e3e1597c9f27" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -3001,6 +3013,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Boomer1" Guid="39ca6ee2-fa65-4c2d-8239-ae60d3ec241c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="e17d87e5-65d6-44fa-a6b1-bcbe4c62a052" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="BoomerExplosion" Guid="ee8c0c6a-f32f-40af-84a7-c3df6882ad33" InheritanceParent="dd21e80d-3b5a-4c02-9dbc-897a0989a49b"/>
 <MemberComponentTemplate Name="Inventory" Guid="1b38a91a-37d0-4afe-83b8-bbb3c79e4708" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="CollectPickableBehavior" Guid="b8027102-6ed8-4bae-8e11-03dd5bee3b77" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
@@ -3265,6 +3278,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Boomer2" Guid="0287aaeb-ea3f-46e3-9643-1b0821860c0a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="b33481af-2589-4866-aafe-f01351e4ae1a" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="Inventory" Guid="0ac9a7b7-ee6e-416d-ae92-b34747826f8f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="CollectPickableBehavior" Guid="1674e1e9-6dbf-48dc-af6a-1c9ac8e1113d" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
               <ParameterSet Name="CollectFactors" Guid="b0fd049b-898d-4368-b7e1-af0463667a85">
@@ -3539,6 +3553,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Boomer3" Guid="2f46410e-3472-4aaf-a898-9ce5614de7cd" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="fc3be472-16d3-43d2-a00a-3ae7753180ab" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="Inventory" Guid="1d31bc0a-d26c-46b5-951b-865d7c59e8b1" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="CollectPickableBehavior" Guid="530ae0b3-43f8-40fc-b1f2-cabfd48145a6" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
               <ParameterSet Name="CollectFactors" Guid="e7964e8b-e408-482d-9fdf-4cebf810398e">
@@ -3815,6 +3830,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Charger1" Guid="a6dda037-708c-4958-a02b-f2fe3c1e4713" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="79dc9d6e-b8fc-49c9-a5ec-2678ba7a5dab" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="DeathSpawner" Guid="64ad8111-fab7-4e50-bcfd-33734912a3da" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="1c84c3a0-f8d7-4d7d-9cf2-9447b27a3f21"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostCharger:0.01" Type="string" Guid="07ce1723-99a3-45ac-8349-ad52e97d3e6d"/>
@@ -4058,6 +4074,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Charger2" Guid="2937784d-af18-460b-83df-9fbfdffaebb5" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="af651606-83a4-426b-9ee2-5e1db082b5ca" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="DeathSpawner" Guid="78ddbdd7-1c95-494e-8fd4-277a41ff3e9e" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="dbc93c59-6963-483c-a8a9-531ea83d5624"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostCharger" Type="string" Guid="a85fe59d-abcf-43c2-a71e-2060b3f82bdc"/>
@@ -4301,6 +4318,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Tank1" Guid="f14833de-07f1-4992-bf77-7d98bda97e67" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="38b7b10f-ec60-4fd9-9794-4f6747a7d3c8" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="GlowingEyes" Guid="877b3f84-1143-4de5-ab71-115ab94d58ae" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="01856724-6b35-4301-a098-e12f63d89d1e" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="aeb162d7-7e66-4d7e-946f-80102328e72c" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -4543,6 +4561,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Tank2" Guid="cf8080e0-1e58-4c25-a40c-c8191f90b491" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="f09e919c-b3cd-498a-a2bd-ce76ac78fb13" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="ac46bc23-7710-4d1b-ad9e-c8e39747d1bd" InheritanceParent="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9">
   <Parameter Name="DayChaseRange" Guid="d411ad23-193a-490e-a91d-ff475c0aba5a" Value="999" Type="float"/>
   <Parameter Name="NightChaseRange" Guid="ac475f91-23f7-42fa-8724-132bd27fc5b8" Value="999" Type="float"/>
@@ -4788,6 +4807,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Tank3" Guid="3138b0c8-b901-43b7-84fe-0b8ad5683e91" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="1797555b-11c5-4004-821b-a66f43b6e4e0" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="GlowingEyes" Guid="f1069d9f-ef22-4d08-b4a6-01b2d3cbbef3" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="cc85b12e-2638-4864-9b9f-bcc8978504e8" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="79c1f11d-61e9-45e2-8471-bb8772088176" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -5030,6 +5050,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostNormal" Guid="910b352e-99c2-4d4d-9415-6ebbfe7c4ea2" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="fcb11330-cb37-403c-ad3a-d60766274eb1" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="PathBreaker" Guid="a51c127f-3ffd-4d10-b920-6e2fa3569e6a" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="8c9fb85b-3e5f-4a0b-8e59-dfa40363d62c" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="ea3ff525-bd0a-47bc-9836-57e3d724bf13" Value="" Type="string"/>
@@ -5363,6 +5384,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostFast" Guid="fdf8136a-4b3a-432d-bf2f-bbec4458b60e" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="9cb7a911-d53d-4779-9162-6cd2e232a7a3" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="Rider" Guid="5f566820-81ed-44d6-8a30-bef31153365a" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
               <Parameter Name="RiderOffset" Guid="a2300e6b-0da3-41c3-a213-daa2868e5bea" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
@@ -5718,6 +5740,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousGhost" Guid="a12a2e42-6922-439e-abe0-993a8c35df8b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="4fadb24c-d1a9-4f94-bf86-4f4e86492047" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="76506260-f078-4081-b658-e8c4828bcfa0" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="c488d54d-8c99-4431-bc85-6091a051f55b" Value="true" Type="bool"/>
   <Parameter Name="VomitCooldown" Guid="b70846cb-f8e7-459c-a9ae-83ea27b2d85c" Value="35" Type="float"/>
@@ -6033,6 +6056,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomer1" Guid="09800ddf-a5bf-435e-a24e-12dad9269572" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="9b18276f-22ec-47e7-a338-e0522271b7dc" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="BoomerExplosion" Guid="92c11ab7-dcf5-43bf-b1bf-94898e047f3b" InheritanceParent="dd21e80d-3b5a-4c02-9dbc-897a0989a49b"/>
             <MemberComponentTemplate Name="Creature" Guid="0f5d3177-63e2-4d71-9bac-806cb5b8550c">
                 <Parameter Name="DisplayName" Guid="4d26a035-c4aa-445c-8532-2faeb6ec5938" Value="[DisplayName:GhostBoomer1]" Type="string"/>
@@ -6323,6 +6347,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomer2" Guid="d7b28fd5-e14c-40e1-bbb7-1b7151d3903b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="006a1efb-7b37-4ae1-bc7d-35b1c8f4c8ce" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="Inventory" Guid="cdfc5926-59a9-4e1f-a59e-fcf6b3ea8fd7" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="CollectPickableBehavior" Guid="e55eeb98-6ffc-4472-9ffb-bb463c8759ec" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
               <ParameterSet Name="CollectFactors" Guid="0f9cb5df-3089-4bfc-969c-2f8eea2d93dd">
@@ -6640,6 +6665,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomer3" Guid="90ef2302-e35c-4885-98ac-709db5a17fcf" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="cba08968-d2e6-455a-a8d1-82e30ae68279" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="Inventory" Guid="9288f5a0-b8ef-4379-9b05-fad0532b9f2d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="CollectPickableBehavior" Guid="cae7a6b6-1bf8-4106-a291-1148cc659fb5" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
               <ParameterSet Name="CollectFactors" Guid="66047e7f-6ffb-4b19-836b-28379302a14a">
@@ -6957,6 +6983,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostCharger" Guid="c7818e1d-6552-4e58-967d-56975b91d50c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="7f64e348-a479-4510-9480-eaa02ad75e7b" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="Gravity" Guid="a9fe7ab7-f756-48a8-b365-58fa3fddb5b6" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
   <Parameter Name="Probability" Guid="7c0d7561-bbb6-424d-bf72-78abe1d9a33a" Value="1" Type="float"/>
   <Parameter Name="Force" Guid="6e6b5bc7-5483-4161-a0a8-fab32104b03c" Value="25" Type="float"/>
@@ -7234,6 +7261,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="TankGhost1" Guid="25c62bfb-f2b5-4cfe-9112-9e210ec7c187" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="f744ead7-70ab-4994-979b-cf79e5b72aa2" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="GlowingEyes" Guid="bac1b930-c73d-4b54-90b9-385e8b5171d9" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="fd2c4509-2abb-4627-8dcf-d65cf6423429" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="cc1a3713-0ae3-4586-95a3-f019c694da80" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -7481,6 +7509,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="TankGhost2" Guid="6e0249b4-dd69-4f7f-b61d-122ecb07a789" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="27ba2671-f169-4909-95f2-58608a0b16bc" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="GlowingEyes" Guid="009450ec-0800-4d88-8038-deee6bc4788c" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="00dbc56b-0002-4c0a-82ad-c749c7430b16" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="0ebe5244-3a8f-4e56-95ee-4248dc054497" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -7736,6 +7765,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="TankGhost3" Guid="0348d483-ba62-4fae-9d28-1ed47832d6fa" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="a841e472-ffa8-41fa-8721-2182d06665dc" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="GlowingEyes" Guid="d944f6fa-46cb-4620-92d0-688677186395" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="b5cb55c5-3387-478c-a070-a3249e166518" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="182c1c62-96b4-4264-9a37-0752fa9d118d" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -7985,6 +8015,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="MachineGunInfected" Guid="d1584f01-89c6-4405-aec7-359a52cc16b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="08d36fca-b068-4333-b1ad-bb02a4103249" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="CreatureSounds" Guid="c1b604aa-a9b0-410f-a063-04fbafa38824">
             <Parameter Name="PainSound" Guid="2e7d955d-4d5c-4f15-a3b2-03d84f017173" Value="Audio/Creatures/Infectado Ametrallador/Pain" Type="string"/>
             <Parameter Name="IdleSound" Guid="f121c2af-8947-4e4c-ac7e-196041debeb5" Value="Audio/Creatures/Infectado Ametrallador/Idie" Type="string"/>
@@ -8273,6 +8304,7 @@
         </EntityTemplate>
 
     <EntityTemplate Name="InfectedWolf" Guid="5bbc19e3-f2bd-4cba-9a99-da65db3c863b" InheritanceParent="49a9845c-3810-4092-ba53-df213d10d563">
+    <MemberComponentTemplate Name="NoiseAttraction" Guid="cd608f3c-04ee-4b1c-8ff4-6462030a7a67" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="60f6c597-1c82-4fb0-aa8b-22af6cb9bc33" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="d6091aec-eed5-4456-b797-f07a3b88a9a2" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="f85745c2-112e-462a-b22d-a544982602af" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -8488,6 +8520,7 @@
         </EntityTemplate>
 
 <EntityTemplate Name="InfectedWerewolf" Guid="b8e8bb18-0391-417c-acf9-65033e7bff01" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="438911e0-e790-499f-b029-21cd68e99163" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="PathBreaker" Guid="bedc93ac-b9cb-4c2d-b42f-d72dd983ddc0" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="1caf0b21-ab15-43ca-88c4-dba5b27d2b65" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="fd26e07b-8a3b-47a4-bca8-a096ea27153c" Value="" Type="string"/>
@@ -8738,6 +8771,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedHyena" Guid="f735d12b-a1f1-451b-8178-5c9c8613be53" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="e6c0a3b2-bd59-46e7-8c17-6aaa0f06b15a" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="09f67617-7b36-4587-a088-7164bc20f1ff" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="89e9bc4b-f944-4d8b-89f1-c9cd4b1ddff0" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
     <MemberComponentTemplate Name="Creature" Guid="e17ddb28-994e-4873-8344-f4785aaba848">
@@ -8984,6 +9018,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedBear" Guid="a77f0d44-5b1c-407f-b4bd-32e4f5d0376f" InheritanceParent="437e6af3-ea9f-4f3c-8b96-d81de6223831">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="c7aee765-0718-4246-b62e-e57cba57365e" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="ZombieMount" Guid="d7169f9b-3988-44fa-a9d9-bc4777833c2e" InheritanceParent="043a41d8-4a2e-447f-b735-88cc3082132a">
         <Parameter Name="DismountOffset" Guid="04732285-41ef-4542-af00-e8db64f4983b" Value="1.5,0.3,0" Type="Vector3"/>
         <Parameter Name="MountOffset" Guid="0d658f77-a853-4dc9-9724-dedb8804ab9c" Value="0.0, 1.75, 0.0" Type="Vector3"/>
@@ -9202,6 +9237,7 @@
         </EntityTemplate>
 
           <EntityTemplate Name="InfectedWildboar" Guid="ed8f6b89-88a5-476f-ad57-36e86b7dcfbc" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="NoiseAttraction" Guid="3538441b-6546-4be9-b91a-bd2eea0bdd5a" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
           <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e3fa22a4-0e6a-41e2-8a00-1b9680b36c58" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="2c42f422-7a6a-44c0-8d2c-4c49d1706a57" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="dcb9cb70-60b2-4ad2-8848-0089b1675027" Value="0" Type="float"/>
@@ -9403,6 +9439,7 @@
           </EntityTemplate>
 
           <EntityTemplate Name="InfectedBird" Guid="75c31350-7d7a-46a6-a055-1e2a524b8103" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+          <MemberComponentTemplate Name="NoiseAttraction" Guid="5af94880-7957-46e3-aa78-9719115030e9" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
           <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="fcc0c738-1ead-4a24-bda0-1a8ffdc83a26" InheritanceParent="384dbb1e-8baf-4880-9e86-db1ef0b51169">
         <Parameter Name="HerdName" Guid="3132b3ce-e2f5-44c7-8f27-951459c61ab5" Value="Zombie" Type="string"/>
         <Parameter Name="HerdingRange" Guid="56b854ba-3c55-4dbc-8f3e-df70f5091593" Value="60" Type="float"/>
@@ -9567,6 +9604,7 @@
             </EntityTemplate>
 
             <EntityTemplate Name="PredatoryChameleon" Guid="45425282-74fd-49a3-a0f6-a8f8ecfd8771" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+            <MemberComponentTemplate Name="NoiseAttraction" Guid="3706f1ce-1364-434a-8172-968f3a0b8e18" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
             <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="f39e47c3-66b3-41d6-bfe8-bebd9d4037b6" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="c4e55472-51ea-434a-bc78-30519cbe0006" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="db1fc69d-763f-4882-b3d4-e8e4c6afd73c" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -9787,6 +9825,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="HumanoidSkeleton" Guid="7098f91a-f59f-4833-86cb-6e87b3f051c4" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="9b444384-f316-4042-a758-2850fadc4ed7" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="CreatureSounds" Guid="8ca27dd5-09a3-4ae6-9ca8-94b43d62d419">
               <Parameter Name="IdleSound" Guid="3b28785d-31c9-4a0d-8288-955bb91990db" Value="Audio/Creatures/Skeleton/Idle" Type="string"/>
               <Parameter Name="PainSound" Guid="e61767ad-6091-4ef8-9e2c-6dc64ebe2d9c" Value="Audio/Creatures/Skeleton/Pain" Type="string"/>
@@ -10076,6 +10115,7 @@
           </EntityTemplate>
 
 <EntityTemplate Name="InfectedFreezer" Guid="55796d08-05b3-4079-a33a-18e67ef54f6a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="NoiseAttraction" Guid="193c1d64-2f8a-49b2-afd1-3b7962149198" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="6319fc10-7ec5-4360-a099-ae9f9bcf237b" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFrozen" Guid="f2eae27c-b3e4-44ca-95bb-fe9bbb62f88d" Value="true" Type="bool"/>
   <Parameter Name="VomitCooldown" Guid="ff36567d-5a31-471e-a003-67ad1b4d4a33" Value="35" Type="float"/>
@@ -10401,6 +10441,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="BoomerFrozen" Guid="c3a277d5-4dd5-4178-b296-1faee5bf7c11" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="e4d809c9-ce44-448f-961e-6b1aa19a08b3" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="BoomerExplosion" Guid="baa28993-e274-48ea-b402-51fd8ed2a81d" InheritanceParent="dd21e80d-3b5a-4c02-9dbc-897a0989a49b"/>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="878949d6-a0c5-4437-98e2-19f2d2722fe9" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFrozen" Guid="3c5479b9-886e-46f9-82b1-e5b0f034983c" Value="true" Type="bool"/>
@@ -10673,6 +10714,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="FrozenGhost" Guid="4b42a029-3ad4-460c-ada6-7d13d3e42bb5" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="75b8b9e7-0448-4896-a1d6-55261c698270" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="878507b7-6ec0-4940-82da-1964d3e3567e" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFrozen" Guid="d2c442bf-b787-40c3-9458-2e4cbda79fa6" Value="true" Type="bool"/>
   <Parameter Name="VomitCooldown" Guid="61bea9f3-32df-4f62-b357-b3e1b3a2015a" Value="35" Type="float"/>
@@ -11033,6 +11075,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="FrozenGhostBoomer" Guid="3f1308b2-941e-455b-a714-8de7495cf46b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="f39d9cce-b4ae-47d8-a948-cab9da6a2401" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
 <MemberComponentTemplate Name="BoomerExplosion" Guid="7c20d328-41ad-4319-9686-622a7f95761f" InheritanceParent="dd21e80d-3b5a-4c02-9dbc-897a0989a49b"/>
         <MemberComponentTemplate Name="GlowingEyes" Guid="d9a91ebf-8f67-44f2-a0e0-2eca339078e3" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="a44a5da0-071e-46e7-9fb7-20860295ebbc" Value="0,255,0" Type="Color"/>
@@ -11349,6 +11392,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="FrozenTank" Guid="f3de3f69-6c4d-4203-a8ed-eeeca0a4f7a1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="bea8fbdf-633d-4263-ac63-0eeb5c725dfc" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="GlowingEyes" Guid="72cae525-fa7d-4255-bdc6-63fa340db03d" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="e490d38f-6579-4021-b211-47b879b0b6b7" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="40b7febd-c219-4a13-a123-b85fcb52831d" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -11602,6 +11646,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="FrozenTankGhost" Guid="6910804b-3d1b-4a29-b454-20274155b76a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="adb1df24-b636-476c-8b61-5e558f0b0449" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
         <MemberComponentTemplate Name="GlowingEyes" Guid="289f5955-57f6-420f-a95c-592bb862f08a" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="c507d310-c0a1-44fb-aa9a-0cebecef1ae9" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="747ffbc7-3801-4880-b9d2-5b9bab03c248" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -11847,6 +11892,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedSpider" Guid="57726477-4b9c-415c-ba1b-a5d554a337d9" InheritanceParent="9c11dd66-6496-48c8-bb78-7ac8652df1ff">
+        <MemberComponentTemplate Name="NoiseAttraction" Guid="4377993b-9473-49fd-a45b-e0b2dff97af4" InheritanceParent="bab44679-20b3-426a-b178-ab6a79326f4c"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="7fba657a-62fe-4844-8d27-51e638151e0d" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
               <Parameter Name="DayRange" Guid="22b1a009-fd54-4bf0-8527-6e57f53a5d3c" Value="0" Type="float" />
               <Parameter Name="NightRange" Guid="059edc48-0ad8-43d8-811b-4420a9cdf0f6" Value="0" Type="float" />
