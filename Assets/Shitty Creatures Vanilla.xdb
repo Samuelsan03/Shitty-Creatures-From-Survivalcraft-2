@@ -111,10 +111,14 @@
 <MemberComponentTemplate Name="Inventory" Guid="e1c86f23-c9e4-4502-bd34-8f9df3a2b102" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
 <MemberComponentTemplate Name="CreatureAI" Guid="80b4c5d2-72b3-4427-becf-68a0e05b24ae" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="3208d202-8a87-4740-8142-07b32f88fdb7"/>
+    <Parameter Name="CanDestroyBlocks" Guid="9241b80a-560c-4257-9536-3dba544815db" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewCreatureCollect" Guid="65aa602c-9c9d-4632-af66-571853d76e93" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
-    <Parameter Name="PickFactors" Guid="dae5b2a3-7675-4d8f-82ad-61dc00677894" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="CollectPickableBehavior" Guid="b20e0444-abf5-4144-8da6-71835688d34d" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
+              <ParameterSet Name="CollectFactors" Guid="542c5b29-493b-42a7-b95f-32749c0715c5">
+                <Parameter Name="Weapons" Guid="a2dfbddc-7665-4ade-acfa-2d744241eb53" Value="1" Type="float" />
+                <Parameter Name="Tools" Guid="d1631c68-954c-4a87-a0b1-69671fd040cc" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="Loot" Guid="242f3f0b-df6a-4414-9b61-18e1a251e370">
               <ParameterSet Name="Loot" Guid="00a4f5b5-f0be-4887-9361-20e333771583">
                 <Parameter Name="1" Guid="5cd5df7f-1df9-4ca4-b08f-2627c3ae6b47" Value="DiamondChunkBlock;1;1;0.04" Type="string" />
