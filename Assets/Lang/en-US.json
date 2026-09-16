@@ -1,4 +1,7 @@
 {
+  "SubsystemBanditEggBlockBehavior": {
+    "1": "Failed to spawn bandit, check game log."
+  },
   "FirstAidKitBlock": [
   "Large First Aid Kit",
   "Medium First Aid Kit"
@@ -60,7 +63,7 @@
     "8": "You have declined the challenge. The mode remains locked.",
     "9": "You have accepted the new challenge. The waves have been reset."
   },
-  "InfiniteChallengeWidget": {
+"InfiniteChallengeWidget": {
     "0": "Infinite The Jackal",
     "1": "Challenge",
     "2": "I have been watching you from the shadows.",
@@ -69,11 +72,14 @@
     "5": "If you win, you will be honored as part of my family. If you lose... you will remain here, waiting for someone strong enough to defeat me.",
     "6": "Do you accept the challenge?",
     "7": "Accept",
-    "8": "Reject"
-  },
+    "8": "Reject",
+    "9": "You have already proven yourself against me. But there are still more of my warriors waiting to join you. Would you like to skip the duel and have them join your family directly?",
+    "10": "Skip Duel"
+},
   "ComponentInfiniteChallenge": {
     "0": "The duel against Infinite has begun!",
-    "1": "You have proven your strength! Infinite now joins your family."
+    "1": "You have proven your strength! Infinite now joins your family.",
+    "2": "Welcome to the family, warrior. My kin will fight alongside you."
   },
   "MountLock": {
     "0": "You cannot mount this infected mount"
@@ -229,13 +235,15 @@
   "147": "You have healed allies and creatures 50 times. The medical board has revoked your license for practicing without ethics, but at least they haven't bitten your face off... yet. Healer or butcher? The line gets blurry when there are coins involved."
   },
   "TypesOfAchievements": {
-    "0": "Type",
-    "1": "War Crimes",
-    "2": "Accidental Survivor",
-    "3": "Animal Stockholm Syndrome",
-    "4": "Unlicensed Doctor",
-    "5": "Savage Capitalism",
-    "6": "Psychological Issues"
+    "Type": "Type",
+    "Categories": [
+        "War Crimes",
+        "Accidental Survivor",
+        "Animal Stockholm Syndrome",
+        "Unlicensed Doctor",
+        "Savage Capitalism",
+        "Psychological Issues"
+    ]
 },
   "AchievementsMessages": {
     "0": "ACHIEVEMENT {0} UNLOCKED!",
@@ -307,52 +315,66 @@
     "ExitButton": "Exit"
   },
   "ShittyCreaturesLog": {
-    "Line1_0_6_1": "• Free Camera has been added. This mode is only available in Peaceful (Harmless), Survival (Survival), Challenging (Challenging), Cruel (Cruel), and Adventure (Adventure); it does not work in Creative mode. Its behavior is similar to the debug camera, allowing you to move freely around the world to observe the environment and creatures without restrictions.",
-    "Line1_0_6_2": "• Added the special event \"Green Night\". You can enable or disable it, configure how often it occurs (in days), and choose between seven Mental States: Early Retirement, Therapy Waiting List, Monday Morning, Structural Damage, The Last Architect, Sanity Load Error, and a seventh secret state. Each Mental State changes enemy spawn rates, aggression, environmental destruction capabilities, and tactical behavior. The event takes place at night according to the configured interval.",
-    "Line1_0_6_3:": "A thirst mechanic has been introduced to create a more realistic experience. You will now need to find sources of water, such as buckets or containers. However, drinking untreated water may cause nausea, especially if it comes from unsafe sources. To avoid negative effects, it is recommended to boil water before consuming it.",
-    "Line1_0_6_4": "• New Digimons and bandits have been added. Currently, there are 4 unique bandits that players can hire using nuclear coins.",
-    "Line1_0_6_5": "• Added trading and hiring system.",
-    "Line1_0_6_6": "• New unlockable event: after surviving all the waves of the Green Night (yes, all of them, including the one where you cried in the shower), a suspiciously convenient chest will appear near you. It contains a letter. It’s not spam, it’s not a Viagra offer, it’s an invitation. If you accept it… well, let’s just say the nights will stop being boring. We won’t say exactly what happens (spoilers), but it involves shady-looking guys, questionable life choices, and the feeling that maybe you should have stayed in bed. If you refuse… they’ll ask you again. And again. And again. The letter has a lot of patience. Or a mean streak. You decide.",
-    "Line1_0_6_7": "• Shitty Creatures settings have been added, accessible from the main menu through a dedicated button. All options are automatically saved to an XML file, preserving your settings between game sessions.",
-    "Line1_0_6_8": "• New weapons have been added: firearms, freezing bomb, and double-barrel musket.",
-    "Line1_0_6_9": "• New tools have been introduced: thin-head hammer (mines faster than standard pickaxes).",
-    "Line1_0_6_10": "• A flu system for creatures has been implemented.",
-    "Line1_0_6_11": "• A healing system has been added, compatible with both creatures and players, including treatment for nausea, poison, and flu, as well as healing for low-health creatures.",
-    "Line1_0_6_12": "• The trident now summons lightning when it hits a target.",
-    "Line1_0_6_13": "• Translations have been fixed, polished, and improved.",
-    "Line1_0_6_14": "• The creatures' artificial intelligence has been improved. They can now use any type of weapon, including melee, ranged, thrown, and firearms. If they have a melee weapon in their inventory while using a ranged, thrown, or firearm weapon, they will automatically switch to the melee weapon once they are close enough to their target. Additionally, they can now equip clothing and armor just like the player, as well as ride mounts.",
-    "Line1_0_6_15": "• A bleeding system for creatures has been added. It allows players to see when they are close to death and how long their corpse remains before disappearing.",
-    "Line1_0_6_16": "• Fast Aim: Reduces the aim interval to 0.1 seconds in all game modes.",
-    "Line1_0_6_17": "• Added new Infected Bestiary accessible from the Infected Bestiary button in the main menu, listing only infected creatures by using the infected spawn egg categories (Common, Boomer, Special, Flying, Animal, Ghost) instead of the normal egg data, including infected-only creatures and excluding normal ones, while each entry shows its custom display name, description, model, stats and loot, and the vanilla Bestiary stays untouched, plus a new Infected Spawn Egg was added to spawn these creatures and feed the new list.",
-    "Line1_0_5_1": "• Added new weapons: Flamethrower, Scythe, Trident, Repeating Crossbow, Poison Bomb, Item Cannon",
-    "Line1_0_5_2": "• Added new NPCs: Digimon, Alliance members, Muerte members, Pirates, Infected (zombies)",
-    "Line1_0_5_3": "• Added music system (background music, chase music for enemies)",
-    "Line1_0_5_4": "• Added new items: Xiaomi refrigerator, air conditioner, Command Stick, zombie necklace",
-    "Line1_0_5_5": "• Improved pack and pursuit system; infected can now use ranged weapons",
-    "Line1_0_5_6": "• BetelGammamon now appears only in autumn/winter",
-    "Line1_0_5_7": "• New wallpapers and improved textures for Ricardo, Carl Johnson, Ballestadora Musculosa",
-    "Line1_0_5_8": "• Fixed bugs: music button disappearing, air conditioner shadow, door interaction, etc.",
-    "Line1_0_5_9": "• Added poisoning mechanic and old stone/wood/lava weapons/tools",
-    "Line1_0_4_1": "• Added Headcrab Bloody Human, El Arquero",
-    "Line1_0_4_2": "• Improved Carl Johnson, El Marihuanero, El Marihuanero Mamón designs",
-    "Line1_0_4_3": "• Improved Ricardo's texture (fixed unpainted edges)",
-    "Line1_0_4_4": "• Added shooting behavior: El Arquero, El Ballestero, El Marihuanero Mamón now use their own ammo",
-    "Line1_0_3_1": "• Added new characters: Conker, Beavis and Butt‑head, Hombre Lava, Hombre Agua",
-    "Line1_0_3_2": "• Modified El Marihuanero Mamón's shirt to reflect Rastafarian essence",
-    "Line1_0_2_1": "• Added GTA characters: Claude Speed, Tommy Vercetti",
-    "Line1_0_2_2": "• Added 4 beings from the afterlife",
-    "Line1_0_2_3": "• Added full moon/new moon transformation for Lider Caláverico Supremo",
-    "Line1_0_2_4": "• Improved NPC sounds (La Muerte X, El Marihuanero Mamón)",
-    "Line1_0_2_5": "• Claude, Tommy and El Marihuanero Mamón now have items/weapons",
-    "Line1_0_2_6": "• Changed audio route for Paco (now uses its own name)",
-    "Line1_0_1_1": "• Added Tank model (from dayzmod)",
-    "Line1_0_1_2": "• New character: Fumador Químico and his muscular version (Tank)",
-    "Line1_0_1_3": "• Full moon/new moon transformation for Fumador Químico → Brawny (allied)",
-    "Line1_0_1_4": "• Added new sounds to NPCs",
-    "Line1_0_0_1": "• Added 4 humans",
-    "Line1_0_0_2": "• Models, textures, and audios from dayzmod mod",
-    "Line1_0_0_3": "• Compatible with 2.3 and 2.4"
-  },
+    "1.0.6": [
+        "• Free Camera has been added. This mode is only available in Peaceful (Harmless), Survival (Survival), Challenging (Challenging), Cruel (Cruel), and Adventure (Adventure); it does not work in Creative mode. Its behavior is similar to the debug camera, allowing you to move freely around the world to observe the environment and creatures without restrictions.",
+        "• Added the special event \"Green Night\". You can enable or disable it, configure how often it occurs (in days), and choose between seven Mental States: Early Retirement, Therapy Waiting List, Monday Morning, Structural Damage, The Last Architect, Sanity Load Error, and a seventh secret state. Each Mental State changes enemy spawn rates, aggression, environmental destruction capabilities, and tactical behavior. The event takes place at night according to the configured interval.",
+        "A thirst mechanic has been introduced to create a more realistic experience. You will now need to find sources of water, such as buckets or containers. However, drinking untreated water may cause nausea, especially if it comes from unsafe sources. To avoid negative effects, it is recommended to boil water before consuming it.",
+        "• New Digimons and bandits have been added. Currently, there are 4 unique bandits that players can hire using nuclear coins.",
+        "• Added trading and hiring system.",
+        "• New unlockable event: after surviving all the waves of the Green Night (yes, all of them, including the one where you cried in the shower), a suspiciously convenient chest will appear near you. It contains a letter. It’s not spam, it’s not a Viagra offer, it’s an invitation. If you accept it… well, let’s just say the nights will stop being boring. We won’t say exactly what happens (spoilers), but it involves shady-looking guys, questionable life choices, and the feeling that maybe you should have stayed in bed. If you refuse… they’ll ask you again. And again. And again. The letter has a lot of patience. Or a mean streak. You decide.",
+        "• Shitty Creatures settings have been added, accessible from the main menu through a dedicated button. All options are automatically saved to an XML file, preserving your settings between game sessions.",
+        "• New weapons have been added: firearms, freezing bomb, and double-barrel musket.",
+        "• New tools have been introduced: thin-head hammer (mines faster than standard pickaxes).",
+        "• A flu system for creatures has been implemented.",
+        "• A healing system has been added, compatible with both creatures and players, including treatment for nausea, poison, and flu, as well as healing for low-health creatures.",
+        "• The trident now summons lightning when it hits a target.",
+        "• Translations have been fixed, polished, and improved.",
+        "• The creatures' artificial intelligence has been improved. They can now use any type of weapon, including melee, ranged, thrown, and firearms. If they have a melee weapon in their inventory while using a ranged, thrown, or firearm weapon, they will automatically switch to the melee weapon once they are close enough to their target. Additionally, they can now equip clothing and armor just like the player, as well as ride mounts.",
+        "• A bleeding system for creatures has been added. It allows players to see when they are close to death and how long their corpse remains before disappearing.",
+        "• Fast Aim: Reduces the aim interval to 0.1 seconds in all game modes.",
+        "• Added new Infected Bestiary accessible from the Infected Bestiary button in the main menu, listing only infected creatures by using the infected spawn egg categories (Common, Boomer, Special, Flying, Animal, Ghost) instead of the normal egg data, including infected-only creatures and excluding normal ones, while each entry shows its custom display name, description, model, stats and loot, and the vanilla Bestiary stays untouched, plus a new Infected Spawn Egg was added to spawn these creatures and feed the new list."
+    ],
+    "1.0.5": [
+        "• Added new weapons: Flamethrower, Scythe, Trident, Repeating Crossbow, Poison Bomb, Item Cannon",
+        "• Added new NPCs: Digimon, Alliance members, Muerte members, Pirates, Infected (zombies)",
+        "• Added music system (background music, chase music for enemies)",
+        "• Added new items: Xiaomi refrigerator, air conditioner, Command Stick, zombie necklace",
+        "• Improved pack and pursuit system; infected can now use ranged weapons",
+        "• BetelGammamon now appears only in autumn/winter",
+        "• New wallpapers and improved textures for Ricardo, Carl Johnson, Ballestadora Musculosa",
+        "• Fixed bugs: music button disappearing, air conditioner shadow, door interaction, etc.",
+        "• Added poisoning mechanic and old stone/wood/lava weapons/tools"
+    ],
+    "1.0.4": [
+        "• Added Headcrab Bloody Human, El Arquero",
+        "• Improved Carl Johnson, El Marihuanero, El Marihuanero Mamón designs",
+        "• Improved Ricardo's texture (fixed unpainted edges)",
+        "• Added shooting behavior: El Arquero, El Ballestero, El Marihuanero Mamón now use their own ammo"
+    ],
+    "1.0.3": [
+        "• Added new characters: Conker, Beavis and Butt‑head, Hombre Lava, Hombre Agua",
+        "• Modified El Marihuanero Mamón's shirt to reflect Rastafarian essence"
+    ],
+    "1.0.2": [
+        "• Added GTA characters: Claude Speed, Tommy Vercetti",
+        "• Added 4 beings from the afterlife",
+        "• Added full moon/new moon transformation for Lider Caláverico Supremo",
+        "• Improved NPC sounds (La Muerte X, El Marihuanero Mamón)",
+        "• Claude, Tommy and El Marihuanero Mamón now have items/weapons",
+        "• Changed audio route for Paco (now uses its own name)"
+    ],
+    "1.0.1": [
+        "• Added Tank model (from dayzmod)",
+        "• New character: Fumador Químico and his muscular version (Tank)",
+        "• Full moon/new moon transformation for Fumador Químico → Brawny (allied)",
+        "• Added new sounds to NPCs"
+    ],
+    "1.0.0": [
+        "• Added 4 humans",
+        "• Models, textures, and audios from dayzmod mod",
+        "• Compatible with 2.3 and 2.4"
+    ]
+},
   "ShittyCreaturesSettings": {
     "ScreenTitle": "Shitty Creatures Settings",
     "GhostDescription": "Enable/disable music when ghosts chase you",
@@ -702,6 +724,10 @@
   }
 },
   "Blocks": {
+    "BanditEggBlock:0": {
+      "DisplayName": "Bandit Egg",
+      "Description": "Spawner egg. Throw against a hard surface to spawn a random bandit. Available in creative mode only."
+    },
 "FirstAidKitBlock:0": {
   "Description": "A large medical kit capable of completely restoring health.",
   "CRDescription:0": "Combine two medium kits with extra supplies to create a large first aid kit"
@@ -1545,18 +1571,18 @@
 "InfectedSpawnEggBlock:5": {
   "DisplayName": "Ghost Infected Spawn Egg",
   "Description": "Conjures an ethereal infected when smashed. These spectral entities move with unnatural swiftness and possess a degree of intangibility, enabling them to slip through attacks and strike with ghostly precision."
-}
+  }
 },
-      "ContentWidgets": {
-        "BestiaryInfectedScreen": {
-    "1": "Infected Bestiary"
+"ContentWidgets": {
+"BestiaryInfectedScreen": {
+    "1": "Bestiary of Infected and Bandits"
 },
 "BestiaryInfectedDescriptionScreen": {
     "1": "Infected Description",
-    "2": "Loot:"
-}
-,
-        "LetterWarDialog": {
+    "2": "Loot:",
+    "3": "Bandit Description"
+},
+  "LetterWarDialog": {
     "Title": "WAR LETTER",
     "AcceptButton": "ACCEPT",
     "RejectButton": "REJECT",
@@ -1565,20 +1591,22 @@
     "AcceptBeforeGreenNightMessage": "You accepted the war right before the Green Night falls. Infected and narcos are going to hit you from all sides at the same time. Tonight you won't sleep, you'll pray. Enjoy hell, you bastard!",
     "RejectMessage": "You rejected the challenge, coward. The letter will stay here, but don’t think we forgot about you. The Cartel always comes back."
   },
-        "RefrigeratorXiaomi": {
+  "RefrigeratorXiaomi": {
     "RefrigeratorLabel": "Refrigerator",
     "InventoryLabel": "Inventory",
     "CoolingStatus": "Cooling...",
     "NoPowerStatus": "No Power"
   },
-        "GreenNightToggleDialog": {
+"GreenNightToggleDialog": {
   "Title": "Green Night Settings",
   "CheckboxText": "Enable Green Night",
   "OkButton": "OK",
   "CancelButton": "Cancel",
   "DaysButton": "Days...",
-  "EnableExplanation": "The world becomes more hostile. Dangerous creatures appear periodically and enemies are relentless.",
-  "DisableExplanation": "The world is peaceful. Nights pass normally without special threats.",
+  "Explanations": [
+    "The world becomes more hostile. Dangerous creatures appear periodically and enemies are relentless.",
+    "The world is peaceful. Nights pass normally without special threats."
+  ],
   "EnabledNotification": "Green Night enabled",
   "DisabledNotification": "Green Night disabled",
   "IntervalLabel": "Set Green Night interval:",
@@ -1590,10 +1618,12 @@
   "3": "Days of sanity remaining:",
   "4": "Accept",
   "5": "Cancel",
-  "6": "Green Night is already part of your routine.",
-  "7": "Enough rest to forget why you were running.",
-  "8": "A reasonable amount of time to prepare defenses and bad excuses.",
-  "9": "The calm lasts so long that it starts to become unsettling.",
+  "Descriptions": [
+    "Green Night is already part of your routine.",
+    "Enough rest to forget why you were running.",
+    "A reasonable amount of time to prepare defenses and bad excuses.",
+    "The calm lasts so long that it starts to become unsettling."
+  ],
   "10": "If you'd rather not choose, simply cancel.\nGreen Night will occur every 4 days with the \"Monday Morning\" mental state by default.",
   "11": "Green Night has been set to {0} every {1} days.",
   "12": "{0} days",
@@ -1601,7 +1631,7 @@
   "DifficultyPlaceholder": "Choose how bad you're doing"
 },
 "GreenNightDifficulty": {
-  "Names": [
+  "Difficulties": [
     "Early Retirement",
     "Therapy Waiting List",
     "Monday Morning",
@@ -1662,7 +1692,7 @@
     "Title": "Guns Trader",
     "Inventory": "Inventory"
 },
-        "AutoCannonWidget": {
+  "AutoCannonWidget": {
     "Title": "Auto-Cannon",
     "InventoryTitle": "Inventory",
     "ProjectileSpeed": "Projectile Speed",
@@ -1677,13 +1707,13 @@
       "1": "Farmer",
       "2": "Farmer (N/A)"
     },
-    "FlameThrowerWidget": {
+   "FlameThrowerWidget": {
     "1": "Flamethrower",
     "2": "Inventory",
     "3": "Load fire or poison bullets to be able to shoot.",
     "4": "Prepare to spray fire {0}/15",
     "5": "Prepare to spray poison {0}/15"
-},
+   },
     "RepeatCrossbowWidget": {
       "1": "Repeating Crossbow",
       "2": "Inventory",
