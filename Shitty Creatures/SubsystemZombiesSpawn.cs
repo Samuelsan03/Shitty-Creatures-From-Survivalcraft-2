@@ -528,15 +528,6 @@ namespace Game
 
 			WaveAdvanced?.Invoke(oldWave, newWave);
 
-			if (oldWave == maxWave && m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme && !m_extremeCompletionDialogShown)
-			{
-				m_extremeCompletionDialogShown = true;
-				if (m_subsystemAudio != null)
-				{
-					m_subsystemAudio.PlaySound("Audio/Rocket Knight Adventures Stage Clear", 1f, 0f, 0f, 0f);
-				}
-			}
-
 			if (oldWave == maxWave && m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Impossible)
 			{
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
