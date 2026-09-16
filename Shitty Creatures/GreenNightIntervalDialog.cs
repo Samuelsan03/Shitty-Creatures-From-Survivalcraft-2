@@ -166,7 +166,7 @@ namespace Game
 			// El enum DifficultyMode ya coincide con el índice del array (VeryEasy=0 ... Impossible=6)
 			return LanguageControl.Get(
 				"ContentWidgets", "GreenNightDifficulty",
-				"Names", ((int)mode).ToString());
+				"Difficulties", ((int)mode).ToString());
 		}
 
 		private string GetDifficultyDescription(DifficultyMode mode)
