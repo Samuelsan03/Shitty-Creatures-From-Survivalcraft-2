@@ -96,8 +96,12 @@ namespace Game
 
 		private void UpdateExplanationText()
 		{
-			string explanationKey = m_checkbox.IsChecked ? "EnableExplanation" : "DisableExplanation";
-			m_explanationLabel.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", explanationKey);
+			// El índice coincide con el estado del checkbox (0 = activado, 1 = desactivado)
+			int index = m_checkbox.IsChecked ? 0 : 1;
+
+			m_explanationLabel.Text = LanguageControl.Get(
+				"ContentWidgets", "GreenNightToggleDialog",
+				"Explanations", index.ToString());
 		}
 
 		public override void Update()
