@@ -169,18 +169,9 @@ namespace Game
 
 		private string GetDifficultyName(DifficultyMode mode)
 		{
-			string key = mode switch
-			{
-				DifficultyMode.VeryEasy => "VeryEasy_Name",
-				DifficultyMode.Easy => "Easy_Name",
-				DifficultyMode.Normal => "Normal_Name",
-				DifficultyMode.Medium => "Medium_Name",
-				DifficultyMode.Hard => "Hard_Name",
-				DifficultyMode.Extreme => "Extreme_Name",
-				DifficultyMode.Impossible => "Impossible_Name",   // <--- NUEVO
-				_ => "Normal_Name"
-			};
-			return LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
+			return LanguageControl.Get(
+				"ContentWidgets", "GreenNightDifficulty",
+				"Names", ((int)mode).ToString());
 		}
 
 		public override void Update()
