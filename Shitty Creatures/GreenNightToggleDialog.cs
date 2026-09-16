@@ -209,9 +209,8 @@ namespace Game
 					// Hubo cambios en días o dificultad (con o sin cambio del checkbox)
 					string difficultyName = GetDifficultyName(m_tempDifficulty);
 					string message = string.Format(
-						LanguageControl.GetContentWidgets("GreenNightIntervalDialog", "11"),
-						difficultyName,
-						m_tempIntervalDays);
+	LanguageControl.GetContentWidgets("GreenNightIntervalDialog", "7"),
+	difficultyName, m_tempIntervalDays);
 					m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
 				}
 			}
@@ -231,7 +230,7 @@ namespace Game
 		{
 			return LanguageControl.Get(
 				"ContentWidgets", "GreenNightDifficulty",
-				"Names", ((int)mode).ToString());
+				"Difficulties", ((int)mode).ToString());
 		}
 
 		private void Dismiss()

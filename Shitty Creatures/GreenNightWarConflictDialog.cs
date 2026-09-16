@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Game;
 
@@ -171,7 +171,7 @@ namespace Game
 		{
 			return LanguageControl.Get(
 				"ContentWidgets", "GreenNightDifficulty",
-				"Names", ((int)mode).ToString());
+				"Difficulties", ((int)mode).ToString());
 		}
 
 		public override void Update()
