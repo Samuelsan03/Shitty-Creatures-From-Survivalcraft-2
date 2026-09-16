@@ -569,7 +569,8 @@ namespace Game
 			achievementContainer.Children.Add(titleLabel);
 
 			// --- CATEGORÍA (TypeOfAchievement) ---
-			string typeText = LanguageControl.Get("TypesOfAchievements", 0) + ": " + LanguageControl.Get("TypesOfAchievements", GetTypeKey(typeOfAchievement));
+			string typeText = LanguageControl.Get("TypesOfAchievements", "Type") + ": " +
+							  LanguageControl.Get("TypesOfAchievements", "Names", GetTypeKey(typeOfAchievement));
 			var categoryLabel = new LabelWidget
 			{
 				Text = typeText,
@@ -1324,32 +1325,13 @@ namespace Game
 			// Intentar parsear el string al enum AchievementCategory
 			if (Enum.TryParse<AchievementCategory>(typeName, true, out var category))
 			{
-				// Mapear el enum a la clave de idioma
-				switch (category)
-				{
-					case AchievementCategory.Combat: return "1";
-					case AchievementCategory.Survival: return "2";
-					case AchievementCategory.Taming: return "3";
-					case AchievementCategory.Healing: return "4";
-					case AchievementCategory.Trade: return "5";
-					case AchievementCategory.Special: return "6";
-					default: return "1";
-				}
+				// El enum coincide con el índice del array (Combat=0 ... Special=5)
+				return ((int)category).ToString();
 			}
 
-			// Si no se pudo parsear, intentar con el método antiguo como fallback
+			// Fallback: si no se pudo parsear, Combat (índice 0)
 			Log.Warning($"[AchievementsWidget] Tipo de logro desconocido: '{typeName}', usando fallback a Combat");
-
-			switch (typeName)
-			{
-				case "Combat": return "1";
-				case "Survival": return "2";
-				case "Taming": return "3";
-				case "Healing": return "4";
-				case "Trade": return "5";
-				case "Special": return "6";
-				default: return "1";
-			}
+			return "0";
 		}
 	}
 }
