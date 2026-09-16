@@ -1,4 +1,7 @@
 {
+  "SubsystemBanditEggBlockBehavior": { 
+    "1": "No se pudo generar al bandido. Revisa el registro del juego." 
+  },
   "FirstAidKitBlock": [
   "Botiquín de primeros auxilios grande",
   "Botiquín de primeros auxilios mediano"
@@ -60,21 +63,24 @@
   "8": "Has rechazado el desafío. El modo permanece bloqueado.",
   "9": "Has aceptado el nuevo desafío. Las oleadas se han reiniciado."
 },
-  "InfiniteChallengeWidget": {
+"InfiniteChallengeWidget": {
     "0": "Infinite el Chacal",
     "1": "Desafío",
     "2": "Te he estado observando desde las sombras.",
     "3": "Mi familia necesita otro guerrero. No un seguidor que se esconda detrás de sus aliados, sino un verdadero lobo solitario.",
-    "4": "Lucha contra mí. Uno contra uno. Sin compañeros, sin criaturas invocadas y sin ayuda externa.",
-    "5": "Si ganas, serás honrado como parte de mi familia. Si pierdes... permanecerás aquí, esperando a alguien lo suficientemente fuerte como para derrotarme.",
+    "4": "Lucha contra mí. Uno contra uno. Sin compañeros, sin criaturas invocadas, sin ayuda externa.",
+    "5": "Si ganas, serás honrado como parte de mi familia. Si pierdes... permanecerás aquí, esperando a que alguien lo bastante fuerte consiga derrotarme.",
     "6": "¿Aceptas el desafío?",
     "7": "Aceptar",
-    "8": "Rechazar"
-  },
-  "ComponentInfiniteChallenge": {
+    "8": "Rechazar",
+    "9": "Ya has demostrado tu valía contra mí. Pero aún quedan más de mis guerreros esperando para unirse a ti. ¿Quieres saltarte el duelo y permitir que se unan directamente a tu familia?",
+    "10": "Saltar duelo"
+},
+"ComponentInfiniteChallenge": {
     "0": "¡El duelo contra Infinite ha comenzado!",
-    "1": "¡Has demostrado tu fuerza! Infinite ahora se une a tu familia."
-  },
+    "1": "¡Has demostrado tu fuerza! Infinite ahora se une a tu familia.",
+    "2": "Bienvenido a la familia, guerrero. Mis camaradas lucharán a tu lado."
+},
   "MountLock": {
     "0": "No puedes montar esta montura infectada"
 },
@@ -240,13 +246,15 @@
     "8": "No. Simplemente no. Apaga eso y disfruta el espectáculo, que no todo el día hay fuegos artificiales cayendo del cielo."
 },
 "TypesOfAchievements": {
-    "0": "Tipo",
-    "1": "Crímenes de Guerra",
-    "2": "Sobreviviente por Accidente",
-    "3": "Síndrome de Estocolmo Animal",
-    "4": "Médico sin Licencia",
-    "5": "Capitalismo Salvaje",
-    "6": "Problemas Psicológicos"
+    "Type": "Tipo",
+    "Categories": [
+        "Crímenes de guerra",
+        "Superviviente accidental",
+        "Síndrome de Estocolmo animal",
+        "Médico sin licencia",
+        "Capitalismo salvaje",
+        "Problemas psicológicos"
+    ]
 },
   "BaseWatermelonBlock": {
     "1": "Sandía",
@@ -307,52 +315,66 @@
     "ExitButton": "Salir"
   },
   "ShittyCreaturesLog": {
-    "Line1_0_6_1": "• Se ha añadido la Cámara Libre. Este modo solo está disponible en Pacífico (Harmless), Supervivencia (Survival), Desafiante (Challenging), Cruel (Cruel) y Aventura (Adventure); no funciona en modo Creativo. Su comportamiento es similar a la cámara de depuración, permitiendo desplazarse libremente por el mundo para observar el entorno y a las criaturas sin restricciones.",
-    "Line1_0_6_2": "• Se ha añadido el evento especial \"Noche Verde\". Puedes activarlo o desactivarlo, ajustar cada cuántos días ocurre y elegir entre siete Estados Mentales: Jubilación Anticipada, Lista de Espera para Terapia, Lunes por la Mañana, Daño Estructural, El Último Arquitecto, Error al Cargar la Cordura y un séptimo estado secreto. Cada Estado Mental modifica la frecuencia de aparición de enemigos, su agresividad, la capacidad de destrucción del entorno y su comportamiento táctico. El evento se activa por la noche según el intervalo configurado.",
-    "Line1_0_6_3": "• Se ha incorporado el sistema de sed para ofrecer una experiencia más realista. Ahora será necesario encontrar fuentes de agua, como cubetas o recipientes. Sin embargo, beber agua sin tratar puede provocar náuseas, especialmente si proviene de fuentes no seguras. Para evitar efectos negativos, se recomienda hervir el agua antes de consumirla.",
-    "Line1_0_6_4": "• Se han añadido nuevos Digimons y bandidos. Actualmente, hay 4 bandidos únicos que los jugadores pueden contratar usando monedas nucleares.",
-    "Line1_0_6_5": "• Se añadió un sistema de comercio y contratación.",
-    "Line1_0_6_6": "• Nuevo evento desbloqueable: después de sobrevivir a todas las oleadas de la noche verde (sí, todas, incluyendo esa donde lloraste en la ducha), aparecerá un cofre sospechosamente cerca de ti. Contiene una carta. No es spam, no es una oferta de viagra, es una invitación. Si la aceptas… bueno, digamos que las noches dejarán de ser aburridas. No diremos qué pasa exactamente (spoilers), pero involucra tipos con mala mirada, decisiones de vida cuestionables y la sensación de que tal vez debiste quedarte en la cama. Si rechazas… ellos volverán a preguntarte. Y otra vez. Y otra vez. La carta tiene mucha paciencia. O mala leche. Tú decides.",
-    "Line1_0_6_7": "• Se agregaron las configuraciones de Shitty Creatures, accesibles desde el menú principal a través de un botón dedicado. Todas las opciones se almacenan automáticamente en un archivo XML, manteniendo la configuración entre sesiones de juego.",
-    "Line1_0_6_8": "• Se añadieron nuevas armas: armas de fuego, bomba congelante y mosquete de doble cañón.",
-    "Line1_0_6_9": "• Se incorporaron nuevas herramientas: martillo de cabeza delgada (pica más rápido que los picos tradicionales).",
-    "Line1_0_6_10": "• Se implementó un sistema de gripe para criaturas.",
-    "Line1_0_6_11": "• Se añadió un sistema de curación compatible tanto con criaturas como con el jugador, incluyendo tratamiento contra náuseas, veneno y gripe, así como curación para criaturas con baja salud.",
-    "Line1_0_6_12": "• El tridente ahora invoca un rayo al impactar contra el objetivo.",
-    "Line1_0_6_13": "• Se han corregido, pulido y mejorado las traducciones.",
-    "Line1_0_6_14": "• La inteligencia artificial de las criaturas ha sido mejorada. Ahora pueden utilizar cualquier tipo de arma, incluidas las armas cuerpo a cuerpo, a distancia, arrojadizas y de fuego. Si disponen de un arma cuerpo a cuerpo en su inventario y están usando un arma a distancia, arrojadiza o de fuego, cambiarán automáticamente al arma cuerpo a cuerpo cuando estén lo suficientemente cerca de su objetivo. Además, ahora pueden equiparse ropa y armaduras de la misma forma que el jugador, así como montar monturas.",
-    "Line1_0_6_15": "• Se ha añadido un sistema de sangrado para criaturas. Permite a los jugadores ver cuándo están cerca de la muerte y cuánto tiempo permanece su cadáver antes de desaparecer.",
-    "Line1_0_6_16": "• Apuntado rápido: Reduce el intervalo de apuntado a 0.1 segundos en todos los modos de juego.",
-    "Line1_0_6_17": "• Se añadió un nuevo Bestiario de Infectados, accesible desde el botón Bestiario de Infectados en el menú principal, que muestra únicamente criaturas infectadas utilizando las categorías de huevos de aparición de infectados (Común, Boomer, Especial, Volador, Animal, Fantasma) en lugar de los datos de huevos normales. Incluye criaturas exclusivas de los infectados y excluye las normales. Cada entrada muestra su nombre personalizado, descripción, modelo, estadísticas y botín. El Bestiario vanilla permanece intacto. Además, se añadió un nuevo Huevo de Aparición de Infectados para generar estas criaturas y alimentar la nueva lista.",
-    "Line1_0_5_1": "• Nuevas armas: Lanzallamas, Guadaña, Tridente, Ballesta Repetidora, Bomba Venenosa, Lanzaobjetos",
-    "Line1_0_5_2": "• Nuevos NPCs: Digimon, miembros de la Alianza, miembros de Muerte, Piratas, Infectados (zombis)",
-    "Line1_0_5_3": "• Nuevo sistema de música (música de fondo, música de persecución para enemigos)",
-    "Line1_0_5_4": "• Nuevos objetos: Refrigerador Xiaomi, aire acondicionado, Bastón de Mando, collar de zombi",
-    "Line1_0_5_5": "• Sistema de manada y persecución mejorado; los infectados ahora usan armas a distancia",
-    "Line1_0_5_6": "• BetelGammamon solo aparece en otoño/invierno",
-    "Line1_0_5_7": "• Nuevo fondo de pantalla y texturas mejoradas para Ricardo, Carl Johnson, Ballestadora Musculosa",
-    "Line1_0_5_8": "• Errores corregidos: botón de música desaparecía, sombra del aire acondicionado, interacción con puertas",
-    "Line1_0_5_9": "• Añadido mecanismo de envenenamiento y armas/herramientas antiguas de piedra/madera/lava",
-    "Line1_0_4_1": "• Añadido Headcrab Bloody Human, El Arquero",
-    "Line1_0_4_2": "• Mejorados diseños de Carl Johnson, El Marihuanero, El Marihuanero Mamón",
-    "Line1_0_4_3": "• Mejorada textura de Ricardo (bordes sin pintar corregidos)",
-    "Line1_0_4_4": "• Comportamiento de disparo: El Arquero, El Ballestero, El Marihuanero Mamón usan su propia munición",
-    "Line1_0_3_1": "• Nuevos personajes: Conker, Beavis and Butt‑head, Hombre Lava, Hombre Agua",
-    "Line1_0_3_2": "• Camisa de El Marihuanero Mamón modificada con esencia Rastafari",
-    "Line1_0_2_1": "• Personajes de GTA: Claude Speed, Tommy Vercetti",
-    "Line1_0_2_2": "• 4 seres del más allá añadidos",
-    "Line1_0_2_3": "• Transformación de luna llena/nueva para Líder Calavérico Supremo",
-    "Line1_0_2_4": "• Sonidos mejorados (La Muerte X, El Marihuanero Mamón)",
-    "Line1_0_2_5": "• Claude, Tommy y El Marihuanero Mamón ahora tienen objetos/armas",
-    "Line1_0_2_6": "• Ruta de audio cambiada para Paco (ahora usa su propio nombre)",
-    "Line1_0_1_1": "• Modelo Tank añadido (de dayzmod)",
-    "Line1_0_1_2": "• Nuevo personaje: Fumador Químico y su versión muscular (Tank)",
-    "Line1_0_1_3": "• Transformación de luna llena/nueva para Fumador Químico → Fornido (aliado)",
-    "Line1_0_1_4": "• Nuevos sonidos para NPCs",
-    "Line1_0_0_1": "• 4 humanos añadidos",
-    "Line1_0_0_2": "• Modelos, texturas y audios del mod dayzmod",
-    "Line1_0_0_3": "• Compatible con 2.3 y 2.4"
-  },
+    "1.0.6": [
+        "• Se ha añadido la Cámara Libre. Este modo solo está disponible en Pacífico (Inofensivo), Supervivencia (Supervivencia), Desafiante (Desafiante), Cruel (Cruel) y Aventura (Aventura); no funciona en el modo Creativo. Su comportamiento es similar al de la cámara de depuración, permitiéndote moverte libremente por el mundo para observar el entorno y las criaturas sin restricciones.",
+        "• Se ha añadido el evento especial \"Noche Verde\". Puedes activarlo o desactivarlo, configurar cada cuánto ocurre (en días) y elegir entre siete Estados Mentales: Jubilación Anticipada, Lista de Espera para Terapia, Lunes por la Mañana, Daño Estructural, El Último Arquitecto, Error de Carga de la Cordura y un séptimo estado secreto. Cada Estado Mental modifica las tasas de aparición de enemigos, su agresividad, su capacidad de destrucción del entorno y su comportamiento táctico. El evento tiene lugar durante la noche según el intervalo configurado.",
+        "• Se ha introducido una mecánica de sed para crear una experiencia más realista. Ahora tendrás que encontrar fuentes de agua, como cubos o recipientes. Sin embargo, beber agua sin tratar puede provocar náuseas, especialmente si procede de fuentes inseguras. Para evitar efectos negativos, se recomienda hervir el agua antes de consumirla.",
+        "• Se han añadido nuevos Digimons y bandidos. Actualmente hay 4 bandidos únicos que los jugadores pueden contratar usando monedas nucleares.",
+        "• Se ha añadido un sistema de comercio y contratación.",
+        "• Nuevo evento desbloqueable: después de sobrevivir a todas las oleadas de la Noche Verde (sí, a todas, incluida aquella en la que lloraste en la ducha), aparecerá cerca de ti un cofre sospechosamente conveniente. Contiene una carta. No es spam, no es una oferta de Viagra, es una invitación. Si la aceptas… bueno, digamos que las noches dejarán de ser aburridas. No diremos exactamente qué ocurre (spoilers), pero incluye tipos de aspecto sospechoso, decisiones de vida cuestionables y la sensación de que quizá deberías haberte quedado en la cama. Si la rechazas… te lo volverán a preguntar. Y otra vez. Y otra vez. La carta tiene mucha paciencia. O una vena maliciosa. Tú decides.",
+        "• Se han añadido las opciones de configuración de Shitty Creatures, accesibles desde el menú principal mediante un botón dedicado. Todas las opciones se guardan automáticamente en un archivo XML, conservando la configuración entre sesiones de juego.",
+        "• Se han añadido nuevas armas: armas de fuego, bomba congelante y mosquete de doble cañón.",
+        "• Se han introducido nuevas herramientas: martillo de cabeza delgada (mina más rápido que los picos estándar).",
+        "• Se ha implementado un sistema de gripe para las criaturas.",
+        "• Se ha añadido un sistema de curación compatible tanto con criaturas como con jugadores, incluyendo tratamientos para las náuseas, el veneno y la gripe, así como curación para criaturas con poca salud.",
+        "• El tridente ahora invoca rayos cuando golpea a un objetivo.",
+        "• Se han corregido, pulido y mejorado las traducciones.",
+        "• Se ha mejorado la inteligencia artificial de las criaturas. Ahora pueden utilizar cualquier tipo de arma, incluyendo armas cuerpo a cuerpo, a distancia, arrojadizas y de fuego. Si tienen un arma cuerpo a cuerpo en su inventario mientras utilizan un arma a distancia, arrojadiza o de fuego, cambiarán automáticamente al arma cuerpo a cuerpo cuando estén lo suficientemente cerca de su objetivo. Además, ahora pueden equiparse con ropa y armaduras al igual que el jugador, así como montar criaturas de transporte.",
+        "• Se ha añadido un sistema de sangrado para las criaturas. Permite a los jugadores ver cuándo están cerca de morir y cuánto tiempo permanece su cadáver antes de desaparecer.",
+        "• Apuntado Rápido: reduce el intervalo de apuntado a 0,1 segundos en todos los modos de juego.",
+        "• Se ha añadido un nuevo Bestiario de Infectados, accesible mediante el botón Bestiario de Infectados del menú principal, que muestra únicamente criaturas infectadas utilizando las categorías de huevos de aparición de infectados (Común, Boomer, Especial, Volador, Animal, Fantasma) en lugar de los datos normales de huevos. Incluye criaturas exclusivas de infectados y excluye las normales. Cada entrada muestra su nombre personalizado, descripción, modelo, estadísticas y botín. El Bestiario original permanece intacto. Además, se ha añadido un nuevo Huevo de Aparición de Infectados para generar estas criaturas y alimentar la nueva lista."
+    ],
+    "1.0.5": [
+        "• Se han añadido nuevas armas: Lanzallamas, Guadaña, Tridente, Ballesta de Repetición, Bomba Venenosa y Cañón de Objetos.",
+        "• Se han añadido nuevos NPC: Digimon, miembros de la Alianza, miembros de Muerte, Piratas e Infectados (zombis).",
+        "• Se ha añadido un sistema de música (música de fondo y música de persecución para los enemigos).",
+        "• Se han añadido nuevos objetos: refrigerador Xiaomi, aire acondicionado, Bastón de Comandos y collar de zombi.",
+        "• Se han mejorado los sistemas de grupo y persecución; los infectados ahora pueden utilizar armas a distancia.",
+        "• BetelGammamon ahora aparece únicamente en otoño/invierno.",
+        "• Se han añadido nuevos fondos de pantalla y se han mejorado las texturas de Ricardo, Carl Johnson y Ballestadora Musculosa.",
+        "• Se han corregido errores: desaparición del botón de música, sombra del aire acondicionado, interacción con puertas, etc.",
+        "• Se ha añadido una mecánica de envenenamiento y antiguas armas/herramientas de piedra, madera y lava."
+    ],
+    "1.0.4": [
+        "• Se han añadido Headcrab Bloody Human y El Arquero.",
+        "• Se han mejorado los diseños de Carl Johnson, El Marihuanero y El Marihuanero Mamón.",
+        "• Se ha mejorado la textura de Ricardo (se han corregido los bordes sin pintar).",
+        "• Se ha añadido comportamiento de disparo: El Arquero, El Ballestero y El Marihuanero Mamón ahora utilizan su propia munición."
+    ],
+    "1.0.3": [
+        "• Se han añadido nuevos personajes: Conker, Beavis y Butt-Head, Hombre Lava y Hombre Agua.",
+        "• Se ha modificado la camiseta de El Marihuanero Mamón para reflejar su esencia rastafari."
+    ],
+    "1.0.2": [
+        "• Se han añadido personajes de GTA: Claude Speed y Tommy Vercetti.",
+        "• Se han añadido 4 seres del más allá.",
+        "• Se ha añadido la transformación durante la luna llena/luna nueva para Líder Calavérico Supremo.",
+        "• Se han mejorado los sonidos de los NPC (La Muerte X, El Marihuanero Mamón).",
+        "• Claude, Tommy y El Marihuanero Mamón ahora tienen objetos/armas.",
+        "• Se ha cambiado la ruta de audio de Paco (ahora utiliza su propio nombre)."
+    ],
+    "1.0.1": [
+        "• Se ha añadido el modelo Tank (del mod dayzmod).",
+        "• Nuevo personaje: Fumador Químico y su versión musculosa (Tank).",
+        "• Transformación durante la luna llena/luna nueva para Fumador Químico → Brawny (aliado).",
+        "• Se han añadido nuevos sonidos a los NPC."
+    ],
+    "1.0.0": [
+        "• Se han añadido 4 humanos.",
+        "• Modelos, texturas y audios del mod dayzmod.",
+        "• Compatible con 2.3 y 2.4."
+    ]
+},
   "ShittyCreaturesSettings": {
     "ScreenTitle": "Ajustes de Shitty Creatures",
     "GhostDescription": "Activar/desactivar la música cuando los fantasmas te persiguen",
@@ -702,6 +724,10 @@
     }
   },
   "Blocks": {
+  "BanditEggBlock:0": { 
+    "DisplayName": "Huevo de bandido", 
+    "Description": "Huevo generador. Lánzalo contra una superficie dura para generar un bandido aleatorio. Disponible únicamente en el modo creativo." 
+  },
     "FirstAidKitBlock:0": {
   "Description": "Un botiquín médico grande capaz de restaurar completamente la salud.",
   "CRDescription:0": "Combina dos botiquines medianos con suministros adicionales para crear un botiquín de primeros auxilios grande"
@@ -1545,15 +1571,16 @@
 "InfectedSpawnEggBlock:5": {
   "DisplayName": "Huevo generador de infectado fantasma",
   "Description": "Invoca un infectado etéreo al romperse. Estas entidades espectrales se desplazan con una rapidez antinatural y poseen cierto grado de intangibilidad, lo que les permite atravesar ataques y golpear con una precisión fantasmal."
-}
+  }
 },
-  "ContentWidgets": {
-    "BestiaryInfectedScreen": {
-    "1": "Bestiario de Infectados"
+"ContentWidgets": {
+"BestiaryInfectedScreen": {
+   "1": "Bestiario de Infectados y Bandidos"
 },
 "BestiaryInfectedDescriptionScreen": {
-    "1": "Descripción de Infectado",
-    "2": "Botín:"
+    "1": "Descripción del Infectado",
+    "2": "Botín:",
+    "3": "Descripción del Bandido"
 },
     "LetterWarDialog": {
       "Title": "CARTA DE GUERRA",
@@ -1570,37 +1597,41 @@
     "CoolingStatus": "Refrigerando...",
     "NoPowerStatus": "Sin energía"
   },
-    "GreenNightToggleDialog": {
-  "Title": "Configuración de la Noche Verde",
+"GreenNightToggleDialog": {
+  "Title": "Configuración de Noche Verde",
   "CheckboxText": "Activar Noche Verde",
   "OkButton": "Aceptar",
   "CancelButton": "Cancelar",
   "DaysButton": "Días...",
-  "EnableExplanation": "El mundo es más hostil. Criaturas peligrosas aparecen periódicamente y los enemigos son implacables.",
-  "DisableExplanation": "El mundo está en calma. Las noches transcurren normalmente sin amenazas especiales.",
+  "Explanations": [
+    "El mundo se vuelve más hostil. Aparecen criaturas peligrosas periódicamente y los enemigos son implacables.",
+    "El mundo es pacífico. Las noches transcurren normalmente sin amenazas especiales."
+  ],
   "EnabledNotification": "Noche Verde activada",
   "DisabledNotification": "Noche Verde desactivada",
-  "IntervalLabel": "Establecer intervalo de la Noche Verde:",
-  "IntervalHintLabel": "(Cuántos días entre cada Noche Verde)"
+  "IntervalLabel": "Establecer intervalo de Noche Verde:",
+  "IntervalHintLabel": "(Cuántos días deben transcurrir entre cada Noche Verde)"
 },
 "GreenNightIntervalDialog": {
-  "1": "Configuración de la Noche Verde",
-  "2": "¿Con qué frecuencia deseas que ocurra la Noche Verde?",
-  "3": "Días que te quedan de cordura:",
+  "1": "Configuración de Noche Verde",
+  "2": "¿Con qué frecuencia quieres que ocurra Noche Verde?",
+  "3": "Días de cordura restantes:",
   "4": "Aceptar",
   "5": "Cancelar",
-  "6": "La Noche Verde ya forma parte de tu rutina.",
-  "7": "Suficiente descanso para olvidar por qué estabas corriendo.",
-  "8": "Tiempo razonable para preparar defensas y malas excusas.",
-  "9": "La tranquilidad dura tanto que empieza a dar miedo.",
-  "10": "Si prefieres no elegir, simplemente cancela.\nLa Noche Verde ocurrirá con el estado mental \"Lunes por la Mañana\" cada 4 días de forma predeterminada.",
-  "11": "La Noche Verde se ha configurado en {0} cada {1} días.",
+  "Descriptions": [
+    "Noche Verde ya forma parte de tu rutina.",
+    "Suficiente descanso para olvidar por qué estabas huyendo.",
+    "Una cantidad razonable de tiempo para preparar defensas y malas excusas.",
+    "La calma dura tanto que empieza a resultar inquietante."
+  ],
+  "10": "Si prefieres no elegir, simplemente cancela.\nDe forma predeterminada, Noche Verde ocurrirá cada 4 días con el estado mental \"Lunes por la mañana\".",
+  "11": "Noche Verde se ha configurado en {0} cada {1} días.",
   "12": "{0} días",
-  "DifficultyLabel": "Estado Mental",
-  "DifficultyPlaceholder": "Elige cómo de mal estás"
+  "DifficultyLabel": "Estado mental",
+  "DifficultyPlaceholder": "Elige qué tan mal te encuentras"
 },
 "GreenNightDifficulty": {
-  "Names": [
+  "Difficulties": [
     "Jubilación Anticipada",
     "Lista de Espera para Terapia",
     "Lunes por la Mañana",
