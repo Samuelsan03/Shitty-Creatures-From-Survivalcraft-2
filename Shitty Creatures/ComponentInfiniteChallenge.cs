@@ -4,6 +4,7 @@ using System.Reflection;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
+using static Game.InfiniteChallengeWidget;
 
 namespace Game
 {
@@ -82,14 +83,24 @@ namespace Game
 			m_challenger = player;
 			m_state = ChallengeState.WaitingResponse;
 
-			InfiniteChallengeWidget.Show(player, OnChallengeResponse);
+			// ✅ NUEVO: si el jugador ya desbloqueó el logro de derrotar a Infinite (69),
+			// ofrecer la opción de saltarse el duelo.
+			bool canSkip = AchievementsManager.IsAchievementUnlocked(player, 69);
+
+			InfiniteChallengeWidget.Show(player, canSkip, OnChallengeResponse);
 		}
 
-		private void OnChallengeResponse(bool accepted)
+		private void OnChallengeResponse(InfiniteChallengeWidget.InfiniteChallengeResponse response)
 		{
 			if (m_state != ChallengeState.WaitingResponse) return;
 
-			if (!accepted)
+			if (response == InfiniteChallengeResponse.Reject)
+			{
+				SkipDuel();
+				return;
+			}
+
+			if (response == InfiniteChallengeResponse.Reject)
 			{
 				m_state = ChallengeState.Idle;
 				m_challenger = null;
@@ -97,6 +108,45 @@ namespace Game
 			}
 
 			StartCountdown();
+		}
+
+		/// <summary>
+		/// Salta el duelo: hace a Infinite amigable (manada "player") directamente,
+		/// sin countdown ni combate. Solo disponible si el jugador ya derrotó a Infinite antes.
+		/// </summary>
+		private void SkipDuel()
+		{
+			CacheComponents();
+			SaveOriginalValues();
+
+			// Detener cualquier ataque en curso
+			if (m_baseChase != null)
+				m_baseChase.StopAttack();
+			if (m_newChase != null)
+				m_newChase.StopAttack();
+
+			// Restaurar comportamiento de persecución a sus valores originales
+			RestoreChaseBehavior();
+
+			// Cambiar manada a "player" (amistoso)
+			if (m_herd != null)
+				m_herd.HerdName = "player";
+
+			m_hasBeenDefeated = true;
+			m_state = ChallengeState.Finished;
+
+			// ✅ Mensaje específico de skip (clave 2), NO el de victoria (clave 1)
+			if (m_challenger != null)
+			{
+				string skipMsg = LanguageControl.Get("ComponentInfiniteChallenge", 2);
+				m_challenger.ComponentGui.DisplaySmallMessage(
+					skipMsg,
+					new Color(255, 220, 120),   // dorado, acorde al botón
+					false,
+					true);                       // con sonido de notificación
+			}
+
+			m_challenger = null;
 		}
 
 		private void StartCountdown()
@@ -592,7 +642,7 @@ namespace Game
 				Widget currentModal = m_challenger.ComponentGui.ModalPanelWidget;
 				if (!(currentModal is InfiniteChallengeWidget))
 				{
-					OnChallengeResponse(false);
+					OnChallengeResponse(InfiniteChallengeResponse.Reject);   // ✅
 				}
 			}
 
