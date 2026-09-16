@@ -570,7 +570,7 @@ namespace Game
 
 			// --- CATEGORÍA (TypeOfAchievement) ---
 			string typeText = LanguageControl.Get("TypesOfAchievements", "Type") + ": " +
-							  LanguageControl.Get("TypesOfAchievements", "Names", GetTypeKey(typeOfAchievement));
+							  LanguageControl.Get("TypesOfAchievements", "Categories", GetTypeKey(typeOfAchievement));
 			var categoryLabel = new LabelWidget
 			{
 				Text = typeText,
