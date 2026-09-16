@@ -842,12 +842,31 @@ namespace Game
 				}
 
 				// ========== MODO SIN BUCLE ==========
-				// La canción se reproduce una sola vez hasta que termina naturalmente.
+				// La canción se reproduce una sola vez. Cuando termina, se cancela la
+				// celebración COMPLETA (fuegos + baile + música) y no se reinicia nada.
 				if (!loop)
 				{
-					// Si ya dejó de sonar, terminamos (no reiniciar)
-					if (!InGameMusicManager.IsPlaying)
+					// Detectar fin de reproducción: el engine puede dejar el sonido en estado
+					// Playing aunque ya haya consumido todo el stream, así que hay que usar
+					// IsPlaybackComplete() en lugar de !IsPlaying.
+					bool musicEnded = !InGameMusicManager.IsPlaying
+								   || InGameMusicManager.IsPlaybackComplete();
+
+					if (musicEnded)
 					{
+						// Solo actuar si la celebración sigue marcada como activa
+						if (IsCelebrationActive || s_isGeneratingFireworks)
+						{
+							s_isGeneratingFireworks = false;
+							IsCelebrationActive = false;
+							OnCelebrationEnded?.Invoke();
+
+							if (s_subsystemAchievements != null && s_subsystemAchievements.IsAllAchievementsCelebrationTriggered())
+							{
+								s_subsystemAchievements.SetAllAchievementsCelebrationTriggered(false);
+								s_subsystemAchievements.SetCelebrationEndTime(0);
+							}
+						}
 						return;
 					}
 					GameManager.SyncDispatcher.Add(() => { loopAction(); return true; });
