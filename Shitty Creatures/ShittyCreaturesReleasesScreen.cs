@@ -83,42 +83,38 @@ namespace Game
 		private string BuildDetailedChanges(string version)
 		{
 			const string category = "ShittyCreaturesLog";
-			string versionPrefix = $"Line{version.Replace(".", "_")}_";
 
-			var linesDict = new Dictionary<int, string>();
-
+			// Acceder directamente al jsonNode mediante reflexión
 			var jsonNode = typeof(LanguageControl).GetField("jsonNode",
-				System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)?.GetValue(null) as System.Text.Json.Nodes.JsonNode;
+				System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
+				?.GetValue(null) as System.Text.Json.Nodes.JsonNode;
 
 			if (jsonNode != null)
 			{
 				var shittyNode = jsonNode[category];
 				if (shittyNode is System.Text.Json.Nodes.JsonObject obj)
 				{
-					foreach (var prop in obj)
+					// Buscar directamente por la clave de versión, ej: "1.0.6"
+					var versionNode = obj[version];
+					if (versionNode is System.Text.Json.Nodes.JsonArray array && array.Count > 0)
 					{
-						if (prop.Key.StartsWith(versionPrefix))
+						var lines = new List<string>(array.Count);
+						foreach (var node in array)
 						{
-							string numPart = prop.Key.Substring(versionPrefix.Length);
-							if (int.TryParse(numPart, out int order))
-							{
-								string translated = prop.Value?.ToString();
-								if (!string.IsNullOrEmpty(translated))
-									linesDict[order] = translated;
-							}
+							string translated = node?.ToString();
+							if (!string.IsNullOrEmpty(translated))
+								lines.Add(translated);
 						}
+
+						if (lines.Count > 0)
+							return string.Join(Environment.NewLine, lines);
 					}
 				}
 			}
 
-			if (linesDict.Count == 0)
-			{
-				var info = m_versions.Find(v => v.Version == version);
-				return info?.Description ?? "No description available.";
-			}
-
-			var sorted = linesDict.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value);
-			return string.Join(Environment.NewLine, sorted);
+			// Fallback si no se encontró nada
+			var info = m_versions.Find(v => v.Version == version);
+			return info?.Description ?? "No description available.";
 		}
 
 		private void DisplayVersionInfo(ModVersionInfo versionInfo)
