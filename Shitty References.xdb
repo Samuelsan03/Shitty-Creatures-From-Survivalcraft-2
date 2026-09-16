@@ -17,6 +17,10 @@
 </Folder>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="NoiseAttraction" Description="Allows the creature to hear noises and investigate their source" Guid="bab44679-20b3-426a-b178-ab6a79326f4c" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="45e9baf1-36d4-4feb-bdf2-ead1bf06bf44" Value="Game.ComponentNoiseAttraction" Type="string" />
+</ComponentTemplate>
+
     <ComponentTemplate Name="FarmerBehavior" Description="Comportamiento de granjero: ara, siembra y cosecha plantas automáticamente" Guid="4a244fdc-71c0-4e63-9f0e-0af1170138af" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
   <Parameter Name="Class" Guid="c13e7cd0-4d21-44b4-9bd2-112b732eace2" Value="Game.ComponentFarmerBehavior" Type="string" />
 </ComponentTemplate>
@@ -285,6 +289,7 @@
     <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="false" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
     <Parameter Name="CanEquipClothing" Guid="f5668c0a-04a1-4a3c-901a-9f877ef899c9" Value="false" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
     <Parameter Name="CanBeMounted" Guid="ab507689-7b01-41bf-9a41-5cae8f33bc0b" Value="false" Type="bool" Description="Si la criatura puede ser montada como una montura (caballos, camellos, etc.)"/>
+    <Parameter Name="CanDestroyBlocks" Guid="11d03679-b062-42a6-b72a-7c51a8ba3412" Value="false" Type="bool" Description="Si la criatura puede destruir bloques"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="HumanModel" Description="Modelo humano con animaciones mejoradas y fluidas" Guid="da33e501-1378-4644-8b5f-ef90863234a5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -586,6 +591,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="BanditEggBlockBehavior" Guid="f73b7b9d-5273-4b60-b778-df225bdbe078" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+          <Parameter Name="Class" Guid="151e7609-ebe4-4300-b221-7b988bb97679" Value="Game.SubsystemBanditEggBlockBehavior" Type="string" />
+        </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="FirstAidKitBlockBehavior" Guid="35638739-3ceb-42fb-a6b8-4b682e641f39" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
           <Parameter Name="Class" Guid="6b991931-39aa-44cc-9d04-303b5a6b099a" Value="Game.SubsystemFirstAidKitBlockBehavior" Type="string" />
         </MemberSubsystemTemplate>
