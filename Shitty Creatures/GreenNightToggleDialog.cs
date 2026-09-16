@@ -117,7 +117,7 @@ namespace Game
 				var dialog = new ExtremeCompletionDialog(
 					m_subsystemGreenNightSky,
 					m_player,
-					() =>
+										() =>
 					{
 						// ACCIÓN AL ACEPTAR
 						m_subsystemGreenNightSky.DifficultyMode = DifficultyMode.Impossible;
@@ -130,9 +130,14 @@ namespace Game
 							// Marcar que el desafío ha sido aceptado
 							zombiesSpawn.SetAcceptedImpossibleChallenge(true);
 						}
+						var audioSubsystem = m_subsystemGreenNightSky.Project.FindSubsystem<SubsystemAudio>(true);
+						if (audioSubsystem != null)
+						{
+							audioSubsystem.PlaySound("Audio/Rocket Knight Adventures Stage Clear", 1f, 0f, 0f, 0f);
+						}
 						m_player.ComponentGui.DisplaySmallMessage(
 							LanguageControl.Get("ExtremeCompletionDialog", 9),
-							new Color(0, 255, 0), false, true);
+							new Color(0, 255, 0), false, false);
 						// Cerrar el toggle después de aceptar
 						DialogsManager.HideDialog(toggleDialog);
 					},
