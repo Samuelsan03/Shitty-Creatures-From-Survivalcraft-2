@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using Engine;
-using Shitty_Creatures.Game;
 using TemplatesDatabase;
 
 namespace Game
