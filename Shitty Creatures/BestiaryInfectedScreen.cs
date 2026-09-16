@@ -4,7 +4,6 @@ using System.Linq;
 using System.Xml.Linq;
 using Engine;
 using Engine.Graphics;
-using Shitty_Creatures.Game;
 using TemplatesDatabase;
 
 namespace Game
