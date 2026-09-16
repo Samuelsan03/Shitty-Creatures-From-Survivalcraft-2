@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Engine;
 using Engine.Graphics;
+using Shitty_Creatures.Game;
 using TemplatesDatabase;
 
 namespace Game
@@ -11,6 +12,10 @@ namespace Game
 	public class BestiaryInfectedScreen : Screen
 	{
 		private ListPanelWidget m_creaturesList;
+
+		// Mapa: templateName -> categoría (Infectado o Bandido)
+		public static readonly Dictionary<string, BestiaryCreatureCategory> s_templateCategories
+			= new Dictionary<string, BestiaryCreatureCategory>();
 
 		public BestiaryInfectedScreen()
 		{
@@ -44,18 +49,30 @@ namespace Game
 				});
 			};
 
-			// Construir la lista de infectados usando los templates del huevo
+			// Construir la lista
 			List<BestiaryCreatureInfo> list = new List<BestiaryCreatureInfo>();
 
-			// Obtener todos los templates de todas las categorías del huevo
+			// === Templates de infectados ===
 			HashSet<string> infectedTemplates = new HashSet<string>();
 			foreach (var kvp in SubsystemInfectedSpawnEggBlockBehavior.s_spawnTemplates)
 			{
 				foreach (string template in kvp.Value)
 				{
 					infectedTemplates.Add(template);
+					s_templateCategories[template] = BestiaryCreatureCategory.Infected;
 				}
 			}
+
+			// === Templates de bandidos ===
+			HashSet<string> banditTemplates = new HashSet<string>(SubsystemBanditEggBlockBehavior.BanditTemplates);
+			foreach (string template in banditTemplates)
+			{
+				s_templateCategories[template] = BestiaryCreatureCategory.Bandit;
+			}
+
+			// === Unión de ambos ===
+			HashSet<string> allTemplates = new HashSet<string>(infectedTemplates);
+			allTemplates.UnionWith(banditTemplates);
 
 			foreach (ValuesDictionary dict in DatabaseManager.EntitiesValuesDictionaries)
 			{
@@ -65,15 +82,12 @@ namespace Game
 
 				string templateName = dict.DatabaseObject.Name;
 
-				// Filtrar: solo si está en la lista de templates de infectados
-				if (!infectedTemplates.Contains(templateName))
+				if (!allTemplates.Contains(templateName))
 					continue;
 
-				// No mostrar al jugador
 				if (dict.GetValue<ValuesDictionary>("Player", null) != null)
 					continue;
 
-				// Obtener datos necesarios
 				ValuesDictionary modelDict = DatabaseManager.FindValuesDictionaryForComponent(dict, typeof(ComponentCreatureModel));
 				ValuesDictionary bodyDict = DatabaseManager.FindValuesDictionaryForComponent(dict, typeof(ComponentBody));
 				ValuesDictionary healthDict = DatabaseManager.FindValuesDictionaryForComponent(dict, typeof(ComponentHealth));
@@ -124,10 +138,17 @@ namespace Game
 				list.Add(info);
 			}
 
-			// Ordenar por nombre
 			foreach (BestiaryCreatureInfo item in list)
 			{
 				m_creaturesList.AddItem(item);
+			}
+
+			// === Título fijo (solo mensaje 1) ===
+			LabelWidget titleWidget = Children.Find<LabelWidget>("Title", false)
+				?? Children.Find<LabelWidget>("TopBar.Title", false);
+			if (titleWidget != null)
+			{
+				titleWidget.Text = LanguageControl.Get("BestiaryInfectedScreen", 1);
 			}
 
 			if (ScreensManager.FindScreen<BestiaryInfectedDescriptionScreen>("BestiaryInfectedDescription") == null)
