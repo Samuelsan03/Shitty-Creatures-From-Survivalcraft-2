@@ -165,34 +165,17 @@ namespace Game
 
 		private string GetDifficultyName(DifficultyMode mode)
 		{
-			string key = mode switch
-			{
-				DifficultyMode.VeryEasy => "VeryEasy_Name",
-				DifficultyMode.Easy => "Easy_Name",
-				DifficultyMode.Normal => "Normal_Name",
-				DifficultyMode.Medium => "Medium_Name",
-				DifficultyMode.Hard => "Hard_Name",
-				DifficultyMode.Extreme => "Extreme_Name",
-				DifficultyMode.Impossible => "Impossible_Name",   // Nuevo
-				_ => "Normal_Name"
-			};
-			return LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
+			// El enum DifficultyMode ya coincide con el índice del array (VeryEasy=0 ... Impossible=6)
+			return LanguageControl.Get(
+				"ContentWidgets", "GreenNightDifficulty",
+				"Names", ((int)mode).ToString());
 		}
 
 		private string GetDifficultyDescription(DifficultyMode mode)
 		{
-			string key = mode switch
-			{
-				DifficultyMode.VeryEasy => "VeryEasy_Desc",
-				DifficultyMode.Easy => "Easy_Desc",
-				DifficultyMode.Normal => "Normal_Desc",
-				DifficultyMode.Medium => "Medium_Desc",
-				DifficultyMode.Hard => "Hard_Desc",
-				DifficultyMode.Extreme => "Extreme_Desc",
-				DifficultyMode.Impossible => "Impossible_Desc",   // Nuevo
-				_ => "Normal_Desc"
-			};
-			return LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
+			return LanguageControl.Get(
+				"ContentWidgets", "GreenNightDifficulty",
+				"Descriptions", ((int)mode).ToString());
 		}
 
 		private void CycleDifficulty()
