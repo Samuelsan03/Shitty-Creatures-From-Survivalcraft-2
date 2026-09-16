@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using Engine;
+using Shitty_Creatures.Game;
 using TemplatesDatabase;
 
 namespace Game
@@ -19,6 +20,7 @@ namespace Game
 		public LabelWidget m_propertyNames2Widget;
 		public LabelWidget m_propertyValues2Widget;
 		public ContainerWidget m_dropsPanel;
+		public LabelWidget m_titleWidget;   // NUEVO
 		public int m_index;
 		public IList<BestiaryCreatureInfo> m_infoList;
 
@@ -37,7 +39,9 @@ namespace Game
 			this.m_propertyValues2Widget = this.Children.Find<LabelWidget>("PropertyValues2", true);
 			this.m_dropsPanel = this.Children.Find<ContainerWidget>("Drops", true);
 
-			// IMPORTANTE: Configurar la auto-rotación del modelo
+			// ✅ FIX: el widget en el XML se llama "TopBar.Label"
+			this.m_titleWidget = this.Children.Find<LabelWidget>("TopBar.Label", true);
+
 			this.m_modelWidget.AutoRotationVector = new Vector3(0f, 1f, 0f);
 		}
 
@@ -75,7 +79,23 @@ namespace Game
 			{
 				BestiaryCreatureInfo bestiaryCreatureInfo = this.m_infoList[this.m_index];
 
-				// CLAVE: Restablecer y configurar la rotación del modelo
+				// === Determinar categoría (Infectado o Bandido) ===
+				BestiaryCreatureCategory category = BestiaryCreatureCategory.Infected;
+				if (bestiaryCreatureInfo.EntityValuesDictionary?.DatabaseObject?.Name is string templateName
+					&& BestiaryInfectedScreen.s_templateCategories.TryGetValue(templateName, out var cat))
+				{
+					category = cat;
+				}
+
+				// === Cambiar título según categoría ===
+				if (this.m_titleWidget != null)
+				{
+					this.m_titleWidget.Text = (category == BestiaryCreatureCategory.Bandit)
+						? LanguageControl.GetContentWidgets("BestiaryInfectedDescriptionScreen", 3)
+						: LanguageControl.GetContentWidgets("BestiaryInfectedDescriptionScreen", 1);
+				}
+
+				// === Resto igual que el original ===
 				this.m_modelWidget.AutoRotationVector = new Vector3(0f, 1f, 0f);
 				BestiaryScreen.SetupBestiaryModelWidget(bestiaryCreatureInfo, this.m_modelWidget, new Vector3(-1f, 0f, -1f), true, true);
 
