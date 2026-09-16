@@ -435,18 +435,10 @@ namespace Game
 		private string GetDifficultyLocalizedName()
 		{
 			DifficultyMode mode = m_subsystemGreenNightSky.DifficultyMode;
-			string key = mode switch
-			{
-				DifficultyMode.VeryEasy => "VeryEasy_Name",
-				DifficultyMode.Easy => "Easy_Name",
-				DifficultyMode.Normal => "Normal_Name",
-				DifficultyMode.Medium => "Medium_Name",
-				DifficultyMode.Hard => "Hard_Name",
-				DifficultyMode.Extreme => "Extreme_Name",
-				DifficultyMode.Impossible => "Impossible_Name",
-				_ => "Normal_Name"
-			};
-			string difficultyName = LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
+			// El enum DifficultyMode coincide con el índice del array (VeryEasy=0 ... Impossible=6)
+			string difficultyName = LanguageControl.Get(
+				"ContentWidgets", "GreenNightDifficulty",
+				"Names", ((int)mode).ToString());
 			return string.IsNullOrEmpty(difficultyName) ? mode.ToString() : difficultyName;
 		}
 
