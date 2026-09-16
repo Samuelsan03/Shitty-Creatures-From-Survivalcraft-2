@@ -242,8 +242,8 @@
     "1": "Loot {0} nuclear coins. Redeem them on the achievement board!",
     "2": "Not enough inventory space!",
     "3": "Reward claimed!",
-    "4": "ACHIEVEMENTS COMPLETED!",
-    "5": "You've unlocked all achievements!\n Now relax—creatures need a break too.\n Time to dance, for fuck's sake!",
+    "4": "YOU HAVE COMPLETED ALL ACHIEVEMENTS!",
+    "5": "--- The entire sky celebrates your feat, champion ---",
     "6": "Journey",
     "7": "Trophies",
     "8": "No. Simply no. Turn that off and enjoy the show; it's not every day that fireworks are falling from the sky."
@@ -322,6 +322,8 @@
     "Line1_0_6_13": "• Translations have been fixed, polished, and improved.",
     "Line1_0_6_14": "• The creatures' artificial intelligence has been improved. They can now use any type of weapon, including melee, ranged, thrown, and firearms. If they have a melee weapon in their inventory while using a ranged, thrown, or firearm weapon, they will automatically switch to the melee weapon once they are close enough to their target. Additionally, they can now equip clothing and armor just like the player, as well as ride mounts.",
     "Line1_0_6_15": "• A bleeding system for creatures has been added. It allows players to see when they are close to death and how long their corpse remains before disappearing.",
+    "Line1_0_6_16": "• Fast Aim: Reduces the aim interval to 0.1 seconds in all game modes.",
+    "Line1_0_6_17": "• Added new Infected Bestiary accessible from the Infected Bestiary button in the main menu, listing only infected creatures by using the infected spawn egg categories (Common, Boomer, Special, Flying, Animal, Ghost) instead of the normal egg data, including infected-only creatures and excluding normal ones, while each entry shows its custom display name, description, model, stats and loot, and the vanilla Bestiary stays untouched, plus a new Infected Spawn Egg was added to spawn these creatures and feed the new list.",
     "Line1_0_5_1": "• Added new weapons: Flamethrower, Scythe, Trident, Repeating Crossbow, Poison Bomb, Item Cannon",
     "Line1_0_5_2": "• Added new NPCs: Digimon, Alliance members, Muerte members, Pirates, Infected (zombies)",
     "Line1_0_5_3": "• Added music system (background music, chase music for enemies)",
@@ -427,7 +429,6 @@
     "Poisoned": "Poisoned",
     "FrozenToDeath": "Frozen to Death",
     "Dehydration": "Dehydration",
-    "FrozenVomit": "Frozen by icy vomit",
     "FireVomit": "Burned by fiery vomit",
     "BloodVomit": "Died from vomiting blood"
   },
