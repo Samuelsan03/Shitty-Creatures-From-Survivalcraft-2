@@ -54,15 +54,13 @@ namespace Game
 
 		private string GetDescription(int days)
 		{
-			string key = days switch
-			{
-				4 => "6",
-				8 => "7",
-				12 => "8",
-				16 => "9",
-				_ => "6"
-			};
-			return LanguageControl.GetContentWidgets("GreenNightIntervalDialog", key);
+			// El índice del array coincide con la posición en m_options ({4, 8, 12, 16})
+			int index = Array.IndexOf(m_options, days);
+			if (index < 0) index = 0;
+
+			return LanguageControl.Get(
+				"ContentWidgets", "GreenNightIntervalDialog",
+				"Descriptions", index.ToString());
 		}
 
 		public GreenNightIntervalDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player, bool isFirstTime = false, bool showMessageOnAccept = true)
