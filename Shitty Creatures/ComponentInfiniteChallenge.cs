@@ -94,7 +94,7 @@ namespace Game
 		{
 			if (m_state != ChallengeState.WaitingResponse) return;
 
-			if (response == InfiniteChallengeResponse.Reject)
+			if (response == InfiniteChallengeResponse.Skip)     // <-- Skip correcto
 			{
 				SkipDuel();
 				return;
