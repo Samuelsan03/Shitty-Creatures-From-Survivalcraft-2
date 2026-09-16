@@ -6,18 +6,17 @@ using Game;
 
 namespace Game
 {
-	/// <summary>
-	/// Respuesta del jugador al desafío de Infinite.
-	/// </summary>
-	public enum InfiniteChallengeResponse
-	{
-		Reject = 0,
-		Accept = 1,
-		Skip = 2
-	}
-
 	public class InfiniteChallengeWidget : CanvasWidget
 	{
+		/// <summary>
+		/// Respuesta del jugador al desafío de Infinite.
+		/// </summary>
+		public enum InfiniteChallengeResponse
+		{
+			Reject,
+			Accept,
+			Skip
+		}
 		public const string fName = "InfiniteChallengeWidget";
 
 		private ComponentPlayer m_componentPlayer;
