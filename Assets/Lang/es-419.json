@@ -233,8 +233,8 @@
     "1": "Botín {0} monedas nucleares. ¡Canjéalos en el tablón de logros!",
     "2": "¡No hay suficiente espacio en el inventario!",
     "3": "¡Recompensa reclamada!",
-    "4": "¡LOGROS COMPLETADOS!",
-    "5": "¡Has desbloqueado todos los logros!\n Ahora relájate, que las criaturas también necesitan un descanso.\n ¡A bailar se ha dicho, coño!",
+    "4": "¡HAS COMPLETADO TODOS LOS LOGROS!",
+    "5": "--- El cielo entero celebra tu hazaña, campeón ---",
     "6": "Recorrido",
     "7": "Trofeos",
     "8": "No. Simplemente no. Apaga eso y disfruta el espectáculo, que no todo el día hay fuegos artificiales cayendo del cielo."
@@ -322,6 +322,8 @@
     "Line1_0_6_13": "• Se han corregido, pulido y mejorado las traducciones.",
     "Line1_0_6_14": "• La inteligencia artificial de las criaturas ha sido mejorada. Ahora pueden utilizar cualquier tipo de arma, incluidas las armas cuerpo a cuerpo, a distancia, arrojadizas y de fuego. Si disponen de un arma cuerpo a cuerpo en su inventario y están usando un arma a distancia, arrojadiza o de fuego, cambiarán automáticamente al arma cuerpo a cuerpo cuando estén lo suficientemente cerca de su objetivo. Además, ahora pueden equiparse ropa y armaduras de la misma forma que el jugador, así como montar monturas.",
     "Line1_0_6_15": "• Se ha añadido un sistema de sangrado para criaturas. Permite a los jugadores ver cuándo están cerca de la muerte y cuánto tiempo permanece su cadáver antes de desaparecer.",
+    "Line1_0_6_16": "• Apuntado rápido: Reduce el intervalo de apuntado a 0.1 segundos en todos los modos de juego.",
+    "Line1_0_6_17": "• Se añadió un nuevo Bestiario de Infectados, accesible desde el botón Bestiario de Infectados en el menú principal, que muestra únicamente criaturas infectadas utilizando las categorías de huevos de aparición de infectados (Común, Boomer, Especial, Volador, Animal, Fantasma) en lugar de los datos de huevos normales. Incluye criaturas exclusivas de los infectados y excluye las normales. Cada entrada muestra su nombre personalizado, descripción, modelo, estadísticas y botín. El Bestiario vanilla permanece intacto. Además, se añadió un nuevo Huevo de Aparición de Infectados para generar estas criaturas y alimentar la nueva lista.",
     "Line1_0_5_1": "• Nuevas armas: Lanzallamas, Guadaña, Tridente, Ballesta Repetidora, Bomba Venenosa, Lanzaobjetos",
     "Line1_0_5_2": "• Nuevos NPCs: Digimon, miembros de la Alianza, miembros de Muerte, Piratas, Infectados (zombis)",
     "Line1_0_5_3": "• Nuevo sistema de música (música de fondo, música de persecución para enemigos)",
@@ -427,7 +429,6 @@
     "Poisoned": "Envenenado",
     "FrozenToDeath": "Congelado hasta morir",
     "Dehydration": "Deshidratación",
-    "FrozenVomit": "Congelado por vómito helado",
     "FireVomit": "Quemado por vómito ardiente",
     "BloodVomit": "Murió por vómito de sangre"
    },
