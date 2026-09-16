@@ -9,6 +9,7 @@ namespace Game
 {
 	public static class AchievementsManager
 	{
+		private static readonly (string Path, double Duration) s_celebrationMusic = ("MenuMusic/aaron smith dancin 8 bit remix", 258.0); // 4:18 = 258 segundos
 		private static SubsystemAchievements s_subsystemAchievements;
 		private static Project s_currentProject;
 		private static SubsystemTime s_subsystemTime;
@@ -751,38 +752,26 @@ namespace Game
 			if (audio != null)
 				audio.PlaySound("Audio/Death of King Gedol", 1f, 0f, player.ComponentBody.Position, 30f, false);
 
-			// Calcular tiempo de finalización (600 segundos = 10 minutos)
-			double endTimeReal = Time.RealTime + 600.0;
-			if (s_subsystemAchievements != null)
-				s_subsystemAchievements.SetCelebrationEndTime(endTimeReal);
-
-			// Programar la cuenta atrás de 8 segundos; al terminar, iniciar la celebración real
+			// Programar el inicio de la celebración después de 9 segundos (8s de mensaje + 1s de margen)
 			GameManager.SyncDispatcher.Add(() => {
-				StartFireworkCountdown(player, 9.0f);
+				StartCelebrationAfterDelay(player, 9.0f);
 				return true;
 			});
 		}
 
-		private static void StartFireworkCountdown(ComponentPlayer player, float remainingSeconds)
+		private static void StartCelebrationAfterDelay(ComponentPlayer player, float remainingSeconds)
 		{
 			if (player == null || player.Project == null) return;
 
 			if (remainingSeconds <= 0f)
 			{
-				// ¡Comienza la celebración real!
-				IsCelebrationActive = true;
-				s_isGeneratingFireworks = true;
-				OnCelebrationStarted?.Invoke();
-
-				// Música en bucle durante 600 segundos
-				StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", 600f);
-				// Iniciar generación continua de fuegos artificiales
-				StartContinuousFireworks(player, 600.0);
+				// Iniciar celebración con la duración completa de la música
+				RestartCelebration(player, s_celebrationMusic.Duration);
 				return;
 			}
 
 			GameManager.SyncDispatcher.Add(() => {
-				StartFireworkCountdown(player, remainingSeconds - Time.FrameDuration);
+				StartCelebrationAfterDelay(player, remainingSeconds - Time.FrameDuration);
 				return true;
 			});
 		}
@@ -796,21 +785,25 @@ namespace Game
 			s_isGeneratingFireworks = true;
 			OnCelebrationStarted?.Invoke();
 
-			// Iniciar música en bucle con la duración restante
-			StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", (float)remainingSeconds);
+			// Calcular y guardar el tiempo de finalización
+			double endTimeReal = Time.RealTime + remainingSeconds;
+			if (s_subsystemAchievements != null)
+				s_subsystemAchievements.SetCelebrationEndTime(endTimeReal);
+
+			// Iniciar música SIN bucle con la duración restante
+			StartLoopingMusic(player, s_celebrationMusic.Path, (float)remainingSeconds, false);
 			// Iniciar generación continua de fuegos artificiales con la duración restante
 			StartContinuousFireworks(player, remainingSeconds);
 		}
 
-		private static void StartLoopingMusic(ComponentPlayer player, string musicPath, float totalDurationSeconds)
+		private static void StartLoopingMusic(ComponentPlayer player, string musicPath, float totalDurationSeconds, bool loop = true)
 		{
 			double endTime = Time.RealTime + totalDurationSeconds;
 			bool firstPlay = true;
 
-			Action loop = null;
-			loop = () => {
+			Action loopAction = null;
+			loopAction = () => {
 				// ========== PRIORIDAD: NO INTERFERIR CON FADEOUT ==========
-				// Si está en fadeout, NO hacer nada - dejar que termine naturalmente
 				if (InGameMusicManager.IsFadingOut)
 				{
 					return;
@@ -835,24 +828,46 @@ namespace Game
 				// InGameMusicManager.Update() maneja la pausa/reanudación automáticamente
 				if (InGameMusicManager.IsPaused)
 				{
-					GameManager.SyncDispatcher.Add(() => { loop(); return true; });
+					GameManager.SyncDispatcher.Add(() => { loopAction(); return true; });
 					return;
 				}
 
-				bool needsRestart = firstPlay
-					|| !InGameMusicManager.IsPlaying
+				// Primer arranque
+				if (firstPlay)
+				{
+					InGameMusicManager.PlayMusic(musicPath, 0f, InGameMusicManager.MusicContext.Achievement);
+					firstPlay = false;
+					GameManager.SyncDispatcher.Add(() => { loopAction(); return true; });
+					return;
+				}
+
+				// ========== MODO SIN BUCLE ==========
+				// La canción se reproduce una sola vez hasta que termina naturalmente.
+				if (!loop)
+				{
+					// Si ya dejó de sonar, terminamos (no reiniciar)
+					if (!InGameMusicManager.IsPlaying)
+					{
+						return;
+					}
+					GameManager.SyncDispatcher.Add(() => { loopAction(); return true; });
+					return;
+				}
+				// ========== FIN MODO SIN BUCLE ==========
+
+				// ========== MODO CON BUCLE (comportamiento original) ==========
+				bool needsRestart = !InGameMusicManager.IsPlaying
 					|| InGameMusicManager.IsPlaybackComplete();
 
 				if (needsRestart)
 				{
 					InGameMusicManager.PlayMusic(musicPath, 0f, InGameMusicManager.MusicContext.Achievement);
-					firstPlay = false;
 				}
 
-				GameManager.SyncDispatcher.Add(() => { loop(); return true; });
+				GameManager.SyncDispatcher.Add(() => { loopAction(); return true; });
 			};
 
-			loop();
+			loopAction();
 		}
 
 		private static void StartContinuousFireworks(ComponentPlayer player, double durationSeconds)
