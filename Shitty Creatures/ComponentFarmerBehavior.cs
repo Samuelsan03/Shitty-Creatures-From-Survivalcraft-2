@@ -101,9 +101,8 @@ namespace Game
 					if (!value)
 					{
 						if (m_stateMachineBuilt && m_initialized)
-						{
 							m_stateMachine.TransitionTo("Inactive");
-						}
+
 						if (m_componentPathfinding != null && m_initialized)
 						{
 							m_componentPathfinding.Stop();
@@ -114,11 +113,8 @@ namespace Game
 					else
 					{
 						m_nextScanTime = 0;
-						if (!m_hasFarmAreaCenter)
-						{
-							m_farmAreaCenter = m_componentCreature.ComponentBody.Position;
-							m_hasFarmAreaCenter = true;
-						}
+						// NO crear centro/área implícita: si el jugador aún no asignó
+						// un área, el farmer debe quedarse esperando en Inactive.
 					}
 				}
 			}
@@ -133,11 +129,7 @@ namespace Game
 				{
 					m_farmerEnabled = true;
 					m_nextScanTime = 0;
-					if (!m_hasFarmAreaCenter)
-					{
-						m_farmAreaCenter = m_componentCreature.ComponentBody.Position;
-						m_hasFarmAreaCenter = true;
-					}
+					// Idem: no auto-crear área.
 				}
 			}
 		}
@@ -432,6 +424,15 @@ namespace Game
 				update: () =>
 				{
 					if (!m_farmerEnabled)
+					{
+						m_importanceLevel = 0f;
+						return;
+					}
+
+					// Sin área asignada (o sin esquinas válidas) → no trabajar.
+					// Se requieren AMBAS condiciones: el ID debe apuntar a un área real
+					// y esa área debe habernos dado un rectángulo (ApplyFarmAreaBounds).
+					if (FarmAreaId < 0 || !m_hasFarmAreaBounds)
 					{
 						m_importanceLevel = 0f;
 						return;
@@ -1391,6 +1392,29 @@ namespace Game
 			int contents = Terrain.ExtractContents(value);
 			if (!IsSoil(contents)) return false;
 			return SoilBlock.GetNitrogen(Terrain.ExtractData(value)) > 0;
+		}
+
+		/// <summary>
+		/// Olvida el área asignada. El farmer deja de trabajar hasta que se le
+		/// vuelva a llamar a SetFarmArea con dos esquinas válidas.
+		/// </summary>
+		public void ClearFarmArea()
+		{
+			m_hasFarmAreaBounds = false;
+			m_hasFarmAreaCenter = false;
+			m_targetCellFace = null;
+			m_importanceLevel = 0f;
+
+			if (m_componentPathfinding != null && m_initialized)
+			{
+				m_componentPathfinding.Stop();
+				m_componentPathfinding.IsStuck = false;
+			}
+
+			if (m_stateMachineBuilt && m_initialized)
+			{
+				m_stateMachine.TransitionTo("Inactive");
+			}
 		}
 	}
 }
