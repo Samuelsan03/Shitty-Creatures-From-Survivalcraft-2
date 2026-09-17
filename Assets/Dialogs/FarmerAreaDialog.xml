@@ -1,0 +1,84 @@
+<CanvasWidget xmlns="runtime-namespace:Game">
+
+  <CanvasWidget Size="720, 700" ClampToBounds="true" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <BevelledRectangleWidget Style="{Styles/DialogArea}" />
+
+    <ScrollPanelWidget Name="FarmerAreaDialog.ScrollPanel"
+                       Direction="Vertical"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       Margin="10, 10">
+
+      <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="0, 0">
+
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center">
+          <LabelWidget Name="FarmerAreaDialog.HeaderLabel"
+                       Text="[FarmerAreaDialog:0]" HorizontalAlignment="Center" Margin="0, 15" />
+          <LabelWidget Name="FarmerAreaDialog.FormatLabel"
+                       Text="[FarmerAreaDialog:1]" Color="128, 128, 128" HorizontalAlignment="Center" />
+        </StackPanelWidget>
+
+        <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0, 8">
+          <BevelledButtonWidget Name="FarmerAreaDialog.PrevAreaButton" Size="60, 50" Text="&lt;" Margin="5, 0" />
+          <CanvasWidget Size="260, 50" VerticalAlignment="Center">
+            <LabelWidget Name="FarmerAreaDialog.AreaTitleLabel"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </CanvasWidget>
+          <BevelledButtonWidget Name="FarmerAreaDialog.NextAreaButton" Size="60, 50" Text="&gt;" Margin="5, 0" />
+          <BevelledButtonWidget Name="FarmerAreaDialog.NewAreaButton" Size="110, 50" Text="[FarmerAreaDialog:14]" Margin="5, 0" />
+          <BevelledButtonWidget Name="FarmerAreaDialog.DeleteAreaButton" Size="110, 50" Text="[FarmerAreaDialog:15]" Margin="5, 0" />
+        </StackPanelWidget>
+
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="0, 8">
+
+          <StackPanelWidget Margin="0, 4">
+            <CanvasWidget Size="110, 50" VerticalAlignment="Center">
+              <LabelWidget Name="FarmerAreaDialog.PointALabel"
+                           Text="[FarmerAreaDialog:2]"
+                           HorizontalAlignment="Far" VerticalAlignment="Center"
+                           MarginRight="10" Color="128, 128, 128" />
+            </CanvasWidget>
+            <CanvasWidget Size="360, 50" VerticalAlignment="Center">
+              <BevelledRectangleWidget Style="{Styles/TextBoxArea}" />
+              <TextBoxWidget Name="FarmerAreaDialog.TextBoxA" Size="360, 50"
+                             VerticalAlignment="Center" MaximumLength="32" Margin="10, 0" />
+            </CanvasWidget>
+          </StackPanelWidget>
+
+          <StackPanelWidget Margin="0, 4">
+            <CanvasWidget Size="110, 50" VerticalAlignment="Center">
+              <LabelWidget Name="FarmerAreaDialog.PointBLabel"
+                           Text="[FarmerAreaDialog:3]"
+                           HorizontalAlignment="Far" VerticalAlignment="Center"
+                           MarginRight="10" Color="128, 128, 128" />
+            </CanvasWidget>
+            <CanvasWidget Size="360, 50" VerticalAlignment="Center">
+              <BevelledRectangleWidget Style="{Styles/TextBoxArea}" />
+              <TextBoxWidget Name="FarmerAreaDialog.TextBoxB" Size="360, 50"
+                             VerticalAlignment="Center" MaximumLength="32" Margin="10, 0" />
+            </CanvasWidget>
+          </StackPanelWidget>
+
+          <BevelledButtonWidget Name="FarmerAreaDialog.ToggleShowButton"
+                                Size="360, 60" HorizontalAlignment="Center" Margin="0, 8" />
+        </StackPanelWidget>
+
+        <LabelWidget Name="FarmerAreaDialog.CreaturesLabel"
+                     HorizontalAlignment="Center" Margin="0, 12, 0, 4" />
+
+        <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0, 8">
+          <BevelledButtonWidget Name="FarmerAreaDialog.BrowseButton" Size="230, 50" Text="[FarmerAreaDialog:9]" Margin="5, 0" />
+          <BevelledButtonWidget Name="FarmerAreaDialog.RemoveButton" Size="230, 50" Text="[FarmerAreaDialog:10]" Margin="5, 0" />
+        </StackPanelWidget>
+
+        <UniformSpacingPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10, 15">
+          <BevelledButtonWidget Name="FarmerAreaDialog.OkButton"     Size="160, 60" Text="[FarmerAreaDialog:11]" />
+          <BevelledButtonWidget Name="FarmerAreaDialog.ResetButton"  Size="160, 60" Text="[FarmerAreaDialog:12]" />
+          <BevelledButtonWidget Name="FarmerAreaDialog.CancelButton" Size="160, 60" Text="[FarmerAreaDialog:13]" />
+        </UniformSpacingPanelWidget>
+
+      </StackPanelWidget>
+    </ScrollPanelWidget>
+
+  </CanvasWidget>
+</CanvasWidget>
