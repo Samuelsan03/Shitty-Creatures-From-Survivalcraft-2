@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using Engine;
 using GameEntitySystem;
+using static Game.SubsystemFarmerWandBlockBehavior;
 
 namespace Game
 {
@@ -148,6 +149,8 @@ namespace Game
 				UpdateControls();
 			}
 
+			UpdateControls();
+
 			if (base.Input.Cancel || m_cancelButton.IsClicked)
 			{
 				Dismiss();
@@ -196,40 +199,20 @@ namespace Game
 			UpdateControls();
 		}
 
-		// -----------------------------------------------------------------
-		//  Añadir / Quitar criaturas
-		// -----------------------------------------------------------------
-		private List<ComponentCreature> CollectFarmers(out int assignedCount)
-		{
-			var list = new List<ComponentCreature>();
-			assignedCount = 0;
-			var area = m_subsystem.GetActiveArea();
-
-			foreach (Entity entity in m_subsystem.Project.Entities)
-			{
-				var farmer = entity.FindComponent<ComponentFarmerBehavior>();
-				if (farmer == null || !farmer.FarmerEnabled) continue;
-				var creature = entity.FindComponent<ComponentCreature>();
-				if (creature == null) continue;
-
-				list.Add(creature);
-				if (area != null && farmer.FarmAreaId == area.Id)
-					assignedCount++;
-			}
-			return list;
-		}
-
 		private void OpenBrowseDialog()
 		{
 			var area = m_subsystem.GetActiveArea();
 			if (area == null) return;
 
+			// Solo criaturas NO asignadas a ninguna área. Así "Añadir" es un
+			// añadido real y no un movimiento silencioso desde otra área, que
+			// era lo que hacía que el contador pareciera acumularse.
 			var available = new List<ComponentCreature>();
 			foreach (Entity entity in m_subsystem.Project.Entities)
 			{
 				var farmer = entity.FindComponent<ComponentFarmerBehavior>();
 				if (farmer == null || !farmer.FarmerEnabled) continue;
-				if (farmer.FarmAreaId == area.Id) continue;
+				if (farmer.FarmAreaId != -1) continue;              // ya está en otra área
 				var creature = entity.FindComponent<ComponentCreature>();
 				if (creature == null) continue;
 				available.Add(creature);
@@ -243,17 +226,18 @@ namespace Game
 				return;
 			}
 
+			// Capturamos `area` para que el callback asigne SIEMPRE a esta área,
+			// aunque el foco cambie mientras el diálogo hijo está abierto.
+			FarmArea capturedArea = area;
 			DialogsManager.ShowDialog(m_player.GuiWidget,
 				new ListSelectionDialog(
-					string.Format(LanguageControl.Get("FarmerAreaDialog", 18), area.Id),
+					string.Format(LanguageControl.Get("FarmerAreaDialog", 18), capturedArea.Id),
 					available,
 					60f,
 					(object item) => GetCreatureName((ComponentCreature)item),
 					(object item) =>
 					{
-						var current = m_subsystem.GetActiveArea();
-						if (current != null)
-							m_subsystem.ToggleCreatureAssignment(current, (ComponentCreature)item);
+						m_subsystem.ToggleCreatureAssignment(capturedArea, (ComponentCreature)item);
 					}));
 		}
 
@@ -263,11 +247,12 @@ namespace Game
 			if (area == null) return;
 
 			var assigned = new List<ComponentCreature>();
+			int targetId = area.Id;
 			foreach (Entity entity in m_subsystem.Project.Entities)
 			{
 				var farmer = entity.FindComponent<ComponentFarmerBehavior>();
 				if (farmer == null || !farmer.FarmerEnabled) continue;
-				if (farmer.FarmAreaId != area.Id) continue;
+				if (farmer.FarmAreaId != targetId) continue;
 				var creature = entity.FindComponent<ComponentCreature>();
 				if (creature == null) continue;
 				assigned.Add(creature);
@@ -281,17 +266,16 @@ namespace Game
 				return;
 			}
 
+			FarmArea capturedArea = area;
 			DialogsManager.ShowDialog(m_player.GuiWidget,
 				new ListSelectionDialog(
-					string.Format(LanguageControl.Get("FarmerAreaDialog", 19), area.Id),
+					string.Format(LanguageControl.Get("FarmerAreaDialog", 19), capturedArea.Id),
 					assigned,
 					60f,
 					(object item) => GetCreatureName((ComponentCreature)item),
 					(object item) =>
 					{
-						var current = m_subsystem.GetActiveArea();
-						if (current != null)
-							m_subsystem.ToggleCreatureAssignment(current, (ComponentCreature)item);
+						m_subsystem.ToggleCreatureAssignment(capturedArea, (ComponentCreature)item);
 					}));
 		}
 
@@ -330,8 +314,24 @@ namespace Game
 					? LanguageControl.Get("FarmerAreaDialog", 5)
 					: LanguageControl.Get("FarmerAreaDialog", 4);
 
-			m_assignedCount = 0;
-			CollectFarmers(out m_assignedCount);
+			// ----------------------------------------------------------------
+			//  Conteo por-área, explícito. NO usa CollectFarmers (que devuelve
+			//  TODOS los farmers). Solo cuenta los asignados al Id de ESTA área.
+			// ----------------------------------------------------------------
+			int count = 0;
+			if (hasArea)
+			{
+				int targetAreaId = area.Id;
+				foreach (Entity entity in m_subsystem.Project.Entities)
+				{
+					var farmer = entity.FindComponent<ComponentFarmerBehavior>();
+					if (farmer == null || !farmer.FarmerEnabled) continue;
+					if (farmer.FarmAreaId != targetAreaId) continue;
+					if (entity.FindComponent<ComponentCreature>() == null) continue;
+					count++;
+				}
+			}
+			m_assignedCount = count;
 
 			m_creaturesLabel.Text = string.Format(
 				LanguageControl.Get("FarmerAreaDialog", 8), m_assignedCount);
