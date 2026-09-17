@@ -544,16 +544,24 @@ namespace Game
 			{
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
-					AchievementsManager.UnlockAchievementStatic(player, 52, "ExtremeNightSurvived", LanguageControl.Get(AchievementsWidget.fName, 108));
+					AchievementsManager.UnlockAchievementStatic(player, 52, "ExtremeNightSurvived",
+						LanguageControl.Get(AchievementsWidget.fName, 108));
 				}
+
+				// ⬇️ AGREGAR ESTA LÍNEA
+				m_extremeCompletionDialogShown = true;
 			}
 
 			if (m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme && wasLastWave && newWave > maxWave)
 			{
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
-					AchievementsManager.UnlockAchievementStatic(player, 52, "ExtremeNightSurvived", LanguageControl.Get(AchievementsWidget.fName, 108));
+					AchievementsManager.UnlockAchievementStatic(player, 52, "ExtremeNightSurvived",
+						LanguageControl.Get(AchievementsWidget.fName, 108));
 				}
+
+				// ⬇️ AGREGAR ESTA LÍNEA
+				m_extremeCompletionDialogShown = true;
 			}
 
 			if (oldWave == maxWave)
