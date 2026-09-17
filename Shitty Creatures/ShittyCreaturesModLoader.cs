@@ -419,40 +419,61 @@ namespace Game
 
 				try
 				{
-					// Acceder al campo m_targetInRangeTime mediante reflexión
-					FieldInfo targetTimeField = typeof(ComponentChaseBehavior).GetField("m_targetInRangeTime",
+					// ============================================================
+					// CORRECCIÓN: buscar el campo en el TIPO REAL del objeto,
+					// subiendo por BaseType hasta encontrarlo. Así funciona para
+					// CUALQUIER jerarquía (ComponentChaseBehavior, Zombie, Bandit,
+					// NewChase, etc.) sin necesidad de herencia entre ellos.
+					// ============================================================
+
+					// 1) m_targetInRangeTime
+					FieldInfo targetTimeField = FindFieldInHierarchy(
+						zombieChase.GetType(),
+						"m_targetInRangeTime",
 						BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
 					if (targetTimeField != null)
-					{
 						targetTimeField.SetValue(zombieChase, 1f);
-					}
 
-					// Acceder a la propiedad TargetInRangeTimeToChase mediante reflexión
-					PropertyInfo chaseTimeProp = typeof(ComponentChaseBehavior).GetProperty("TargetInRangeTimeToChase",
+					// 2) TargetInRangeTimeToChase (propiedad o campo, según la clase)
+					PropertyInfo chaseTimeProp = FindPropertyInHierarchy(
+						zombieChase.GetType(),
+						"TargetInRangeTimeToChase",
 						BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
 					if (chaseTimeProp != null && chaseTimeProp.CanWrite)
-					{
 						chaseTimeProp.SetValue(zombieChase, 0f);
+					else
+					{
+						// Algunas variantes (p.ej. la tuya) declaran esto como CAMPO público,
+						// no como propiedad. Cubrimos ambos casos.
+						FieldInfo chaseTimeField = FindFieldInHierarchy(
+							zombieChase.GetType(),
+							"TargetInRangeTimeToChase",
+							BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						if (chaseTimeField != null)
+							chaseTimeField.SetValue(zombieChase, 0f);
 					}
 
-					// Establecer Suppressed a false (es público en ComponentChaseBehavior)
+					// 3) Suppressed (ya es público en todas las variantes)
 					zombieChase.Suppressed = false;
 
-					// Acceder al StateMachine interno para verificar el estado actual
-					FieldInfo stateMachineField = typeof(ComponentChaseBehavior).GetField("m_stateMachine",
+					// 4) m_stateMachine
+					FieldInfo stateMachineField = FindFieldInHierarchy(
+						zombieChase.GetType(),
+						"m_stateMachine",
 						BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
 					if (stateMachineField != null)
 					{
 						StateMachine stateMachine = stateMachineField.GetValue(zombieChase) as StateMachine;
 						if (stateMachine != null && stateMachine.CurrentState == "Fleeing")
 						{
-							// Usar reflexión para llamar a TransitionTo en el StateMachine
-							MethodInfo transitionMethod = typeof(StateMachine).GetMethod("TransitionTo",
+							MethodInfo transitionMethod = typeof(StateMachine).GetMethod(
+								"TransitionTo",
 								BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 							if (transitionMethod != null)
-							{
 								transitionMethod.Invoke(stateMachine, new object[] { "LookingForTarget" });
-							}
 						}
 					}
 
@@ -463,11 +484,47 @@ namespace Game
 					Log.Warning($"[ShittyCreatures] Error al cancelar delay de caza en criatura: {ex.Message}");
 				}
 			}
+		}
 
-			if (cancelledCount > 0)
+		/// <summary>
+		/// Busca un campo por nombre subiendo por la jerarquía de tipos,
+		/// empezando por el tipo real del objeto. Evita el error
+		/// "Field ... is not a field on the target object" cuando el
+		/// FieldInfo se obtuvo de un tipo que NO es ancestro del objeto.
+		/// </summary>
+		private static FieldInfo FindFieldInHierarchy(Type type, string fieldName, BindingFlags flags)
+		{
+			// Aseguramos incluir DeclaredOnly para no arrastrar campos de ancestros
+			// en la primera pasada y poder subir limpio.
+			BindingFlags declaredFlags = flags | BindingFlags.DeclaredOnly;
+
+			Type current = type;
+			while (current != null && current != typeof(object))
 			{
-				// Opcional: Log.Information($"[ShittyCreatures] Se canceló el delay de caza para {cancelledCount} criaturas durante la noche verde.");
+				FieldInfo field = current.GetField(fieldName, declaredFlags);
+				if (field != null)
+					return field;
+				current = current.BaseType;
 			}
+			return null;
+		}
+
+		/// <summary>
+		/// Igual que FindFieldInHierarchy pero para propiedades.
+		/// </summary>
+		private static PropertyInfo FindPropertyInHierarchy(Type type, string propertyName, BindingFlags flags)
+		{
+			BindingFlags declaredFlags = flags | BindingFlags.DeclaredOnly;
+
+			Type current = type;
+			while (current != null && current != typeof(object))
+			{
+				PropertyInfo prop = current.GetProperty(propertyName, declaredFlags);
+				if (prop != null)
+					return prop;
+				current = current.BaseType;
+			}
+			return null;
 		}
 
 		private void ReplaceScreenCaptureOverlay()
