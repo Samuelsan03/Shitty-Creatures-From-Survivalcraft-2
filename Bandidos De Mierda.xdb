@@ -139,13 +139,6 @@
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="4dcca829-556f-4ca9-899b-cd15c378efb8">
-        <Parameter Name="Color" Guid="909373fa-f7f3-43f4-a47a-c489da9f0f29" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="9837d5d1-0783-4859-8cf2-936751af4424" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="cad69f38-408a-4d3d-8e97-e90ef55e05f3" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="e789370c-78d9-4b60-ac95-91d6b26ca5b9" Value="[DisplayName:Bandit1]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="fa9d05c0-a1cc-46ce-b062-ff6aaedc5bed" Value="2000" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit2" Guid="12893abd-e115-4b43-915f-cdbbbd1331d1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -286,13 +279,6 @@
   <Parameter Name="IsDrugTraffickerMode" Guid="d196a479-d108-4edf-a315-a4652a17df8a" Value="true" Type="bool" />
   <Parameter Name="AttackAllCreatures" Guid="df22b2da-3981-4ba3-8d91-ce1a4ac55d25" Value="true" Type="bool" />
 </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="0a15bb69-f0cf-43d4-8903-2fe6d74c538f">
-        <Parameter Name="Color" Guid="69060b7f-e051-4757-a343-f09edf4b6df3" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="39c0bda1-bbab-4fd3-bef6-66577630f133" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="c356fb2e-2b37-4b20-8bb6-10809899bd50" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="60ef994c-2e8b-45aa-a510-ee1c9900c36f" Value="[DisplayName:Bandit2]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="d43c41fc-e7e4-4b69-b859-68c03884170e" Value="2001" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit3" Guid="c3ec6388-1ab3-40bf-a49b-9bff933aa74c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -430,13 +416,6 @@
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="72644025-cea4-495b-bd7a-73133477a7b9" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
-            <ParameterSet Name="CreatureEggData" Guid="c36497e0-cb6e-4258-9d6b-a1b4d5ad4bf8">
-        <Parameter Name="Color" Guid="0a15367d-a44a-4294-a81c-70462f1d420b" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="96d141b0-f878-4e3d-87ee-f57ccf2eeebc" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="8dd657bc-5c19-48c3-adf4-341cc06294f2" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="a86f28f9-7ba1-45cf-8439-710a19b18320" Value="[DisplayName:Bandit3]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="14385d44-b489-40e6-9b35-037e58e11d2f" Value="2003" Type="int"/>
-    </ParameterSet>
           </EntityTemplate>
 
 <EntityTemplate Name="Bandit4" Guid="2f3fcd0d-db5e-4b12-a3d6-082abe31ad34" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -578,13 +557,6 @@
   <Parameter Name="IsDrugTraffickerMode" Guid="b92c774f-33e5-4507-aacb-12fc1df6dce9" Value="true" Type="bool" />
   <Parameter Name="AttackAllCreatures" Guid="e6f225e4-5a62-4f71-80ae-4349b5e83b8e" Value="true" Type="bool" />
 </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="242f9e82-e29d-42b7-8756-870b88d5d5b2">
-        <Parameter Name="Color" Guid="1241efc3-364c-4392-8f0a-64bd594444a4" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="de5c7dac-c95d-45ee-b97f-848d3c490221" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="63ed3359-da94-4d29-ac91-1029e6a70223" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="c0d35d2a-9dc8-4a62-b0c7-ac5708e7190a" Value="[DisplayName:Bandit4]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="be19204c-4028-435f-b9c6-d569e42c0279" Value="2004" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit5" Guid="7aac552f-14e9-44bc-ba93-fd983df4f15c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -726,13 +698,6 @@
   <Parameter Name="IsDrugTraffickerMode" Guid="fd09d8d4-7c05-46e7-b1a3-b9b92a2e689e" Value="true" Type="bool" />
   <Parameter Name="AttackAllCreatures" Guid="05284ca1-72be-4671-b672-cbac9e036d1b" Value="true" Type="bool" />
 </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="8bf634c0-e337-43a3-912b-584b23036b3b">
-        <Parameter Name="Color" Guid="ff77ecb2-4a2e-42cc-9c45-5287e5495cc6" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="89733132-e9b9-4bf9-b714-1eb746bf2ad7" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="10d2273a-4066-4006-bed9-42e0b1084ae3" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="3df5a7b4-9f38-471d-8486-4d5d2ab24447" Value="[DisplayName:Bandit5]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="056922d6-1fe5-4bd0-a816-807d2eb44274" Value="2005" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit6" Guid="e768ecae-e360-4cad-8f03-daac0d8303d4" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -874,13 +839,6 @@
   <Parameter Name="IsDrugTraffickerMode" Guid="609df918-f8ec-4621-99ff-c412c8dd4eba" Value="true" Type="bool" />
   <Parameter Name="AttackAllCreatures" Guid="b88cfc57-5bd0-496b-a708-d5ffa6446541" Value="true" Type="bool" />
 </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="bdeb8b14-d29c-4249-a48d-7de400ccd78b">
-        <Parameter Name="Color" Guid="71c59716-6d04-48de-97e8-13716046dd71" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="0f6ef08b-fab4-4a7f-83da-7cac79858af9" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="802bfe4e-2644-4ae3-b109-9f6aca98239d" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="a4e0cc96-e835-450c-b0cb-692d26f84dfe" Value="[DisplayName:Bandit6]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="4faa1bbf-e4a4-43ca-979b-face4cc84218" Value="2006" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit7" Guid="4471d696-d27f-4d67-886d-063db274a883" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d"> <!-- Bandido guardian del jugador -->
@@ -1179,13 +1137,6 @@
   <Parameter Name="IsDrugTraffickerMode" Guid="4aefa1fc-82ad-45d1-9817-20dcb660e2a5" Value="true" Type="bool" />
   <Parameter Name="AttackAllCreatures" Guid="4308a228-86af-4885-aa62-058658285129" Value="true" Type="bool" />
 </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="d9fba799-c8bb-4225-8793-777d1a594c49">
-        <Parameter Name="Color" Guid="eca696f8-9079-4c60-a661-b51023569b62" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="4aac8285-5f05-4ca2-91bc-96e0bfaf33dd" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="fb5dcff6-ad0f-43ac-b83f-6e32275e6730" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="af334b7d-2a47-42a8-aa04-a1b4f4c838fe" Value="[DisplayName:Bandit8]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="2cce70eb-ce4d-40a0-b443-828a2ab7e979" Value="2008" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit9" Guid="eb3ef0bc-232c-4741-869d-353399453f52" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -1327,13 +1278,6 @@
   <Parameter Name="IsDrugTraffickerMode" Guid="91ddb132-792a-4629-88d3-6c6aa544a31e" Value="true" Type="bool" />
   <Parameter Name="AttackAllCreatures" Guid="ca57d5f0-08f7-4e17-ac9c-4a35997d9636" Value="true" Type="bool" />
 </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="eb99ff63-1601-4cc4-8810-24545c926f45">
-        <Parameter Name="Color" Guid="2dfa56cb-5d4d-40f1-b6e2-76cdb13605c3" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="ee43d727-8af6-4405-a9b6-4102e4767cbb" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="4133e895-f102-4bcf-9fb0-76b341c8cb3b" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="6c0a06d3-35a6-417c-8982-2f833ad6cb2a" Value="[DisplayName:Bandit9]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="01ab4107-ea6a-4dca-9994-ed769c53ab5d" Value="2010" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit10" Guid="c3bbf74d-64dd-4c2c-8f69-668efd5e2c07" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -1475,13 +1419,6 @@
   <Parameter Name="IsDrugTraffickerMode" Guid="434a9ebc-502e-42b3-83ce-c542a0073d8e" Value="true" Type="bool" />
   <Parameter Name="AttackAllCreatures" Guid="3c6ba93a-6aa4-452f-8ff8-abc13aa2d3dc" Value="true" Type="bool" />
 </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="b1a095ab-0c14-4007-a66f-0715a211ffe1">
-        <Parameter Name="Color" Guid="44c47408-2246-46b5-ab67-96181b03b786" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="0cb60a90-bde9-4d1a-8eaf-246adc6cf081" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="dbf1e73d-e45b-4460-b941-76bef14f6c4e" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="decbdb81-bceb-404a-98a7-35d239dbcc8e" Value="[DisplayName:Bandit10]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="3ae8d986-507d-4706-bfa9-5aee2f02a8cf" Value="2011" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit11" Guid="59f53032-4f8f-49a2-8984-3b267261b0e5" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d"> <!-- Bandido guardian del jugador -->
@@ -1937,13 +1874,6 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="53820370-4a5a-4bab-a0e4-ea05094ab507" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="a8a3e0d8-b8be-4245-8e02-4a5aa298af86" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="1de5255c-9106-43ab-a584-3688187b58ae">
-        <Parameter Name="Color" Guid="44789cb9-6437-4b89-91a7-9ba31ed0d5cc" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="4f8076d0-99c5-4edf-9907-bc74ed6f05f9" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="9f9c60d2-9d62-4e5f-ad0f-442a466fc700" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="1ff5e870-089b-4d27-b318-d018162ecc8f" Value="[DisplayName:Bandit13]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="087d7d7c-c272-45c9-85f5-5ec38a0b96c2" Value="2014" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit14" Guid="3eb791c4-e0b5-42a2-8a66-6118208b5dfd" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -2085,13 +2015,6 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="b201a62e-0faa-4fe1-b0a3-8468e28b32e3" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="b53a9f75-93ed-4717-a05c-c2a311b2ef6d" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="371888b8-f722-48f5-958c-5983d7c64058">
-        <Parameter Name="Color" Guid="c11c9b22-0758-42fd-b008-fedc9c594b66" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="f38311d5-3646-46f8-b937-78be432a63d3" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="840c20ca-b240-4247-83ec-df4daabf5c14" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="a0597f21-cff0-4dff-b519-7ea0b7bca661" Value="[DisplayName:Bandit14]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="43819baa-2f60-4826-bbba-e319514fc5b0" Value="2015" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit15" Guid="f0ceafb0-11f3-4e45-9459-327724406b16" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -2234,13 +2157,6 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="f099bf30-7318-4b3f-a2f3-78bf6c24c9d2" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="a9b06554-5484-4cd5-8a75-36e7202588f0" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="e5d7b958-d321-4a99-a378-6a3c9df2018a">
-        <Parameter Name="Color" Guid="07c91907-d420-4e9b-a809-0033164a1b51" Value="176,115,115" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="1c4c151b-a3d8-4694-bcb9-d9e1e2bbc5eb" Value="170" Type="int"/>
-        <Parameter Name="SwapUV" Guid="e60f6e5d-1a41-4af3-9b92-fcaf42c531c6" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="c63cc3ca-6c42-4584-8dd7-e068e08d7380" Value="[DisplayName:Bandit15]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="f0d96d2a-bda2-4f6d-ae15-38603040513c" Value="2016" Type="int"/>
-    </ParameterSet>
 </EntityTemplate>
 
 <EntityTemplate Name="FirearmsDealer" Guid="d8b35a4e-2132-437d-a00d-92a50864bd95" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -2476,13 +2392,6 @@
                 <Parameter Name="NightRange" Guid="52545f46-72d4-4b80-a67d-043bb7b65b44" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e89ecff7-18db-45f9-8508-48a8b78bfc16" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
-            <ParameterSet Name="CreatureEggData" Guid="d8d409a1-0271-45de-a5de-36a84d49362b">
-              <Parameter Name="TextureSlot" Guid="99441a80-b553-45c1-a4c5-f7ac489056e6" Value="170" Type="int" />
-              <Parameter Name="Color" Guid="e4139849-de54-4161-801d-b5775a731b19" Value="176,115,115" Type="Color" />
-              <Parameter Name="SwapUV" Guid="740ee0c9-8c0b-4f2b-991e-699a57c73281" Value="False" Type="bool" />
-              <Parameter Name="DisplayName" Guid="9c650abc-9ce3-4e53-bfae-f1b2833032c3" Value="[DisplayName:Bandit16]" Type="string" />
-              <Parameter Name="EggTypeIndex" Guid="e3d286c2-cf23-4841-aa11-323a7cbda1e2" Value="2018" Type="int" />
-            </ParameterSet>
           </EntityTemplate>
 
           <EntityTemplate Name="Bandit17" Guid="cb593488-6e11-4d85-89eb-c996d19cf3c1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d"> <!-- bandido aliado del jugador -->
@@ -2576,6 +2485,7 @@
   <Parameter Name="CanBeMounted" Guid="f01f0b3e-1827-4cc2-a2f8-23d71826cb0c" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="42675e2c-3543-47f1-a9e8-dbf6466aa4d1" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+<Parameter Name="SkinTextureName" Guid="c303e017-326c-4f33-bf53-3728a6bc9380" Value="Textures/Bandidos/la drogadicta" Type="string"/>
   <ParameterSet Name="CreatureClothes" Guid="413bb763-ca09-4b79-b46d-421bc205aef6">
     <Parameter Name="Head" Guid="47c4c850-5ca9-4ae4-9231-26fcc266881c" Value="" Type="string"/>
     <Parameter Name="Torso" Guid="04b3186c-1835-420b-88dd-3ea5324155c8" Value="" Type="string"/>
