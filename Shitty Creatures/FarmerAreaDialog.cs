@@ -120,10 +120,15 @@ namespace Game
 					var area = m_subsystem.GetActiveArea();
 					if (area != null)
 					{
+						bool changed = (area.PointA != a) || (area.PointB != b);
+
 						area.PointA = a;
 						area.PointB = b;
 						area.Preview = null;
-						area.PointBMarkedTime = Time.RealTime;
+
+						if (changed)
+							area.PointBMarkedTime = Time.RealTime;
+
 						m_subsystem.ApplyFarmAreaToAssignedCreatures(area);
 					}
 					Dismiss();
@@ -305,7 +310,7 @@ namespace Game
 			var area = m_subsystem.GetActiveArea();
 			bool hasArea = area != null;
 			bool hasBoth = hasArea && area.HasBothPoints;
-			bool showArea = hasArea && area.ShowAreaPersistent;
+			bool showArea = hasArea && m_subsystem.IsAreaVisible(area);
 
 			m_areaTitleLabel.Text = hasArea
 				? string.Format(LanguageControl.Get("FarmerAreaDialog", 7),
