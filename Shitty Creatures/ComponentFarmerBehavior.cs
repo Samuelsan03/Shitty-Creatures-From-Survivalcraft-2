@@ -638,7 +638,9 @@ namespace Game
 						}
 						else if (IsSoil(contents))
 						{
-							if (HasTool(typeof(SeedsBlock)) && HasFertilizer())
+							bool needsFertilizer = !IsSoilAlreadyFertilized(value);
+
+							if (HasTool(typeof(SeedsBlock)) && needsFertilizer && HasFertilizer())
 							{
 								m_stateMachine.TransitionTo("FertilizeDelay");
 							}
@@ -769,7 +771,9 @@ namespace Game
 					{
 						if (HasTool(typeof(SeedsBlock)))
 						{
-							if (HasFertilizer())
+							bool needsFertilizer = !IsSoilAlreadyFertilized(value);
+
+							if (needsFertilizer && HasFertilizer())
 								m_stateMachine.TransitionTo("FertilizeDelay");
 							else
 								m_stateMachine.TransitionTo("PlantDelay");
@@ -976,7 +980,10 @@ namespace Game
 						{
 							m_targetCellFace = new CellFace { X = x, Y = y - 1, Z = z, Face = 4 };
 							m_targetPosition = new Vector3(x + 0.5f, (y - 1) + 0.5f, z + 0.5f);
-							if (HasFertilizer())
+
+							bool needsFertilizer = !IsSoilAlreadyFertilized(groundValue);
+
+							if (needsFertilizer && HasFertilizer())
 								m_stateMachine.TransitionTo("FertilizeDelay");
 							else
 								m_stateMachine.TransitionTo("PlantDelay");
@@ -1377,6 +1384,13 @@ namespace Game
 			{
 				m_stateMachine.TransitionTo("Inactive");
 			}
+		}
+
+		private bool IsSoilAlreadyFertilized(int value)
+		{
+			int contents = Terrain.ExtractContents(value);
+			if (!IsSoil(contents)) return false;
+			return SoilBlock.GetNitrogen(Terrain.ExtractData(value)) > 0;
 		}
 	}
 }
