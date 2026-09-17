@@ -1,4 +1,36 @@
 {
+  "SubsystemFarmerWandBlockBehavior": {
+  "0": "Point at a block to mark the farming area.",
+  "1": "Point A marked: ({0}, {1}, {2})",
+  "2": "That block is already Point A. Choose another.",
+  "3": "Point B marked: ({0}, {1}, {2})",
+  "4": "Area {0} reset. New Point A."
+},
+"FarmerAreaDialog": {
+  "0": "Manage farming areas",
+  "1": "Format X,Y,Z  —  example: 10,64,-5",
+  "2": "Point A:",
+  "3": "Point B:",
+  "4": "Show area",
+  "5": "Hide area",
+  "6": "No area",
+  "7": "Area {0}  ({1}/{2})",
+  "8": "Assigned creatures: {0}",
+  "9": "Add creatures",
+  "10": "Remove creatures",
+  "11": "Apply",
+  "12": "Reset",
+  "13": "Cancel",
+  "14": "New",
+  "15": "Delete",
+  "16": "There are no creatures available to add to this area.",
+  "17": "There are no creatures assigned to this area.",
+  "18": "Add creatures to area {0}",
+  "19": "Remove creatures from area {0}",
+  "20": "Invalid format for Point A. Use X,Y,Z.",
+  "21": "Invalid format for Point B. Use X,Y,Z.",
+  "22": "You must specify both points or neither."
+},
   "SubsystemBanditEggBlockBehavior": {
     "1": "Failed to spawn bandit, check game log."
   },
@@ -724,6 +756,11 @@
   }
 },
   "Blocks": {
+    "FarmerWandBlock:0": {
+  "DisplayName": "Farmer Wand",
+  "Description": "A golden wand used to mark the crop areas where farmers will work. Right-click a block to mark Point A, right-click again to mark Point B.",
+  "CRDescription:0": "Combine a rod with a rye seed"
+},
     "BanditEggBlock:0": {
       "DisplayName": "Bandit Egg",
       "Description": "Spawner egg. Throw against a hard surface to spawn a random bandit. Available in creative mode only."
