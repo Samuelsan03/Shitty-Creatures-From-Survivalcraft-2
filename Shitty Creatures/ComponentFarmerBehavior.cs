@@ -13,11 +13,21 @@ namespace Game
 	/// </summary>
 	public class ComponentFarmerBehavior : ComponentBehavior, IUpdateable
 	{
-		// Prioridades de tarea
-		private const int PRIORITY_HARVEST_MATURE = 0;
-		private const int PRIORITY_RAKE_TRAMPLED = 1;
-		private const int PRIORITY_PLANT = 2;
-		private const int PRIORITY_RAKE = 3;
+		// -----------------------------------------------------------------
+		//  Prioridades de tarea (el orden del enum define la prioridad;
+		//  los valores más bajos se ejecutan primero).
+		// -----------------------------------------------------------------
+		private enum TaskPriority
+		{
+			HarvestMature,   // recoger cultivo maduro
+			ClearBadCrop,    // romper cultivo muerto, silvestre o que no crecerá
+			RakeTrampled,    // arar tierra pisoteada con planta encima
+			Plant,           // sembrar en suelo arado vacío
+			Rake             // arar césped/tierra limpia
+		}
+
+		// ID del área de cultivo a la que está asignado este granjero (-1 = libre)
+		public int FarmAreaId = -1;
 
 		private const float BASE_IMPORTANCE_MIN = 5f;
 		private const float BASE_IMPORTANCE_MAX = 10f;
@@ -63,6 +73,11 @@ namespace Game
 		// Centro del área de cultivos
 		private Vector3 m_farmAreaCenter;
 		private bool m_hasFarmAreaCenter;
+
+		// Límites del área de cultivo (esquina mínima y máxima del rectángulo marcado)
+		private Point3 m_farmAreaMin;
+		private Point3 m_farmAreaMax;
+		private bool m_hasFarmAreaBounds;
 
 		private bool m_stateMachineBuilt;
 		private bool m_initialized;
@@ -151,10 +166,70 @@ namespace Game
 				m_farmAreaCenter = valuesDictionary.GetValue<Vector3>("FarmAreaCenter");
 			}
 
+			m_hasFarmAreaBounds = valuesDictionary.GetValue<bool>("HasFarmAreaBounds", false);
+			if (m_hasFarmAreaBounds)
+			{
+				m_farmAreaMin = valuesDictionary.GetValue<Point3>("FarmAreaMin");
+				m_farmAreaMax = valuesDictionary.GetValue<Point3>("FarmAreaMax");
+			}
+
+			FarmAreaId = valuesDictionary.GetValue<int>("FarmAreaId", -1);
+
+			var wandSubsystem = Project.FindSubsystem<SubsystemFarmerWandBlockBehavior>(false);
+			if (wandSubsystem != null && FarmAreaId >= 0)
+			{
+				var area = wandSubsystem.FindAreaById(FarmAreaId);
+				if (area != null && area.HasBothPoints)
+				{
+					ApplyFarmAreaBounds(area.PointA.Value, area.PointB.Value);
+				}
+				else
+				{
+					FarmAreaId = -1; // el área ya no existe
+				}
+			}
+
 			BuildStateMachine();
 			m_stateMachineBuilt = true;
 
 			m_initialized = false;
+		}
+
+		/// <summary>Guarda centro y límites del área sin tocar el state machine.</summary>
+		private void ApplyFarmAreaBounds(Point3 a, Point3 b)
+		{
+			int minX = Math.Min(a.X, b.X), maxX = Math.Max(a.X, b.X);
+			int minY = Math.Min(a.Y, b.Y), maxY = Math.Max(a.Y, b.Y);
+			int minZ = Math.Min(a.Z, b.Z), maxZ = Math.Max(a.Z, b.Z);
+
+			m_farmAreaMin = new Point3(minX, minY, minZ);
+			m_farmAreaMax = new Point3(maxX, maxY, maxZ);
+			m_hasFarmAreaBounds = true;
+
+			m_farmAreaCenter = new Vector3(
+				(minX + maxX + 1) * 0.5f,
+				(minY + maxY + 1) * 0.5f,
+				(minZ + maxZ + 1) * 0.5f);
+			m_hasFarmAreaCenter = true;
+		}
+
+		/// <summary>
+		/// Asigna al granjero un área de cultivo definida por dos esquinas.
+		/// Restringe su escaneo a esos límites y lo reubica si está fuera.
+		/// </summary>
+		public void SetFarmArea(Point3 a, Point3 b)
+		{
+			ApplyFarmAreaBounds(a, b);
+
+			m_nextScanTime = 0;
+
+			if (m_importanceLevel < BASE_IMPORTANCE_MIN)
+				m_importanceLevel = BASE_IMPORTANCE_MIN;
+
+			if (m_stateMachineBuilt && m_initialized)
+			{
+				m_stateMachine.TransitionTo("Inactive");
+			}
 		}
 
 		private bool HasFarmingTools()
@@ -282,14 +357,29 @@ namespace Game
 
 		private bool IsTooFarFromArea()
 		{
-			if (!m_hasFarmAreaCenter) return false;
+			if (!m_hasFarmAreaBounds)
+			{
+				// Fallback al comportamiento antiguo (por centro/radio)
+				if (!m_hasFarmAreaCenter) return false;
+				Vector3 pos0 = m_componentCreature.ComponentBody.Position;
+				float dx0 = pos0.X - m_farmAreaCenter.X;
+				float dz0 = pos0.Z - m_farmAreaCenter.Z;
+				return MathF.Sqrt(dx0 * dx0 + dz0 * dz0) > MAX_DISTANCE_FROM_AREA;
+			}
 
+			// Distancia horizontal del farmer al punto más cercano del rectángulo.
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
-			float dx = pos.X - m_farmAreaCenter.X;
-			float dz = pos.Z - m_farmAreaCenter.Z;
-			float horizontalDist = MathF.Sqrt(dx * dx + dz * dz);
+			int px = (int)MathF.Floor(pos.X);
+			int pz = (int)MathF.Floor(pos.Z);
 
-			return horizontalDist > MAX_DISTANCE_FROM_AREA;
+			int nearestX = Math.Clamp(px, m_farmAreaMin.X, m_farmAreaMax.X);
+			int nearestZ = Math.Clamp(pz, m_farmAreaMin.Z, m_farmAreaMax.Z);
+
+			int dx = px - nearestX;
+			int dz = pz - nearestZ;
+			float distSq = dx * dx + dz * dz;
+
+			return distSq > SCAN_RADIUS * SCAN_RADIUS; // 15 bloques
 		}
 
 		private float GetDistanceToAreaCenter()
@@ -333,14 +423,10 @@ namespace Game
 					}
 
 					if (m_farmerEnabled && HasFarmingTools())
-					{
-						m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
 						EnsureFarmingToolEquipped();
-					}
-					else
-					{
-						m_importanceLevel = 0f;
-					}
+
+					// Importancia baja en reposo: deja que WalkAround (u otras behaviors) tomen el control.
+					m_importanceLevel = 0f;
 					m_stateEnterTime = m_subsystemTime.GameTime;
 				},
 				update: () =>
@@ -353,7 +439,7 @@ namespace Game
 
 					if (!HasFarmingTools())
 					{
-						m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
+						m_importanceLevel = 0f;
 						return;
 					}
 
@@ -363,31 +449,34 @@ namespace Game
 						CheckAndRestoreFarmingTool();
 					}
 
-					m_importanceLevel = m_random.Float(BASE_IMPORTANCE_MIN, BASE_IMPORTANCE_MAX);
-
+					// Si se aleja demasiado del área, siempre vuelve (aunque esté descansando).
 					if (IsTooFarFromArea())
 					{
+						m_importanceLevel = 10f;
 						m_stateMachine.TransitionTo("ReturnToArea");
 						return;
 					}
 
+					// Escaneo periódico: si aparece una tarea, la tomamos.
 					if (m_subsystemTime.GameTime > m_nextScanTime)
 					{
-						m_nextScanTime = m_subsystemTime.GameTime + m_random.Float(0.2f, 0.5f);
-						if (FindBestTask(out CellFace target, out int priority))
+						m_nextScanTime = m_subsystemTime.GameTime + m_random.Float(0.4f, 0.8f);
+						if (FindBestTask(out CellFace target, out TaskPriority priority))
 						{
 							m_targetCellFace = target;
 							m_targetPosition = new Vector3(target.X + 0.5f, target.Y + 0.5f, target.Z + 0.5f);
 							m_importanceLevel = m_random.Float(TASK_IMPORTANCE_MIN, TASK_IMPORTANCE_MAX);
 
 							if (!m_hasFarmAreaCenter)
-							{
 								UpdateFarmAreaCenter();
-							}
 
 							m_stateMachine.TransitionTo("MoveToTarget");
+							return;
 						}
 					}
+
+					// Sin tareas → importancia 0 para que WalkAround pueda activarse.
+					m_importanceLevel = 0f;
 				},
 				leave: null
 			);
@@ -532,13 +621,18 @@ namespace Game
 						{
 							m_stateMachine.TransitionTo("Harvest");
 						}
+						else if (IsBadCrop(contents, value, x, y, z))
+						{
+							// Cultivo muerto, silvestre o que no crecerá: romperlo
+							// y dejar que HarvestCheck decida entre arar o replantar.
+							m_stateMachine.TransitionTo("Harvest");
+						}
 						else if (IsGrassOrDirt(contents) && HasPlantAbove(x, y, z))
 						{
 							m_stateMachine.TransitionTo("RakeTrampled");
 						}
 						else if (IsGrassOrDirt(contents))
 						{
-							// Iniciamos el arado, reiniciamos contador de intentos
 							m_rakeAttempts = 0;
 							m_stateMachine.TransitionTo("Rake");
 						}
@@ -608,17 +702,12 @@ namespace Game
 						}
 					}
 
-					// Después de arreglar el suelo pisoteado, continuar el ciclo
 					if (HasTool(typeof(SeedsBlock)))
 					{
 						if (HasFertilizer())
-						{
 							m_stateMachine.TransitionTo("FertilizeDelay");
-						}
 						else
-						{
 							m_stateMachine.TransitionTo("PlantDelay");
-						}
 					}
 					else
 					{
@@ -629,7 +718,6 @@ namespace Game
 				leave: null
 			);
 
-			// Estado Rake modificado: solo usa el rastrillo y pasa a RakeCheck
 			m_stateMachine.AddState("Rake",
 				enter: () =>
 				{
@@ -649,14 +737,12 @@ namespace Game
 						m_componentMiner.Use(ray);
 					}
 
-					// Pasamos a verificación con retardo
 					m_stateMachine.TransitionTo("RakeCheck");
 				},
 				update: null,
 				leave: null
 			);
 
-			// Nuevo estado: verifica si el bloque se convirtió en Soil después de rastrillar
 			m_stateMachine.AddState("RakeCheck",
 				enter: () =>
 				{
@@ -681,17 +767,12 @@ namespace Game
 
 					if (IsSoil(contents))
 					{
-						// El suelo ya está arado
 						if (HasTool(typeof(SeedsBlock)))
 						{
 							if (HasFertilizer())
-							{
 								m_stateMachine.TransitionTo("FertilizeDelay");
-							}
 							else
-							{
 								m_stateMachine.TransitionTo("PlantDelay");
-							}
 						}
 						else
 						{
@@ -700,18 +781,11 @@ namespace Game
 					}
 					else
 					{
-						// Todavía no es Soil, repetir si no hemos superado el límite
 						m_rakeAttempts++;
 						if (m_rakeAttempts < MAX_RAKE_ATTEMPTS)
-						{
-							// Volver a Rake (sin reiniciar contador)
 							m_stateMachine.TransitionTo("Rake");
-						}
 						else
-						{
-							// Demasiados intentos, abandonar
 							m_stateMachine.TransitionTo("Inactive");
-						}
 					}
 				},
 				leave: null
@@ -750,13 +824,9 @@ namespace Game
 					m_componentMiner.Use(fertilizeRay);
 
 					if (HasTool(typeof(SeedsBlock)))
-					{
 						m_stateMachine.TransitionTo("PlantDelay");
-					}
 					else
-					{
 						m_stateMachine.TransitionTo("Inactive");
-					}
 				},
 				update: null,
 				leave: null
@@ -878,7 +948,8 @@ namespace Game
 						int currentValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 						int currentContents = Terrain.ExtractContents(currentValue);
 
-						if (IsHarvestable(currentContents, currentValue))
+						if (IsHarvestable(currentContents, currentValue) ||
+							IsBadCrop(currentContents, currentValue, x, y, z))
 						{
 							m_stateMachine.TransitionTo("Harvest");
 							return;
@@ -893,7 +964,6 @@ namespace Game
 						{
 							m_targetCellFace = new CellFace { X = x, Y = y - 1, Z = z, Face = 4 };
 							m_targetPosition = new Vector3(x + 0.5f, (y - 1) + 0.5f, z + 0.5f);
-							// Reiniciamos contador de arado
 							m_rakeAttempts = 0;
 							m_stateMachine.TransitionTo("Rake");
 							return;
@@ -907,13 +977,9 @@ namespace Game
 							m_targetCellFace = new CellFace { X = x, Y = y - 1, Z = z, Face = 4 };
 							m_targetPosition = new Vector3(x + 0.5f, (y - 1) + 0.5f, z + 0.5f);
 							if (HasFertilizer())
-							{
 								m_stateMachine.TransitionTo("FertilizeDelay");
-							}
 							else
-							{
 								m_stateMachine.TransitionTo("PlantDelay");
-							}
 							return;
 						}
 					}
@@ -986,10 +1052,11 @@ namespace Game
 				p.ToRemove = true;
 		}
 
-		private bool FindBestTask(out CellFace bestCell, out int bestPriority)
+		private bool FindBestTask(out CellFace bestCell, out TaskPriority bestPriority)
 		{
 			bestCell = default;
-			bestPriority = int.MaxValue;
+			bestPriority = TaskPriority.Rake; // valor por defecto (no usado si return false)
+			TaskPriority? bestPriorityNullable = null;
 
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
 			int cx = Terrain.ToCell(pos.X);
@@ -1000,12 +1067,33 @@ namespace Game
 			bool hasRake = HasTool(typeof(RakeBlock));
 			bool hasSeeds = HasTool(typeof(SeedsBlock));
 
+			int xMin = cx - radius;
+			int xMax = cx + radius;
+			int zMin = cz - radius;
+			int zMax = cz + radius;
 			int yMin = Math.Max(0, cy - 5);
 			int yMax = Math.Min(255, cy + 6);
 
-			for (int x = cx - radius; x <= cx + radius; x++)
+			// Si hay área asignada, restringir el escaneo al rectángulo marcado.
+			if (m_hasFarmAreaBounds)
 			{
-				for (int z = cz - radius; z <= cz + radius; z++)
+				xMin = Math.Max(xMin, m_farmAreaMin.X);
+				xMax = Math.Min(xMax, m_farmAreaMax.X);
+				zMin = Math.Max(zMin, m_farmAreaMin.Z);
+				zMax = Math.Min(zMax, m_farmAreaMax.Z);
+				yMin = Math.Max(yMin, m_farmAreaMin.Y);
+				// +2: los cultivos crecen por encima del suelo marcado;
+				//     sin este margen nunca serían escaneados.
+				yMax = Math.Min(yMax, m_farmAreaMax.Y + 2);
+			}
+
+			// Si el rectángulo quedó vacío (fuera del radio del farmer), no hay tareas.
+			if (xMin > xMax || zMin > zMax || yMin > yMax)
+				return false;
+
+			for (int x = xMin; x <= xMax; x++)
+			{
+				for (int z = zMin; z <= zMax; z++)
 				{
 					for (int y = yMin; y <= yMax; y++)
 					{
@@ -1019,9 +1107,19 @@ namespace Game
 
 						if (IsHarvestable(contents, value))
 						{
-							if (IsBetterTask(PRIORITY_HARVEST_MATURE, dist, bestPriority, bestCell, pos))
+							if (IsBetterTask(TaskPriority.HarvestMature, dist, bestPriorityNullable, bestCell, pos))
 							{
-								bestPriority = PRIORITY_HARVEST_MATURE;
+								bestPriorityNullable = TaskPriority.HarvestMature;
+								bestCell = cell;
+							}
+							continue;
+						}
+
+						if (IsBadCrop(contents, value, x, y, z))
+						{
+							if (IsBetterTask(TaskPriority.ClearBadCrop, dist, bestPriorityNullable, bestCell, pos))
+							{
+								bestPriorityNullable = TaskPriority.ClearBadCrop;
 								bestCell = cell;
 							}
 							continue;
@@ -1031,9 +1129,9 @@ namespace Game
 
 						if (IsGrassOrDirt(contents) && above != 0 && hasRake)
 						{
-							if (IsBetterTask(PRIORITY_RAKE_TRAMPLED, dist, bestPriority, bestCell, pos))
+							if (IsBetterTask(TaskPriority.RakeTrampled, dist, bestPriorityNullable, bestCell, pos))
 							{
-								bestPriority = PRIORITY_RAKE_TRAMPLED;
+								bestPriorityNullable = TaskPriority.RakeTrampled;
 								bestCell = cell;
 							}
 							continue;
@@ -1041,9 +1139,9 @@ namespace Game
 
 						if (IsSoil(contents) && above == 0 && hasSeeds)
 						{
-							if (IsBetterTask(PRIORITY_PLANT, dist, bestPriority, bestCell, pos))
+							if (IsBetterTask(TaskPriority.Plant, dist, bestPriorityNullable, bestCell, pos))
 							{
-								bestPriority = PRIORITY_PLANT;
+								bestPriorityNullable = TaskPriority.Plant;
 								bestCell = cell;
 							}
 							continue;
@@ -1051,9 +1149,9 @@ namespace Game
 
 						if (IsGrassOrDirt(contents) && above == 0 && hasRake)
 						{
-							if (IsBetterTask(PRIORITY_RAKE, dist, bestPriority, bestCell, pos))
+							if (IsBetterTask(TaskPriority.Rake, dist, bestPriorityNullable, bestCell, pos))
 							{
-								bestPriority = PRIORITY_RAKE;
+								bestPriorityNullable = TaskPriority.Rake;
 								bestCell = cell;
 							}
 						}
@@ -1061,7 +1159,11 @@ namespace Game
 				}
 			}
 
-			return bestPriority != int.MaxValue;
+			if (bestPriorityNullable == null)
+				return false;
+
+			bestPriority = bestPriorityNullable.Value;
+			return true;
 		}
 
 		private float GetCellDistance(int x, int y, int z, Vector3 pos)
@@ -1069,12 +1171,15 @@ namespace Game
 			return Vector3.Distance(new Vector3(x + 0.5f, y + 0.5f, z + 0.5f), pos);
 		}
 
-		private bool IsBetterTask(int newPriority, float newDist, int currentPriority, CellFace currentCell, Vector3 pos)
+		private bool IsBetterTask(TaskPriority newPriority, float newDist, TaskPriority? currentPriority, CellFace currentCell, Vector3 pos)
 		{
-			if (newPriority < currentPriority)
+			if (currentPriority == null)
 				return true;
 
-			if (newPriority == currentPriority && currentPriority != int.MaxValue)
+			if (newPriority < currentPriority.Value)
+				return true;
+
+			if (newPriority == currentPriority.Value)
 			{
 				float currentDist = GetCellDistance(currentCell.X, currentCell.Y, currentCell.Z, pos);
 				return newDist < currentDist;
@@ -1136,6 +1241,52 @@ namespace Game
 			return false;
 		}
 
+		/// <summary>
+		/// True si el bloque es un cultivo "inservible": ya no dará fruto aunque
+		/// se espere. Incluye:
+		///   - Podridos / muertos (pumpkin / watermelon con flag isDead).
+		///   - Silvestres (rye / cotton con flag wild): nunca serán cultivo doméstico.
+		///   - Arraigados sobre algo que no es tierra arada (SoilBlock): no crecerán.
+		/// </summary>
+		private bool IsBadCrop(int contents, int value, int x, int y, int z)
+		{
+			if (contents <= 0 || contents >= BlocksManager.Blocks.Length) return false;
+			Block block = BlocksManager.Blocks[contents];
+
+			// 1) Podrido / muerto
+			if (block is BasePumpkinBlock)
+			{
+				int data = Terrain.ExtractData(value);
+				if (BasePumpkinBlock.GetIsDead(data)) return true;
+			}
+			if (block is BaseWatermelonBlock)
+			{
+				int data = Terrain.ExtractData(value);
+				if (BaseWatermelonBlock.GetIsDead(data)) return true;
+			}
+
+			// 2) Silvestre (solo rye y cotton tienen flag wild)
+			if (block is RyeBlock && RyeBlock.GetIsWild(Terrain.ExtractData(value)))
+				return true;
+			if (block is CottonBlock && CottonBlock.GetIsWild(Terrain.ExtractData(value)))
+				return true;
+
+			// 3) Arraigado en algo que no es SoilBlock → no crecerá bien.
+			//    Aplica a cultivos que van directos sobre la tierra (rye, cotton,
+			//    blueberry). Pumpkins/watermelons forman tallo + fruto y su bloque
+			//    inferior no es necesariamente tierra, así que no se chequean aquí.
+			if (block is RyeBlock || block is CottonBlock || block is BlueberryBushBlock)
+			{
+				if (y > 0)
+				{
+					int belowContents = m_subsystemTerrain.Terrain.GetCellContents(x, y - 1, z);
+					if (!IsSoil(belowContents)) return true;
+				}
+			}
+
+			return false;
+		}
+
 		private bool HasTool(Type toolType)
 		{
 			return FindSlotWithTool(toolType) >= 0;
@@ -1192,11 +1343,39 @@ namespace Game
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
 			base.Save(valuesDictionary, entityToIdMap);
+			valuesDictionary.SetValue("FarmAreaId", FarmAreaId);
 			valuesDictionary.SetValue<bool>("FarmerEnabled", m_farmerEnabled);
 			valuesDictionary.SetValue<bool>("HasFarmAreaCenter", m_hasFarmAreaCenter);
 			if (m_hasFarmAreaCenter)
 			{
 				valuesDictionary.SetValue("FarmAreaCenter", m_farmAreaCenter);
+			}
+
+			valuesDictionary.SetValue<bool>("HasFarmAreaBounds", m_hasFarmAreaBounds);
+			if (m_hasFarmAreaBounds)
+			{
+				valuesDictionary.SetValue("FarmAreaMin", m_farmAreaMin);
+				valuesDictionary.SetValue("FarmAreaMax", m_farmAreaMax);
+			}
+		}
+
+		/// <summary>
+		/// Llamado por SubsystemFarmerWandBlockBehavior cuando el jugador marca
+		/// un área con la varilla del granjero.
+		/// </summary>
+		public void SetFarmArea(Vector3 center, float radius)
+		{
+			m_farmAreaCenter = center;
+			m_hasFarmAreaCenter = true;
+
+			m_nextScanTime = 0;
+
+			if (m_importanceLevel < BASE_IMPORTANCE_MIN)
+				m_importanceLevel = BASE_IMPORTANCE_MIN;
+
+			if (m_stateMachineBuilt && m_initialized)
+			{
+				m_stateMachine.TransitionTo("Inactive");
 			}
 		}
 	}
