@@ -33,7 +33,7 @@ namespace Game
 			public Point3? PointB;
 			public Point3? Preview;             // efímero
 			public bool ShowAreaPersistent;
-			public double PointBMarkedTime;     // efímero
+			public double PointBMarkedTime;   // < 0 significa "sin marca reciente"
 
 			public bool HasBothPoints => PointA != null && PointB != null;
 
@@ -99,13 +99,24 @@ namespace Game
 				{
 					ValuesDictionary areaDict = obj as ValuesDictionary;
 					if (areaDict == null) continue;
+
 					FarmArea area = new FarmArea();
 					area.Id = areaDict.GetValue<int>("Id", 0);
+
 					if (areaDict.GetValue<bool>("HasPointA", false))
 						area.PointA = areaDict.GetValue<Point3>("PointA");
 					if (areaDict.GetValue<bool>("HasPointB", false))
 						area.PointB = areaDict.GetValue<Point3>("PointB");
+
 					area.ShowAreaPersistent = areaDict.GetValue<bool>("ShowAreaPersistent", false);
+
+					// NUEVO: recuperar la marca temporal como "segundos transcurridos"
+					// para no depender de un Time.RealTime absoluto.
+					double elapsed = areaDict.GetValue<double>("PointBMarkedElapsed", -1.0);
+					area.PointBMarkedTime = elapsed >= 0.0
+						? Time.RealTime - elapsed
+						: -1.0;
+
 					m_areas.Add(area);
 				}
 			}
@@ -135,6 +146,13 @@ namespace Game
 				areaDict.SetValue("HasPointB", area.PointB != null);
 				if (area.PointB != null) areaDict.SetValue("PointB", area.PointB.Value);
 				areaDict.SetValue("ShowAreaPersistent", area.ShowAreaPersistent);
+
+				// NUEVO: persistir el "recién marcada" como delta relativo.
+				double elapsed = area.PointBMarkedTime >= 0.0
+					? Math.Max(0.0, Time.RealTime - area.PointBMarkedTime)
+					: -1.0;
+				areaDict.SetValue("PointBMarkedElapsed", elapsed);
+
 				idx++;
 			}
 
@@ -151,7 +169,11 @@ namespace Game
 
 		public FarmArea CreateArea()
 		{
-			FarmArea area = new FarmArea { Id = m_nextAreaId++ };
+			FarmArea area = new FarmArea
+			{
+				Id = m_nextAreaId++,
+				PointBMarkedTime = -1.0      // sin marca reciente
+			};
 			m_areas.Add(area);
 			m_activeArea = area;
 			return area;
@@ -180,9 +202,8 @@ namespace Game
 			area.PointB = null;
 			area.Preview = null;
 			area.ShowAreaPersistent = false;
-			area.PointBMarkedTime = 0;
+			area.PointBMarkedTime = -1.0;
 
-			// Desasignar todas las criaturas que pertenecían a esta área.
 			foreach (Entity entity in Project.Entities)
 			{
 				ComponentFarmerBehavior farmer = entity.FindComponent<ComponentFarmerBehavior>();
@@ -194,9 +215,17 @@ namespace Game
 		public void ToggleShowArea(FarmArea area)
 		{
 			if (area == null) return;
-			area.ShowAreaPersistent = !area.ShowAreaPersistent;
-			if (area.ShowAreaPersistent) area.PointBMarkedTime = Time.RealTime;
-			else area.PointBMarkedTime = 0;
+
+			if (IsAreaVisible(area))
+			{
+				area.ShowAreaPersistent = false;
+				area.PointBMarkedTime = -1.0;
+			}
+			else
+			{
+				area.ShowAreaPersistent = true;
+				area.PointBMarkedTime = Time.RealTime;
+			}
 		}
 
 		public bool IsCreatureAssignedToArea(FarmArea area, ComponentCreature creature)
@@ -360,39 +389,49 @@ namespace Game
 		// ---------------------------------------------------------------
 		public void Draw(Camera camera, int drawOrder)
 		{
+			double now = Time.RealTime;
+
 			foreach (FarmArea area in m_areas)
 			{
 				bool hasA = area.PointA != null;
 				bool hasB = area.PointB != null;
 				bool isActive = area == m_activeArea;
 
+				// 1) Solo A marcada → feedback de marcado, no es "el campo asignado".
+				//    Se dibuja siempre (para poder elegir B), independientemente
+				//    del ShowAreaPersistent.
 				if (hasA && !hasB)
 				{
-					Color cA = isActive ? new Color(0, 220, 0, 210) : new Color(0, 220, 0, 130);
+					Color cA = isActive
+						? new Color(0, 220, 0, 210)
+						: new Color(0, 220, 0, 130);
 					DrawPointMarker(area.PointA.Value, cA);
 
 					if (isActive && area.Preview != null && area.Preview.Value != area.PointA.Value)
+					{
 						DrawAreaBox(area.PointA.Value, area.Preview.Value,
 									new Color(0, 200, 255, 130));
+					}
+					continue;
 				}
+
 				else if (hasA && hasB)
 				{
-					bool shouldDraw = area.ShowAreaPersistent
-						|| (Time.RealTime - area.PointBMarkedTime < AREA_DISPLAY_DURATION);
+					if (!IsAreaVisible(area))
+						continue;
 
-					if (shouldDraw)
-					{
-						DrawPointMarker(area.PointA.Value, new Color(0, 220, 0, 210));
-						DrawPointMarker(area.PointB.Value, new Color(255, 140, 0, 210));
-						Color lineColor = isActive
-							? new Color(255, 220, 0, 160)
-							: new Color(180, 180, 180, 110);
-						DrawAreaBox(area.PointA.Value, area.PointB.Value, lineColor);
-					}
+					DrawPointMarker(area.PointA.Value, new Color(0, 220, 0, 210));
+					DrawPointMarker(area.PointB.Value, new Color(255, 140, 0, 210));
+
+					Color lineColor = isActive
+						? new Color(255, 220, 0, 160)
+						: new Color(180, 180, 180, 110);
+
+					DrawAreaBox(area.PointA.Value, area.PointB.Value, lineColor);
 				}
 			}
 
-			m_primitivesRenderer.Flush(camera.ViewProjectionMatrix, true, int.MaxValue);
+				m_primitivesRenderer.Flush(camera.ViewProjectionMatrix, true, int.MaxValue);
 		}
 
 		private void DrawPointMarker(Point3 p, Color color)
@@ -413,6 +452,23 @@ namespace Game
 				new Vector3(maxX, maxY, maxZ));
 			FlatBatch3D batch = m_primitivesRenderer.FlatBatch(0, DepthStencilState.None, null, null);
 			batch.QueueBoundingBox(box, color);
+		}
+
+		/// <summary>
+		/// True si el área debe dibujarse AHORA: ya sea porque el jugador la
+		/// fijó como persistente o porque fue marcada hace menos de AREA_DISPLAY_DURATION.
+		/// Es la única fuente de verdad para dibujo y para el estado del botón.
+		/// </summary>
+		public bool IsAreaVisible(FarmArea area)
+		{
+			if (area == null || !area.HasBothPoints)
+				return false;
+
+			if (area.ShowAreaPersistent)
+				return true;
+
+			return area.PointBMarkedTime >= 0.0
+				&& (Time.RealTime - area.PointBMarkedTime) < AREA_DISPLAY_DURATION;
 		}
 	}
 }
