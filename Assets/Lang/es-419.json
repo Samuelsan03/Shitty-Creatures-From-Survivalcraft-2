@@ -1,4 +1,36 @@
 {
+  "SubsystemFarmerWandBlockBehavior": {
+    "0": "Apunta a un bloque para marcar el área de cultivo.",
+    "1": "Punto A marcado: ({0}, {1}, {2})",
+    "2": "Ese bloque ya es el Punto A. Elige otro.",
+    "3": "Punto B marcado: ({0}, {1}, {2})",
+    "4": "Área {0} reiniciada. Nuevo Punto A."
+  },
+  "FarmerAreaDialog": {
+    "0": "Administrar áreas de cultivo",
+    "1": "Formato X,Y,Z  —  ejemplo: 10,64,-5",
+    "2": "Punto A:",
+    "3": "Punto B:",
+    "4": "Mostrar área",
+    "5": "Ocultar área",
+    "6": "Sin área",
+    "7": "Área {0}  ({1}/{2})",
+    "8": "Criaturas asignadas: {0}",
+    "9": "Añadir criaturas",
+    "10": "Quitar criaturas",
+    "11": "Aplicar",
+    "12": "Reiniciar",
+    "13": "Cancelar",
+    "14": "Nueva",
+    "15": "Borrar",
+    "16": "No hay criaturas disponibles para añadir a esta área.",
+    "17": "No hay criaturas asignadas a esta área.",
+    "18": "Añadir criaturas al área {0}",
+    "19": "Quitar criaturas del área {0}",
+    "20": "Formato inválido en Punto A. Usa X,Y,Z.",
+    "21": "Formato inválido en Punto B. Usa X,Y,Z.",
+    "22": "Debes especificar ambos puntos o ninguno."
+  },
   "SubsystemBanditEggBlockBehavior": { 
     "1": "No se pudo generar al bandido. Revisa el registro del juego." 
   },
@@ -724,6 +756,11 @@
     }
   },
   "Blocks": {
+    "FarmerWandBlock:0": {
+  "DisplayName": "Varita del Granjero",
+  "Description": "Una varita dorada utilizada para marcar las áreas de cultivo donde trabajarán los granjeros. Haz clic derecho en un bloque para marcar el Punto A y vuelve a hacer clic derecho para marcar el Punto B.",
+  "CRDescription:0": "Combina una vara con una semilla de centeno"
+},
   "BanditEggBlock:0": { 
     "DisplayName": "Huevo de bandido", 
     "Description": "Huevo generador. Lánzalo contra una superficie dura para generar un bandido aleatorio. Disponible únicamente en el modo creativo." 
