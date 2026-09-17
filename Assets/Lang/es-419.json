@@ -1614,21 +1614,22 @@
 },
 "GreenNightIntervalDialog": {
   "1": "Configuración de Noche Verde",
-  "2": "¿Con qué frecuencia quieres que ocurra Noche Verde?",
+  "2": "¿Con qué frecuencia te gustaría que ocurriera la Noche Verde?",
   "3": "Días de cordura restantes:",
   "4": "Aceptar",
   "5": "Cancelar",
   "Descriptions": [
-    "Noche Verde ya forma parte de tu rutina.",
+    "La Noche Verde ya forma parte de tu rutina.",
     "Suficiente descanso para olvidar por qué estabas huyendo.",
     "Una cantidad razonable de tiempo para preparar defensas y malas excusas.",
     "La calma dura tanto que empieza a resultar inquietante."
   ],
-  "10": "Si prefieres no elegir, simplemente cancela.\nDe forma predeterminada, Noche Verde ocurrirá cada 4 días con el estado mental \"Lunes por la mañana\".",
-  "11": "Noche Verde se ha configurado en {0} cada {1} días.",
+  "7": "La Noche Verde se ha establecido en {0} cada {1} días.",
+  "10": "Si prefieres no elegir, simplemente cancela.\nLa Noche Verde ocurrirá cada 4 días con el estado mental \"Lunes por la Mañana\" de forma predeterminada.",
+  "11": "La Noche Verde se ha establecido en {0} cada {1} días.",
   "12": "{0} días",
   "DifficultyLabel": "Estado mental",
-  "DifficultyPlaceholder": "Elige qué tan mal te encuentras"
+  "DifficultyPlaceholder": "Elige qué tan mal estás"
 },
 "GreenNightDifficulty": {
   "Difficulties": [
