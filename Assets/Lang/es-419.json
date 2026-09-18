@@ -428,12 +428,14 @@
   "SpecialThanksScreen": {
   "0": "Agradecimientos Especiales",
   "1": "Si quieres aparecer en la lista de agradecimientos especiales, puedes contactar al autor para proporcionar ideas, errores o más. No olvides incluir tu apodo y el motivo.",
-  "2": "Quotemante",
-  "3": "Por su idea de añadir a Rayman como un nuevo personaje.",
-  "4": "Richard Survivalcraft",
-  "5": "Por la idea de incluir personajes de Sonic The Hedgehog",
-  "6": "Heptagunn",
-  "7": "Por elegir la carátula de PlayStation 1 para la versión final de la carátula del mod"
+  "thanks": [
+    "Quotemante",
+    "Por su idea de añadir a Rayman como un nuevo personaje.",
+    "Richard Survivalcraft",
+    "Por la idea de incluir personajes de Sonic The Hedgehog",
+    "Heptagunn",
+    "Por elegir la carátula de PlayStation 1 para la versión final de la carátula del mod"
+  ]
 },
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!"
