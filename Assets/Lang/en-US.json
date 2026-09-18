@@ -427,13 +427,15 @@
 },
   "SpecialThanksScreen": {
   "0": "Special Thanks",
-  "1": "If you want to appear in the special thanks list, you can contact the author to provide ideas, bugs or more. Don't forget to include your nickname and the reason.",
-  "2": "Quotemante",
-  "3": "With his idea of adding Rayman as a new character.",
-  "4": "Richard Survivalcraft",
-  "5": "Because of the idea of ​​including characters from Sonic The Hedgehog",
-  "6": "Heptagunn",
-  "7": "For choosing the PlayStation 1 cover for the final version of the mod's cover"
+  "1": "If you want to appear on the special thanks list, you can contact the author to provide ideas, bug reports, or anything else. Don't forget to include your nickname and the reason.",
+  "thanks": [
+    "Quotemante",
+    "For the idea of adding Rayman as a new character.",
+    "Richard Survivalcraft",
+    "For the idea of including Sonic The Hedgehog characters.",
+    "Heptagunn",
+    "For choosing the PlayStation 1 cover for the mod's final cover version."
+  ]
 },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!"
