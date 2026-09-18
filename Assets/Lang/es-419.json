@@ -4,7 +4,8 @@
     "1": "Punto A marcado: ({0}, {1}, {2})",
     "2": "Ese bloque ya es el Punto A. Elige otro.",
     "3": "Punto B marcado: ({0}, {1}, {2})",
-    "4": "Área {0} reiniciada. Nuevo Punto A."
+    "4": "Área {0} reiniciada. Nuevo Punto A.",
+    "5": "Solo puedes marcar césped, tierra o tierra de cultivo."
   },
   "FarmerAreaDialog": {
     "0": "Administrar áreas de cultivo",
