@@ -1126,14 +1126,17 @@ namespace Game
 		public override void OnPlayerDead(PlayerData playerData)
 		{
 			// ─── Música de muerte (solo si el ajuste está activado) ───
+			//      HYUPONIA - RUIN OF SADNESS dura 8:01 (481s) y se reproduce en BUCLE
+			//      hasta que el jugador reaparece (ahí se hace fade out en OnPlayerSpawned).
 			if (ShittyCreaturesSettingsManager.DeathMusicEnabled)
 			{
-				InGameMusicManager.FadeOutDuration = 1.0;
+				InGameMusicManager.FadeOutDuration = 0.5;
 
 				InGameMusicManager.PlayMusic(
 					"MenuMusic/HYUPONIA - RUIN OF SADNESS",
 					0f,
-					InGameMusicManager.MusicContext.Death);
+					InGameMusicManager.MusicContext.Death,
+					loop: true);
 			}
 
 			// Eliminar label de coordenadas
