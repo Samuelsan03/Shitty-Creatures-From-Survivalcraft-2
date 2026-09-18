@@ -108,6 +108,10 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// Asegura que el fade-out de la música se procese cada frame,
+			// independientemente de si otro hook del mod llama a Update().
+			InGameMusicManager.Update();
+
 			if (Project == null || m_subsystemTime == null || m_subsystemPlayers == null)
 				return;
 
@@ -177,7 +181,7 @@ namespace Game
 			{
 				if (m_tankMusicPlaying)
 				{
-					InGameMusicManager.StopMusic();
+					InGameMusicManager.FadeOutAndStop();
 					m_tankMusicPlaying = false;
 				}
 				return;
@@ -202,7 +206,7 @@ namespace Game
 			}
 			m_tankWasPaused = isPaused;
 
-			// Verificar si hay algún Tank persiguiendo dentro del radio
+			// Verificar si hay algún Tank persiguiendo a un JUGADOR dentro del radio
 			bool hasChasingTank = false;
 
 			foreach (var entity in Project.Entities)
@@ -221,6 +225,10 @@ namespace Game
 
 				ComponentCreature target = chaseBehavior.Target;
 				if (target == null)
+					continue;
+
+				// *** CAMBIO CLAVE: solo cuenta si el objetivo es un JUGADOR ***
+				if (m_subsystemPlayers == null || !m_subsystemPlayers.IsPlayer(target.Entity))
 					continue;
 
 				if (target.ComponentHealth == null || target.ComponentHealth.Health <= 0f)
@@ -267,7 +275,9 @@ namespace Game
 			{
 				if (m_tankMusicPlaying)
 				{
-					InGameMusicManager.StopMusic();
+					// La persecución del Tank terminó (presa muerta, jugador muerto,
+					// o el Tank dejó de perseguir): fade-out.
+					InGameMusicManager.FadeOutAndStop();
 					m_tankMusicPlaying = false;
 				}
 			}
@@ -301,12 +311,18 @@ namespace Game
 					ComponentZombieChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
 					if (chaseBehavior != null && chaseBehavior.IsActive)
 					{
+						// *** CAMBIO CLAVE: el fantasma debe estar persiguiendo a un jugador ***
+						if (chaseBehavior.Target == null || !m_subsystemPlayers.IsPlayer(chaseBehavior.Target.Entity))
+							continue;
+
 						ComponentBody ghostBody = entity.FindComponent<ComponentBody>();
 						if (ghostBody != null)
 						{
-							foreach (ComponentPlayer player in activePlayers)
+							// Solo verificar contra el jugador que está siendo perseguido.
+							ComponentPlayer chasedPlayer = chaseBehavior.Target.Entity.FindComponent<ComponentPlayer>();
+							if (chasedPlayer != null && chasedPlayer.ComponentHealth.Health > 0f)
 							{
-								ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
+								ComponentBody playerBody = chasedPlayer.ComponentBody;
 								if (playerBody != null)
 								{
 									float distance = (ghostBody.Position - playerBody.Position).Length();
@@ -416,7 +432,8 @@ namespace Game
 				{
 					if (InGameMusicManager.CurrentContext == InGameMusicManager.MusicContext.Chase)
 					{
-						InGameMusicManager.StopMusic();
+						// Fade-out cuando termina la persecución.
+						InGameMusicManager.FadeOutAndStop();
 					}
 
 					m_ghostMusicPlaying = false;
@@ -471,7 +488,7 @@ namespace Game
 				case ChaseMusicType.Tank:
 					if (m_tankMusicPlaying)
 					{
-						InGameMusicManager.StopMusic();
+						InGameMusicManager.FadeOutAndStop();
 						m_tankMusicPlaying = false;
 					}
 					break;
@@ -484,6 +501,8 @@ namespace Game
 
 		public override void Dispose()
 		{
+			// En Dispose se usa parada DURA (no fade): es limpieza del subsistema
+			// y no debe solaparse con una nueva instancia al recargar.
 			if (m_ghostMusicPlaying)
 			{
 				try
