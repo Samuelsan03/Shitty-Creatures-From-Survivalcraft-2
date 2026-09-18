@@ -422,7 +422,8 @@
     "SkeletonSpawnDescription": "Permite la aparición de esqueletos en noches normales.",
     "SpiderSpawnDescription": "Permite la aparición de arañas infectadas en noches normales (incluye cuevas).",
     "FastMeleeDescription": "Permitir ataques cuerpo a cuerpo rápidos consecutivos al hacer clic/tocar rápidamente en el mismo objetivo",
-    "InGameMusicDescription": "Muestra un botón en el juego para reproducir pistas de música aleatorias durante la partida."
+    "InGameMusicDescription": "Muestra un botón en el juego para reproducir pistas de música aleatorias durante la partida.",
+    "DeathMusicDescription": "Activar/desactivar la música que se reproduce al morir"
   },
   "SpecialThanksScreen": {
   "0": "Agradecimientos Especiales",
