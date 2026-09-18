@@ -51,6 +51,11 @@ namespace Game
 		private static MusicContext m_currentContext;
 		private static bool m_isPausedByScreenChange;
 
+		// Loop: si está activo, la pista actual se reinicia al terminar.
+		// Ej: "MenuMusic/HYUPONIA - RUIN OF SADNESS" (481s / 8:01) se reproduce en bucle
+		// mientras el jugador está muerto, hasta que reaparece (ahí se hace fade out).
+		private static bool m_loopCurrentTrack = false;
+
 		// Estado del fade basado en tiempo.
 		private static double m_fadeStartTime;
 		private static float m_fadeStartVolume;
@@ -61,6 +66,7 @@ namespace Game
 		public static string CurrentTrack => m_currentTrackName;
 		public static float CurrentPosition => m_currentPlaybackPosition;
 		public static MusicContext CurrentContext => m_currentContext;
+		public static bool IsLooping => m_loopCurrentTrack;
 
 		public static float Volume
 		{
@@ -124,7 +130,7 @@ namespace Game
 			if (m_fadeSound != null)
 			{
 				double elapsed = Time.RealTime - m_fadeStartTime;
-				float t = MathUtils.Saturate((float)(elapsed / m_fadeOutDuration));
+				float t = MathUtils.Saturate((float)(elapsed / m_activeFadeOutDuration));
 				float newVolume = m_fadeStartVolume * (1f - t);
 
 				if (t >= 1f || newVolume <= 0.001f)
@@ -147,6 +153,28 @@ namespace Game
 				else
 				{
 					m_fadeSound.Volume = newVolume;
+				}
+			}
+
+			// ---------------------------------------------------------------
+			// LOOP: si la pista actual está marcada como loop y ya terminó
+			// (o está por terminar), la reiniciamos desde el principio
+			// manteniendo contexto y loop.
+			//
+			// No reiniciamos si:
+			//   - Estamos en fade out (dejamos que se apague).
+			//   - Está pausada por cambio de pantalla.
+			// ---------------------------------------------------------------
+			if (m_loopCurrentTrack && !m_isFadingOut && !m_isPausedByScreenChange && m_sound != null)
+			{
+				if (IsPlaybackComplete())
+				{
+					// Guardamos los datos ANTES de reiniciar (PlayMusic los va a reescribir).
+					string trackToRestart = m_currentTrackName;
+					MusicContext contextToRestart = m_currentContext;
+
+					// Reiniciar desde 0, mismo contexto, mismo loop.
+					PlayMusic(trackToRestart, 0f, contextToRestart, true);
 				}
 			}
 
@@ -178,6 +206,9 @@ namespace Game
 			m_isFadingOut = true;
 			m_isPausedByScreenChange = false;
 
+			// Al iniciar el fade out, desactivamos el loop para que no se reinicie a mitad del fade.
+			m_loopCurrentTrack = false;
+
 			// Congelamos la duración actual para este fade concreto.
 			m_activeFadeOutDuration = m_fadeOutDuration;
 
@@ -206,10 +237,15 @@ namespace Game
 
 		public static void PlayMusic(string name, float startPercentage)
 		{
-			PlayMusic(name, startPercentage, MusicContext.InGame);
+			PlayMusic(name, startPercentage, MusicContext.InGame, false);
 		}
 
 		public static void PlayMusic(string name, float startPercentage, MusicContext context)
+		{
+			PlayMusic(name, startPercentage, context, false);
+		}
+
+		public static void PlayMusic(string name, float startPercentage, MusicContext context, bool loop)
 		{
 			if (string.IsNullOrEmpty(name))
 			{
@@ -224,6 +260,7 @@ namespace Game
 				m_isFadingOut = false;
 				m_isPausedByScreenChange = false;
 				m_currentContext = context;
+				m_loopCurrentTrack = loop;
 
 				if (m_sound != null)
 				{
@@ -275,6 +312,7 @@ namespace Game
 			m_isFadingOut = false;
 			m_isPausedByScreenChange = false;
 			m_currentContext = MusicContext.None;
+			m_loopCurrentTrack = false;
 		}
 
 		public static void SavePositionAndStop()
@@ -307,7 +345,8 @@ namespace Game
 		{
 			if (!string.IsNullOrEmpty(m_currentTrackName))
 			{
-				PlayMusic(m_currentTrackName, m_currentPlaybackPosition, m_currentContext);
+				// Conservamos el estado de loop al reanudar.
+				PlayMusic(m_currentTrackName, m_currentPlaybackPosition, m_currentContext, m_loopCurrentTrack);
 			}
 		}
 	}
