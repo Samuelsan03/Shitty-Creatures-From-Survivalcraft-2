@@ -226,7 +226,7 @@ namespace Game
 
 		private bool HasFarmingTools()
 		{
-			return HasTool(typeof(RakeBlock)) || HasTool(typeof(SeedsBlock));
+			return HasTool(typeof(RakeBlock)) || HasAnySeed();
 		}
 
 		private bool IsFarmingTool(int contents)
@@ -234,7 +234,12 @@ namespace Game
 			if (contents <= 0 || contents >= BlocksManager.Blocks.Length) return false;
 			Block block = BlocksManager.Blocks[contents];
 			if (block == null) return false;
-			return block is RakeBlock || block is SeedsBlock || block is SaltpeterChunkBlock;
+
+			// NUEVO: añadir WatermelonSeedBlock a la lista.
+			return block is RakeBlock
+				|| block is SeedsBlock
+				|| block is SaltpeterChunkBlock
+				|| block is WatermelonSeedBlock;
 		}
 
 		private bool EnsureFarmingToolEquipped()
@@ -326,7 +331,9 @@ namespace Game
 				int contents = Terrain.ExtractContents(value);
 				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
 				Block block = BlocksManager.Blocks[contents];
-				if (block != null && block is SeedsBlock)
+
+				// NUEVO: aceptar SeedsBlock genérico Y WatermelonSeedBlock (no hereda de SeedsBlock).
+				if (block != null && (block is SeedsBlock || block is WatermelonSeedBlock))
 					return i;
 			}
 			return -1;
@@ -641,11 +648,11 @@ namespace Game
 						{
 							bool needsFertilizer = !IsSoilAlreadyFertilized(value);
 
-							if (HasTool(typeof(SeedsBlock)) && needsFertilizer && HasFertilizer())
+							if (HasAnySeed() && needsFertilizer && HasFertilizer())
 							{
 								m_stateMachine.TransitionTo("FertilizeDelay");
 							}
-							else if (HasTool(typeof(SeedsBlock)))
+							else if (HasAnySeed())
 							{
 								m_stateMachine.TransitionTo("PlantDelay");
 							}
@@ -770,7 +777,7 @@ namespace Game
 
 					if (IsSoil(contents))
 					{
-						if (HasTool(typeof(SeedsBlock)))
+						if (HasAnySeed())
 						{
 							bool needsFertilizer = !IsSoilAlreadyFertilized(value);
 
@@ -828,7 +835,7 @@ namespace Game
 					Ray3 fertilizeRay = GetRayToBlock(m_targetCellFace.Value);
 					m_componentMiner.Use(fertilizeRay);
 
-					if (HasTool(typeof(SeedsBlock)))
+					if (HasAnySeed())
 						m_stateMachine.TransitionTo("PlantDelay");
 					else
 						m_stateMachine.TransitionTo("Inactive");
@@ -977,7 +984,7 @@ namespace Game
 
 					if (IsSoil(groundContents))
 					{
-						if (HasTool(typeof(SeedsBlock)))
+						if (HasAnySeed())
 						{
 							m_targetCellFace = new CellFace { X = x, Y = y - 1, Z = z, Face = 4 };
 							m_targetPosition = new Vector3(x + 0.5f, (y - 1) + 0.5f, z + 0.5f);
@@ -1073,7 +1080,7 @@ namespace Game
 			int radius = (int)Math.Ceiling(SCAN_RADIUS);
 
 			bool hasRake = HasTool(typeof(RakeBlock));
-			bool hasSeeds = HasTool(typeof(SeedsBlock));
+			bool hasSeeds = HasAnySeed();
 
 			int xMin = cx - radius;
 			int xMax = cx + radius;
@@ -1415,6 +1422,16 @@ namespace Game
 			{
 				m_stateMachine.TransitionTo("Inactive");
 			}
+		}
+
+		/// <summary>
+		/// True si el granjero tiene CUALQUIER semilla aceptada (SeedsBlock genérico
+		/// o WatermelonSeedBlock, que no hereda de SeedsBlock).
+		/// Sustituye a HasTool(typeof(SeedsBlock)) en todo el state machine.
+		/// </summary>
+		private bool HasAnySeed()
+		{
+			return FindSlotWithSeed() >= 0;
 		}
 	}
 }
