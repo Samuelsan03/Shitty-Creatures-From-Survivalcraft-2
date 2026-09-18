@@ -1428,10 +1428,174 @@ namespace Game
 		/// True si el granjero tiene CUALQUIER semilla aceptada (SeedsBlock genérico
 		/// o WatermelonSeedBlock, que no hereda de SeedsBlock).
 		/// Sustituye a HasTool(typeof(SeedsBlock)) en todo el state machine.
+		/// Si no tiene semillas, intenta "craftearlas" a partir de lo cosechado
+		/// (rodajas de sandía / calabazas), imitando la mesa de crafteo.
 		/// </summary>
 		private bool HasAnySeed()
 		{
-			return FindSlotWithSeed() >= 0;
+			if (FindSlotWithSeed() >= 0) return true;
+
+			// Sin semillas: intentar convertir productos cosechados en semillas.
+			if (TryCraftSeedFromHarvest())
+				return FindSlotWithSeed() >= 0;
+
+			return false;
+		}
+
+		/// <summary>
+		/// Imita la receta de mesa de crafteo para los 2 cultivos problemáticos:
+		///   - SliceOfWatermelonBlock → 1x WatermelonSeedBlock  (1:1)
+		///   - PumpkinBlock           → 3x SeedsBlock:7 Pumpkin (1:3)
+		///
+		/// La semilla resultante se coloca en el MISMO slot donde estaba el producto
+		/// (cuando ese slot queda libre al consumir la última unidad). Si el slot aún
+		/// contiene más productos, se intenta apilar la semilla en otro slot; si no
+		/// hay espacio, se hace rollback del producto consumido.
+		/// También dispara el debris del bloque semilla para que se vea el crafteo.
+		/// Solo se invoca cuando el granjero NO tiene semillas.
+		/// </summary>
+		private bool TryCraftSeedFromHarvest()
+		{
+			if (m_inventory == null) return false;
+
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value == 0) continue;
+				int contents = Terrain.ExtractContents(value);
+				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
+
+				Block block = BlocksManager.Blocks[contents];
+
+				int seedValue;
+				int seedCount;
+
+				if (block is SliceOfWatermelonBlock)
+				{
+					// Receta: 1 rodaja de sandía → 1 semilla de sandía
+					seedValue = Terrain.MakeBlockValue(WatermelonSeedBlock.Index, 0, 0);
+					seedCount = 1;
+				}
+				else if (block is PumpkinBlock)
+				{
+					// Receta: 1 calabaza → 3 semillas de calabaza (SeedsBlock data 7)
+					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.Pumpkin);
+					seedCount = 3;
+				}
+				else
+				{
+					continue;
+				}
+
+				int slotCountBefore = m_inventory.GetSlotCount(i);
+
+				// Consumimos 1 unidad del producto.
+				m_inventory.RemoveSlotItems(i, 1);
+
+				// Caso ideal: había 1 sola unidad → el slot queda libre.
+				// Colocamos la semilla exactamente donde estaba el producto.
+				if (slotCountBefore == 1)
+				{
+					m_inventory.AddSlotItems(i, seedValue, seedCount);
+					SpawnCraftDebris(seedValue);
+					return true;
+				}
+
+				// Aún quedan productos en ese slot: intentar apilar la semilla
+				// en otro slot con el mismo valor o en uno vacío.
+				if (TryAddItemToInventory(seedValue, seedCount))
+				{
+					SpawnCraftDebris(seedValue);
+					return true;
+				}
+
+				// Sin espacio: rollback del producto consumido.
+				m_inventory.AddSlotItems(i, value, 1);
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Genera el debris del bloque semilla en la posición del granjero para
+		/// indicar visualmente que se crafteó una semilla a partir del producto.
+		/// Usa la textura estándar del bloque (sin colores personalizados).
+		/// Si algo falla, se ignora: el debris es cosmético y no debe romper
+		/// la lógica de farming.
+		/// </summary>
+		private void SpawnCraftDebris(int seedValue)
+		{
+			if (m_subsystemTerrain == null || m_componentCreature == null) return;
+
+			var particles = Project.FindSubsystem<SubsystemParticles>(false);
+			if (particles == null) return;
+
+			int seedContents = Terrain.ExtractContents(seedValue);
+			if (seedContents <= 0 || seedContents >= BlocksManager.Blocks.Length) return;
+
+			Block seedBlock = BlocksManager.Blocks[seedContents];
+			if (seedBlock == null) return;
+
+			// Altura del pecho del granjero: se ve bien y no tapa la cabeza.
+			Vector3 pos = m_componentCreature.ComponentBody.Position + new Vector3(0f, 1.2f, 0f);
+
+			// Usamos la textura del bloque semilla en su cara de inventario (-1)
+			// para que el debris se vea como la propia semilla, sin colores extra.
+			int textureSlot = seedBlock.GetFaceTextureSlot(-1, seedValue);
+
+			try
+			{
+				var debris = new BlockDebrisParticleSystem(
+					m_subsystemTerrain,
+					pos,
+					strength: 0.4f,                          // → ~20 partículas
+					scale: seedBlock.DestructionDebrisScale, // tamaño natural del bloque
+					color: Color.White,                      // multiplicador neutro
+					textureSlot: textureSlot);
+
+				particles.AddParticleSystem(debris, false);
+			}
+			catch (Exception)
+			{
+				// El debris es solo feedback visual: no debe romper el farming.
+			}
+		}
+
+		/// <summary>
+		/// Intenta añadir items al inventario. Primero apila en slots existentes
+		/// con el mismo valor; si no cabe, busca un slot vacío. No modifica el
+		/// inventario si no hay espacio suficiente (operación atómica).
+		/// </summary>
+		private bool TryAddItemToInventory(int value, int count)
+		{
+			if (m_inventory == null || count <= 0) return false;
+
+			// 1) Apilar en slots existentes
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int slotValue = m_inventory.GetSlotValue(i);
+				if (slotValue != value) continue;
+
+				int slotCount = m_inventory.GetSlotCount(i);
+				int capacity = m_inventory.GetSlotCapacity(i, value);
+				if (slotCount + count <= capacity)
+				{
+					m_inventory.AddSlotItems(i, value, count);
+					return true;
+				}
+			}
+
+			// 2) Buscar slot vacío
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				if (m_inventory.GetSlotValue(i) == 0)
+				{
+					m_inventory.AddSlotItems(i, value, count);
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }
