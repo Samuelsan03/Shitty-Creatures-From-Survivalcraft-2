@@ -235,11 +235,12 @@ namespace Game
 			Block block = BlocksManager.Blocks[contents];
 			if (block == null) return false;
 
-			// NUEVO: añadir WatermelonSeedBlock a la lista.
+			// NUEVO: añadir WatermelonSeedBlock y BlueberrySeedBlock a la lista.
 			return block is RakeBlock
 				|| block is SeedsBlock
 				|| block is SaltpeterChunkBlock
-				|| block is WatermelonSeedBlock;
+				|| block is WatermelonSeedBlock
+				|| block is BlueberrySeedBlock;
 		}
 
 		private bool EnsureFarmingToolEquipped()
@@ -332,8 +333,9 @@ namespace Game
 				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
 				Block block = BlocksManager.Blocks[contents];
 
-				// NUEVO: aceptar SeedsBlock genérico Y WatermelonSeedBlock (no hereda de SeedsBlock).
-				if (block != null && (block is SeedsBlock || block is WatermelonSeedBlock))
+				// NUEVO: aceptar SeedsBlock genérico, WatermelonSeedBlock y
+				// BlueberrySeedBlock (ninguno de los dos últimos hereda de SeedsBlock).
+				if (block != null && (block is SeedsBlock || block is WatermelonSeedBlock || block is BlueberrySeedBlock))
 					return i;
 			}
 			return -1;
@@ -1253,6 +1255,22 @@ namespace Game
 				bool isSmall = BlueberryBushBlock.GetIsSmall(data);
 				return !isSmall;
 			}
+
+			// NUEVO: pasto alto maduro (2 bloques) — solo los no-small sueltan drop.
+			if (block is TallGrassBlock)
+			{
+				int data = Terrain.ExtractData(value);
+				return !TallGrassBlock.GetIsSmall(data);
+			}
+
+			// NUEVO: cualquier flor madura (roja / púrpura / blanca) — solo
+			// las no-small sueltan drop según FlowerBlock.GetDropValues.
+			if (block is FlowerBlock)
+			{
+				int data = Terrain.ExtractData(value);
+				return !FlowerBlock.GetIsSmall(data);
+			}
+
 			return false;
 		}
 
@@ -1425,11 +1443,12 @@ namespace Game
 		}
 
 		/// <summary>
-		/// True si el granjero tiene CUALQUIER semilla aceptada (SeedsBlock genérico
-		/// o WatermelonSeedBlock, que no hereda de SeedsBlock).
+		/// True si el granjero tiene CUALQUIER semilla aceptada (SeedsBlock genérico,
+		/// WatermelonSeedBlock o BlueberrySeedBlock, que no heredan de SeedsBlock).
 		/// Sustituye a HasTool(typeof(SeedsBlock)) en todo el state machine.
 		/// Si no tiene semillas, intenta "craftearlas" a partir de lo cosechado
-		/// (rodajas de sandía / calabazas), imitando la mesa de crafteo.
+		/// (rodajas de sandía / calabazas / arándanos / flores / pasto alto),
+		/// imitando la mesa de crafteo.
 		/// </summary>
 		private bool HasAnySeed()
 		{
@@ -1443,9 +1462,15 @@ namespace Game
 		}
 
 		/// <summary>
-		/// Imita la receta de mesa de crafteo para los 2 cultivos problemáticos:
-		///   - SliceOfWatermelonBlock → 1x WatermelonSeedBlock  (1:1)
-		///   - PumpkinBlock           → 3x SeedsBlock:7 Pumpkin (1:3)
+		/// Imita la receta de mesa de crafteo para los cultivos problemáticos.
+		/// Las recetas se leen literalmente de Recipes.xml / ShittyRecipes.xml:
+		///   - SliceOfWatermelonBlock → 1x WatermelonSeedBlock        (1:1)
+		///   - PumpkinBlock           → 3x SeedsBlock:7 (Pumpkin)     (1:3)
+		///   - BlueberryBlock         → 1x BlueberrySeedBlock         (1:1)
+		///   - TallGrassBlock         → 2x SeedsBlock:0 (TallGrass)   (1:2)
+		///   - RedFlowerBlock         → 4x SeedsBlock:1 (RedFlower)   (1:4)
+		///   - PurpleFlowerBlock      → 3x SeedsBlock:2 (PurpleFlower)(1:3)
+		///   - WhiteFlowerBlock       → 5x SeedsBlock:3 (WhiteFlower) (1:5)
 		///
 		/// La semilla resultante se coloca en el MISMO slot donde estaba el producto
 		/// (cuando ese slot queda libre al consumir la última unidad). Si el slot aún
@@ -1481,6 +1506,36 @@ namespace Game
 					// Receta: 1 calabaza → 3 semillas de calabaza (SeedsBlock data 7)
 					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.Pumpkin);
 					seedCount = 3;
+				}
+				else if (block is BlueberryBlock)
+				{
+					// Receta: 1 arándano → 1 semilla de arándano
+					seedValue = Terrain.MakeBlockValue(BlueberrySeedBlock.Index, 0, 0);
+					seedCount = 1;
+				}
+				else if (block is TallGrassBlock)
+				{
+					// Receta: 1 pasto alto → 2 semillas de pasto (SeedsBlock data 0)
+					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.TallGrass);
+					seedCount = 2;
+				}
+				else if (block is RedFlowerBlock)
+				{
+					// Receta: 1 flor roja → 4 semillas de flor roja (SeedsBlock data 1)
+					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.RedFlower);
+					seedCount = 4;
+				}
+				else if (block is PurpleFlowerBlock)
+				{
+					// Receta: 1 flor púrpura → 3 semillas de flor púrpura (SeedsBlock data 2)
+					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.PurpleFlower);
+					seedCount = 3;
+				}
+				else if (block is WhiteFlowerBlock)
+				{
+					// Receta: 1 flor blanca → 5 semillas de flor blanca (SeedsBlock data 3)
+					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.WhiteFlower);
+					seedCount = 5;
 				}
 				else
 				{
