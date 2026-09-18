@@ -137,7 +137,17 @@ namespace Game
 				list.Add(info);
 			}
 
-			foreach (BestiaryCreatureInfo item in list)
+			// Ordenar la lista: Infectado (0) primero, Bandido (1) al final.
+			// Si no se encuentra la plantilla en s_templateCategories, se asigna un valor alto para que quede al final.
+			var orderedList = list
+				.OrderBy(info =>
+				{
+					string templateName = info.EntityValuesDictionary.DatabaseObject.Name;
+					return s_templateCategories.TryGetValue(templateName, out BestiaryCreatureCategory cat) ? (int)cat : int.MaxValue;
+				})
+				.ToList();
+
+			foreach (BestiaryCreatureInfo item in orderedList)
 			{
 				m_creaturesList.AddItem(item);
 			}
