@@ -12,11 +12,34 @@ namespace Game
 			None,
 			InGame,
 			Chase,
-			Achievement
+			Achievement,
+			Death
 		}
 
+		// Duración usada por el fade en curso (para no depender del valor global una vez iniciado).
+		private static double m_activeFadeOutDuration = DefaultFadeOutDuration;
+
 		// Duración total del fade-out en segundos (independiente de Volume y FPS).
-		private const double FadeOutDuration = 1.5;
+		// Se puede ajustar en runtime desde fuera (por ejemplo, para la música de muerte).
+		private const double DefaultFadeOutDuration = 1.5;
+
+		private static double m_fadeOutDuration = DefaultFadeOutDuration;
+
+		/// <summary>
+		/// Duración del fade-out en segundos. Por defecto 1.5s.
+		/// Puedes cambiarla antes de llamar a FadeOutAndStop() para personalizarla.
+		/// </summary>
+		public static double FadeOutDuration
+		{
+			get => m_fadeOutDuration;
+			set => m_fadeOutDuration = MathUtils.Max(value, 0.01); // nunca 0 o negativo
+		}
+
+		/// <summary>Restaura la duración del fade-out al valor por defecto (1.5s).</summary>
+		public static void ResetFadeOutDuration()
+		{
+			m_fadeOutDuration = DefaultFadeOutDuration;
+		}
 
 		private static StreamingSound m_sound;
 		private static StreamingSound m_fadeSound;
@@ -63,6 +86,7 @@ namespace Game
 				case MusicContext.InGame: return 0;
 				case MusicContext.Chase: return 1;
 				case MusicContext.Achievement: return 2;
+				case MusicContext.Death: return 3;   // ← prioridad máxima
 				default: return -1;
 			}
 		}
@@ -100,7 +124,7 @@ namespace Game
 			if (m_fadeSound != null)
 			{
 				double elapsed = Time.RealTime - m_fadeStartTime;
-				float t = MathUtils.Saturate((float)(elapsed / FadeOutDuration));
+				float t = MathUtils.Saturate((float)(elapsed / m_fadeOutDuration));
 				float newVolume = m_fadeStartVolume * (1f - t);
 
 				if (t >= 1f || newVolume <= 0.001f)
@@ -141,12 +165,21 @@ namespace Game
 			}
 		}
 
+		public static void FadeOutAndStop(double fadeDuration)
+		{
+			m_fadeOutDuration = MathUtils.Max(fadeDuration, 0.01);
+			FadeOutAndStop();
+		}
+
 		public static void FadeOutAndStop()
 		{
 			if (m_sound == null && m_fadeSound == null) return;
 
 			m_isFadingOut = true;
 			m_isPausedByScreenChange = false;
+
+			// Congelamos la duración actual para este fade concreto.
+			m_activeFadeOutDuration = m_fadeOutDuration;
 
 			if (m_sound != null)
 			{
