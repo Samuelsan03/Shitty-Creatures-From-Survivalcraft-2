@@ -75,12 +75,6 @@
                 <Parameter Name="KillVerbs" Guid="c49ca5fe-eca2-4442-a8d4-52f0956805c3" Value="eaten,shot,killed by arrows,burned,poisoned with flamethrower" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="a5d09a9c-2b78-47b6-9f70-29f6e148acc8" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="a1fff2e7-af69-43c0-a421-53b1640c84ca" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="487daab4-8206-45ff-b7d0-164bd3206bcb">
-                <Parameter Name="Weapons" Guid="31e0c58a-1fa6-4695-902c-cdd5da5ae260" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="f65bdf47-fc74-47cb-ae90-3778fd1466dc" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
 <MemberComponentTemplate Name="Rider" Guid="c55bc279-497f-48ab-ab86-329099a97844" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
               <Parameter Name="RiderOffset" Guid="b607cc6a-78ec-4b91-b670-4e3b340f2cd5" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
@@ -102,7 +96,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="edb9a619-43bb-4fc5-857e-54907ca7f996" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="138d2f6f-05b1-49c8-87ff-097fe3038c7f" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="076a39c2-5e44-4b97-9e76-6d43ecc6bd18" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="076a39c2-5e44-4b97-9e76-6d43ecc6bd18" Value="Clothes, Weapons, Tools, Dyed" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Spawn" Guid="f0df7f99-d3a9-45e1-b129-5e33ff8ddafd">
     <Parameter Name="AutoDespawn" Guid="80aa60e8-95f0-44f7-a16d-43a2bfa59c7c" Value="False" Type="bool"/>
@@ -224,7 +218,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="ab13ab5a-620b-40c9-8372-dadc1e93f20d" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="0bdac31d-04a7-4c0e-94eb-aa45aff138db" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="754314d7-2d24-456c-a8fb-86682f3d47d4" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="754314d7-2d24-456c-a8fb-86682f3d47d4" Value="Clothes" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="CollectPickableBehavior" Guid="86dec765-f243-4073-8cda-41aea2aba587" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
               <ParameterSet Name="CollectFactors" Guid="0316e8fa-79d0-4625-a49a-f10f4a249fcb">
@@ -329,7 +323,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="74bfbfd1-1e6d-48dc-b242-1c0ed09422d6" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="e61e2755-12bb-4d26-b76c-8d5966dcab52" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="d0e7770f-7e8f-422c-b5e4-e5990fb20f16" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="d0e7770f-7e8f-422c-b5e4-e5990fb20f16" Value="Clothes, Weapons, Tools, Dyed" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="80840522-653e-4a79-99e5-04df5ca3af69" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="289539ad-72dc-418e-9ece-bc8e43c90ed5"/>
@@ -357,12 +351,6 @@
         <Parameter Name="AttackSound" Guid="a54feacd-75c3-4571-8eed-3ebf3d7e5bac" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="b75ecb85-20bf-4e2f-8dbb-aa5edb59af8b" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="401ef623-cc26-41f5-b9dd-a91bbf8dcfe4" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="88581683-f2cb-4c72-ae30-36bca6d2f8b3">
-                <Parameter Name="Weapons" Guid="36be7877-ee88-4001-9387-a0b8ccd4b13d" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="fa5def6c-05eb-45e8-be8a-d1662ec90726" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="15e44e4c-20e2-496d-a21f-56b845b8b534">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -516,7 +504,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="608e526c-201a-48ed-ac2f-a1238b79ab1b" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="a7e33497-3a61-4d25-b065-2d234f3fbc65" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="b5bcce75-3a2f-4e1d-af86-8556a596f5e2" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="b5bcce75-3a2f-4e1d-af86-8556a596f5e2" Value="Clothes" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="6108b9a0-7600-41a8-90a2-00f8a3db35c9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="CollectPickableBehavior" Guid="0f941ea5-bcf7-44e6-9104-203dbb5daf0f" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
@@ -5076,7 +5064,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="ac199f16-b8c0-435a-9b34-7c661cc11a94" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="4aa417ca-7c64-427b-9d84-76743765f002" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="767f3f91-f21e-41ba-baf5-e9c3eb3a51cd" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="767f3f91-f21e-41ba-baf5-e9c3eb3a51cd" Value="Clothes, Weapons, Tools, Dyed" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="4ca011ca-bb86-4259-85f2-cb6dd42d47c9" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="e31b8649-1bf3-4f53-af87-9bde66030460" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -5096,12 +5084,6 @@
         <Parameter Name="AttackSound" Guid="51c7a25c-8adc-4fce-8a12-0bc0fc024386" Value="Audio/Creatures/Ghost/Attack" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="e9056f61-bacb-4487-bf69-2ab4fc25ebe8" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="7905cb2d-fac0-4653-843d-805be0dbc7a6" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="dd08c970-8600-4ca6-baab-c544b9d6e82b">
-                <Parameter Name="Weapons" Guid="e863602f-30f6-4bd2-93ae-3b9b544aeb6a" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="7df1d25a-4525-4756-91f1-f7fbc8f826d6" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="476ab149-2295-4c3d-8bf2-71c3bbde3908">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -5244,7 +5226,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="9b4ab5c6-be01-4ec7-9f77-974cc3b7eca0" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="bcaca16f-49dc-4cbc-8ce0-8373bcfe682a" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="3a70c357-ff0b-4698-bbc7-8aa73e8718d1" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="3a70c357-ff0b-4698-bbc7-8aa73e8718d1" Value="Clothes" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="a0b633dc-5a79-4d25-9db6-9238e25f1ce9" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="f8cdbcfb-d9b1-4e58-b0e0-dffe2e3f9488" Value="True" Type="bool"/>
@@ -5406,7 +5388,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="898bb5c0-6a80-44de-84d9-ed85557eada2" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="d146b5dc-97b5-48ce-a5a7-5a554b1213a2" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="fb3635ae-4167-4838-9772-e9236f698d4a" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="fb3635ae-4167-4838-9772-e9236f698d4a" Value="Clothes, Weapons, Tools, Dyed" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="PathBreaker" Guid="ebef68f3-7c97-4356-b87f-22e825398149" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="4e3b6277-e956-4d8f-bdbf-77a6d4bb78e2" Value="True" Type="bool"/>
@@ -5435,12 +5417,6 @@
         <Parameter Name="AttackSound" Guid="85bd910c-ac94-4d78-9958-d59c99a8502d" Value="Audio/Creatures/Ghost/Attack" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="33ffae80-dfbb-442e-871c-d5093181c998" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="c21fda11-799e-460c-aee3-b16895d5aa0a" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="37dfc03a-c197-47bc-958a-ef0440f46e89">
-                <Parameter Name="Weapons" Guid="13db306f-31e0-4662-aad2-db706358c6c8" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="5fd996ab-3e74-42f1-98c8-6fd6f1320194" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="63f8f174-e4c2-4bb7-a611-4f6c780549e8">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -5588,7 +5564,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="40b1c794-07aa-449f-802a-93743763917c" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="c9308f57-db6a-4f4e-8666-c9845c6a2512" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="1a0801ff-d660-4d87-bc1d-dc988feee5f3" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="1a0801ff-d660-4d87-bc1d-dc988feee5f3" Value="Clothes" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="1829f380-dd91-439b-8341-1c6d669a5254" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d557745e-5da3-4f20-b0f4-3f4de01b5bec"/>
@@ -8176,7 +8152,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="b355c1c3-0081-40cb-b8b8-ab23b4f3f34e" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="0038e7d5-9639-40cb-8619-78e76d3e3f0f" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="0ca09b2f-d59b-46f4-bad9-ca73cbaa93f2" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="0ca09b2f-d59b-46f4-bad9-ca73cbaa93f2" Value="Clothes" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="CreatureSounds" Guid="6918a37f-96c1-4e2f-82c4-7660115a1c50">
             <Parameter Name="PainSound" Guid="9c4fac7f-8fa6-4048-b939-9f42c57fc729" Value="Audio/Creatures/Infectado Ametrallador/Pain" Type="string"/>
@@ -9851,7 +9827,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="a4fab324-9fab-4136-a137-e33a497079e5" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="a0f1e10c-424a-483c-ac85-55aaef88f203" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="f64af489-d82e-4a91-a7f1-e1905817c772" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="f64af489-d82e-4a91-a7f1-e1905817c772" Value="Clothes, Weapons, Tools, Dyed" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="1cb90559-dfa5-41ee-b4c3-60a1505c3f0a" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="903eae6b-348d-4cad-8c7f-d0af3ebca66a"/>
@@ -9874,12 +9850,6 @@
                 </ParameterSet>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="78276612-9e83-4c10-89fa-fb84a88cc811" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="cdd95a7e-1e1f-46c9-92bc-abc71e07ccea" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="e954ac3d-53f8-4146-a57f-0e1ebb0bed39">
-                <Parameter Name="Weapons" Guid="d0ac9737-d8e3-4fc8-bb60-47ac2365ba40" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="d97ab127-648b-448a-9061-4945bda36f83" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="e74f46a9-b018-419c-928d-087d22b659da">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -10006,7 +9976,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="37733e89-d40e-44ab-abc2-bd15f90fbb24" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="1455e08e-6481-4fbc-a79b-22e5ad1cc691" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="021683d6-afdb-4405-8158-e569da81e219" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="021683d6-afdb-4405-8158-e569da81e219" Value="Clothes" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="26a008b6-9336-4b54-8e5c-366237e06a29" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="31289ce2-0684-4d2c-94a1-6e0e510638e6" Value="True" Type="bool"/>
@@ -10123,7 +10093,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="8b589624-cab6-46ef-b231-1de2b9d7b064" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="59454a1a-c8dc-4426-92b4-f2dbbbb8dffc" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="959fe226-c19f-4467-a385-87b61dc0d836" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="959fe226-c19f-4467-a385-87b61dc0d836" Value="Clothes, Weapons, Tools, Dyed" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Rider" Guid="cdc038a2-14bc-41cb-a452-7fe407390dc1" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
               <Parameter Name="RiderOffset" Guid="11a45b84-37e0-412f-ad41-f94bd77e1fca" Value="0,-0.71,0" Type="Vector3" />
@@ -10170,12 +10140,6 @@
         <Parameter Name="AttackSound" Guid="5294524f-3f65-49a1-8df0-0ef6d4682f51" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="be29d09d-efb7-4c86-8866-04d6a5011635" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="7d271a1f-1707-43eb-bb12-81b26e57e452" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="9288ff36-2d60-4fa1-9eb3-98c26fa117f3">
-                <Parameter Name="Weapons" Guid="e2479238-5577-4c81-90e4-4d5cab369e36" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="deb0b639-a259-4f79-899f-45e0bebd79bc" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="e209f332-4cf0-4945-b820-b9022bdd0ed9">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -10308,7 +10272,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="cdbec585-995e-4901-842d-4cd48a876a14" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="6943aadd-8697-42a7-a8e6-4e150e136337" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="f5492d92-a98b-41da-98e4-6d5dfa7ccc64" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="f5492d92-a98b-41da-98e4-6d5dfa7ccc64" Value="Clothes" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FluInfected" Guid="d86fd499-15f4-4098-b8ed-c5f670451029" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="450" Type="float"/>
@@ -10745,7 +10709,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="163aecf9-dc4c-44ea-a892-f479ae42cf3f" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="ceaa67e5-a2df-44aa-9a85-ce5c45d4fce8" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="6f92af5a-a175-44dc-a7c3-ef948bddbdb0" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="6f92af5a-a175-44dc-a7c3-ef948bddbdb0" Value="Clothes, Weapons, Tools, Dyed" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="b6f24d8b-e5a1-4055-80b3-62f283eaedb4" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="03a24e67-c69c-458c-8b6a-1a0e86434961" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -10765,12 +10729,6 @@
         <Parameter Name="AttackSound" Guid="ff63fd51-c3a8-4415-83a1-4f5280e769d5" Value="Audio/Creatures/Ghost/Attack" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="24740512-bb0a-4421-8b2c-37c61d31c0dc" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="acd56a43-e990-4308-b861-970955ddc548" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="efddf30d-52f4-4da0-93d6-3125a23f6897">
-                <Parameter Name="Weapons" Guid="788735a8-2345-4ed0-96e2-3d9603a1bdfe" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="bad0005c-4842-48fe-80f7-e4f79470d132" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="2dc6d37d-d405-4bdc-850a-7f96dac507e8" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="100" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -10923,7 +10881,7 @@
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="b37987f3-fb4f-4d79-b08c-200fa1dbafb9" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="db2d1181-7a73-4158-9527-d75b121f73db" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Guid="8f3811ce-3619-4dc2-bc01-72d413308951" Value="ClothingBlock" Type="string"/>
+    <Parameter Name="CollectableItems" Guid="8f3811ce-3619-4dc2-bc01-72d413308951" Value="Clothes" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="6b8a112a-0bbb-41bf-b584-8c25327174f1" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="3f8b8104-0756-47e9-b9d9-515f7dbea69f" Value="1" Type="float"/>
@@ -12023,9 +11981,9 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="0feb8559-9b5d-447f-9801-fa7b25dc3a04" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71" />
             <MemberComponentTemplate Name="CreatureSounds" Guid="5e46aee7-05e7-4bd0-a04b-d9d68c771937">
-              <Parameter Name="PainSound" Guid="3df594dc-6537-4cfa-841e-57abc2ff6f84" Value="Audio/Creatures/Spider/Pain" Type="string" />
-              <Parameter Name="AttackSound" Guid="6a5a0993-5ad3-43d3-a26e-c681e9d0aefd" Value="Audio/Creatures/Spider/Attack" Type="string" />
-              <Parameter Name="IdleSound" Guid="4df018da-1210-4f1a-b6e6-dabf50d3acd8" Value="Audio/Creatures/Spider/Idie" Type="string" />
+              <Parameter Name="PainSound" Guid="3df594dc-6537-4cfa-841e-57abc2ff6f84" Value="Audio/Creatures/spider/Pain" Type="string" />
+              <Parameter Name="AttackSound" Guid="6a5a0993-5ad3-43d3-a26e-c681e9d0aefd" Value="Audio/Creatures/spider/Attack" Type="string" />
+              <Parameter Name="IdleSound" Guid="4df018da-1210-4f1a-b6e6-dabf50d3acd8" Value="Audio/Creatures/spider/Idie" Type="string" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="13311744-b84b-4561-a335-dfcb22131a29">
               <ParameterSet Name="Loot" Guid="3eb267e9-5bcc-48db-a06d-2b0781dbff50">
