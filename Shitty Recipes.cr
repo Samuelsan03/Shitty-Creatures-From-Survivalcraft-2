@@ -1,5 +1,9 @@
 <ShittyRecipes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CraftingRecipes.xsd">
     <Recipes>
+    <Recipe Result="FarmerWandBlock" ResultCount="1" RequiredHeatLevel="0" a="rod" b="seeds:5" Description="[0]">
+  " a"
+  " b"
+</Recipe>
     <Recipe Result="FirstAidKitBlock:0" ResultCount="1" RequiredHeatLevel="0" a="string" b="canvas" c="firstaidkit:1" Description="[0]">
     "cac"
     "aba"
