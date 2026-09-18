@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Xml.Linq;
 using Engine;
 using Engine.Graphics;
@@ -7,6 +8,17 @@ namespace Game
 	public class SpecialThanksScreen : Screen
 	{
 		private ScrollPanelWidget m_scrollPanel;
+
+		// Lista de texturas (opcional). Si quieres que cada persona tenga su PFP,
+		// el orden debe coincidir con el orden de los nombres en el array "thanks".
+		// Si no hay textura para alguien, deja null o una ruta inválida.
+		private static readonly string[] PfpTextures =
+		{
+			"Textures/Agradecimientos/quotemante",
+			"Textures/Agradecimientos/Richard Survivalcraft",
+			"Textures/Agradecimientos/josh",
+			// Agrega más rutas aquí si añades más personas
+		};
 
 		public SpecialThanksScreen()
 		{
@@ -40,16 +52,26 @@ namespace Game
 
 			thanksStack.Children.Add(new CanvasWidget { Size = new Vector2(0, 15) }); // Espaciado
 
-			// Cada entrada: (índice del nombre, ruta de la textura)
-			// La razón será el índice+1
-			var personKeys = new (int NameIndex, string TexturePath)[]
+			// ----- LEER ARRAY "thanks" DEL JSON -----
+			// Formato: [nombre, razón, nombre, razón, ...]
+			List<string> thanksList = new List<string>();
+			bool found;
+			int i = 0;
+			while (true)
 			{
-				(2, "Textures/Agradecimientos/quotemante"),
-                // Siguiente persona: (4, "Textures/Agradecimientos/otro"),
-            };
+				string value = LanguageControl.Get(out found, "SpecialThanksScreen", "thanks", i.ToString());
+				if (!found) break;
+				thanksList.Add(value);
+				i++;
+			}
 
-			foreach (var person in personKeys)
+			// Recorremos de dos en dos: nombre + razón
+			int personIndex = 0;
+			for (int j = 0; j + 1 < thanksList.Count; j += 2)
 			{
+				string name = thanksList[j];
+				string reason = thanksList[j + 1];
+
 				var personPanel = new StackPanelWidget
 				{
 					Direction = LayoutDirection.Vertical,
@@ -57,8 +79,7 @@ namespace Game
 					Margin = new Vector2(0, 10)
 				};
 
-				// Nombre (índice par: 2, 4, 6...)
-				string name = LanguageControl.Get("SpecialThanksScreen", person.NameIndex);
+				// Nombre
 				personPanel.Children.Add(new LabelWidget
 				{
 					Text = name,
@@ -68,9 +89,12 @@ namespace Game
 					DropShadow = true
 				});
 
-				// PFP
+				// PFP (si hay textura definida para esta posición)
 				Texture2D texture = null;
-				try { texture = ContentManager.Get<Texture2D>(person.TexturePath); } catch { }
+				if (personIndex < PfpTextures.Length && !string.IsNullOrEmpty(PfpTextures[personIndex]))
+				{
+					try { texture = ContentManager.Get<Texture2D>(PfpTextures[personIndex]); } catch { }
+				}
 
 				personPanel.Children.Add(new RectangleWidget
 				{
@@ -84,8 +108,7 @@ namespace Game
 					IsVisible = true
 				});
 
-				// Razón (índice impar: 3, 5, 7...)
-				string reason = LanguageControl.Get("SpecialThanksScreen", person.NameIndex + 1);
+				// Razón
 				personPanel.Children.Add(new LabelWidget
 				{
 					Text = reason,
@@ -98,6 +121,7 @@ namespace Game
 				});
 
 				thanksStack.Children.Add(personPanel);
+				personIndex++;
 			}
 
 			// ----- SEPARADOR -----
