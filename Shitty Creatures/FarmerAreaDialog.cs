@@ -8,9 +8,13 @@ using static Game.SubsystemFarmerWandBlockBehavior;
 namespace Game
 {
 	/// <summary>
-	/// Diálogo de administración de áreas de cultivo.
-	/// Todos los textos (estáticos y dinámicos) se resuelven desde C# con
-	/// LanguageControl.Get("FarmerAreaDialog", N).
+	/// Diálogo de administración de áreas de cultivo (transaccional).
+	///
+	/// Los cambios se aplican sobre una COPIA DE TRABAJO de las áreas y de las
+	/// asignaciones de criaturas. NADA se escribe al subsistema hasta que el
+	/// jugador pulsa "Aplicar". Si pulsa "Cancelar" (o cierra con Escape), los
+	/// cambios pendientes se descartan. Así el botón "Aplicar" tiene un uso
+	/// real: confirmar todos los cambios realizados en el diálogo.
 	/// </summary>
 	public class FarmerAreaDialog : Dialog
 	{
@@ -30,6 +34,16 @@ namespace Game
 		private ButtonWidget m_okButton, m_resetButton, m_cancelButton;
 
 		private int m_assignedCount;
+
+		// -----------------------------------------------------------------
+		//  Estado de trabajo (transaccional)
+		//  Nada de esto toca el subsistema hasta pulsar "Aplicar".
+		// -----------------------------------------------------------------
+		private List<FarmArea> m_workAreas;
+		private FarmArea m_workActive;
+		private int m_workNextId;
+		// Asignaciones de criaturas pendientes: farmer -> farmAreaId (-1 = sin área)
+		private Dictionary<ComponentFarmerBehavior, int> m_workAssignments;
 
 		public FarmerAreaDialog(SubsystemFarmerWandBlockBehavior subsystem, ComponentPlayer player)
 		{
@@ -63,13 +77,86 @@ namespace Game
 			m_browseButton = Children.Find<ButtonWidget>("FarmerAreaDialog.BrowseButton", true);
 			m_removeButton = Children.Find<ButtonWidget>("FarmerAreaDialog.RemoveButton", true);
 
+			InitializeWorkingState();
+
 			ApplyStaticTexts();
 
-			if (m_subsystem.GetActiveArea() == null)
-				m_subsystem.CreateArea();
+			if (m_workActive == null && m_workAreas.Count == 0)
+				CreateWorkingArea();
 
 			PopulateFromArea();
 			UpdateControls();
+		}
+
+		// -----------------------------------------------------------------
+		//  Estado de trabajo
+		// -----------------------------------------------------------------
+		private static FarmArea CloneArea(FarmArea src)
+		{
+			return new FarmArea
+			{
+				Id = src.Id,
+				PointA = src.PointA,
+				PointB = src.PointB,
+				Preview = src.Preview,
+				ShowAreaPersistent = src.ShowAreaPersistent,
+				PointBMarkedTime = src.PointBMarkedTime,
+			};
+		}
+
+		private void InitializeWorkingState()
+		{
+			m_workAreas = new List<FarmArea>();
+			foreach (var a in m_subsystem.m_areas)
+				m_workAreas.Add(CloneArea(a));
+
+			m_workActive = null;
+			if (m_subsystem.m_activeArea != null)
+			{
+				int idx = m_subsystem.m_areas.IndexOf(m_subsystem.m_activeArea);
+				if (idx >= 0 && idx < m_workAreas.Count)
+					m_workActive = m_workAreas[idx];
+			}
+			if (m_workActive == null && m_workAreas.Count > 0)
+				m_workActive = m_workAreas[0];
+
+			m_workNextId = m_subsystem.m_nextAreaId;
+
+			m_workAssignments = new Dictionary<ComponentFarmerBehavior, int>();
+			foreach (var entity in m_subsystem.Project.Entities)
+			{
+				var farmer = entity.FindComponent<ComponentFarmerBehavior>();
+				if (farmer != null)
+					m_workAssignments[farmer] = farmer.FarmAreaId;
+			}
+		}
+
+		/// <summary>
+		/// Vuelca la copia de trabajo al subsistema. Solo se llama desde
+		/// "Aplicar" tras validar los puntos.
+		/// </summary>
+		private void CommitWorkingState()
+		{
+			// 1) Áreas: sustituimos la lista del subsistema por la de trabajo.
+			m_subsystem.m_areas.Clear();
+			m_subsystem.m_areas.AddRange(m_workAreas);
+			m_subsystem.m_activeArea = m_workActive;
+			m_subsystem.m_nextAreaId = m_workNextId;
+
+			// 2) Asignaciones de criaturas.
+			foreach (var kv in m_workAssignments)
+			{
+				var farmer = kv.Key;
+				int newAreaId = kv.Value;
+				farmer.FarmAreaId = newAreaId;
+
+				if (newAreaId >= 0)
+				{
+					var area = m_subsystem.FindAreaById(newAreaId);
+					if (area != null && area.HasBothPoints)
+						farmer.SetFarmArea(area.PointA.Value, area.PointB.Value);
+				}
+			}
 		}
 
 		// -----------------------------------------------------------------
@@ -95,7 +182,7 @@ namespace Game
 
 		private void PopulateFromArea()
 		{
-			var area = m_subsystem.GetActiveArea();
+			var area = m_workActive;
 			if (area == null)
 			{
 				m_textBoxA.Text = "";
@@ -114,43 +201,46 @@ namespace Game
 			if (m_browseButton.IsClicked) OpenBrowseDialog();
 			if (m_removeButton.IsClicked) OpenRemoveDialog();
 
+			// ---- APLICAR ----
+			// Valida los puntos y, si son correctos, vuelca TODA la copia
+			// de trabajo al subsistema (áreas + asignaciones) y cierra.
 			if (m_okButton.IsClicked)
 			{
 				if (TryParsePoints(out Point3? a, out Point3? b))
 				{
-					var area = m_subsystem.GetActiveArea();
+					var area = m_workActive;
 					if (area != null)
 					{
 						bool changed = (area.PointA != a) || (area.PointB != b);
-
 						area.PointA = a;
 						area.PointB = b;
 						area.Preview = null;
-
 						if (changed)
 							area.PointBMarkedTime = Time.RealTime;
-
-						m_subsystem.ApplyFarmAreaToAssignedCreatures(area);
 					}
+					CommitWorkingState();
 					Dismiss();
 				}
 			}
 
 			if (m_resetButton.IsClicked)
 			{
-				m_subsystem.ResetAreaPoints(m_subsystem.GetActiveArea());
+				ResetWorkingAreaPoints(m_workActive);
 				PopulateFromArea();
 				UpdateControls();
 			}
 
 			if (m_toggleShowButton.IsClicked)
 			{
-				m_subsystem.ToggleShowArea(m_subsystem.GetActiveArea());
+				ToggleWorkingShow(m_workActive);
 				UpdateControls();
 			}
 
 			UpdateControls();
 
+			// ---- CANCELAR ----
+			// Basta con cerrar: la copia de trabajo se descarta y el
+			// subsistema queda intacto.
 			if (base.Input.Cancel || m_cancelButton.IsClicked)
 			{
 				Dismiss();
@@ -158,7 +248,7 @@ namespace Game
 		}
 
 		// -----------------------------------------------------------------
-		//  Navegación de áreas
+		//  Navegación y gestión de áreas (sobre la copia de trabajo)
 		// -----------------------------------------------------------------
 		private void HandleAreaNavigation()
 		{
@@ -167,19 +257,19 @@ namespace Game
 
 			if (m_newAreaButton.IsClicked)
 			{
-				m_subsystem.CreateArea();
+				CreateWorkingArea();
 				PopulateFromArea();
 				UpdateControls();
 			}
 
 			if (m_deleteAreaButton.IsClicked)
 			{
-				var area = m_subsystem.GetActiveArea();
+				var area = m_workActive;
 				if (area != null)
 				{
-					m_subsystem.DeleteArea(area);
-					if (m_subsystem.GetActiveArea() == null)
-						m_subsystem.CreateArea();
+					DeleteWorkingArea(area);
+					if (m_workActive == null)
+						CreateWorkingArea();
 					PopulateFromArea();
 					UpdateControls();
 				}
@@ -188,31 +278,118 @@ namespace Game
 
 		private void CycleArea(int delta)
 		{
-			var areas = m_subsystem.m_areas;
-			if (areas.Count == 0) return;
-			var cur = m_subsystem.GetActiveArea();
-			int idx = cur != null ? areas.IndexOf(cur) : -1;
+			if (m_workAreas.Count == 0) return;
+			var cur = m_workActive;
+			int idx = cur != null ? m_workAreas.IndexOf(cur) : -1;
 			if (idx < 0) idx = 0;
-			idx = (idx + delta + areas.Count) % areas.Count;
-			m_subsystem.SetActiveArea(areas[idx]);
+			idx = (idx + delta + m_workAreas.Count) % m_workAreas.Count;
+			m_workActive = m_workAreas[idx];
 			PopulateFromArea();
 			UpdateControls();
 		}
 
-		private void OpenBrowseDialog()
+		private FarmArea CreateWorkingArea()
 		{
-			var area = m_subsystem.GetActiveArea();
+			var area = new FarmArea
+			{
+				Id = m_workNextId++,
+				PointBMarkedTime = -1.0
+			};
+			m_workAreas.Add(area);
+			m_workActive = area;
+			return area;
+		}
+
+		private void DeleteWorkingArea(FarmArea area)
+		{
+			if (area == null) return;
+			m_workAreas.Remove(area);
+
+			// Desasignar criaturas de esa área (solo en la copia de trabajo).
+			var farmers = new List<ComponentFarmerBehavior>();
+			foreach (var kv in m_workAssignments)
+			{
+				if (kv.Value == area.Id)
+					farmers.Add(kv.Key);
+			}
+			foreach (var f in farmers)
+				m_workAssignments[f] = -1;
+
+			if (m_workActive == area)
+				m_workActive = m_workAreas.Count > 0 ? m_workAreas[0] : null;
+		}
+
+		private void ResetWorkingAreaPoints(FarmArea area)
+		{
+			if (area == null) return;
+			area.PointA = null;
+			area.PointB = null;
+			area.Preview = null;
+			area.ShowAreaPersistent = false;
+			area.PointBMarkedTime = -1.0;
+
+			// Igual que el Reset original: se desasignan las criaturas.
+			var farmers = new List<ComponentFarmerBehavior>();
+			foreach (var kv in m_workAssignments)
+			{
+				if (kv.Value == area.Id)
+					farmers.Add(kv.Key);
+			}
+			foreach (var f in farmers)
+				m_workAssignments[f] = -1;
+		}
+
+		private void ToggleWorkingShow(FarmArea area)
+		{
 			if (area == null) return;
 
-			// Solo criaturas NO asignadas a ninguna área. Así "Añadir" es un
-			// añadido real y no un movimiento silencioso desde otra área, que
-			// era lo que hacía que el contador pareciera acumularse.
+			if (IsAreaVisibleFor(area))
+			{
+				area.ShowAreaPersistent = false;
+				area.PointBMarkedTime = -1.0;
+			}
+			else
+			{
+				area.ShowAreaPersistent = true;
+				area.PointBMarkedTime = Time.RealTime;
+			}
+		}
+
+		/// <summary>
+		/// Replica de SubsystemFarmerWandBlockBehavior.IsAreaVisible pero
+		/// trabajando sobre una FarmArea local (no la del subsistema).
+		/// </summary>
+		private static bool IsAreaVisibleFor(FarmArea area)
+		{
+			if (area == null || !area.HasBothPoints)
+				return false;
+
+			if (area.ShowAreaPersistent)
+				return true;
+
+			return area.PointBMarkedTime >= 0.0
+				&& (Time.RealTime - area.PointBMarkedTime) < AREA_DISPLAY_DURATION;
+		}
+
+		// -----------------------------------------------------------------
+		//  Selección de criaturas (sobre la copia de trabajo)
+		// -----------------------------------------------------------------
+		private void OpenBrowseDialog()
+		{
+			var area = m_workActive;
+			if (area == null) return;
+
+			// Solo criaturas NO asignadas a ninguna área en la copia de trabajo.
 			var available = new List<ComponentCreature>();
 			foreach (Entity entity in m_subsystem.Project.Entities)
 			{
 				var farmer = entity.FindComponent<ComponentFarmerBehavior>();
 				if (farmer == null || !farmer.FarmerEnabled) continue;
-				if (farmer.FarmAreaId != -1) continue;              // ya está en otra área
+
+				int assignedId;
+				if (m_workAssignments.TryGetValue(farmer, out assignedId) && assignedId != -1)
+					continue;
+
 				var creature = entity.FindComponent<ComponentCreature>();
 				if (creature == null) continue;
 				available.Add(creature);
@@ -226,8 +403,6 @@ namespace Game
 				return;
 			}
 
-			// Capturamos `area` para que el callback asigne SIEMPRE a esta área,
-			// aunque el foco cambie mientras el diálogo hijo está abierto.
 			FarmArea capturedArea = area;
 			DialogsManager.ShowDialog(m_player.GuiWidget,
 				new ListSelectionDialog(
@@ -237,13 +412,13 @@ namespace Game
 					(object item) => GetCreatureName((ComponentCreature)item),
 					(object item) =>
 					{
-						m_subsystem.ToggleCreatureAssignment(capturedArea, (ComponentCreature)item);
+						ToggleWorkingAssignment(capturedArea, (ComponentCreature)item);
 					}));
 		}
 
 		private void OpenRemoveDialog()
 		{
-			var area = m_subsystem.GetActiveArea();
+			var area = m_workActive;
 			if (area == null) return;
 
 			var assigned = new List<ComponentCreature>();
@@ -252,7 +427,11 @@ namespace Game
 			{
 				var farmer = entity.FindComponent<ComponentFarmerBehavior>();
 				if (farmer == null || !farmer.FarmerEnabled) continue;
-				if (farmer.FarmAreaId != targetId) continue;
+
+				int assignedId;
+				if (!m_workAssignments.TryGetValue(farmer, out assignedId)) continue;
+				if (assignedId != targetId) continue;
+
 				var creature = entity.FindComponent<ComponentCreature>();
 				if (creature == null) continue;
 				assigned.Add(creature);
@@ -275,8 +454,25 @@ namespace Game
 					(object item) => GetCreatureName((ComponentCreature)item),
 					(object item) =>
 					{
-						m_subsystem.ToggleCreatureAssignment(capturedArea, (ComponentCreature)item);
+						ToggleWorkingAssignment(capturedArea, (ComponentCreature)item);
 					}));
+		}
+
+		/// <summary>
+		/// Alterna la asignación SOLO en la copia de trabajo. El cambio
+		/// real al ComponentFarmerBehavior ocurre en CommitWorkingState().
+		/// </summary>
+		private void ToggleWorkingAssignment(FarmArea area, ComponentCreature creature)
+		{
+			if (area == null || creature == null) return;
+			var farmer = creature.Entity.FindComponent<ComponentFarmerBehavior>();
+			if (farmer == null) return;
+
+			int current;
+			if (!m_workAssignments.TryGetValue(farmer, out current))
+				current = -1;
+
+			m_workAssignments[farmer] = (current == area.Id) ? -1 : area.Id;
 		}
 
 		private static string GetCreatureName(ComponentCreature c)
@@ -291,27 +487,23 @@ namespace Game
 		// -----------------------------------------------------------------
 		private void UpdateControls()
 		{
-			var area = m_subsystem.GetActiveArea();
+			var area = m_workActive;
 			bool hasArea = area != null;
 			bool hasBoth = hasArea && area.HasBothPoints;
-			bool showArea = hasArea && m_subsystem.IsAreaVisible(area);
+			bool showArea = hasArea && IsAreaVisibleFor(area);
 
-			// Numeración secuencial visible al jugador: 1, 2, 3, …
-			// Se usa la POSICIÓN en la lista, no el Id interno (que puede tener
-			// huecos tras borrados o recargas). Así el título siempre va del 1
-			// al infinito sin saltos.
-			int position = hasArea ? m_subsystem.m_areas.IndexOf(area) + 1 : 0;
+			int position = hasArea ? m_workAreas.IndexOf(area) + 1 : 0;
 
 			m_areaTitleLabel.Text = hasArea
 				? string.Format(LanguageControl.Get("FarmerAreaDialog", 7),
-					position,                        // {0} = número secuencial visible
-					position,                        // {1} = repetido (compatibilidad)
-					m_subsystem.m_areas.Count)        // {2} = total
+					position,
+					position,
+					m_workAreas.Count)
 				: LanguageControl.Get("FarmerAreaDialog", 6);
 
-			m_deleteAreaButton.IsEnabled = hasArea && m_subsystem.m_areas.Count > 1;
-			m_prevAreaButton.IsEnabled = m_subsystem.m_areas.Count > 1;
-			m_nextAreaButton.IsEnabled = m_subsystem.m_areas.Count > 1;
+			m_deleteAreaButton.IsEnabled = hasArea && m_workAreas.Count > 1;
+			m_prevAreaButton.IsEnabled = m_workAreas.Count > 1;
+			m_nextAreaButton.IsEnabled = m_workAreas.Count > 1;
 
 			m_toggleShowButton.IsEnabled = hasBoth;
 			var bev = m_toggleShowButton as BevelledButtonWidget;
@@ -320,10 +512,7 @@ namespace Game
 					? LanguageControl.Get("FarmerAreaDialog", 5)
 					: LanguageControl.Get("FarmerAreaDialog", 4);
 
-			// ----------------------------------------------------------------
-			//  Conteo por-área, explícito. NO usa CollectFarmers (que devuelve
-			//  TODOS los farmers). Solo cuenta los asignados al Id de ESTA área.
-			// ----------------------------------------------------------------
+			// Conteo por-área sobre la copia de trabajo.
 			int count = 0;
 			if (hasArea)
 			{
@@ -332,7 +521,10 @@ namespace Game
 				{
 					var farmer = entity.FindComponent<ComponentFarmerBehavior>();
 					if (farmer == null || !farmer.FarmerEnabled) continue;
-					if (farmer.FarmAreaId != targetAreaId) continue;
+
+					int assignedId;
+					if (!m_workAssignments.TryGetValue(farmer, out assignedId)) continue;
+					if (assignedId != targetAreaId) continue;
 					if (entity.FindComponent<ComponentCreature>() == null) continue;
 					count++;
 				}
