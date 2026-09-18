@@ -175,18 +175,136 @@ namespace Game
 			// No hay datos persistentes por ahora
 		}
 
+		/// <summary>
+		/// Aplica el inventario inicial a la criatura según su plantilla.
+		/// Todo por nombre de bloque (string) usando BlocksManager.
+		/// Los huevos se añaden primero para que no se mezclen con las armas.
+		/// </summary>
+		public void ApplyStartingInventory()
+		{
+			if (m_componentMiner == null || m_componentMiner.Inventory == null) return;
+
+			string templateName = base.Entity.ValuesDictionary.DatabaseObject.Name;
+			if (DatabaseManager.FindEntityValuesDictionary(templateName, false) == null) return;
+
+			IInventory inventory = m_componentMiner.Inventory;
+
+			// ---- Bloque de huevo: uno solo, el tipo va en el data ----
+			int eggBlockIndex = BlocksManager.GetBlockIndex("EggBlock", false);
+			EggBlock eggBlock = (eggBlockIndex >= 0) ? BlocksManager.Blocks[eggBlockIndex] as EggBlock : null;
+
+			// Devuelve el value de un huevo por NOMBRE DE PLANTILLA de la criatura
+			int Egg(string creatureTemplate)
+			{
+				if (eggBlock == null) return 0;
+				EggBlock.EggType eggType = eggBlock.GetEggTypeByCreatureTemplateName(creatureTemplate);
+				if (eggType == null) return 0;
+				int data = EggBlock.SetEggType(0, eggType.EggTypeIndex);
+				return Terrain.MakeBlockValue(eggBlockIndex, 0, data);
+			}
+
+			// Devuelve el index de un bloque por nombre (armas, bombas, etc.)
+			int Item(string blockName) => BlocksManager.GetBlockIndex(blockName, false);
+
+			// Añade al inventario resolviendo slot
+			void Give(int value, int count)
+			{
+				if (value == 0 || count <= 0) return;
+				int slot = FindSlotForItem(inventory, value, count);
+				if (slot >= 0) inventory.AddSlotItems(slot, value, count);
+			}
+
+			string[] melee =
+			{
+		"IronMacheteBlock", "IronAxeBlock", "IronSpearBlock",
+		"CopperMacheteBlock", "CopperAxeBlock", "CopperSpearBlock",
+		"DiamondMacheteBlock", "DiamondAxeBlock", "DiamondSpearBlock"
+	};
+
+			string[] eliteRanged = { "MusketBlock", "BowBlock", "CrossbowBlock", "RepeatCrossbowBlock", "FlameThrowerBlock" };
+
+			switch (templateName)
+			{
+				case "CapitanPirata":
+					{
+						// 10 huevos: 50% PirataElite / 50% PirataNormal
+						Give(Egg(m_random.Bool(0.5f) ? "PirataElite" : "PirataNormal"), 10);
+
+						// 50% lanzallamas / 50% ballesta repetidora
+						Give(Item(m_random.Bool(0.5f) ? "FlameThrowerBlock" : "RepeatCrossbowBlock"), 1);
+
+						// Arma cuerpo a cuerpo aleatoria
+						Give(Item(melee[m_random.Int(0, melee.Length - 1)]), 1);
+						break;
+					}
+
+				case "PirataHostilComerciante":
+					{
+						// 10 huevos de pirata
+						Give(Egg("PirataNormal"), 10);
+
+						// 45% lanzallamas / 45% ballesta rep. / 10% mosquete
+						float r = m_random.Float();
+						string ranged = r < 0.45f ? "FlameThrowerBlock" : (r < 0.90f ? "RepeatCrossbowBlock" : "MusketBlock");
+						Give(Item(ranged), 1);
+
+						// Arma cuerpo a cuerpo aleatoria
+						Give(Item(melee[m_random.Int(0, melee.Length - 1)]), 1);
+						break;
+					}
+
+				case "PirataElite":
+					{
+						Give(Item(eliteRanged[m_random.Int(0, eliteRanged.Length - 1)]), 1);
+						Give(Item(melee[m_random.Int(0, melee.Length - 1)]), 1);
+
+						if (m_random.Bool(0.10f))
+						{
+							Give(Item(m_random.Bool(0.5f) ? "BombBlock" : "IncendiaryBombBlock"), 5);
+						}
+						break;
+					}
+
+				case "PirataNormal":
+					{
+						Give(Item(eliteRanged[m_random.Int(0, eliteRanged.Length - 1)]), 1);
+						Give(Item(melee[m_random.Int(0, melee.Length - 1)]), 1);
+
+						if (m_random.Bool(0.20f))
+						{
+							Give(Item(m_random.Bool(0.5f) ? "BombBlock" : "IncendiaryBombBlock"), 5);
+						}
+						break;
+					}
+
+				case "Werewolf":
+					{
+						// 40% a distancia / 60% cuerpo a cuerpo
+						if (m_random.Bool(0.40f))
+							Give(Item(eliteRanged[m_random.Int(0, eliteRanged.Length - 1)]), 1);
+						else
+							Give(Item(melee[m_random.Int(0, melee.Length - 1)]), 1);
+
+						// 20% independiente de bombas
+						if (m_random.Bool(0.20f))
+						{
+							Give(Item(m_random.Bool(0.5f) ? "BombBlock" : "IncendiaryBombBlock"), 5);
+						}
+						break;
+					}
+			}
+		}
+
 		public void Update(float dt)
 		{
-			// ===== NUEVO: Aplicar inventario en el primer update cuando esté disponible =====
+			// ===== Aplicar inventario en el primer update cuando esté disponible =====
 			if (!m_inventoryApplied)
 			{
-				// Intentar aplicar el inventario
 				if (m_componentMiner != null && m_componentMiner.Inventory != null)
 				{
-					ApplyCreatureInventory(this.Entity);
+					ApplyStartingInventory();   // <-- ESTO ES LO QUE FALTABA
 					m_inventoryApplied = true;
 				}
-				// Si no está listo, se reintentará en el próximo frame
 			}
 
 			if (IsAnyChaseActive)
@@ -665,413 +783,6 @@ namespace Game
 		}
 
 		private bool IsActive => m_importanceLevel > 0f && m_targetPickable != null && !m_targetPickable.ToRemove;
-
-		// =====================================================================
-		// MÉTODO PARA ASIGNAR INVENTARIO A LAS CRIATURAS AL SPAWNEAR
-		// =====================================================================
-
-		public void ApplyCreatureInventory(Entity entity)
-		{
-			if (entity == null)
-				return;
-
-			string creatureName = entity.ValuesDictionary?.DatabaseObject?.Name;
-			if (string.IsNullOrEmpty(creatureName))
-				return;
-
-			ComponentMiner miner = entity.FindComponent<ComponentMiner>(true);
-			if (miner == null)
-				return;
-
-			IInventory inventory = miner.Inventory;
-			if (inventory == null)
-				return;
-
-			DifficultyMode currentDifficulty = DifficultyMode.Normal;
-			var greenNight = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
-			if (greenNight != null)
-			{
-				currentDifficulty = greenNight.DifficultyMode;
-			}
-			bool isHardOrHigher = (currentDifficulty >= DifficultyMode.Hard);
-
-			// Función mejorada: verifica que el slot esté vacío o tenga el mismo ítem
-			int AddSafe(int value, int count = 1, int startSlot = 0)
-			{
-				if (value == 0 || Terrain.ExtractContents(value) <= 0 || Terrain.ExtractContents(value) >= 1024)
-					return -1;
-				for (int i = startSlot; i < inventory.SlotsCount; i++)
-				{
-					int existingValue = inventory.GetSlotValue(i);
-					int existingCount = inventory.GetSlotCount(i);
-					int capacity = inventory.GetSlotCapacity(i, value);
-					if (existingValue == value && existingCount + count <= capacity)
-					{
-						inventory.AddSlotItems(i, value, count);
-						return i;
-					}
-					else if (existingValue == 0 && capacity >= count)
-					{
-						inventory.AddSlotItems(i, value, count);
-						return i;
-					}
-				}
-				return -1;
-			}
-
-			int GetNormalRanged()
-			{
-				float r = m_random.Float(0f, 1f);
-				if (r < 0.20f) return Terrain.MakeBlockValue(MusketBlock.Index);
-				else if (r < 0.40f) return Terrain.MakeBlockValue(BowBlock.Index);
-				else if (r < 0.60f) return Terrain.MakeBlockValue(CrossbowBlock.Index);
-				else if (r < 0.80f) return Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
-				else return FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0, FlameThrowerBlock.SetBulletType(FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded), new FlameBulletBlock.FlameBulletType?(m_random.Bool(0.5f) ? FlameBulletBlock.FlameBulletType.Flame : FlameBulletBlock.FlameBulletType.Poison))), 8);
-			}
-
-			int GetInfectedRangedOrFirearm()
-			{
-				if (m_random.Float(0f, 1f) < 0.01f)
-				{
-					string[] firearmNames = new string[] { "AKBlock", "SPAS12Block", "SWM500Block", "BK43Block", "M4Block", "AK48Block", "AUGBlock", "P90Block", "SCARBlock", "M249Block", "SniperBlock", "Izh43Block", "KABlock", "G3Block", "NewG3Block", "MendozaBlock", "GrozaBlock", "Master308Block", "AA12Block", "MinigunBlock", "Mac10Block", "UziBlock", "MP5SSDBlock", "FamasBlock", "RevolverBlock" };
-					string chosenFirearm = firearmNames[m_random.Int(0, firearmNames.Length - 1)];
-					int firearmIndex = BlocksManager.GetBlockIndex(chosenFirearm);
-					if (firearmIndex > 0 && firearmIndex < 1024)
-						return Terrain.MakeBlockValue(firearmIndex);
-				}
-				float r = m_random.Float(0f, 1f);
-				if (r < 0.20f) return Terrain.MakeBlockValue(MusketBlock.Index);
-				else if (r < 0.40f) return Terrain.MakeBlockValue(BowBlock.Index);
-				else if (r < 0.60f) return Terrain.MakeBlockValue(CrossbowBlock.Index);
-				else if (r < 0.80f) return Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
-				else return FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0, FlameThrowerBlock.SetBulletType(FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded), new FlameBulletBlock.FlameBulletType?(m_random.Bool(0.5f) ? FlameBulletBlock.FlameBulletType.Flame : FlameBulletBlock.FlameBulletType.Poison))), 8);
-			}
-
-			int GetRandomMelee()
-			{
-				float weaponTypeChance = m_random.Float(0f, 1f);
-				if (weaponTypeChance < 0.25f)
-				{
-					float r = m_random.Float(0f, 1f);
-					if (r < 0.5f) return Terrain.MakeBlockValue(WoodenClubBlock.Index);
-					else return Terrain.MakeBlockValue(StoneClubBlock.Index);
-				}
-				else if (weaponTypeChance < 0.50f)
-				{
-					float r = m_random.Float(0f, 1f);
-					if (r < 0.1667f) return Terrain.MakeBlockValue(WoodMacheteBlock.Index);
-					else if (r < 0.3333f) return Terrain.MakeBlockValue(StoneMacheteBlock.Index);
-					else if (r < 0.5f) return Terrain.MakeBlockValue(CopperMacheteBlock.Index);
-					else if (r < 0.6667f) return Terrain.MakeBlockValue(IronMacheteBlock.Index);
-					else if (r < 0.8333f) return Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
-					else return Terrain.MakeBlockValue(LavaMacheteBlock.Index);
-				}
-				else if (weaponTypeChance < 0.75f)
-				{
-					float r = m_random.Float(0f, 1f);
-					if (r < 0.1667f) return Terrain.MakeBlockValue(WoodenSpearBlock.Index);
-					else if (r < 0.3333f) return Terrain.MakeBlockValue(StoneSpearBlock.Index);
-					else if (r < 0.5f) return Terrain.MakeBlockValue(CopperSpearBlock.Index);
-					else if (r < 0.6667f) return Terrain.MakeBlockValue(IronSpearBlock.Index);
-					else if (r < 0.8333f) return Terrain.MakeBlockValue(DiamondSpearBlock.Index);
-					else return Terrain.MakeBlockValue(LavaSpearBlock.Index);
-				}
-				else
-				{
-					float r = m_random.Float(0f, 1f);
-					if (r < 0.1667f) return Terrain.MakeBlockValue(WoodAxeBlock.Index);
-					else if (r < 0.3333f) return Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
-					else if (r < 0.5f) return Terrain.MakeBlockValue(CopperAxeBlock.Index);
-					else if (r < 0.6667f) return Terrain.MakeBlockValue(IronAxeBlock.Index);
-					else if (r < 0.8333f) return Terrain.MakeBlockValue(DiamondAxeBlock.Index);
-					else return Terrain.MakeBlockValue(LavaAxeBlock.Index);
-				}
-			}
-
-			void AddBombsToInventory(int startSlot)
-			{
-				float bombTypeChance = m_random.Float(0f, 1f);
-				int bombValue = 0;
-				if (bombTypeChance < 0.3333f) bombValue = Terrain.MakeBlockValue(BombBlock.Index);
-				else if (bombTypeChance < 0.6666f) bombValue = Terrain.MakeBlockValue(IncendiaryBombBlock.Index);
-				else bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
-
-				if (bombValue != 0)
-				{
-					int bombCount = isHardOrHigher ? m_random.Int(8, 12) : m_random.Int(4, 8);
-					int remainingBombs = bombCount;
-					for (int i = startSlot; i < inventory.SlotsCount && remainingBombs > 0; i++)
-					{
-						int slotValue = inventory.GetSlotValue(i);
-						int slotCount = inventory.GetSlotCount(i);
-						int capacity = inventory.GetSlotCapacity(i, bombValue);
-						if (slotValue == bombValue && slotCount + remainingBombs <= capacity)
-						{
-							inventory.AddSlotItems(i, bombValue, remainingBombs);
-							remainingBombs = 0;
-						}
-						else if (slotValue == 0 && capacity > 0)
-						{
-							int add = Math.Min(capacity, remainingBombs);
-							inventory.AddSlotItems(i, bombValue, add);
-							remainingBombs -= add;
-						}
-					}
-				}
-			}
-
-			// =====================================================================
-			// LÓGICA DE INVENTARIOS POR CRIATURA
-			// =====================================================================
-
-			if (creatureName == "CapitanPirata")
-			{
-				string spawnCreatureName = m_random.Bool(0.5f) ? "PirataElite" : "PirataNormal";
-				EggBlock eggBlock = BlocksManager.Blocks[EggBlock.Index] as EggBlock;
-				EggBlock.EggType eggType = eggBlock?.GetEggTypeByCreatureTemplateName(spawnCreatureName) ?? eggBlock?.GetEggType(0);
-				int eggData = EggBlock.SetEggType(0, eggType.EggTypeIndex);
-				int eggValue = Terrain.MakeBlockValue(EggBlock.Index, 0, eggData);
-				int eggCount = 10;
-				int eggSlot = -1;
-				for (int i = 0; i < inventory.SlotsCount; i++)
-				{
-					if (inventory.GetSlotCapacity(i, eggValue) >= eggCount) { eggSlot = i; break; }
-				}
-				if (eggSlot != -1)
-				{
-					inventory.AddSlotItems(eggSlot, eggValue, eggCount);
-				}
-				else
-				{
-					int rem = eggCount;
-					for (int i = 0; i < inventory.SlotsCount && rem > 0; i++)
-					{
-						int cap = inventory.GetSlotCapacity(i, eggValue);
-						if (cap > 0 && inventory.GetSlotCount(i) == 0)
-						{
-							int add = Math.Min(cap, rem);
-							inventory.AddSlotItems(i, eggValue, add);
-							rem -= add;
-						}
-					}
-				}
-
-				int rangedWeaponValue = m_random.Bool(0.5f) ? Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("FlameThrowerBlock")) : Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("RepeatCrossbowBlock"));
-				if (rangedWeaponValue > 0)
-				{
-					// Si el huevo está en el slot 0, empezamos desde el 1; si no, desde 0
-					int startSlot = (eggSlot == 0) ? 1 : 0;
-					AddSafe(rangedWeaponValue, 1, startSlot);
-				}
-
-				int meleeWeaponValue = GetRandomMelee();
-				if (meleeWeaponValue != 0)
-				{
-					int startSlot = (eggSlot == 0) ? 1 : 0;
-					AddSafe(meleeWeaponValue, 1, startSlot + 1);
-				}
-			}
-			else if (creatureName == "PirataHostilComerciante")
-			{
-				// Similar a CapitanPirata
-				string spawnCreatureName = m_random.Bool(0.5f) ? "PirataElite" : "PirataNormal";
-				EggBlock eggBlock = BlocksManager.Blocks[EggBlock.Index] as EggBlock;
-				EggBlock.EggType eggType = eggBlock?.GetEggTypeByCreatureTemplateName(spawnCreatureName) ?? eggBlock?.GetEggType(0);
-				int eggData = EggBlock.SetEggType(0, eggType.EggTypeIndex);
-				int eggValue = Terrain.MakeBlockValue(EggBlock.Index, 0, eggData);
-				int eggCount = 10;
-				int eggSlot = -1;
-				for (int i = 0; i < inventory.SlotsCount; i++)
-				{
-					if (inventory.GetSlotCapacity(i, eggValue) >= eggCount) { eggSlot = i; break; }
-				}
-				if (eggSlot != -1)
-				{
-					inventory.AddSlotItems(eggSlot, eggValue, eggCount);
-				}
-				else
-				{
-					int rem = eggCount;
-					for (int i = 0; i < inventory.SlotsCount && rem > 0; i++)
-					{
-						int cap = inventory.GetSlotCapacity(i, eggValue);
-						if (cap > 0 && inventory.GetSlotCount(i) == 0)
-						{
-							int add = Math.Min(cap, rem);
-							inventory.AddSlotItems(i, eggValue, add);
-							rem -= add;
-						}
-					}
-				}
-
-				float r = m_random.Float(0f, 1f);
-				int rangedWeaponValue = 0;
-				if (r < 0.45f) rangedWeaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("FlameThrowerBlock"));
-				else if (r < 0.9f) rangedWeaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("RepeatCrossbowBlock"));
-				else rangedWeaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("MusketBlock"));
-				if (rangedWeaponValue > 0)
-				{
-					int startSlot = (eggSlot == 0) ? 1 : 0;
-					AddSafe(rangedWeaponValue, 1, startSlot);
-				}
-
-				int meleeWeaponValue = GetRandomMelee();
-				if (meleeWeaponValue != 0)
-				{
-					int startSlot = (eggSlot == 0) ? 1 : 0;
-					AddSafe(meleeWeaponValue, 1, startSlot + 1);
-				}
-			}
-			else if (creatureName == "PirataElite")
-			{
-				int weaponValue = GetNormalRanged();
-				if (weaponValue > 0) AddSafe(weaponValue);
-				int meleeValue = GetRandomMelee();
-				if (meleeValue != 0) AddSafe(meleeValue, 1, 1);
-				if (m_random.Float(0f, 1f) < 0.10f)
-				{
-					int bombValue = m_random.Bool(0.5f) ? Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("BombBlock")) : Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IncendiaryBombBlock"));
-					if (bombValue > 0) AddSafe(bombValue, 5, 1);
-				}
-			}
-			else if (creatureName == "PirataNormal")
-			{
-				int weaponValue = GetNormalRanged();
-				if (weaponValue > 0) AddSafe(weaponValue);
-				int meleeValue = GetRandomMelee();
-				if (meleeValue != 0) AddSafe(meleeValue, 1, 1);
-				if (m_random.Float(0f, 1f) < 0.20f)
-				{
-					int bombValue = m_random.Bool(0.5f) ? Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("BombBlock")) : Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IncendiaryBombBlock"));
-					if (bombValue > 0) AddSafe(bombValue, 5, 1);
-				}
-			}
-			else if (creatureName == "Werewolf")
-			{
-				float randomChance = m_random.Float(0f, 1f);
-				int weaponValue = 0;
-				if (randomChance < 0.40f) weaponValue = GetNormalRanged();
-				else weaponValue = GetRandomMelee();
-				if (weaponValue > 0) AddSafe(weaponValue);
-				if (randomChance < 0.20f) AddBombsToInventory(0);
-			}
-			else if (creatureName == "InfectedNormal1" || creatureName == "InfectedNormal2" || creatureName == "InfectedMuscle1" || creatureName == "InfectedMuscle2" || creatureName == "GhostNormal" || creatureName == "GhostFast" || creatureName == "Boomer1" || creatureName == "Boomer2" || creatureName == "Boomer3" || creatureName == "GhostBoomer1" || creatureName == "GhostBoomer2" || creatureName == "GhostBoomer3" || creatureName == "HumanoidSkeleton")
-			{
-				int firstSlotValue = 0;
-				int secondSlotValue = 0;
-
-				if (!isHardOrHigher)
-				{
-					if (m_random.Float(0f, 1f) < 0.7f) firstSlotValue = GetRandomMelee();
-				}
-				else
-				{
-					float mainChoice = m_random.Float(0f, 1f);
-					if (mainChoice < 0.01f)
-					{
-						// 1% de probabilidad total: armas a distancia o de fuego
-						firstSlotValue = GetInfectedRangedOrFirearm();
-						secondSlotValue = GetRandomMelee();
-					}
-					else if (mainChoice < 0.55f)
-					{
-						// 50% de probabilidad: arma cuerpo a cuerpo
-						firstSlotValue = GetRandomMelee();
-					}
-					else if (mainChoice < 0.75f)
-					{
-						// 20% de probabilidad: objetos lanzables
-						float throwChoice = m_random.Float(0f, 1f);
-						if (throwChoice < 0.50f)
-						{
-							firstSlotValue = GetRandomMelee();
-						}
-						else
-						{
-							float bombTypeChance = m_random.Float(0f, 1f);
-							int bombValue = 0;
-							if (bombTypeChance < 0.3333f) bombValue = Terrain.MakeBlockValue(BombBlock.Index);
-							else if (bombTypeChance < 0.6666f) bombValue = Terrain.MakeBlockValue(IncendiaryBombBlock.Index);
-							else bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
-							if (bombValue != 0)
-							{
-								int bombCount = m_random.Int(8, 12);
-								int slotCapacity = inventory.GetSlotCapacity(0, bombValue);
-								int addCount = Math.Min(bombCount, slotCapacity);
-								if (addCount > 0) inventory.AddSlotItems(0, bombValue, addCount);
-								firstSlotValue = 0;
-							}
-						}
-						if (firstSlotValue != 0)
-						{
-							float bombTypeChance2 = m_random.Float(0f, 1f);
-							int bombValue = 0;
-							if (bombTypeChance2 < 0.3333f) bombValue = Terrain.MakeBlockValue(BombBlock.Index);
-							else if (bombTypeChance2 < 0.6666f) bombValue = Terrain.MakeBlockValue(IncendiaryBombBlock.Index);
-							else bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
-							if (bombValue != 0)
-							{
-								int bombCount = m_random.Int(8, 12);
-								int slotCapacity = inventory.GetSlotCapacity(1, bombValue);
-								int addCount = Math.Min(bombCount, slotCapacity);
-								if (addCount > 0) inventory.AddSlotItems(1, bombValue, addCount);
-							}
-						}
-					}
-					// else 25%: inventario vacío (normal)
-				}
-
-				if (firstSlotValue > 0) AddSafe(firstSlotValue);
-				if (secondSlotValue > 0) AddSafe(secondSlotValue, 1, 1);
-				if (isHardOrHigher && m_random.Float(0f, 1f) < 0.25f) AddBombsToInventory(2);
-			}
-			else if (creatureName == "InfectedFreezer" || creatureName == "FrozenGhostBoomer" || creatureName == "BoomerFrozen" || creatureName == "FrozenGhost")
-			{
-				int freezingSnowballIndex = BlocksManager.GetBlockIndex("FreezingSnowballBlock");
-				int freezeBombIndex = BlocksManager.GetBlockIndex("FreezeBombBlock");
-
-				float emptyChance = isHardOrHigher ? 0.2f : 0.3333f;
-				float mainChoice = m_random.Float(0f, 1f);
-
-				if (mainChoice >= emptyChance)
-				{
-					bool hasSnowball = isHardOrHigher ? m_random.Float(0f, 1f) < 0.8f : m_random.Float(0f, 1f) < 0.5f;
-					bool hasFreezeBomb = isHardOrHigher ? m_random.Float(0f, 1f) < 0.01f : m_random.Float(0f, 1f) < 0.0005f;
-					bool hasMeleeWeapon = isHardOrHigher ? m_random.Float(0f, 1f) < 0.8f : m_random.Float(0f, 1f) < 0.5f;
-					bool hasRangedWeapon = isHardOrHigher ? m_random.Float(0f, 1f) < 0.15f : false;
-
-					if (hasSnowball && freezingSnowballIndex > 0 && freezingSnowballIndex < 1024)
-					{
-						int snowballValue = Terrain.MakeBlockValue(freezingSnowballIndex);
-						int snowballCount = isHardOrHigher ? Math.Min(m_random.Int(20, 40), inventory.GetSlotCapacity(0, snowballValue)) : Math.Min(m_random.Bool() ? 40 : 5, inventory.GetSlotCapacity(0, snowballValue));
-						if (snowballCount > 0) inventory.AddSlotItems(0, snowballValue, snowballCount);
-					}
-
-					if (hasFreezeBomb && freezeBombIndex > 0 && freezeBombIndex < 1024)
-					{
-						int freezeBombValue = Terrain.MakeBlockValue(freezeBombIndex);
-						int freezeBombCount = isHardOrHigher ? Math.Min(m_random.Int(10, 20), inventory.GetSlotCapacity(0, freezeBombValue)) : Math.Min(m_random.Bool() ? 40 : 5, inventory.GetSlotCapacity(0, freezeBombValue));
-						if (freezeBombCount > 0)
-						{
-							if (hasSnowball && inventory.GetSlotCount(0) > 0) AddSafe(freezeBombValue, freezeBombCount, 1);
-							else inventory.AddSlotItems(0, freezeBombValue, freezeBombCount);
-						}
-					}
-
-					if (hasRangedWeapon)
-					{
-						int rangedValue = GetInfectedRangedOrFirearm();
-						if (rangedValue > 0) AddSafe(rangedValue, 1, 1);
-					}
-
-					if (hasMeleeWeapon)
-					{
-						int weaponValue = GetRandomMelee();
-						if (weaponValue != 0) AddSafe(weaponValue, 1, 1);
-					}
-				}
-			}
-		}
 
 		// ---- Copia de inventario para domesticación ----
 
