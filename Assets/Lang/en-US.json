@@ -4,7 +4,8 @@
   "1": "Point A marked: ({0}, {1}, {2})",
   "2": "That block is already Point A. Choose another.",
   "3": "Point B marked: ({0}, {1}, {2})",
-  "4": "Area {0} reset. New Point A."
+  "4": "Area {0} reset. New Point A.",
+  "5": "You can only mark grass, dirt, or farmland."
 },
 "FarmerAreaDialog": {
   "0": "Manage farming areas",
