@@ -78,6 +78,36 @@ namespace Game
 		}
 
 		// ---------------------------------------------------------------
+		//  Validación de bloques de tierra para el área de cultivo
+		// ---------------------------------------------------------------
+		/// <summary>
+		/// True si el bloque (por contents) es uno de los aceptados como tierra
+		/// agrícola: césped, tierra o tierra de cultivo (hidratada / fertilizada
+		/// van en el data, así que siguen siendo "SoilBlock").
+		/// Los índices se resuelven por NOMBRE con BlocksManager, sin números.
+		/// </summary>
+		private bool IsFarmBlock(int contents)
+		{
+			if (contents <= 0 || contents >= BlocksManager.Blocks.Length) return false;
+
+			int grassIndex = BlocksManager.GetBlockIndex(typeof(GrassBlock), false, false);
+			int dirtIndex = BlocksManager.GetBlockIndex(typeof(DirtBlock), false, false);
+			int soilIndex = BlocksManager.GetBlockIndex(typeof(SoilBlock), false, false);
+
+			return contents == grassIndex
+				|| contents == dirtIndex
+				|| contents == soilIndex;
+		}
+
+		private bool IsFarmBlockAt(int x, int y, int z)
+		{
+			if (m_subsystemTerrain == null) return false;
+			if (y < 0 || y > 255) return false;
+			int contents = m_subsystemTerrain.Terrain.GetCellContents(x, y, z);
+			return IsFarmBlock(contents);
+		}
+
+		// ---------------------------------------------------------------
 		//  Load / Save
 		// ---------------------------------------------------------------
 		public override void Load(ValuesDictionary valuesDictionary)
@@ -110,8 +140,6 @@ namespace Game
 
 					area.ShowAreaPersistent = areaDict.GetValue<bool>("ShowAreaPersistent", false);
 
-					// NUEVO: recuperar la marca temporal como "segundos transcurridos"
-					// para no depender de un Time.RealTime absoluto.
 					double elapsed = areaDict.GetValue<double>("PointBMarkedElapsed", -1.0);
 					area.PointBMarkedTime = elapsed >= 0.0
 						? Time.RealTime - elapsed
@@ -147,7 +175,6 @@ namespace Game
 				if (area.PointB != null) areaDict.SetValue("PointB", area.PointB.Value);
 				areaDict.SetValue("ShowAreaPersistent", area.ShowAreaPersistent);
 
-				// NUEVO: persistir el "recién marcada" como delta relativo.
 				double elapsed = area.PointBMarkedTime >= 0.0
 					? Math.Max(0.0, Time.RealTime - area.PointBMarkedTime)
 					: -1.0;
@@ -172,7 +199,7 @@ namespace Game
 			FarmArea area = new FarmArea
 			{
 				Id = m_nextAreaId++,
-				PointBMarkedTime = -1.0      // sin marca reciente
+				PointBMarkedTime = -1.0
 			};
 			m_areas.Add(area);
 			m_activeArea = area;
@@ -299,6 +326,18 @@ namespace Game
 
 			Point3 target = hit.Value.CellFace.Point;
 
+			// -----------------------------------------------------------
+			//  VALIDACIÓN: solo se puede marcar tierra / césped / tierra
+			//  de cultivo. Cualquier otro bloque se rechaza con mensaje.
+			// -----------------------------------------------------------
+			if (!IsFarmBlockAt(target.X, target.Y, target.Z))
+			{
+				player.ComponentGui.DisplaySmallMessage(
+					LanguageControl.Get("SubsystemFarmerWandBlockBehavior", 5),
+					Color.Red, true, true);
+				return false;
+			}
+
 			if (m_activeArea == null)
 				CreateArea();
 
@@ -381,7 +420,19 @@ namespace Game
 			TerrainRaycastResult? hit = miner.Raycast<TerrainRaycastResult>(
 				ray, RaycastMode.Interaction, true, false, false, 40f);
 
-			m_activeArea.Preview = hit != null ? hit.Value.CellFace.Point : (Point3?)null;
+			// Solo mostramos preview si el bloque apuntado es tierra válida.
+			// Así el jugador ve de inmediato si está apuntando a algo marcable.
+			if (hit != null && IsFarmBlockAt(
+					hit.Value.CellFace.X,
+					hit.Value.CellFace.Y,
+					hit.Value.CellFace.Z))
+			{
+				m_activeArea.Preview = hit.Value.CellFace.Point;
+			}
+			else
+			{
+				m_activeArea.Preview = null;
+			}
 		}
 
 		// ---------------------------------------------------------------
@@ -397,9 +448,6 @@ namespace Game
 				bool hasB = area.PointB != null;
 				bool isActive = area == m_activeArea;
 
-				// 1) Solo A marcada → feedback de marcado, no es "el campo asignado".
-				//    Se dibuja siempre (para poder elegir B), independientemente
-				//    del ShowAreaPersistent.
 				if (hasA && !hasB)
 				{
 					Color cA = isActive
@@ -414,7 +462,6 @@ namespace Game
 					}
 					continue;
 				}
-
 				else if (hasA && hasB)
 				{
 					if (!IsAreaVisible(area))
@@ -431,7 +478,7 @@ namespace Game
 				}
 			}
 
-				m_primitivesRenderer.Flush(camera.ViewProjectionMatrix, true, int.MaxValue);
+			m_primitivesRenderer.Flush(camera.ViewProjectionMatrix, true, int.MaxValue);
 		}
 
 		private void DrawPointMarker(Point3 p, Color color)
