@@ -1125,6 +1125,17 @@ namespace Game
 
 		public override void OnPlayerDead(PlayerData playerData)
 		{
+			// ─── Música de muerte (solo si el ajuste está activado) ───
+			if (ShittyCreaturesSettingsManager.DeathMusicEnabled)
+			{
+				InGameMusicManager.FadeOutDuration = 1.0;
+
+				InGameMusicManager.PlayMusic(
+					"MenuMusic/HYUPONIA - RUIN OF SADNESS",
+					0f,
+					InGameMusicManager.MusicContext.Death);
+			}
+
 			// Eliminar label de coordenadas
 			foreach (var kvp in m_coordinateLabels.ToArray())
 			{
@@ -1800,6 +1811,15 @@ namespace Game
 
 		public override bool OnPlayerSpawned(PlayerData.SpawnMode spawnMode, ComponentPlayer componentPlayer, Vector3 spawnPosition)
 		{
+
+			// ─── Al reaparecer, hacer fade out de la música de muerte ───
+			//    Solo si realmente estaba sonando el contexto Death.
+			if (spawnMode == PlayerData.SpawnMode.Respawn &&
+				InGameMusicManager.CurrentContext == InGameMusicManager.MusicContext.Death)
+			{
+				InGameMusicManager.FadeOutAndStop();
+			}
+
 			// Crear label de coordenadas para este jugador
 			if (!m_coordinateLabels.ContainsKey(componentPlayer))
 			{
