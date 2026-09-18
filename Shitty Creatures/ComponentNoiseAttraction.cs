@@ -83,7 +83,11 @@ namespace Game
 			// --- Define States ---
 
 			// State: Idle (Waiting for noise) — ORIGINAL, SIN TOCAR LA MONTURA NUNCA
-			m_stateMachine.AddState("Idle", null, delegate
+			m_stateMachine.AddState("Idle", delegate
+			{
+				// Si veníamos de un evento de ruido como volador, devolver FlySpeed original
+				EndFlyingAttraction();
+			}, delegate
 			{
 				// If we have a target, start moving
 				if (m_noisePosition.HasValue)
@@ -113,12 +117,20 @@ namespace Game
 							steed.SpeedOrder = 1;
 						}
 					}
+					else if (IsFlyer())
+					{
+						// Volador -> boost de FlySpeed + conducción directa con FlyOrder
+						m_wasMounted = false;
+						m_componentPathfinding.Stop();
+						BeginFlyingAttraction();
+					}
 					else
 					{
+						// Terrestre -> pathfinding con WalkSpeed escalado por dificultad
 						m_wasMounted = false;
+						float speed = m_componentCreature.ComponentLocomotion.WalkSpeed
+									  * GetDifficultySpeedMultiplier();
 
-						// Start moving to the source (ORIGINAL)
-						float speed = m_componentCreature.ComponentLocomotion.WalkSpeed;
 						m_componentPathfinding.SetDestination(
 							m_noisePosition,
 							speed,
@@ -144,13 +156,22 @@ namespace Game
 						m_wasMounted = true;
 						UpdateMountedMovementToNoise();
 					}
+					else if (IsFlyer())
+					{
+						// Se desmontó a mitad -> retomar vuelo con boost
+						if (m_wasMounted) m_wasMounted = false;
+						BeginFlyingAttraction();
+						UpdateFlyingAttraction();
+					}
 					else
 					{
 						// Se desmontó a mitad de camino -> retomar a pie
 						if (m_wasMounted)
 						{
 							m_wasMounted = false;
-							float speed = m_componentCreature.ComponentLocomotion.WalkSpeed;
+							float speed = m_componentCreature.ComponentLocomotion.WalkSpeed
+										  * GetDifficultySpeedMultiplier();
+
 							m_componentPathfinding.SetDestination(
 								m_noisePosition,
 								speed,
@@ -254,6 +275,86 @@ namespace Game
 		public void Update(float dt)
 		{
 			m_stateMachine.Update();
+		}
+
+		// =====================================================
+		// Escalado de velocidad por dificultad (SOLO durante evento de ruido)
+		// - Terrestres: WalkSpeed
+		// - Voladores : FlySpeed (se boostea temporalmente)
+		// =====================================================
+
+		/// <summary>
+		/// Multiplicador aplicado a la velocidad del evento de ruido según dificultad.
+		/// A mayor dificultad, el Boomer llega más rápido.
+		/// </summary>
+		private float GetDifficultySpeedMultiplier()
+		{
+			DifficultyMode difficulty = DifficultyMode.Normal;
+			if (SubsystemGreenNightSky.Instance != null)
+				difficulty = SubsystemGreenNightSky.Instance.DifficultyMode;
+
+			switch (difficulty)
+			{
+				case DifficultyMode.VeryEasy: return 0.5f;
+				case DifficultyMode.Easy: return 0.7f;
+				case DifficultyMode.Normal: return 1.0f;
+				case DifficultyMode.Medium: return 1.3f;
+				case DifficultyMode.Hard: return 1.6f;
+				case DifficultyMode.Extreme: return 2.0f;
+				case DifficultyMode.Impossible: return 2.5f;
+				default: return 1f;
+			}
+		}
+
+		/// <summary>
+		/// ¿La criatura es voladora? (tiene FlySpeed propio y no camina por terreno)
+		/// </summary>
+		private bool IsFlyer()
+		{
+			ComponentLocomotion loco = m_componentCreature.ComponentLocomotion;
+			return loco.FlySpeed > 0f && loco.WalkSpeed <= 0.01f;
+		}
+
+		/// <summary>
+		/// Boost temporal de FlySpeed mientras el volador va al ruido. Se restaura en Idle.
+		/// </summary>
+		private void BeginFlyingAttraction()
+		{
+			ComponentLocomotion loco = m_componentCreature.ComponentLocomotion;
+			loco.FlySpeed *= GetDifficultySpeedMultiplier();
+		}
+
+		private void EndFlyingAttraction()
+		{
+			// Solo deshacemos el boost si efectivamente lo aplicamos (IsFlyer).
+			// Si nunca fue volador, esta llamada no hace nada.
+			if (!IsFlyer()) return;
+
+			ComponentLocomotion loco = m_componentCreature.ComponentLocomotion;
+			loco.FlySpeed /= GetDifficultySpeedMultiplier();
+			loco.FlyOrder = null;
+		}
+
+		/// <summary>
+		/// Conduce al volador hacia el ruido usando FlyOrder (cada tick hay que reasignar).
+		/// </summary>
+		private void UpdateFlyingAttraction()
+		{
+			Vector3 pos = m_componentBody.Position;
+			Vector3 noisePos = m_noisePosition.Value;
+			float distanceSquared = Vector3.DistanceSquared(pos, noisePos);
+
+			if (distanceSquared < 2f)
+			{
+				m_stateMachine.TransitionTo("Investigating");
+				return;
+			}
+
+			Vector3 direction = noisePos - pos;
+			if (direction.LengthSquared() > 0.0001f)
+			{
+				m_componentCreature.ComponentLocomotion.FlyOrder = Vector3.Normalize(direction);
+			}
 		}
 
 		// =====================================================
