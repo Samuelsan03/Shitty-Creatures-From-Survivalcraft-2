@@ -84,6 +84,7 @@
     <Parameter Name="Legs" Guid="d087ebdc-9e3f-4f57-a2e9-684932e7bdd5" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="e4385a9d-043b-4f87-a100-c2af7f736b81" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="0866eafa-3362-4e39-9f4f-4b20174c6578" Value="Textures/Veemon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="7c197dd3-d246-4762-b4a3-c4ce97503800" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="a863bd12-206a-4fdf-aa60-a586cb98119d" Value="Models/OuterClothingMale MC" Type="string"/>
@@ -278,6 +279,7 @@
     <Parameter Name="Legs" Guid="ab9fdaee-55ca-4bc4-af46-fb31ac2f2e77" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="c130ee78-d426-413b-93b8-e378f95022e7" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="eb6b854b-674f-4b89-9684-593a15ba7159" Value="Textures/Shoutmon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="2da58a08-faf3-4fee-8f80-5c3ffa5eb47b" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="0a9b31ba-aeed-4381-9650-bdfbfae8a58e" Value="Models/OuterClothingMale MC" Type="string"/>
@@ -447,6 +449,7 @@
     <Parameter Name="Legs" Guid="5837c00a-0375-431f-8eec-29e7dc3b42c2" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="f53648a9-8d9c-4280-96ef-2164e17c8a7a" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="8d566aa3-a930-4586-a72c-e3c65010f733" Value="Textures/Agumon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="dc0c3206-b9f9-4a98-912f-c57cb656fdd3" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="f04b341c-f9d2-47c9-a2de-ccfe3c12ced9" Value="Models/OuterClothingMale MC" Type="string"/>
@@ -624,6 +627,7 @@
     <Parameter Name="Legs" Guid="fd564d9f-34ac-43ff-9324-8cc636cd3a91" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="01345785-f915-41c8-9d60-ae4477433b83" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="e841c17f-727a-4833-a3b0-aacce4a4af99" Value="Textures/Guilmon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="8d6cc356-b5c2-4750-8723-c7457012374b" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="f4df22ec-6d93-4752-947a-862dfd74d3f4" Value="Models/OuterClothingMale MC" Type="string"/>
@@ -695,6 +699,7 @@
     <Parameter Name="Legs" Guid="eec29293-e771-46ea-a58c-5a0cea853b5d" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="be60b956-9ae7-4785-b57c-da43070bdd36" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="43fa2ebb-cd05-4f06-9a0c-6b9c190cd467" Value="Textures/Gumdramon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="2b1bb36d-46ab-414d-a190-c6ba861cbeaa" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="6c78581f-e0bd-4dbc-9ebc-b69d3239a9ef" Value="Models/OuterClothingMale MC" Type="string"/>
@@ -930,6 +935,7 @@
     <Parameter Name="Legs" Guid="fe05d042-d475-40fb-ac8d-0bcd55fd2d0b" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="e5951dc1-5241-472b-a500-8d12a20841ad" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="c742d64c-4094-4a64-be4a-2100316d5bd8" Value="Textures/BetelGammamon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="8d653f81-27e9-4cfb-b1f6-84473a1f5c17" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="f036add3-ecee-4f0c-8cc9-29a418746db6" Value="Models/OuterClothingMale MC" Type="string"/>
@@ -1033,6 +1039,7 @@
     <Parameter Name="Legs" Guid="ec23be12-8ad1-4e98-b55e-97d0cae4801b" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="7b0d1950-cac4-4d6a-81b0-6a20335acb3e" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="4329d5e8-203d-4898-ab40-6bdf9e637a18" Value="Textures/Impmon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="9140cba1-c093-4c8e-884a-a166690b2252" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="7693d41e-64ff-429d-a3c6-3043b6559953" Value="Models/OuterClothingMale MC" Type="string"/>
@@ -1202,6 +1209,7 @@
     <Parameter Name="Legs" Guid="bda3a263-70d9-40a9-8ea7-9f5ecfc677aa" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="d300cefd-54f1-49cb-9d4d-51464bdbde68" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="6547b141-4e27-4ca6-acb2-9c42a9913768" Value="Textures/Impmon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="60baa3f2-0971-4b5b-b6c5-80dca4f2e58c" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="40b33eff-3608-419e-85c5-7a3576ea7d36" Value="Models/OuterClothingMale MC" Type="string"/>
@@ -1356,6 +1364,10 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Hawkmon" Guid="a82b51fa-6d6e-4c52-aed7-21761c95693f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureInventory" Guid="0b22350e-de83-429f-8468-1e93e305529e" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
+    <Parameter Name="SlotsCount" Value="16" Type="int"/>
+    <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+  </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureSounds" Guid="40409a84-83d3-4d46-bac8-d633d5537ddc">
               <Parameter Name="IdleSound" Guid="7084327e-fd51-4f49-a26c-07415854f44d" Value="Audio/Creatures/Hawkmon/Idie" Type="string"/>
               <Parameter Name="AttackSound" Guid="2a25bbda-3809-49b0-8ed3-a4de50f4e062" Value="Audio/Creatures/Hawkmon/Attack" Type="string"/>
@@ -1376,6 +1388,7 @@
     <Parameter Name="Legs" Guid="2865d4d6-d366-4e55-bce0-21ff6664c01b" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="18a03172-ed1c-4054-8bc6-e2ab3d713b9b" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="724c2686-830a-4e3b-885f-6feda90699a2" Value="Textures/Hawkmon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="eaed6e27-ba11-450c-aa97-a011edf18d92" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="c6a2806c-1c43-4a75-a358-857576b5f503" Value="Models/OuterClothingMale MC" Type="string"/>
@@ -1387,10 +1400,6 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="0a93e2b4-56cc-4523-8021-2715b5abe8c1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureInventory" Guid="0b22350e-de83-429f-8468-1e93e305529e" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
-    <Parameter Name="SlotsCount" Value="16" Type="int"/>
-    <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
-  </MemberComponentTemplate>
   <MemberComponentTemplate Name="FarmerBehavior" Guid="1218d30a-9507-4886-9369-daf533daf22e" InheritanceParent="4a244fdc-71c0-4e63-9f0e-0af1170138af"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="ba580ffa-c1a6-4bfb-b421-7c41635a4636" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="54d72b05-1802-4bd0-831d-5c12823e111a" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
@@ -1534,6 +1543,7 @@
     <Parameter Name="Legs" Guid="14d31057-67bb-46ae-aa0b-0d13eff15d09" Value="" Type="string"/>
     <Parameter Name="Feet" Guid="c258f1b3-59ae-43b6-8413-765c4dcfbc8e" Value="" Type="string"/>
   </ParameterSet>
+  <Parameter Name="SkinTextureName" Guid="e0ce6f92-68a4-4b63-b4a9-580abbf58374" Value="Textures/Gabumon" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="444aacc6-21d2-4496-92d4-ebc60fb33537" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
               <Parameter Name="ModelName" Guid="a5852962-c97f-4f26-9066-3a5da1c45bf8" Value="Models/OuterClothingMale MC" Type="string"/>
