@@ -422,7 +422,8 @@
     "SkeletonSpawnDescription": "Allows skeletons to spawn during normal nights.",
     "SpiderSpawnDescription": "Allows infected spiders to spawn during normal nights (including caves).",
     "FastMeleeDescription": "Enable rapid consecutive melee attacks when clicking/tapping quickly on the same target",
-    "InGameMusicDescription": "Show a button in-game to play random music tracks while playing"
+    "InGameMusicDescription": "Show a button in-game to play random music tracks while playing",
+    "DeathMusicDescription": "Enable/disable the music that plays when you die"
 },
   "SpecialThanksScreen": {
   "0": "Special Thanks",
