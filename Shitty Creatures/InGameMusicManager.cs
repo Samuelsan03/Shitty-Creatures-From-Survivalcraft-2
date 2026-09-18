@@ -15,6 +15,9 @@ namespace Game
 			Achievement
 		}
 
+		// Duración total del fade-out en segundos (independiente de Volume y FPS).
+		private const double FadeOutDuration = 1.5;
+
 		private static StreamingSound m_sound;
 		private static StreamingSound m_fadeSound;
 		private static StreamingSource m_currentSource;
@@ -24,6 +27,10 @@ namespace Game
 		private static bool m_isFadingOut;
 		private static MusicContext m_currentContext;
 		private static bool m_isPausedByScreenChange;
+
+		// Estado del fade basado en tiempo.
+		private static double m_fadeStartTime;
+		private static float m_fadeStartVolume;
 
 		public static bool IsPlaying => m_sound != null && m_sound.State > SoundState.Stopped;
 		public static bool IsFadingOut => m_isFadingOut;
@@ -85,18 +92,33 @@ namespace Game
 
 		public static void Update()
 		{
-			// Handle fade out
+			// ---------------------------------------------------------------
+			// Fade out basado en TIEMPO REAL: no depende de Volume ni de FPS,
+			// así que siempre progresa hasta terminar, incluso si el jugador
+			// murió, la presa murió, o la persecución terminó.
+			// ---------------------------------------------------------------
 			if (m_fadeSound != null)
 			{
-				float newVolume = m_fadeSound.Volume - 0.33f * Volume * Time.FrameDuration;
+				double elapsed = Time.RealTime - m_fadeStartTime;
+				float t = MathUtils.Saturate((float)(elapsed / FadeOutDuration));
+				float newVolume = m_fadeStartVolume * (1f - t);
 
-				if (newVolume <= 0f)
+				if (t >= 1f || newVolume <= 0.001f)
 				{
-					m_fadeSound.Stop();
-					m_fadeSound.Dispose();
+					try
+					{
+						m_fadeSound.Stop();
+						m_fadeSound.Dispose();
+					}
+					catch { }
 					m_fadeSound = null;
 					m_isFadingOut = false;
-					m_currentContext = MusicContext.None;
+
+					// Solo resetear contexto si NO hay música nueva sonando ya.
+					if (m_sound == null)
+					{
+						m_currentContext = MusicContext.None;
+					}
 				}
 				else
 				{
@@ -109,13 +131,11 @@ namespace Game
 
 			if (!m_isPausedByScreenChange && IsPlaying && !m_isFadingOut && !isGameScreenActive)
 			{
-				// Leaving game screen - pause
 				SavePositionAndStop();
 				m_isPausedByScreenChange = true;
 			}
 			else if (m_isPausedByScreenChange && isGameScreenActive && !string.IsNullOrEmpty(m_currentTrackName))
 			{
-				// Returning to game screen - resume
 				RestartFromSavedPosition();
 				m_isPausedByScreenChange = false;
 			}
@@ -132,12 +152,19 @@ namespace Game
 			{
 				if (m_fadeSound != null)
 				{
-					m_fadeSound.Stop();
-					m_fadeSound.Dispose();
+					// Ya había un fade en curso: lo matamos para no acumular.
+					try
+					{
+						m_fadeSound.Stop();
+						m_fadeSound.Dispose();
+					}
+					catch { }
 					m_fadeSound = null;
 				}
 
 				m_fadeSound = m_sound;
+				m_fadeStartTime = Time.RealTime;
+				m_fadeStartVolume = MathUtils.Max(m_sound.Volume, 0f);
 				m_sound = null;
 			}
 
@@ -173,7 +200,9 @@ namespace Game
 				}
 				m_currentSource = null;
 
-				float volume = (m_fadeSound != null) ? 0f : Volume;
+				// La música nueva arranca SIEMPRE a volumen completo.
+				// Si hay un fade-out en curso, se deja correr en paralelo.
+				float volume = Volume;
 
 				StreamingSource source = ContentManager.Get<StreamingSource>(name);
 				source = source.Duplicate();
@@ -225,7 +254,6 @@ namespace Game
 				m_currentPlaybackPosition = MathUtils.Saturate(percent);
 			}
 
-			// Stop playback but preserve track name, position, and context
 			if (m_sound != null)
 			{
 				m_sound.Stop();
@@ -240,7 +268,6 @@ namespace Game
 			}
 			m_currentSource = null;
 			m_isFadingOut = false;
-			// NOTE: Don't reset m_currentTrackName, m_currentPlaybackPosition, m_currentContext
 		}
 
 		public static void RestartFromSavedPosition()
