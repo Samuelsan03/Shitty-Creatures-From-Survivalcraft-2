@@ -21,6 +21,7 @@ namespace Game
 		private BevelledButtonWidget m_spiderSpawnButton;
 		private BevelledButtonWidget m_fastMeleeButton;
 		private BevelledButtonWidget m_musicButton;
+		private BevelledButtonWidget m_deathMusicButton;
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -48,6 +49,7 @@ namespace Game
 			CreateOptionRow("ShittyCreaturesSettings", "SpiderSpawnDescription", out m_spiderSpawnButton, GetSpiderSpawnButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "FastMeleeDescription", out m_fastMeleeButton, GetFastMeleeButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "InGameMusicDescription", out m_musicButton, GetMusicButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "DeathMusicDescription", out m_deathMusicButton, GetDeathMusicButtonText);
 		}
 
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
@@ -130,7 +132,7 @@ namespace Game
 		private string GetSpiderSpawnButtonText() => ShittyCreaturesSettingsManager.SpiderSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetFastMeleeButtonText() => ShittyCreaturesSettingsManager.FastMeleeEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetMusicButtonText() => ShittyCreaturesSettingsManager.InGameMusicButtonEnabled ? LanguageControl.On : LanguageControl.Off;
-
+		private string GetDeathMusicButtonText() => ShittyCreaturesSettingsManager.DeathMusicEnabled ? LanguageControl.On : LanguageControl.Off;
 		public override void Update()
 		{
 			if (base.Input.Back || base.Input.Cancel || this.Children.Find<ButtonWidget>("TopBar.Back", true).IsClicked)
@@ -216,6 +218,11 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.InGameMusicButtonEnabled = !ShittyCreaturesSettingsManager.InGameMusicButtonEnabled;
 				m_musicButton.Text = GetMusicButtonText();
+			}
+			if (m_deathMusicButton != null && m_deathMusicButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.DeathMusicEnabled = !ShittyCreaturesSettingsManager.DeathMusicEnabled;
+				m_deathMusicButton.Text = GetDeathMusicButtonText();
 			}
 		}
 	}
