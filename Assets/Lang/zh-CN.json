@@ -426,14 +426,16 @@
     "DeathMusicDescription": "启用/禁用死亡时播放的音乐"
   },
   "SpecialThanksScreen": {
-  "0": "特别感谢",
-  "1": "如果你想出现在特别感谢名单中，可以联系作者提供创意、反馈Bug等。别忘了附上你的昵称和原因。",
-  "2": "Quotemante",
-  "3": "提供了将雷曼（Rayman）作为新角色加入的创意。",
-  "4": "Richard Survivalcraft",
-  "5": "因为想到了要加入索尼克刺猬系列的角色。",
-  "6": "Heptagunn",
-  "7": "感谢选择 PlayStation 1 封面作为该模组最终版本的封面"
+  "0": "特别鸣谢",
+  "1": "如果你希望出现在特别鸣谢名单中，可以联系作者，提供想法、错误报告或其他帮助。别忘了附上你的昵称以及鸣谢原因。",
+  "thanks": [
+    "Quotemante",
+    "感谢他提出将 Rayman 添加为新角色的想法。",
+    "Richard Survivalcraft",
+    "感谢他提出加入 Sonic The Hedgehog 角色的想法。",
+    "Heptagunn",
+    "感谢他为模组最终版封面选择了 PlayStation 1 的封面。"
+  ]
 },
   "AntidoteBucket": {
     "NPCCured": "NPC 的毒素和疾病已被清除！"
