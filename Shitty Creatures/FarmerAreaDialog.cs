@@ -296,11 +296,17 @@ namespace Game
 			bool hasBoth = hasArea && area.HasBothPoints;
 			bool showArea = hasArea && m_subsystem.IsAreaVisible(area);
 
+			// Numeración secuencial visible al jugador: 1, 2, 3, …
+			// Se usa la POSICIÓN en la lista, no el Id interno (que puede tener
+			// huecos tras borrados o recargas). Así el título siempre va del 1
+			// al infinito sin saltos.
+			int position = hasArea ? m_subsystem.m_areas.IndexOf(area) + 1 : 0;
+
 			m_areaTitleLabel.Text = hasArea
 				? string.Format(LanguageControl.Get("FarmerAreaDialog", 7),
-					area.Id,
-					m_subsystem.m_areas.IndexOf(area) + 1,
-					m_subsystem.m_areas.Count)
+					position,                        // {0} = número secuencial visible
+					position,                        // {1} = repetido (compatibilidad)
+					m_subsystem.m_areas.Count)        // {2} = total
 				: LanguageControl.Get("FarmerAreaDialog", 6);
 
 			m_deleteAreaButton.IsEnabled = hasArea && m_subsystem.m_areas.Count > 1;
