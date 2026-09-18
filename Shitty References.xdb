@@ -591,6 +591,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="FarmerWandBlockBehavior" Guid="a7cdb608-f0f3-4bda-9775-6838bce15414" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+          <Parameter Name="Class" Guid="a77b7dc2-2b78-405c-81df-409642479580" Value="Game.SubsystemFarmerWandBlockBehavior" Type="string" />
+        </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="BanditEggBlockBehavior" Guid="f73b7b9d-5273-4b60-b778-df225bdbe078" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
           <Parameter Name="Class" Guid="151e7609-ebe4-4300-b221-7b988bb97679" Value="Game.SubsystemBanditEggBlockBehavior" Type="string" />
         </MemberSubsystemTemplate>
