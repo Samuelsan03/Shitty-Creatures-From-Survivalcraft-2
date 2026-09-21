@@ -7,5 +7,5 @@
   "Link": "https://github.com/Samuelsan03/Shitty-Creatures-From-Survivalcraft-2",
   "Author": "Samuelsan03",
   "PackageName": "shitty.creatures.mod",
-  "Dependencies": []
+  "Dependencies": ["construction"]
 }
