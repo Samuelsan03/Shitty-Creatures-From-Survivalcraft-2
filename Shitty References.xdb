@@ -539,8 +539,8 @@
 
         <ComponentTemplate Name="CreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="b0295147-0a80-4aed-9a1b-c784faf1297b" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
             <Parameter Name="Class" Guid="11b42020-d00c-4a7a-b1b8-9b334b724c35" Value="Game.ComponentCreatureCollect" Type="string"/>
-            <Parameter Name="CanCollect" Description="Indica si la recolección está habilitada" Guid="51ed4d4b-c0f1-484c-b29e-f0ea1591c06d" Value="true" Type="bool"/>
-    <Parameter Name="CollectableItems" Description="Lista de objetos a recolectar separados por comas (vacío para todos)" Guid="24d22da4-d7ed-449b-9e5d-a1c94690a82a" Value="" Type="string"/>
+            <Parameter Name="CanCollect" Description="Si esta en false, la criatura no recogera ningun objeto. Si esta en true, recogera los objetos dentro del rango que coincidan con las categorias de CollectableItems." Guid="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d" Value="true" Type="bool" />
+            <Parameter Name="CollectableItems" Description="Lista de categorias de bloques que la criatura puede recoger, separadas por coma. Ejemplo: Items, Tools, Food, Plants." Guid="b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e" Value="" Type="string" />
 </ComponentTemplate>
         
         <ComponentTemplate Name="InvShooterBehavior" Description="Comportamiento que hace a una criatura arrojar objetos, es requerido Inventory para funcionar." Guid="456e3558-0e7f-42c3-bc05-35eef7540900" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -750,14 +750,11 @@
 <MemberSubsystemTemplate Name="ZombiesSpawn" Guid="77c4423c-cde8-4d42-886c-74b87a9d23fa" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
     <Parameter Name="Class" Value="Game.SubsystemZombiesSpawn" Type="string" Guid="d546f4a4-f7ef-488e-828d-763c780da925"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="GhostNormalChaseMusic" Guid="fe454a1e-89d4-4f2a-aa36-9200d7ba1570" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemGhostNormalChaseMusic" Type="string" Guid="a274b5c9-b092-4d27-8ae0-1c64167ac3e5"/>
-</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="AntiTanksBulletBlockBehavior" Guid="dc7f2c73-54c5-4dbb-844a-a6a00a018589" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="9b826f1c-14c8-45de-bb01-eb46c3d6ee7f" Value="Game.SubsystemAntiTanksBulletBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="TankChaseMusic" Guid="8f97faa0-ef7f-4455-9aaf-116e70e836be" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-        <Parameter Name="Class" Guid="60986de6-5785-457d-8ddd-a0124ec558ba" Value="Game.SubsystemTankChaseMusic" Type="string"/>
+<MemberSubsystemTemplate Name="ChaseMusic" Guid="8f97faa0-ef7f-4455-9aaf-116e70e836be" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+        <Parameter Name="Class" Guid="60986de6-5785-457d-8ddd-a0124ec558ba" Value="Game.SubsystemChaseMusic" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="TargetStickBlockBehavior" Guid="7b76d3e3-0a7b-4de2-9a1e-2e698212fe95" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="4d38ad37-b22f-4420-9dab-74e486fff741" Value="Game.SubsystemTargetStickBlockBehavior" Type="string"/>
@@ -813,6 +810,9 @@
     </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="PoisonSystem" Description="Sistema de veneno para criaturas" Guid="71b54344-233a-48d5-a71a-7b77d94550a4" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
   <Parameter Name="Class" Guid="a16b7806-06e2-4e13-a8dd-49ba594d3d06" Value="Game.SubsystemPoisonSystem" Type="string"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="StructureGenerator" Guid="3286b8bd-de98-40e6-a498-d2f71cda248e" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+  <Parameter Name="Class" Guid="a8eec862-97ec-4cbb-a90a-225ad7a2472b" Value="Game.SubsystemStructureGenerator" Type="string"/>
 </MemberSubsystemTemplate>
 </ProjectTemplate>
 </Mod>
