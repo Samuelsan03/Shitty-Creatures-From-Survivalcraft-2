@@ -569,8 +569,18 @@ namespace Game
 			achievementContainer.Children.Add(titleLabel);
 
 			// --- CATEGORÍA (TypeOfAchievement) ---
+			// Convertir el nombre del tipo al índice del array Categories del JSON
+			string categoryKey = "0";
+			if (Enum.TryParse<AchievementCategory>(typeOfAchievement, true, out var category))
+			{
+				categoryKey = ((int)category).ToString();
+			}
+			else
+			{
+				Log.Warning($"[AchievementsWidget] Tipo de logro desconocido: '{typeOfAchievement}', usando fallback a Combat");
+			}
 			string typeText = LanguageControl.Get("TypesOfAchievements", "Type") + ": " +
-							  LanguageControl.Get("TypesOfAchievements", "Categories", GetTypeKey(typeOfAchievement));
+							  LanguageControl.Get("TypesOfAchievements", "Categories", categoryKey);
 			var categoryLabel = new LabelWidget
 			{
 				Text = typeText,
@@ -1318,20 +1328,6 @@ namespace Game
 		private void UnsubscribeEvents()
 		{
 			SubsystemAchievements.AchievementUnlocked -= OnAnyAchievementUnlocked;
-		}
-
-		private string GetTypeKey(string typeName)
-		{
-			// Intentar parsear el string al enum AchievementCategory
-			if (Enum.TryParse<AchievementCategory>(typeName, true, out var category))
-			{
-				// El enum coincide con el índice del array (Combat=0 ... Special=5)
-				return ((int)category).ToString();
-			}
-
-			// Fallback: si no se pudo parsear, Combat (índice 0)
-			Log.Warning($"[AchievementsWidget] Tipo de logro desconocido: '{typeName}', usando fallback a Combat");
-			return "0";
 		}
 	}
 }
