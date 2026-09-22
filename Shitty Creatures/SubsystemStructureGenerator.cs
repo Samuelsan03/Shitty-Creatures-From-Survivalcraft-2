@@ -14,12 +14,19 @@ namespace Game
 	{
 		public SubsystemTerrain m_subsystemTerrain;
 
+		// Chunks donde YA se colocó estructura (permanente, no se reescanea)
 		private HashSet<Point2> m_processedChunks = new HashSet<Point2>();
+
+		// Chunks en cooldown temporal (no se colocó nada, se reintentará)
+		private Dictionary<Point2, float> m_chunkScanCooldowns = new Dictionary<Point2, float>();
+
 		private List<StructureConfig> m_configs = new List<StructureConfig>();
 		private Dictionary<string, int> m_placementCounts = new Dictionary<string, int>();
 		private Random m_random = new Random();
 
 		public const string ConfigName = "Structures/StructureDefinitions";
+		public const float RescanInterval = 3.0f;   // Re-escanear chunks cada 3s si no se colocó nada
+		public const int MaxScanDepth = 6;           // Profundidad máxima al buscar el bloque asignado
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 		public float FloatUpdateOrder => (float)UpdateOrder.Default;
@@ -52,6 +59,10 @@ namespace Game
 			public bool IncludeAir;
 			public List<StructureBlock> Blocks = new List<StructureBlock>();
 		}
+
+		// =====================================================================
+		//  LOAD / SAVE
+		// =====================================================================
 
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
@@ -87,7 +98,7 @@ namespace Game
 			Log.Information($"[SubsystemStructureGenerator] Configuración cargada: " +
 							$"{m_configs.Count} estructuras, " +
 							$"{m_placementCounts.Count} ya colocadas, " +
-							$"{m_processedChunks.Count} chunks ya procesados.");
+							$"{m_processedChunks.Count} chunks con estructura.");
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
@@ -103,13 +114,16 @@ namespace Game
 			valuesDictionary["ProcessedChunks"] = string.Join("|", chunks);
 		}
 
+		// =====================================================================
+		//  LOAD CONFIG (XML)
+		// =====================================================================
+
 		private void LoadConfig()
 		{
 			m_configs.Clear();
 
 			XElement root = null;
 
-			// Metodo 1: ContentManager.Get<XElement> (usa content reader + cache)
 			try
 			{
 				root = ContentManager.Get<XElement>(ConfigName, null, false);
@@ -119,7 +133,6 @@ namespace Game
 				Log.Warning($"[SubsystemStructureGenerator] Get<XElement> falló: {ex.Message}");
 			}
 
-			// Metodo 2: fallback con GetStream
 			if (root == null)
 			{
 				try
@@ -150,7 +163,6 @@ namespace Game
 
 				StructureConfig config = new StructureConfig();
 				config.Name = structEl.Attribute("Name")?.Value ?? string.Empty;
-
 				if (string.IsNullOrEmpty(config.Name))
 					continue;
 
@@ -197,17 +209,26 @@ namespace Game
 					continue;
 				}
 
+				// ---- Interpretación de MaxCount ----
+				// AllowMultiple=False          → MaxCount = 1
+				// AllowMultiple=True, MaxCount=0 → ilimitado (int.MaxValue)
+				// AllowMultiple=True, MaxCount>0 → usar valor del XML
+				if (!config.AllowMultiple)
+					config.MaxCount = 1;
+				else if (config.MaxCount <= 0)
+					config.MaxCount = int.MaxValue;
+
+				// ---- Obtener BlockIndex via BlocksManager ----
 				config.BlockIndex = BlocksManager.GetBlockIndex(config.BlockName, false);
 				if (config.BlockIndex < 0)
 				{
-					Log.Warning($"[SubsystemStructureGenerator] Bloque '{config.BlockName}' no encontrado.");
+					Log.Warning($"[SubsystemStructureGenerator] Bloque '{config.BlockName}' no encontrado " +
+								$"para estructura '{config.Name}'. ¿El nombre es exacto?");
 					continue;
 				}
 
-				if (!config.AllowMultiple)
-					config.MaxCount = 1;
-				else if (config.MaxCount < 1)
-					config.MaxCount = 1;
+				Log.Information($"[SubsystemStructureGenerator] '{config.Name}' → " +
+								$"Bloque '{config.BlockName}' tiene Index={config.BlockIndex}");
 
 				if (!LoadStructureData(config))
 					continue;
@@ -217,19 +238,24 @@ namespace Game
 
 				m_configs.Add(config);
 
+				string maxCountStr = config.MaxCount == int.MaxValue ? "∞" : config.MaxCount.ToString();
 				Log.Information($"[SubsystemStructureGenerator] Cargada: '{config.Name}' " +
-								$"(Block={config.BlockName}, Prob={config.Probability}, " +
-								$"AllowMultiple={config.AllowMultiple}, MaxCount={config.MaxCount}, " +
+								$"(Block={config.BlockName}[{config.BlockIndex}], " +
+								$"Prob={config.Probability}, " +
+								$"AllowMultiple={config.AllowMultiple}, " +
+								$"MaxCount={maxCountStr}, " +
 								$"Blocks={config.Data.Blocks.Count})");
 			}
 		}
+
+		// =====================================================================
+		//  LOAD STRUCTURE DATA (JSON)
+		// =====================================================================
 
 		private bool LoadStructureData(StructureConfig config)
 		{
 			JsonDocument doc = null;
 
-			// Metodo 1: Usar el ContentReader nativo del juego (JsonDocumentReader)
-			// Esto usa la caché y evita el problema del Stream disposed.
 			try
 			{
 				doc = ContentManager.Get<JsonDocument>(config.Path, null, false);
@@ -239,7 +265,6 @@ namespace Game
 				Log.Warning($"[SubsystemStructureGenerator] Get<JsonDocument> falló: {ex.Message}");
 			}
 
-			// Metodo 2: Intentar sin la extensión (por si el Path ya la trae)
 			if (doc == null && config.Path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
 			{
 				try
@@ -262,7 +287,6 @@ namespace Game
 			try
 			{
 				JsonElement root = doc.RootElement;
-
 				StructureData data = new StructureData();
 				data.Name = config.Name;
 
@@ -304,6 +328,10 @@ namespace Game
 			}
 		}
 
+		// =====================================================================
+		//  UPDATE  —  Cambio clave: cooldown en vez de marcado permanente
+		// =====================================================================
+
 		public void Update(float dt)
 		{
 			if (m_configs.Count == 0)
@@ -312,6 +340,7 @@ namespace Game
 			if (m_subsystemTerrain == null || m_subsystemTerrain.Terrain == null)
 				return;
 
+			// ¿Todas las estructuras alcanzaron su MaxCount?
 			bool allDone = true;
 			foreach (StructureConfig c in m_configs)
 			{
@@ -325,6 +354,23 @@ namespace Game
 			if (allDone)
 				return;
 
+			// ---- Decrementar cooldowns ----
+			if (m_chunkScanCooldowns.Count > 0)
+			{
+				List<Point2> expired = new List<Point2>();
+				List<Point2> keys = new List<Point2>(m_chunkScanCooldowns.Keys);
+				foreach (Point2 key in keys)
+				{
+					float newTime = m_chunkScanCooldowns[key] - dt;
+					if (newTime <= 0f)
+						expired.Add(key);
+					else
+						m_chunkScanCooldowns[key] = newTime;
+				}
+				foreach (Point2 p in expired)
+					m_chunkScanCooldowns.Remove(p);
+			}
+
 			Terrain terrain = m_subsystemTerrain.Terrain;
 			TerrainChunk[] chunks = terrain.AllocatedChunks;
 
@@ -334,15 +380,34 @@ namespace Game
 					continue;
 
 				Point2 coords = chunk.Coords;
+
+				// Skip chunks con estructura ya colocada (permanente)
 				if (m_processedChunks.Contains(coords))
+					continue;
+
+				// Skip chunks en cooldown temporal (se reintentarán después)
+				if (m_chunkScanCooldowns.ContainsKey(coords))
 					continue;
 
 				if (chunk.State != TerrainChunkState.Valid)
 					continue;
 
-				m_processedChunks.Add(coords);
-				TryPlaceStructuresInChunk(chunk);
+				// Intentar colocar estructuras
+				bool placedAny = TryPlaceStructuresInChunk(chunk);
 
+				if (placedAny)
+				{
+					// Estructura colocada → marcar como procesado permanente
+					m_processedChunks.Add(coords);
+				}
+				else
+				{
+					// Nada colocado → cooldown temporal, se reintentará
+					// Esto permite que si MaxCount=5 y solo hay 2, siga buscando
+					m_chunkScanCooldowns[coords] = RescanInterval;
+				}
+
+				// Re-verificar si todo está completo
 				allDone = true;
 				foreach (StructureConfig c in m_configs)
 				{
@@ -358,10 +423,15 @@ namespace Game
 			}
 		}
 
-		private void TryPlaceStructuresInChunk(TerrainChunk chunk)
+		// =====================================================================
+		//  TRY PLACE —  Cambio clave: escaneo hacia abajo para encontrar el bloque
+		// =====================================================================
+
+		private bool TryPlaceStructuresInChunk(TerrainChunk chunk)
 		{
 			Terrain terrain = m_subsystemTerrain.Terrain;
 
+			// Configurations que aún no alcanzaron MaxCount
 			List<StructureConfig> available = new List<StructureConfig>();
 			foreach (StructureConfig c in m_configs)
 			{
@@ -371,7 +441,7 @@ namespace Game
 			}
 
 			if (available.Count == 0)
-				return;
+				return false;
 
 			for (int x = 0; x < 16; x++)
 			{
@@ -384,45 +454,86 @@ namespace Game
 					if (topY <= 0 || topY >= 254)
 						continue;
 
-					int cellValue = terrain.GetCellValue(worldX, topY, worldZ);
-					int contents = Terrain.ExtractContents(cellValue);
+					// =============================================================
+					//  ESCANEO HACIA ABAJO para encontrar el bloque asignado
+					// =============================================================
+					int surfaceY = -1;
+					int surfaceContents = -1;
 
+					for (int y = topY, depth = 0; y >= 1 && depth <= MaxScanDepth; y--, depth++)
+					{
+						int cellValue = terrain.GetCellValue(worldX, y, worldZ);
+						int contents = Terrain.ExtractContents(cellValue);
+
+						if (contents == 0)
+							continue; // Air → seguir bajando
+
+						Block block = BlocksManager.Blocks[contents];
+						if (!block.IsCollidable)
+							continue;
+
+						// Es un bloque sólido. ¿Es nuestro bloque asignado?
+						for (int i = 0; i < available.Count; i++)
+						{
+							if (contents == available[i].BlockIndex)
+							{
+								surfaceY = y;
+								surfaceContents = contents;
+								break;
+							}
+						}
+						break; // Si es sólido, sea o no nuestro target, dejamos de escanear
+					}
+
+					if (surfaceY < 0)
+						continue; // No se encontró el bloque asignado en esta columna
+
+					// Buscar la config que coincide
 					for (int i = available.Count - 1; i >= 0; i--)
 					{
 						StructureConfig config = available[i];
 
-						if (contents != config.BlockIndex)
+						if (surfaceContents != config.BlockIndex)
 							continue;
 
-						int aboveValue = terrain.GetCellValue(worldX, topY + 1, worldZ);
+						// Verificar que arriba del bloque haya aire
+						int aboveValue = terrain.GetCellValue(worldX, surfaceY + 1, worldZ);
 						if (Terrain.ExtractContents(aboveValue) != 0)
-							continue;
+							break; // Bloqueado arriba, no se puede colocar
 
+						// Check de probabilidad
 						if (m_random.Float() > config.Probability)
-							continue;
+							break;
 
-						PlaceStructure(config, worldX, topY + 1, worldZ);
+						// Colocar estructura
+						PlaceStructure(config, worldX, surfaceY + 1, worldZ);
 
 						int current = m_placementCounts.GetValueOrDefault(config.Name, 0);
 						current++;
 						m_placementCounts[config.Name] = current;
 
-						MarkChunksProcessed(config.Data, worldX, worldZ);
+						// Marcar chunks procesados CON PADDING de 8 bloques
+						// Esto evita que en chunks adyacentes se pegue otra estructura
+						MarkChunksProcessed(config.Data, worldX, worldZ, 8);
 
+						string maxStr = config.MaxCount == int.MaxValue ? "∞" : config.MaxCount.ToString();
 						Log.Information($"[SubsystemStructureGenerator] '{config.Name}' colocada en " +
-										$"({worldX}, {topY + 1}, {worldZ}) — {current}/{config.MaxCount}");
+										$"({worldX}, {surfaceY + 1}, {worldZ}) — {current}/{maxStr} " +
+										$"sobre '{config.BlockName}'[{config.BlockIndex}]");
 
-						if (current >= config.MaxCount)
-							available.RemoveAt(i);
-
-						break;
+						// SALIR INMEDIATAMENTE.
+						// Solo permitimos 1 estructura por chunk para evitar superposiciones.
+						return true;
 					}
-
-					if (available.Count == 0)
-						return;
 				}
 			}
+
+			return false;
 		}
+
+		// =====================================================================
+		//  PLACE STRUCTURE
+		// =====================================================================
 
 		private void PlaceStructure(StructureConfig config, int originX, int originY, int originZ)
 		{
@@ -442,18 +553,25 @@ namespace Game
 			m_subsystemTerrain.TerrainUpdater.RequestSynchronousUpdate();
 		}
 
-		private void MarkChunksProcessed(StructureData data, int originX, int originZ)
-		{
-			int minX = originX;
-			int maxX = originX + Math.Max(0, data.SizeX - 1);
-			int minZ = originZ;
-			int maxZ = originZ + Math.Max(0, data.SizeZ - 1);
+		// =====================================================================
+		//  MARK CHUNKS PROCESSED (evita solapamiento)
+		// =====================================================================
 
+		private void MarkChunksProcessed(StructureData data, int originX, int originZ, int paddingBlocks = 0)
+		{
+			// Calculamos el área ocupada por la estructura sumándole el padding
+			int minX = originX - paddingBlocks;
+			int maxX = originX + Math.Max(0, data.SizeX - 1) + paddingBlocks;
+			int minZ = originZ - paddingBlocks;
+			int maxZ = originZ + Math.Max(0, data.SizeZ - 1) + paddingBlocks;
+
+			// Obtenemos todos los chunks que toca esa área
 			int minChunkX = minX >> 4;
 			int maxChunkX = maxX >> 4;
 			int minChunkZ = minZ >> 4;
 			int maxChunkZ = maxZ >> 4;
 
+			// Marcamos todos esos chunks como procesados para no volver a colocar nada ahí cerca
 			for (int cx = minChunkX; cx <= maxChunkX; cx++)
 			{
 				for (int cz = minChunkZ; cz <= maxChunkZ; cz++)
