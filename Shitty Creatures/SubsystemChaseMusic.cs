@@ -5,22 +5,15 @@ using System.Collections.Generic;
 
 namespace Game
 {
-	/// <summary>
-	/// Subsystem unificado que maneja la música de persecución tanto para fantasmas
-	/// como para Tanks (zombis jefe). Conserva la lógica original de cada uno.
-	/// </summary>
 	public class SubsystemChaseMusic : Subsystem, IUpdateable
 	{
-		/// <summary>
-		/// Tipo de persecución con música. Determina qué lógica y pista se utiliza.
-		/// </summary>
 		public enum ChaseMusicType
 		{
 			Ghost,
 			Tank
 		}
 
-		#region Ghost Constants
+		#region Constantes Ghost
 
 		private const string GhostMusicPath = "MenuMusic/ChaseTheme/Hotel Insanity Chase Theme";
 		private const float GhostMusicDuration = 32.0f;
@@ -29,11 +22,33 @@ namespace Game
 
 		#endregion
 
-		#region Tank Constants
+		#region Constantes Tank
 
 		private const string TankMusicPath = "MenuMusic/ChaseTheme/Tank Theme";
 		private const double TankMusicDuration = 52.0;
 		private const float TankChaseRadius = 60f;
+
+		#endregion
+
+		#region Duración del fade-out
+
+		/// <summary>
+		/// Duración del fade-out en segundos para la música de persecución
+		/// (fantasmas y Tanks).  Se pasa a InGameMusicManager.FadeOutAndStop(duration).
+		/// 
+		/// Este campo vive en el SUBSISTEMA, no en InGameMusicManager,
+		/// para que cada subsistema controle su propio fade.
+		/// </summary>
+		private double m_fadeOutDuration = 1.5;
+
+		/// <summary>
+		/// Duración del fade-out en segundos.  Adjustable en runtime.
+		/// </summary>
+		public double FadeOutDuration
+		{
+			get => m_fadeOutDuration;
+			set => m_fadeOutDuration = MathUtils.Max(value, 0.01);
+		}
 
 		#endregion
 
@@ -108,8 +123,7 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// Asegura que el fade-out de la música se procese cada frame,
-			// independientemente de si otro hook del mod llama a Update().
+			// Procesar fade del InGameMusicManager cada frame.
 			InGameMusicManager.Update();
 
 			if (Project == null || m_subsystemTime == null || m_subsystemPlayers == null)
@@ -181,7 +195,7 @@ namespace Game
 			{
 				if (m_tankMusicPlaying)
 				{
-					InGameMusicManager.FadeOutAndStop();
+					InGameMusicManager.FadeOutAndStop(m_fadeOutDuration);
 					m_tankMusicPlaying = false;
 				}
 				return;
@@ -227,7 +241,6 @@ namespace Game
 				if (target == null)
 					continue;
 
-				// *** CAMBIO CLAVE: solo cuenta si el objetivo es un JUGADOR ***
 				if (m_subsystemPlayers == null || !m_subsystemPlayers.IsPlayer(target.Entity))
 					continue;
 
@@ -275,9 +288,8 @@ namespace Game
 			{
 				if (m_tankMusicPlaying)
 				{
-					// La persecución del Tank terminó (presa muerta, jugador muerto,
-					// o el Tank dejó de perseguir): fade-out.
-					InGameMusicManager.FadeOutAndStop();
+					// La persecución del Tank terminó: fade-out con la duración del subsistema.
+					InGameMusicManager.FadeOutAndStop(m_fadeOutDuration);
 					m_tankMusicPlaying = false;
 				}
 			}
@@ -311,14 +323,12 @@ namespace Game
 					ComponentZombieChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
 					if (chaseBehavior != null && chaseBehavior.IsActive)
 					{
-						// *** CAMBIO CLAVE: el fantasma debe estar persiguiendo a un jugador ***
 						if (chaseBehavior.Target == null || !m_subsystemPlayers.IsPlayer(chaseBehavior.Target.Entity))
 							continue;
 
 						ComponentBody ghostBody = entity.FindComponent<ComponentBody>();
 						if (ghostBody != null)
 						{
-							// Solo verificar contra el jugador que está siendo perseguido.
 							ComponentPlayer chasedPlayer = chaseBehavior.Target.Entity.FindComponent<ComponentPlayer>();
 							if (chasedPlayer != null && chasedPlayer.ComponentHealth.Health > 0f)
 							{
@@ -432,8 +442,8 @@ namespace Game
 				{
 					if (InGameMusicManager.CurrentContext == InGameMusicManager.MusicContext.Chase)
 					{
-						// Fade-out cuando termina la persecución.
-						InGameMusicManager.FadeOutAndStop();
+						// Fade-out con la duración del subsistema.
+						InGameMusicManager.FadeOutAndStop(m_fadeOutDuration);
 					}
 
 					m_ghostMusicPlaying = false;
@@ -488,7 +498,7 @@ namespace Game
 				case ChaseMusicType.Tank:
 					if (m_tankMusicPlaying)
 					{
-						InGameMusicManager.FadeOutAndStop();
+						InGameMusicManager.FadeOutAndStop(m_fadeOutDuration);
 						m_tankMusicPlaying = false;
 					}
 					break;
@@ -501,8 +511,6 @@ namespace Game
 
 		public override void Dispose()
 		{
-			// En Dispose se usa parada DURA (no fade): es limpieza del subsistema
-			// y no debe solaparse con una nueva instancia al recargar.
 			if (m_ghostMusicPlaying)
 			{
 				try
