@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Structures>
+  <StructureTemplate Name="casa de mierda">
+    <Parameter Name="Path" Value="Structures/casa de mierda.json" Type="string" />
+    <Parameter Name="Probability" Value="0.5" Type="float" />
+    <Parameter Name="Block" Value="GrassBlock" Type="string" />
+    <Parameter Name="AllowMultiple" Value="True" Type="bool" />
+    <Parameter Name="MaxCount" Value="5" Type="int" />
+  </StructureTemplate>
+</Structures>
