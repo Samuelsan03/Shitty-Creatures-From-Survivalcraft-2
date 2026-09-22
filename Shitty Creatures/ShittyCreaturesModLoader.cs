@@ -1125,11 +1125,11 @@ namespace Game
 
 		public override void OnPlayerDead(PlayerData playerData)
 		{
-			// ─── Música de muerte (solo si el ajuste está activado) ───
-			//      hasta que el jugador reaparece (ahí se hace fade out en OnPlayerSpawned).
 			if (ShittyCreaturesSettingsManager.DeathMusicEnabled)
 			{
-				InGameMusicManager.FadeOutDuration = 0.5;
+				// Ya NO se establece FadeOutDuration aquí.
+				// La música de muerte arranca con loop; cuando el jugador
+				// reaparezca, se llama FadeOutAndStop(0.5) explícitamente.
 
 				InGameMusicManager.PlayMusic(
 					"MenuMusic/Ceremony - Secret of Mana",
@@ -1814,12 +1814,10 @@ namespace Game
 		public override bool OnPlayerSpawned(PlayerData.SpawnMode spawnMode, ComponentPlayer componentPlayer, Vector3 spawnPosition)
 		{
 
-			// ─── Al reaparecer, hacer fade out de la música de muerte ───
-			//    Solo si realmente estaba sonando el contexto Death.
-			if (spawnMode == PlayerData.SpawnMode.Respawn &&
-				InGameMusicManager.CurrentContext == InGameMusicManager.MusicContext.Death)
+			// Si la música de muerte está sonando, fade-out de 0.5s.
+			if (InGameMusicManager.CurrentContext == InGameMusicManager.MusicContext.Death)
 			{
-				InGameMusicManager.FadeOutAndStop();
+				InGameMusicManager.FadeOutAndStop(0.5);
 			}
 
 			// Crear label de coordenadas para este jugador
