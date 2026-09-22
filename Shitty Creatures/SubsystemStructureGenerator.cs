@@ -41,6 +41,13 @@ namespace Game
 			public bool AllowMultiple;
 			public int MaxCount = 1;
 			public StructureData Data;
+			public List<CreatureSpawnEntry> Creatures = new List<CreatureSpawnEntry>();
+		}
+
+		public class CreatureSpawnEntry
+		{
+			public string TemplateName;
+			public float Probability;
 		}
 
 		public class StructureBlock
@@ -194,6 +201,9 @@ namespace Game
 							int.TryParse(pValue, out int mc);
 							config.MaxCount = mc;
 							break;
+						case "Creatures":
+							ParseCreaturesString(config.Creatures, pValue);
+							break;
 					}
 				}
 
@@ -210,9 +220,6 @@ namespace Game
 				}
 
 				// ---- Interpretación de MaxCount ----
-				// AllowMultiple=False          → MaxCount = 1
-				// AllowMultiple=True, MaxCount=0 → ilimitado (int.MaxValue)
-				// AllowMultiple=True, MaxCount>0 → usar valor del XML
 				if (!config.AllowMultiple)
 					config.MaxCount = 1;
 				else if (config.MaxCount <= 0)
@@ -227,9 +234,6 @@ namespace Game
 					continue;
 				}
 
-				Log.Information($"[SubsystemStructureGenerator] '{config.Name}' → " +
-								$"Bloque '{config.BlockName}' tiene Index={config.BlockIndex}");
-
 				if (!LoadStructureData(config))
 					continue;
 
@@ -241,10 +245,34 @@ namespace Game
 				string maxCountStr = config.MaxCount == int.MaxValue ? "∞" : config.MaxCount.ToString();
 				Log.Information($"[SubsystemStructureGenerator] Cargada: '{config.Name}' " +
 								$"(Block={config.BlockName}[{config.BlockIndex}], " +
-								$"Prob={config.Probability}, " +
-								$"AllowMultiple={config.AllowMultiple}, " +
-								$"MaxCount={maxCountStr}, " +
-								$"Blocks={config.Data.Blocks.Count})");
+								$"Prob={config.Probability}, MaxCount={maxCountStr}, " +
+								$"Creatures={config.Creatures.Count})");
+			}
+		}
+
+		private void ParseCreaturesString(List<CreatureSpawnEntry> list, string data)
+		{
+			list.Clear();
+			if (string.IsNullOrWhiteSpace(data))
+				return;
+
+			// Formato esperado: "Cerdo:0.5,Vaca:0.2,Zombi:1.0"
+			string[] entries = data.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			foreach (string entry in entries)
+			{
+				string[] parts = entry.Split(new char[] { ':' }, StringSplitOptions.None);
+				if (parts.Length == 2)
+				{
+					string name = parts[0].Trim();
+					if (float.TryParse(parts[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float prob))
+					{
+						list.Add(new CreatureSpawnEntry { TemplateName = name, Probability = prob });
+					}
+					else
+					{
+						Log.Warning($"[SubsystemStructureGenerator] Probabilidad inválida para criatura '{name}' en XML.");
+					}
+				}
 			}
 		}
 
@@ -329,7 +357,7 @@ namespace Game
 		}
 
 		// =====================================================================
-		//  UPDATE  —  Cambio clave: cooldown en vez de marcado permanente
+		//  UPDATE
 		// =====================================================================
 
 		public void Update(float dt)
@@ -340,7 +368,6 @@ namespace Game
 			if (m_subsystemTerrain == null || m_subsystemTerrain.Terrain == null)
 				return;
 
-			// ¿Todas las estructuras alcanzaron su MaxCount?
 			bool allDone = true;
 			foreach (StructureConfig c in m_configs)
 			{
@@ -354,7 +381,6 @@ namespace Game
 			if (allDone)
 				return;
 
-			// ---- Decrementar cooldowns ----
 			if (m_chunkScanCooldowns.Count > 0)
 			{
 				List<Point2> expired = new List<Point2>();
@@ -381,33 +407,26 @@ namespace Game
 
 				Point2 coords = chunk.Coords;
 
-				// Skip chunks con estructura ya colocada (permanente)
 				if (m_processedChunks.Contains(coords))
 					continue;
 
-				// Skip chunks en cooldown temporal (se reintentarán después)
 				if (m_chunkScanCooldowns.ContainsKey(coords))
 					continue;
 
 				if (chunk.State != TerrainChunkState.Valid)
 					continue;
 
-				// Intentar colocar estructuras
 				bool placedAny = TryPlaceStructuresInChunk(chunk);
 
 				if (placedAny)
 				{
-					// Estructura colocada → marcar como procesado permanente
 					m_processedChunks.Add(coords);
 				}
 				else
 				{
-					// Nada colocado → cooldown temporal, se reintentará
-					// Esto permite que si MaxCount=5 y solo hay 2, siga buscando
 					m_chunkScanCooldowns[coords] = RescanInterval;
 				}
 
-				// Re-verificar si todo está completo
 				allDone = true;
 				foreach (StructureConfig c in m_configs)
 				{
@@ -424,14 +443,13 @@ namespace Game
 		}
 
 		// =====================================================================
-		//  TRY PLACE —  Cambio clave: escaneo hacia abajo para encontrar el bloque
+		//  TRY PLACE
 		// =====================================================================
 
 		private bool TryPlaceStructuresInChunk(TerrainChunk chunk)
 		{
 			Terrain terrain = m_subsystemTerrain.Terrain;
 
-			// Configurations que aún no alcanzaron MaxCount
 			List<StructureConfig> available = new List<StructureConfig>();
 			foreach (StructureConfig c in m_configs)
 			{
@@ -454,9 +472,6 @@ namespace Game
 					if (topY <= 0 || topY >= 254)
 						continue;
 
-					// =============================================================
-					//  ESCANEO HACIA ABAJO para encontrar el bloque asignado
-					// =============================================================
 					int surfaceY = -1;
 					int surfaceContents = -1;
 
@@ -466,13 +481,12 @@ namespace Game
 						int contents = Terrain.ExtractContents(cellValue);
 
 						if (contents == 0)
-							continue; // Air → seguir bajando
+							continue;
 
 						Block block = BlocksManager.Blocks[contents];
 						if (!block.IsCollidable)
 							continue;
 
-						// Es un bloque sólido. ¿Es nuestro bloque asignado?
 						for (int i = 0; i < available.Count; i++)
 						{
 							if (contents == available[i].BlockIndex)
@@ -482,13 +496,12 @@ namespace Game
 								break;
 							}
 						}
-						break; // Si es sólido, sea o no nuestro target, dejamos de escanear
+						break;
 					}
 
 					if (surfaceY < 0)
-						continue; // No se encontró el bloque asignado en esta columna
+						continue;
 
-					// Buscar la config que coincide
 					for (int i = available.Count - 1; i >= 0; i--)
 					{
 						StructureConfig config = available[i];
@@ -496,33 +509,28 @@ namespace Game
 						if (surfaceContents != config.BlockIndex)
 							continue;
 
-						// Verificar que arriba del bloque haya aire
 						int aboveValue = terrain.GetCellValue(worldX, surfaceY + 1, worldZ);
 						if (Terrain.ExtractContents(aboveValue) != 0)
-							break; // Bloqueado arriba, no se puede colocar
+							break;
 
-						// Check de probabilidad
 						if (m_random.Float() > config.Probability)
 							break;
 
-						// Colocar estructura
+						// 1. Colocar los bloques de la estructura
 						PlaceStructure(config, worldX, surfaceY + 1, worldZ);
+
+						// 2. Invocar criaturas si la estructura las tiene definidos
+						if (config.Creatures.Count > 0)
+						{
+							SpawnCreaturesForStructure(config, worldX, surfaceY + 1, worldZ);
+						}
 
 						int current = m_placementCounts.GetValueOrDefault(config.Name, 0);
 						current++;
 						m_placementCounts[config.Name] = current;
 
-						// Marcar chunks procesados CON PADDING de 8 bloques
-						// Esto evita que en chunks adyacentes se pegue otra estructura
 						MarkChunksProcessed(config.Data, worldX, worldZ, 8);
 
-						string maxStr = config.MaxCount == int.MaxValue ? "∞" : config.MaxCount.ToString();
-						Log.Information($"[SubsystemStructureGenerator] '{config.Name}' colocada en " +
-										$"({worldX}, {surfaceY + 1}, {worldZ}) — {current}/{maxStr} " +
-										$"sobre '{config.BlockName}'[{config.BlockIndex}]");
-
-						// SALIR INMEDIATAMENTE.
-						// Solo permitimos 1 estructura por chunk para evitar superposiciones.
 						return true;
 					}
 				}
@@ -554,24 +562,64 @@ namespace Game
 		}
 
 		// =====================================================================
-		//  MARK CHUNKS PROCESSED (evita solapamiento)
+		//  SPAWN CREATURES (NUEVO)
+		// =====================================================================
+
+		private void SpawnCreaturesForStructure(StructureConfig config, int originX, int originY, int originZ)
+		{
+			foreach (CreatureSpawnEntry entry in config.Creatures)
+			{
+				if (m_random.Float() <= entry.Probability)
+				{
+					try
+					{
+						ValuesDictionary entityValues = DatabaseManager.FindEntityValuesDictionary(entry.TemplateName, true);
+						if (entityValues == null)
+						{
+							Log.Warning($"[SubsystemStructureGenerator] Plantilla de criatura '{entry.TemplateName}' no encontrada.");
+							continue;
+						}
+
+						Entity entity = Project.CreateEntity(entityValues, 0);
+
+						ComponentBody componentBody = entity.FindComponent<ComponentBody>(true);
+						if (componentBody != null)
+						{
+							// Aparecen en el centro de la estructura, 2 bloques arriba del piso para no ahogarse en el suelo
+							float spawnX = originX + (config.Data.SizeX / 2f) + 0.5f;
+							float spawnZ = originZ + (config.Data.SizeZ / 2f) + 0.5f;
+							float spawnY = originY + 2.0f;
+
+							componentBody.Position = new Vector3(spawnX, spawnY, spawnZ);
+							componentBody.Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, m_random.Float(0f, MathF.PI * 2f));
+						}
+
+						Project.AddEntity(entity);
+					}
+					catch (Exception ex)
+					{
+						Log.Error($"[SubsystemStructureGenerator] Error al spawnear criatura '{entry.TemplateName}': {ex.Message}");
+					}
+				}
+			}
+		}
+
+		// =====================================================================
+		//  MARK CHUNKS PROCESSED
 		// =====================================================================
 
 		private void MarkChunksProcessed(StructureData data, int originX, int originZ, int paddingBlocks = 0)
 		{
-			// Calculamos el área ocupada por la estructura sumándole el padding
 			int minX = originX - paddingBlocks;
 			int maxX = originX + Math.Max(0, data.SizeX - 1) + paddingBlocks;
 			int minZ = originZ - paddingBlocks;
 			int maxZ = originZ + Math.Max(0, data.SizeZ - 1) + paddingBlocks;
 
-			// Obtenemos todos los chunks que toca esa área
 			int minChunkX = minX >> 4;
 			int maxChunkX = maxX >> 4;
 			int minChunkZ = minZ >> 4;
 			int maxChunkZ = maxZ >> 4;
 
-			// Marcamos todos esos chunks como procesados para no volver a colocar nada ahí cerca
 			for (int cx = minChunkX; cx <= maxChunkX; cx++)
 			{
 				for (int cz = minChunkZ; cz <= maxChunkZ; cz++)
