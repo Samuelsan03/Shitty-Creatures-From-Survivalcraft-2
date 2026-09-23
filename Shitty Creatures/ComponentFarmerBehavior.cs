@@ -1463,26 +1463,24 @@ namespace Game
 
 		/// <summary>
 		/// Imita la receta de mesa de crafteo para los cultivos problemáticos.
-		/// Las recetas se leen literalmente de Recipes.xml / ShittyRecipes.xml:
+		/// Procesa TODAS las unidades de TODOS los productos cosechados, no solo una.
+		/// Recetas:
 		///   - SliceOfWatermelonBlock → 1x WatermelonSeedBlock        (1:1)
 		///   - PumpkinBlock           → 3x SeedsBlock:7 (Pumpkin)     (1:3)
 		///   - BlueberryBlock         → 1x BlueberrySeedBlock         (1:1)
-		///   - TallGrassBlock         → 2x SeedsBlock:0 (TallGrass)   (1:2)
-		///   - RedFlowerBlock         → 4x SeedsBlock:1 (RedFlower)   (1:4)
+		///   - TallGrassBlock         → 2x SeedsBlock:0 (TallGrass)  (1:2)
+		///   - RedFlowerBlock         → 4x SeedsBlock:1 (RedFlower)  (1:4)
 		///   - PurpleFlowerBlock      → 3x SeedsBlock:2 (PurpleFlower)(1:3)
-		///   - WhiteFlowerBlock       → 5x SeedsBlock:3 (WhiteFlower) (1:5)
-		///
-		/// La semilla resultante se coloca en el MISMO slot donde estaba el producto
-		/// (cuando ese slot queda libre al consumir la última unidad). Si el slot aún
-		/// contiene más productos, se intenta apilar la semilla en otro slot; si no
-		/// hay espacio, se hace rollback del producto consumido.
-		/// También dispara el debris del bloque semilla para que se vea el crafteo.
+		///   - WhiteFlowerBlock       → 5x SeedsBlock:3 (WhiteFlower)(1:5)
 		/// Solo se invoca cuando el granjero NO tiene semillas.
 		/// </summary>
 		private bool TryCraftSeedFromHarvest()
 		{
 			if (m_inventory == null) return false;
 
+			bool craftedAny = false;
+
+			// Recorrer TODOS los slots del inventario
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
 			{
 				int value = m_inventory.GetSlotValue(i);
@@ -1497,78 +1495,87 @@ namespace Game
 
 				if (block is SliceOfWatermelonBlock)
 				{
-					// Receta: 1 rodaja de sandía → 1 semilla de sandía
 					seedValue = Terrain.MakeBlockValue(WatermelonSeedBlock.Index, 0, 0);
 					seedCount = 1;
 				}
 				else if (block is PumpkinBlock)
 				{
-					// Receta: 1 calabaza → 3 semillas de calabaza (SeedsBlock data 7)
 					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.Pumpkin);
 					seedCount = 3;
 				}
 				else if (block is BlueberryBlock)
 				{
-					// Receta: 1 arándano → 1 semilla de arándano
 					seedValue = Terrain.MakeBlockValue(BlueberrySeedBlock.Index, 0, 0);
 					seedCount = 1;
 				}
 				else if (block is TallGrassBlock)
 				{
-					// Receta: 1 pasto alto → 2 semillas de pasto (SeedsBlock data 0)
 					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.TallGrass);
 					seedCount = 2;
 				}
 				else if (block is RedFlowerBlock)
 				{
-					// Receta: 1 flor roja → 4 semillas de flor roja (SeedsBlock data 1)
 					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.RedFlower);
 					seedCount = 4;
 				}
 				else if (block is PurpleFlowerBlock)
 				{
-					// Receta: 1 flor púrpura → 3 semillas de flor púrpura (SeedsBlock data 2)
 					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.PurpleFlower);
 					seedCount = 3;
 				}
 				else if (block is WhiteFlowerBlock)
 				{
-					// Receta: 1 flor blanca → 5 semillas de flor blanca (SeedsBlock data 3)
 					seedValue = Terrain.MakeBlockValue(SeedsBlock.Index, 0, (int)SeedsBlock.SeedType.WhiteFlower);
 					seedCount = 5;
 				}
 				else
 				{
-					continue;
+					continue; // No es crafteable, probar siguiente slot
 				}
 
-				int slotCountBefore = m_inventory.GetSlotCount(i);
+				// ──────────────────────────────────────────────────────
+				//  Procesar TODAS las unidades que hay en este slot,
+				//  no solo la primera.
+				// ──────────────────────────────────────────────────────
+				int totalInSlot = m_inventory.GetSlotCount(i);
 
-				// Consumimos 1 unidad del producto.
-				m_inventory.RemoveSlotItems(i, 1);
-
-				// Caso ideal: había 1 sola unidad → el slot queda libre.
-				// Colocamos la semilla exactamente donde estaba el producto.
-				if (slotCountBefore == 1)
+				for (int j = 0; j < totalInSlot; j++)
 				{
-					m_inventory.AddSlotItems(i, seedValue, seedCount);
-					SpawnCraftDebris(seedValue);
-					return true;
-				}
+					// Verificar que el slot aún contiene el producto original
+					// (puede haber cambiado si acabamos de poner semillas ahí)
+					int currentSlotValue = m_inventory.GetSlotValue(i);
+					if (currentSlotValue != value) break;
+					int currentSlotCount = m_inventory.GetSlotCount(i);
+					if (currentSlotCount == 0) break;
 
-				// Aún quedan productos en ese slot: intentar apilar la semilla
-				// en otro slot con el mismo valor o en uno vacío.
-				if (TryAddItemToInventory(seedValue, seedCount))
-				{
-					SpawnCraftDebris(seedValue);
-					return true;
-				}
+					// Consumir 1 unidad del producto
+					m_inventory.RemoveSlotItems(i, 1);
 
-				// Sin espacio: rollback del producto consumido.
-				m_inventory.AddSlotItems(i, value, 1);
+					// Si el slot quedó libre (era la última unidad),
+					// colocar la semilla exactamente ahí.
+					if (currentSlotCount == 1)
+					{
+						m_inventory.AddSlotItems(i, seedValue, seedCount);
+						SpawnCraftDebris(seedValue);
+						craftedAny = true;
+					}
+					else if (TryAddItemToInventory(seedValue, seedCount))
+					{
+						// Aún quedan productos: apilar semilla en otro slot
+						SpawnCraftDebris(seedValue);
+						craftedAny = true;
+					}
+					else
+					{
+						// Sin espacio para la semilla: rollback y salir del slot
+						m_inventory.AddSlotItems(i, value, 1);
+						break;
+					}
+				}
+				// Continuar al siguiente slot (no return aquí)
 			}
 
-			return false;
+			return craftedAny;
 		}
 
 		/// <summary>
