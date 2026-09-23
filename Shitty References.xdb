@@ -811,8 +811,5 @@
     <MemberSubsystemTemplate Name="PoisonSystem" Description="Sistema de veneno para criaturas" Guid="71b54344-233a-48d5-a71a-7b77d94550a4" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
   <Parameter Name="Class" Guid="a16b7806-06e2-4e13-a8dd-49ba594d3d06" Value="Game.SubsystemPoisonSystem" Type="string"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="StructureGenerator" Guid="3286b8bd-de98-40e6-a498-d2f71cda248e" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-  <Parameter Name="Class" Guid="a8eec862-97ec-4cbb-a90a-225ad7a2472b" Value="Game.SubsystemStructureGenerator" Type="string"/>
-</MemberSubsystemTemplate>
 </ProjectTemplate>
 </Mod>
