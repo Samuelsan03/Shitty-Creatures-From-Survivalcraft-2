@@ -1067,6 +1067,9 @@ namespace Game
 
 			foreach (Pickable p in toRemove)
 				p.ToRemove = true;
+
+			// NUEVO: Convertir inmediatamente lo recolectado en semillas si corresponde
+			TryCraftSeedFromHarvest();
 		}
 
 		private bool FindBestTask(out CellFace bestCell, out TaskPriority bestPriority)
@@ -1452,13 +1455,11 @@ namespace Game
 		/// </summary>
 		private bool HasAnySeed()
 		{
-			if (FindSlotWithSeed() >= 0) return true;
+			// Craftear productos en semillas siempre que se pregunte,
+			// para no acumular sandías/calabazas/flores en el inventario.
+			TryCraftSeedFromHarvest();
 
-			// Sin semillas: intentar convertir productos cosechados en semillas.
-			if (TryCraftSeedFromHarvest())
-				return FindSlotWithSeed() >= 0;
-
-			return false;
+			return FindSlotWithSeed() >= 0;
 		}
 
 		/// <summary>
@@ -1533,16 +1534,10 @@ namespace Game
 					continue; // No es crafteable, probar siguiente slot
 				}
 
-				// ──────────────────────────────────────────────────────
-				//  Procesar TODAS las unidades que hay en este slot,
-				//  no solo la primera.
-				// ──────────────────────────────────────────────────────
 				int totalInSlot = m_inventory.GetSlotCount(i);
 
 				for (int j = 0; j < totalInSlot; j++)
 				{
-					// Verificar que el slot aún contiene el producto original
-					// (puede haber cambiado si acabamos de poner semillas ahí)
 					int currentSlotValue = m_inventory.GetSlotValue(i);
 					if (currentSlotValue != value) break;
 					int currentSlotCount = m_inventory.GetSlotCount(i);
@@ -1551,17 +1546,9 @@ namespace Game
 					// Consumir 1 unidad del producto
 					m_inventory.RemoveSlotItems(i, 1);
 
-					// Si el slot quedó libre (era la última unidad),
-					// colocar la semilla exactamente ahí.
-					if (currentSlotCount == 1)
+					// Intentar añadir las semillas al inventario de forma segura
+					if (TryAddItemToInventory(seedValue, seedCount))
 					{
-						m_inventory.AddSlotItems(i, seedValue, seedCount);
-						SpawnCraftDebris(seedValue);
-						craftedAny = true;
-					}
-					else if (TryAddItemToInventory(seedValue, seedCount))
-					{
-						// Aún quedan productos: apilar semilla en otro slot
 						SpawnCraftDebris(seedValue);
 						craftedAny = true;
 					}
@@ -1572,7 +1559,6 @@ namespace Game
 						break;
 					}
 				}
-				// Continuar al siguiente slot (no return aquí)
 			}
 
 			return craftedAny;
@@ -1632,32 +1618,54 @@ namespace Game
 		{
 			if (m_inventory == null || count <= 0) return false;
 
+			int remaining = count;
+			Dictionary<int, int> addedAmounts = new Dictionary<int, int>();
+
 			// 1) Apilar en slots existentes
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			for (int i = 0; i < m_inventory.SlotsCount && remaining > 0; i++)
 			{
 				int slotValue = m_inventory.GetSlotValue(i);
 				if (slotValue != value) continue;
 
 				int slotCount = m_inventory.GetSlotCount(i);
 				int capacity = m_inventory.GetSlotCapacity(i, value);
-				if (slotCount + count <= capacity)
+				int space = capacity - slotCount;
+				if (space > 0)
 				{
-					m_inventory.AddSlotItems(i, value, count);
-					return true;
+					int add = Math.Min(space, remaining);
+					m_inventory.AddSlotItems(i, value, add);
+					addedAmounts[i] = add;
+					remaining -= add;
 				}
 			}
 
 			// 2) Buscar slot vacío
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			for (int i = 0; i < m_inventory.SlotsCount && remaining > 0; i++)
 			{
 				if (m_inventory.GetSlotValue(i) == 0)
 				{
-					m_inventory.AddSlotItems(i, value, count);
-					return true;
+					int capacity = m_inventory.GetSlotCapacity(i, value);
+					int add = Math.Min(capacity, remaining);
+					m_inventory.AddSlotItems(i, value, add);
+					addedAmounts[i] = add;
+					remaining -= add;
 				}
 			}
 
-			return false;
+			// Si quedó espacio sobrante, significa que el inventario está lleno
+			if (remaining == 0)
+			{
+				return true;
+			}
+			else
+			{
+				// Rollback: quitar lo que añadimos para no perder items y fallar de forma atómica
+				foreach (var kvp in addedAmounts)
+				{
+					m_inventory.RemoveSlotItems(kvp.Key, kvp.Value);
+				}
+				return false;
+			}
 		}
 	}
 }
