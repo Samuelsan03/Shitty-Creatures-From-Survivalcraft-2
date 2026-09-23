@@ -652,11 +652,11 @@ namespace Game
 
 							if (HasAnySeed() && needsFertilizer && HasFertilizer())
 							{
-								m_stateMachine.TransitionTo("FertilizeDelay");
+								m_stateMachine.TransitionTo("Fertilize");
 							}
 							else if (HasAnySeed())
 							{
-								m_stateMachine.TransitionTo("PlantDelay");
+								m_stateMachine.TransitionTo("Plant");
 							}
 							else
 							{
@@ -717,9 +717,9 @@ namespace Game
 					if (HasTool(typeof(SeedsBlock)))
 					{
 						if (HasFertilizer())
-							m_stateMachine.TransitionTo("FertilizeDelay");
+							m_stateMachine.TransitionTo("Fertilize");
 						else
-							m_stateMachine.TransitionTo("PlantDelay");
+							m_stateMachine.TransitionTo("Plant");
 					}
 					else
 					{
@@ -748,17 +748,6 @@ namespace Game
 						Ray3 ray = GetRayToBlock(m_targetCellFace.Value);
 						m_componentMiner.Use(ray);
 					}
-
-					m_stateMachine.TransitionTo("RakeCheck");
-				},
-				update: null,
-				leave: null
-			);
-
-			m_stateMachine.AddState("RakeCheck",
-				enter: () =>
-				{
-					m_stateEnterTime = m_subsystemTime.GameTime;
 				},
 				update: () =>
 				{
@@ -784,9 +773,9 @@ namespace Game
 							bool needsFertilizer = !IsSoilAlreadyFertilized(value);
 
 							if (needsFertilizer && HasFertilizer())
-								m_stateMachine.TransitionTo("FertilizeDelay");
+								m_stateMachine.TransitionTo("Fertilize");
 							else
-								m_stateMachine.TransitionTo("PlantDelay");
+								m_stateMachine.TransitionTo("Plant");
 						}
 						else
 						{
@@ -805,20 +794,15 @@ namespace Game
 				leave: null
 			);
 
-			m_stateMachine.AddState("FertilizeDelay",
-				enter: () => { m_stateEnterTime = m_subsystemTime.GameTime; },
-				update: () =>
-				{
-					if (m_subsystemTime.GameTime - m_stateEnterTime > TIME_TO_FERTILIZE)
-						m_stateMachine.TransitionTo("Fertilize");
-				},
-				leave: null
-			);
-
 			m_stateMachine.AddState("Fertilize",
 				enter: () =>
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
+				},
+				update: () =>
+				{
+					if (m_subsystemTime.GameTime - m_stateEnterTime < TIME_TO_FERTILIZE)
+						return;
 
 					if (m_targetCellFace == null)
 					{
@@ -838,20 +822,9 @@ namespace Game
 					m_componentMiner.Use(fertilizeRay);
 
 					if (HasAnySeed())
-						m_stateMachine.TransitionTo("PlantDelay");
+						m_stateMachine.TransitionTo("Plant");
 					else
 						m_stateMachine.TransitionTo("Inactive");
-				},
-				update: null,
-				leave: null
-			);
-
-			m_stateMachine.AddState("PlantDelay",
-				enter: () => { m_stateEnterTime = m_subsystemTime.GameTime; },
-				update: () =>
-				{
-					if (m_subsystemTime.GameTime - m_stateEnterTime > TIME_TO_PLANT_SEED)
-						m_stateMachine.TransitionTo("Plant");
 				},
 				leave: null
 			);
@@ -860,6 +833,11 @@ namespace Game
 				enter: () =>
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
+				},
+				update: () =>
+				{
+					if (m_subsystemTime.GameTime - m_stateEnterTime < TIME_TO_PLANT_SEED)
+						return;
 
 					if (m_targetCellFace == null)
 					{
@@ -895,7 +873,6 @@ namespace Game
 
 					m_stateMachine.TransitionTo("Inactive");
 				},
-				update: null,
 				leave: null
 			);
 
@@ -914,17 +891,6 @@ namespace Game
 					m_subsystemTerrain.DestroyCell(0, harvestedCell.X, harvestedCell.Y, harvestedCell.Z, 0, false, false, null);
 
 					CollectPickables();
-
-					m_stateMachine.TransitionTo("HarvestCheck");
-				},
-				update: null,
-				leave: null
-			);
-
-			m_stateMachine.AddState("HarvestCheck",
-				enter: () =>
-				{
-					m_stateEnterTime = m_subsystemTime.GameTime;
 				},
 				update: () =>
 				{
@@ -994,9 +960,9 @@ namespace Game
 							bool needsFertilizer = !IsSoilAlreadyFertilized(groundValue);
 
 							if (needsFertilizer && HasFertilizer())
-								m_stateMachine.TransitionTo("FertilizeDelay");
+								m_stateMachine.TransitionTo("Fertilize");
 							else
-								m_stateMachine.TransitionTo("PlantDelay");
+								m_stateMachine.TransitionTo("Plant");
 							return;
 						}
 					}
