@@ -13,15 +13,20 @@ namespace Game
 	/// </summary>
 	public class ComponentFarmerBehavior : ComponentBehavior, IUpdateable
 	{
+		// -----------------------------------------------------------------
+		//  Prioridades de tarea (el orden del enum define la prioridad;
+		//  los valores más bajos se ejecutan primero).
+		// -----------------------------------------------------------------
 		private enum TaskPriority
 		{
-			HarvestMature,
-			ClearBadCrop,
-			RakeTrampled,
-			Plant,
-			Rake
+			HarvestMature,   // recoger cultivo maduro
+			ClearBadCrop,    // romper cultivo muerto, silvestre o que no crecerá
+			RakeTrampled,    // arar tierra pisoteada con planta encima
+			Plant,           // sembrar en suelo arado vacío
+			Rake             // arar césped/tierra limpia
 		}
 
+		// ID del área de cultivo a la que está asignado este granjero (-1 = libre)
 		public int FarmAreaId = -1;
 
 		private const float BASE_IMPORTANCE_MIN = 5f;
@@ -48,6 +53,7 @@ namespace Game
 		private bool m_farmerEnabled;
 		private double m_stateEnterTime;
 
+		// Contador y límite para intentos de rastrillado
 		private int m_rakeAttempts;
 		private const int MAX_RAKE_ATTEMPTS = 5;
 
@@ -56,15 +62,19 @@ namespace Game
 		private const float PICKUP_RADIUS = 2.5f;
 		private const double STATE_TIMEOUT = 10.0;
 
+		// Tiempos de acción separados
 		private const double TIME_TO_RAKE = 0.5;
 		private const double TIME_TO_FERTILIZE = 0.5;
 		private const double TIME_TO_PLANT_SEED = 0.5;
 
+		// Radio máximo permitido antes de volver al área (2.5 veces el radio de escaneo)
 		private const float MAX_DISTANCE_FROM_AREA = SCAN_RADIUS * 2.5f;
 
+		// Centro del área de cultivos
 		private Vector3 m_farmAreaCenter;
 		private bool m_hasFarmAreaCenter;
 
+		// Límites del área de cultivo (esquina mínima y máxima del rectángulo marcado)
 		private Point3 m_farmAreaMin;
 		private Point3 m_farmAreaMax;
 		private bool m_hasFarmAreaBounds;
@@ -72,6 +82,7 @@ namespace Game
 		private bool m_stateMachineBuilt;
 		private bool m_initialized;
 
+		// Para detectar cuando se cambió el slot activo externamente (ej. por combate)
 		private int m_lastKnownActiveSlotIndex = -1;
 		private double m_lastToolCheckTime;
 		private const double TOOL_CHECK_INTERVAL = 0.5;
@@ -102,6 +113,8 @@ namespace Game
 					else
 					{
 						m_nextScanTime = 0;
+						// NO crear centro/área implícita: si el jugador aún no asignó
+						// un área, el farmer debe quedarse esperando en Inactive.
 					}
 				}
 			}
@@ -116,6 +129,7 @@ namespace Game
 				{
 					m_farmerEnabled = true;
 					m_nextScanTime = 0;
+					// Idem: no auto-crear área.
 				}
 			}
 		}
@@ -163,7 +177,7 @@ namespace Game
 				}
 				else
 				{
-					FarmAreaId = -1;
+					FarmAreaId = -1; // el área ya no existe
 				}
 			}
 
@@ -173,6 +187,7 @@ namespace Game
 			m_initialized = false;
 		}
 
+		/// <summary>Guarda centro y límites del área sin tocar el state machine.</summary>
 		private void ApplyFarmAreaBounds(Point3 a, Point3 b)
 		{
 			int minX = Math.Min(a.X, b.X), maxX = Math.Max(a.X, b.X);
@@ -190,6 +205,10 @@ namespace Game
 			m_hasFarmAreaCenter = true;
 		}
 
+		/// <summary>
+		/// Asigna al granjero un área de cultivo definida por dos esquinas.
+		/// Restringe su escaneo a esos límites y lo reubica si está fuera.
+		/// </summary>
 		public void SetFarmArea(Point3 a, Point3 b)
 		{
 			ApplyFarmAreaBounds(a, b);
@@ -216,6 +235,7 @@ namespace Game
 			Block block = BlocksManager.Blocks[contents];
 			if (block == null) return false;
 
+			// NUEVO: añadir WatermelonSeedBlock y BlueberrySeedBlock a la lista.
 			return block is RakeBlock
 				|| block is SeedsBlock
 				|| block is SaltpeterChunkBlock
@@ -313,6 +333,8 @@ namespace Game
 				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
 				Block block = BlocksManager.Blocks[contents];
 
+				// NUEVO: aceptar SeedsBlock genérico, WatermelonSeedBlock y
+				// BlueberrySeedBlock (ninguno de los dos últimos hereda de SeedsBlock).
 				if (block != null && (block is SeedsBlock || block is WatermelonSeedBlock || block is BlueberrySeedBlock))
 					return i;
 			}
@@ -338,6 +360,7 @@ namespace Game
 		{
 			if (!m_hasFarmAreaBounds)
 			{
+				// Fallback al comportamiento antiguo (por centro/radio)
 				if (!m_hasFarmAreaCenter) return false;
 				Vector3 pos0 = m_componentCreature.ComponentBody.Position;
 				float dx0 = pos0.X - m_farmAreaCenter.X;
@@ -345,6 +368,7 @@ namespace Game
 				return MathF.Sqrt(dx0 * dx0 + dz0 * dz0) > MAX_DISTANCE_FROM_AREA;
 			}
 
+			// Distancia horizontal del farmer al punto más cercano del rectángulo.
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
 			int px = (int)MathF.Floor(pos.X);
 			int pz = (int)MathF.Floor(pos.Z);
@@ -356,7 +380,7 @@ namespace Game
 			int dz = pz - nearestZ;
 			float distSq = dx * dx + dz * dz;
 
-			return distSq > SCAN_RADIUS * SCAN_RADIUS;
+			return distSq > SCAN_RADIUS * SCAN_RADIUS; // 15 bloques
 		}
 
 		private float GetDistanceToAreaCenter()
@@ -386,38 +410,6 @@ namespace Game
 			m_hasFarmAreaCenter = true;
 		}
 
-		// -----------------------------------------------------------------
-		// Helpers de acción: permiten reutilizar la lógica del `enter`
-		// dentro del `update` para los bucles de reintento (Rake retry,
-		// Harvest self-loop) sin depender de TransitionTo al mismo estado.
-		// -----------------------------------------------------------------
-		private void DoRakeAction()
-		{
-			if (!SwitchToTool(typeof(RakeBlock)))
-			{
-				m_stateMachine.TransitionTo("Inactive");
-				return;
-			}
-
-			m_lastKnownActiveSlotIndex = m_inventory.ActiveSlotIndex;
-
-			if (m_targetCellFace != null)
-			{
-				Ray3 ray = GetRayToBlock(m_targetCellFace.Value);
-				m_componentMiner.Use(ray);
-			}
-		}
-
-		private void DoHarvestAction()
-		{
-			if (m_targetCellFace == null) return;
-
-			CellFace harvestedCell = m_targetCellFace.Value;
-			m_subsystemTerrain.DestroyCell(0, harvestedCell.X, harvestedCell.Y, harvestedCell.Z, 0, false, false, null);
-
-			CollectPickables();
-		}
-
 		private void BuildStateMachine()
 		{
 			m_stateMachine.AddState("Inactive",
@@ -434,6 +426,7 @@ namespace Game
 					if (m_farmerEnabled && HasFarmingTools())
 						EnsureFarmingToolEquipped();
 
+					// Importancia baja en reposo: deja que WalkAround (u otras behaviors) tomen el control.
 					m_importanceLevel = 0f;
 					m_stateEnterTime = m_subsystemTime.GameTime;
 				},
@@ -445,6 +438,9 @@ namespace Game
 						return;
 					}
 
+					// Sin área asignada (o sin esquinas válidas) → no trabajar.
+					// Se requieren AMBAS condiciones: el ID debe apuntar a un área real
+					// y esa área debe habernos dado un rectángulo (ApplyFarmAreaBounds).
 					if (FarmAreaId < 0 || !m_hasFarmAreaBounds)
 					{
 						m_importanceLevel = 0f;
@@ -463,6 +459,7 @@ namespace Game
 						CheckAndRestoreFarmingTool();
 					}
 
+					// Si se aleja demasiado del área, siempre vuelve (aunque esté descansando).
 					if (IsTooFarFromArea())
 					{
 						m_importanceLevel = 10f;
@@ -470,6 +467,7 @@ namespace Game
 						return;
 					}
 
+					// Escaneo periódico: si aparece una tarea, la tomamos.
 					if (m_subsystemTime.GameTime > m_nextScanTime)
 					{
 						m_nextScanTime = m_subsystemTime.GameTime + m_random.Float(0.4f, 0.8f);
@@ -487,6 +485,7 @@ namespace Game
 						}
 					}
 
+					// Sin tareas → importancia 0 para que WalkAround pueda activarse.
 					m_importanceLevel = 0f;
 				},
 				leave: null
@@ -634,6 +633,8 @@ namespace Game
 						}
 						else if (IsBadCrop(contents, value, x, y, z))
 						{
+							// Cultivo muerto, silvestre o que no crecerá: romperlo
+							// y dejar que HarvestCheck decida entre arar o replantar.
 							m_stateMachine.TransitionTo("Harvest");
 						}
 						else if (IsGrassOrDirt(contents) && HasPlantAbove(x, y, z))
@@ -651,11 +652,11 @@ namespace Game
 
 							if (HasAnySeed() && needsFertilizer && HasFertilizer())
 							{
-								m_stateMachine.TransitionTo("Fertilize");
+								m_stateMachine.TransitionTo("FertilizeDelay");
 							}
 							else if (HasAnySeed())
 							{
-								m_stateMachine.TransitionTo("Plant");
+								m_stateMachine.TransitionTo("PlantDelay");
 							}
 							else
 							{
@@ -716,9 +717,9 @@ namespace Game
 					if (HasTool(typeof(SeedsBlock)))
 					{
 						if (HasFertilizer())
-							m_stateMachine.TransitionTo("Fertilize");
+							m_stateMachine.TransitionTo("FertilizeDelay");
 						else
-							m_stateMachine.TransitionTo("Plant");
+							m_stateMachine.TransitionTo("PlantDelay");
 					}
 					else
 					{
@@ -729,12 +730,6 @@ namespace Game
 				leave: null
 			);
 
-			// -----------------------------------------------------------------
-			//  Rake (unificado: Rake + RakeCheck originales)
-			//  - enter: switch al rastrillo y usa el rayo (acción inmediata).
-			//  - update: espera STATE_DELAY; si la tierra es SoilBlock → Fertilize
-			//    o Plant; si no, reintenta hasta MAX_RAKE_ATTEMPTS.
-			// -----------------------------------------------------------------
 			m_stateMachine.AddState("Rake",
 				enter: () =>
 				{
@@ -753,6 +748,17 @@ namespace Game
 						Ray3 ray = GetRayToBlock(m_targetCellFace.Value);
 						m_componentMiner.Use(ray);
 					}
+
+					m_stateMachine.TransitionTo("RakeCheck");
+				},
+				update: null,
+				leave: null
+			);
+
+			m_stateMachine.AddState("RakeCheck",
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
 				},
 				update: () =>
 				{
@@ -778,9 +784,9 @@ namespace Game
 							bool needsFertilizer = !IsSoilAlreadyFertilized(value);
 
 							if (needsFertilizer && HasFertilizer())
-								m_stateMachine.TransitionTo("Fertilize");
+								m_stateMachine.TransitionTo("FertilizeDelay");
 							else
-								m_stateMachine.TransitionTo("Plant");
+								m_stateMachine.TransitionTo("PlantDelay");
 						}
 						else
 						{
@@ -791,49 +797,28 @@ namespace Game
 					{
 						m_rakeAttempts++;
 						if (m_rakeAttempts < MAX_RAKE_ATTEMPTS)
-						{
-							// Re-intentar: re-ejecutar la acción del rastrillo
-							// sin depender de TransitionTo al mismo estado.
-							if (!SwitchToTool(typeof(RakeBlock)))
-							{
-								m_stateMachine.TransitionTo("Inactive");
-								return;
-							}
-
-							m_lastKnownActiveSlotIndex = m_inventory.ActiveSlotIndex;
-
-							if (m_targetCellFace != null)
-							{
-								Ray3 ray = GetRayToBlock(m_targetCellFace.Value);
-								m_componentMiner.Use(ray);
-							}
-
-							m_stateEnterTime = m_subsystemTime.GameTime;
-						}
+							m_stateMachine.TransitionTo("Rake");
 						else
-						{
 							m_stateMachine.TransitionTo("Inactive");
-						}
 					}
 				},
 				leave: null
 			);
 
-			// -----------------------------------------------------------------
-			//  Fertilize (unificado: FertilizeDelay + Fertilize originales)
-			//  - enter: inicia temporizador.
-			//  - update: espera TIME_TO_FERTILIZE; entonces aplica el salitre
-			//    y transiciona a Plant o Inactive.
-			// -----------------------------------------------------------------
+			m_stateMachine.AddState("FertilizeDelay",
+				enter: () => { m_stateEnterTime = m_subsystemTime.GameTime; },
+				update: () =>
+				{
+					if (m_subsystemTime.GameTime - m_stateEnterTime > TIME_TO_FERTILIZE)
+						m_stateMachine.TransitionTo("Fertilize");
+				},
+				leave: null
+			);
+
 			m_stateMachine.AddState("Fertilize",
 				enter: () =>
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
-				},
-				update: () =>
-				{
-					if (m_subsystemTime.GameTime - m_stateEnterTime < TIME_TO_FERTILIZE)
-						return;
 
 					if (m_targetCellFace == null)
 					{
@@ -853,28 +838,28 @@ namespace Game
 					m_componentMiner.Use(fertilizeRay);
 
 					if (HasAnySeed())
-						m_stateMachine.TransitionTo("Plant");
+						m_stateMachine.TransitionTo("PlantDelay");
 					else
 						m_stateMachine.TransitionTo("Inactive");
+				},
+				update: null,
+				leave: null
+			);
+
+			m_stateMachine.AddState("PlantDelay",
+				enter: () => { m_stateEnterTime = m_subsystemTime.GameTime; },
+				update: () =>
+				{
+					if (m_subsystemTime.GameTime - m_stateEnterTime > TIME_TO_PLANT_SEED)
+						m_stateMachine.TransitionTo("Plant");
 				},
 				leave: null
 			);
 
-			// -----------------------------------------------------------------
-			//  Plant (unificado: PlantDelay + Plant originales)
-			//  - enter: inicia temporizador.
-			//  - update: espera TIME_TO_PLANT_SEED; entonces siembra y vuelve
-			//    a Inactive.
-			// -----------------------------------------------------------------
 			m_stateMachine.AddState("Plant",
 				enter: () =>
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
-				},
-				update: () =>
-				{
-					if (m_subsystemTime.GameTime - m_stateEnterTime < TIME_TO_PLANT_SEED)
-						return;
 
 					if (m_targetCellFace == null)
 					{
@@ -910,29 +895,36 @@ namespace Game
 
 					m_stateMachine.TransitionTo("Inactive");
 				},
+				update: null,
 				leave: null
 			);
 
-			// -----------------------------------------------------------------
-			//  Harvest (unificado: Harvest + HarvestCheck originales)
-			//  - enter: destruye el cultivo y recolecta items.
-			//  - update: espera STATE_DELAY; comprueba qué quedó en el suelo.
-			//    Si hay otro cosechable → re-ejecuta la acción (self-loop sin
-			//    TransitionTo al mismo estado). Si es grass/dirt → Rake.
-			//    Si es Soil → Fertilize/Plant.
-			// -----------------------------------------------------------------
 			m_stateMachine.AddState("Harvest",
 				enter: () =>
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
 
 					if (m_targetCellFace == null)
+					{
+						m_stateMachine.TransitionTo("Inactive");
 						return;
+					}
 
 					CellFace harvestedCell = m_targetCellFace.Value;
 					m_subsystemTerrain.DestroyCell(0, harvestedCell.X, harvestedCell.Y, harvestedCell.Z, 0, false, false, null);
 
 					CollectPickables();
+
+					m_stateMachine.TransitionTo("HarvestCheck");
+				},
+				update: null,
+				leave: null
+			);
+
+			m_stateMachine.AddState("HarvestCheck",
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
 				},
 				update: () =>
 				{
@@ -973,14 +965,7 @@ namespace Game
 						if (IsHarvestable(currentContents, currentValue) ||
 							IsBadCrop(currentContents, currentValue, x, y, z))
 						{
-							// Re-ejecutar la acción de cosecha (self-loop) sin
-							// depender de TransitionTo al mismo estado.
-							m_stateEnterTime = m_subsystemTime.GameTime;
-
-							CellFace harvestedCell = m_targetCellFace.Value;
-							m_subsystemTerrain.DestroyCell(0, harvestedCell.X, harvestedCell.Y, harvestedCell.Z, 0, false, false, null);
-
-							CollectPickables();
+							m_stateMachine.TransitionTo("Harvest");
 							return;
 						}
 						m_stateMachine.TransitionTo("Inactive");
@@ -1009,9 +994,9 @@ namespace Game
 							bool needsFertilizer = !IsSoilAlreadyFertilized(groundValue);
 
 							if (needsFertilizer && HasFertilizer())
-								m_stateMachine.TransitionTo("Fertilize");
+								m_stateMachine.TransitionTo("FertilizeDelay");
 							else
-								m_stateMachine.TransitionTo("Plant");
+								m_stateMachine.TransitionTo("PlantDelay");
 							return;
 						}
 					}
@@ -1087,7 +1072,7 @@ namespace Game
 		private bool FindBestTask(out CellFace bestCell, out TaskPriority bestPriority)
 		{
 			bestCell = default;
-			bestPriority = TaskPriority.Rake;
+			bestPriority = TaskPriority.Rake; // valor por defecto (no usado si return false)
 			TaskPriority? bestPriorityNullable = null;
 
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
@@ -1106,6 +1091,7 @@ namespace Game
 			int yMin = Math.Max(0, cy - 5);
 			int yMax = Math.Min(255, cy + 6);
 
+			// Si hay área asignada, restringir el escaneo al rectángulo marcado.
 			if (m_hasFarmAreaBounds)
 			{
 				xMin = Math.Max(xMin, m_farmAreaMin.X);
@@ -1113,9 +1099,12 @@ namespace Game
 				zMin = Math.Max(zMin, m_farmAreaMin.Z);
 				zMax = Math.Min(zMax, m_farmAreaMax.Z);
 				yMin = Math.Max(yMin, m_farmAreaMin.Y);
+				// +2: los cultivos crecen por encima del suelo marcado;
+				//     sin este margen nunca serían escaneados.
 				yMax = Math.Min(yMax, m_farmAreaMax.Y + 2);
 			}
 
+			// Si el rectángulo quedó vacío (fuera del radio del farmer), no hay tareas.
 			if (xMin > xMax || zMin > zMax || yMin > yMax)
 				return false;
 
@@ -1267,12 +1256,15 @@ namespace Game
 				return !isSmall;
 			}
 
+			// NUEVO: pasto alto maduro (2 bloques) — solo los no-small sueltan drop.
 			if (block is TallGrassBlock)
 			{
 				int data = Terrain.ExtractData(value);
 				return !TallGrassBlock.GetIsSmall(data);
 			}
 
+			// NUEVO: cualquier flor madura (roja / púrpura / blanca) — solo
+			// las no-small sueltan drop según FlowerBlock.GetDropValues.
 			if (block is FlowerBlock)
 			{
 				int data = Terrain.ExtractData(value);
@@ -1282,11 +1274,19 @@ namespace Game
 			return false;
 		}
 
+		/// <summary>
+		/// True si el bloque es un cultivo "inservible": ya no dará fruto aunque
+		/// se espere. Incluye:
+		///   - Podridos / muertos (pumpkin / watermelon con flag isDead).
+		///   - Silvestres (rye / cotton con flag wild): nunca serán cultivo doméstico.
+		///   - Arraigados sobre algo que no es tierra arada (SoilBlock): no crecerán.
+		/// </summary>
 		private bool IsBadCrop(int contents, int value, int x, int y, int z)
 		{
 			if (contents <= 0 || contents >= BlocksManager.Blocks.Length) return false;
 			Block block = BlocksManager.Blocks[contents];
 
+			// 1) Podrido / muerto
 			if (block is BasePumpkinBlock)
 			{
 				int data = Terrain.ExtractData(value);
@@ -1298,11 +1298,16 @@ namespace Game
 				if (BaseWatermelonBlock.GetIsDead(data)) return true;
 			}
 
+			// 2) Silvestre (solo rye y cotton tienen flag wild)
 			if (block is RyeBlock && RyeBlock.GetIsWild(Terrain.ExtractData(value)))
 				return true;
 			if (block is CottonBlock && CottonBlock.GetIsWild(Terrain.ExtractData(value)))
 				return true;
 
+			// 3) Arraigado en algo que no es SoilBlock → no crecerá bien.
+			//    Aplica a cultivos que van directos sobre la tierra (rye, cotton,
+			//    blueberry). Pumpkins/watermelons forman tallo + fruto y su bloque
+			//    inferior no es necesariamente tierra, así que no se chequean aquí.
 			if (block is RyeBlock || block is CottonBlock || block is BlueberryBushBlock)
 			{
 				if (y > 0)
@@ -1387,6 +1392,10 @@ namespace Game
 			}
 		}
 
+		/// <summary>
+		/// Llamado por SubsystemFarmerWandBlockBehavior cuando el jugador marca
+		/// un área con la varilla del granjero.
+		/// </summary>
 		public void SetFarmArea(Vector3 center, float radius)
 		{
 			m_farmAreaCenter = center;
@@ -1410,6 +1419,10 @@ namespace Game
 			return SoilBlock.GetNitrogen(Terrain.ExtractData(value)) > 0;
 		}
 
+		/// <summary>
+		/// Olvida el área asignada. El farmer deja de trabajar hasta que se le
+		/// vuelva a llamar a SetFarmArea con dos esquinas válidas.
+		/// </summary>
 		public void ClearFarmArea()
 		{
 			m_hasFarmAreaBounds = false;
@@ -1429,22 +1442,45 @@ namespace Game
 			}
 		}
 
+		/// <summary>
+		/// True si el granjero tiene CUALQUIER semilla aceptada (SeedsBlock genérico,
+		/// WatermelonSeedBlock o BlueberrySeedBlock, que no heredan de SeedsBlock).
+		/// Sustituye a HasTool(typeof(SeedsBlock)) en todo el state machine.
+		/// Si no tiene semillas, intenta "craftearlas" a partir de lo cosechado
+		/// (rodajas de sandía / calabazas / arándanos / flores / pasto alto),
+		/// imitando la mesa de crafteo.
+		/// </summary>
 		private bool HasAnySeed()
 		{
 			if (FindSlotWithSeed() >= 0) return true;
 
+			// Sin semillas: intentar convertir productos cosechados en semillas.
 			if (TryCraftSeedFromHarvest())
 				return FindSlotWithSeed() >= 0;
 
 			return false;
 		}
 
+		/// <summary>
+		/// Imita la receta de mesa de crafteo para los cultivos problemáticos.
+		/// Procesa TODAS las unidades de TODOS los productos cosechados, no solo una.
+		/// Recetas:
+		///   - SliceOfWatermelonBlock → 1x WatermelonSeedBlock        (1:1)
+		///   - PumpkinBlock           → 3x SeedsBlock:7 (Pumpkin)     (1:3)
+		///   - BlueberryBlock         → 1x BlueberrySeedBlock         (1:1)
+		///   - TallGrassBlock         → 2x SeedsBlock:0 (TallGrass)  (1:2)
+		///   - RedFlowerBlock         → 4x SeedsBlock:1 (RedFlower)  (1:4)
+		///   - PurpleFlowerBlock      → 3x SeedsBlock:2 (PurpleFlower)(1:3)
+		///   - WhiteFlowerBlock       → 5x SeedsBlock:3 (WhiteFlower)(1:5)
+		/// Solo se invoca cuando el granjero NO tiene semillas.
+		/// </summary>
 		private bool TryCraftSeedFromHarvest()
 		{
 			if (m_inventory == null) return false;
 
 			bool craftedAny = false;
 
+			// Recorrer TODOS los slots del inventario
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
 			{
 				int value = m_inventory.GetSlotValue(i);
@@ -1494,20 +1530,29 @@ namespace Game
 				}
 				else
 				{
-					continue;
+					continue; // No es crafteable, probar siguiente slot
 				}
 
+				// ──────────────────────────────────────────────────────
+				//  Procesar TODAS las unidades que hay en este slot,
+				//  no solo la primera.
+				// ──────────────────────────────────────────────────────
 				int totalInSlot = m_inventory.GetSlotCount(i);
 
 				for (int j = 0; j < totalInSlot; j++)
 				{
+					// Verificar que el slot aún contiene el producto original
+					// (puede haber cambiado si acabamos de poner semillas ahí)
 					int currentSlotValue = m_inventory.GetSlotValue(i);
 					if (currentSlotValue != value) break;
 					int currentSlotCount = m_inventory.GetSlotCount(i);
 					if (currentSlotCount == 0) break;
 
+					// Consumir 1 unidad del producto
 					m_inventory.RemoveSlotItems(i, 1);
 
+					// Si el slot quedó libre (era la última unidad),
+					// colocar la semilla exactamente ahí.
 					if (currentSlotCount == 1)
 					{
 						m_inventory.AddSlotItems(i, seedValue, seedCount);
@@ -1516,20 +1561,30 @@ namespace Game
 					}
 					else if (TryAddItemToInventory(seedValue, seedCount))
 					{
+						// Aún quedan productos: apilar semilla en otro slot
 						SpawnCraftDebris(seedValue);
 						craftedAny = true;
 					}
 					else
 					{
+						// Sin espacio para la semilla: rollback y salir del slot
 						m_inventory.AddSlotItems(i, value, 1);
 						break;
 					}
 				}
+				// Continuar al siguiente slot (no return aquí)
 			}
 
 			return craftedAny;
 		}
 
+		/// <summary>
+		/// Genera el debris del bloque semilla en la posición del granjero para
+		/// indicar visualmente que se crafteó una semilla a partir del producto.
+		/// Usa la textura estándar del bloque (sin colores personalizados).
+		/// Si algo falla, se ignora: el debris es cosmético y no debe romper
+		/// la lógica de farming.
+		/// </summary>
 		private void SpawnCraftDebris(int seedValue)
 		{
 			if (m_subsystemTerrain == null || m_componentCreature == null) return;
@@ -1543,8 +1598,11 @@ namespace Game
 			Block seedBlock = BlocksManager.Blocks[seedContents];
 			if (seedBlock == null) return;
 
+			// Altura del pecho del granjero: se ve bien y no tapa la cabeza.
 			Vector3 pos = m_componentCreature.ComponentBody.Position + new Vector3(0f, 1.2f, 0f);
 
+			// Usamos la textura del bloque semilla en su cara de inventario (-1)
+			// para que el debris se vea como la propia semilla, sin colores extra.
 			int textureSlot = seedBlock.GetFaceTextureSlot(-1, seedValue);
 
 			try
@@ -1552,22 +1610,29 @@ namespace Game
 				var debris = new BlockDebrisParticleSystem(
 					m_subsystemTerrain,
 					pos,
-					strength: 0.4f,
-					scale: seedBlock.DestructionDebrisScale,
-					color: Color.White,
+					strength: 0.4f,                          // → ~20 partículas
+					scale: seedBlock.DestructionDebrisScale, // tamaño natural del bloque
+					color: Color.White,                      // multiplicador neutro
 					textureSlot: textureSlot);
 
 				particles.AddParticleSystem(debris, false);
 			}
 			catch (Exception)
 			{
+				// El debris es solo feedback visual: no debe romper el farming.
 			}
 		}
 
+		/// <summary>
+		/// Intenta añadir items al inventario. Primero apila en slots existentes
+		/// con el mismo valor; si no cabe, busca un slot vacío. No modifica el
+		/// inventario si no hay espacio suficiente (operación atómica).
+		/// </summary>
 		private bool TryAddItemToInventory(int value, int count)
 		{
 			if (m_inventory == null || count <= 0) return false;
 
+			// 1) Apilar en slots existentes
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
 			{
 				int slotValue = m_inventory.GetSlotValue(i);
@@ -1582,6 +1647,7 @@ namespace Game
 				}
 			}
 
+			// 2) Buscar slot vacío
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
 			{
 				if (m_inventory.GetSlotValue(i) == 0)
