@@ -1294,13 +1294,11 @@ namespace Game
 			int contents = Terrain.ExtractContents(slotValue);
 			if (contents != DoubleMusketBlock.Index) return;
 			int data = Terrain.ExtractData(slotValue);
-			bool loaded = DoubleMusketBlock.IsLoaded(data);
+			DoubleMusketBlock.LoadState loadState = DoubleMusketBlock.GetLoadState(data);
 			int shots = DoubleMusketBlock.GetShotsRemaining(data);
-			bool isAntiTanks = DoubleMusketBlock.IsAntiTanksBullet(data);
-			if (loaded && shots == 2 && isAntiTanks) return;
-			data = DoubleMusketBlock.SetLoaded(data, true);
+			if (loadState == DoubleMusketBlock.LoadState.AntiTanksBullet && shots == 2) return;
+			data = DoubleMusketBlock.SetLoadState(data, DoubleMusketBlock.LoadState.AntiTanksBullet);
 			data = DoubleMusketBlock.SetShotsRemaining(data, 2);
-			data = DoubleMusketBlock.SetAntiTanksBullet(data, true);
 			int newValue = Terrain.MakeBlockValue(DoubleMusketBlock.Index, 0, data);
 			inventory.RemoveSlotItems(slotIndex, 1);
 			inventory.AddSlotItems(slotIndex, newValue, 1);
