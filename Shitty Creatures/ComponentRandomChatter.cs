@@ -6,7 +6,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentRandomChatter2 : Component, IUpdateable
+	public class ComponentRandomChatter : Component, IUpdateable
 	{
 		public UpdateOrder UpdateOrder
 		{
@@ -71,25 +71,27 @@ namespace Game
 
 		private static readonly List<string> m_phrases = new List<string>
 		{
-			"Alianza es una mierda\r\nMerece ser exterminada",
-			"A la mierda Alianza",
-			"Los Digimons merecen ser exterminados",
-			"Viva Muerte\r\nAbajo Alianza",
-			"Oh yeah, fuck, I'm coming!",
-			"Yeah Baby",
-			"Viva el señor Mencho",
+			"Hola chamitos, aquí el karajito que le sigue la corriente a moralistas",
+			"Tengo hambre we",
+			"Chupame la pija",
+			"Me empezo a meterme a sus grupos de mierda",
+			"Los visitare en la noche",
+			"Ay ese benson",
+			"Callate la boca pendejo",
 			"El problema es que somos demasiados",
-			"Muerte ya esta aquí",
-			"El infierno morado es el mejor paraíso",
-			"Te vamos a follar zorra",
-			"Somos tus machos a joderte la vida she",
-			"Fuck, esto es lo mejor",
-			"Oh yeah baby",
-			"Chinga tu madre, motherfucker",
-			"Son a bitch",
-			"Yo te boté\r\nTe di banda y te solté, yo te solté\r\nPa'l carajo te mandé, yo te mandé\r\nY a tu amiga me clavé, me la clavé\r\nFuck you, hijueputa, yeh",
-			"Vete a la VRG",
-			"Criminal, cri-criminal\r\nTu estilo, tu flow, mami, muy criminal"
+			"Ya largate de este directo",
+			"Te dome sin condon",
+			"La bebecita bebe lean y bebe whisky",
+			"Soy guapo, lo sé\r\nLas mujeres se calientan, ya lo sé",
+			"Dejenmen en paz!",
+			"Aw shit, here we go again",
+			"Come on sweetheart",
+			"La marihuana para siempre",
+			"I shot the sheriff",
+			"Estoy en tu cesped Nebbercracker xdxdxdxd",
+			"¿Dónde están los que hablan de mí?\r\n¿Dónde están? Por el techo van a salir\r\n¿Dónde están los que hablan de mí?\r\n¿Dónde están? Por el techo van a salir",
+			"La quimica no fisica magnifica lirica mistica\r\nla habilidad lenguistica y calidad olimpica\r\nhara que esa nena bella baile\r\nen la casa cuando wiso cante",
+			"Ohh yes,\r\nElla es mi chica de la voz sensual\r\nUna romántica llamada\r\nQue penetra en mi corazón y me hace enamorar.\r\nCon forme con forme... one more time"
 		};
 	}
 }
