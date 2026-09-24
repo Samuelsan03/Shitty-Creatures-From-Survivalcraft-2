@@ -131,9 +131,9 @@ namespace Game
 				string creatureName = componentCreature.DisplayName;
 				string healthText = creatureName + " " + LanguageControl.Get(new string[] { "HealthBar", "HP" }) + ": " + actualHealth.ToString("F2");
 
-				Vector3 textPosition = position + up * (halfHeight + 0.085f);
+				Vector3 textPosition = position + up * (halfHeight + 0.15f);
 
-				float textScale = 0.0035f;
+				float textScale = 0.0065f;
 				Vector3 textRight = right * textScale;
 				Vector3 textUp = -up * textScale;
 
