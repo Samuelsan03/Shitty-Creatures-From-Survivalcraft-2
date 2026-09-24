@@ -355,22 +355,10 @@
         
         <ComponentTemplate Name="RandomChatter" Guid="a93baf1c-930f-47a8-a98a-f79fd0de910f" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
             <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string" Description="El nombre de la clase C# que implementa la lógica."/>
-            <Parameter Name="ActivationDistance" Value="5" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura empiece a hablar. AJUSTA: Qué tan cerca debe estar el jugador para activar el diálogo."/>
-            <Parameter Name="DisplayDistance" Value="10" Type="float" Description="Distancia máxima a la que el texto es visible para el jugador. AJUSTA: Hasta qué distancia se puede ver el texto flotante."/>
-            <Parameter Name="MinInterval" Value="8" Type="float" Description="Tiempo mínimo en segundos que la criatura esperará para decir una nueva frase. AJUSTA: Frecuencia mínima entre diálogos."/>
-            <Parameter Name="MaxInterval" Value="30" Type="float" Description="Tiempo máximo en segundos que la criatura esperará para decir una nueva frase. AJUSTA: Frecuencia máxima entre diálogos."/>
-            <Parameter Name="RiseDuration" Value="2" Type="float" Description="Duración en segundos del ascenso del texto desde las rodillas hasta la cabeza. AJUSTA: Qué tan rápido sube el texto desde abajo hacia arriba."/>
-            <Parameter Name="FadeDuration" Value="0.5" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto al final."/>
         </ComponentTemplate>
         
         <ComponentTemplate Name="RandomChatter2" Guid="40891058-39e7-4823-9f93-37a3b6d9dbb5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
             <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string" Description="El nombre de la clase C# que implementa la lógica para NPCs hostiles."/>
-            <Parameter Name="ActivationDistance" Value="8" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura hostil empiece a hablar. AJUSTA: Qué tan cerca debe estar el jugador para activar el diálogo hostil."/>
-            <Parameter Name="DisplayDistance" Value="12" Type="float" Description="Distancia máxima a la que el texto hostil es visible para el jugador. AJUSTA: Hasta qué distancia se puede ver el texto flotante hostil."/>
-            <Parameter Name="MinInterval" Value="5" Type="float" Description="Tiempo mínimo en segundos que la criatura hostil esperará para decir una nueva frase. AJUSTA: Frecuencia mínima entre diálogos hostiles."/>
-            <Parameter Name="MaxInterval" Value="20" Type="float" Description="Tiempo máximo en segundos que la criatura hostil esperará para decir una nueva frase. AJUSTA: Frecuencia máxima entre diálogos hostiles."/>
-            <Parameter Name="RiseDuration" Value="1.5" Type="float" Description="Duración en segundos del ascenso del texto hostil desde las rodillas hasta la cabeza. AJUSTA: Qué tan rápido sube el texto hostil desde abajo hacia arriba."/>
-            <Parameter Name="FadeDuration" Value="0.3" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto hostil al final."/>
         </ComponentTemplate>
 
 <ComponentTemplate Name="ZombieRunAwayBehavior" Description="Comportamiento de huida para zombis - NO HACE NADA, los zombis nunca huyen por salud baja" Guid="4cb713ec-4ae6-472b-b102-2d629200fe10" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
