@@ -1,30 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Engine;
-using Engine.Graphics;
-using Engine.Media;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentRandomChatter2 : Component, IUpdateable, IDrawable
+	public class ComponentRandomChatter2 : Component, IUpdateable
 	{
-		public int[] DrawOrders
-		{
-			get
-			{
-				return new int[] { 2000 };
-			}
-		}
-
-		public float ActivationDistance { get; set; }
-		public float DisplayDistance { get; set; }
-		public float MinInterval { get; set; }
-		public float MaxInterval { get; set; }
-		public float RiseDuration { get; set; }
-		public float FadeDuration { get; set; }
-
 		public UpdateOrder UpdateOrder
 		{
 			get
@@ -37,169 +20,54 @@ namespace Game
 		{
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			this.m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
-			this.m_subsystemModelsRenderer = base.Project.FindSubsystem<SubsystemModelsRenderer>(true);
+			this.m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			this.m_componentBody = base.Entity.FindComponent<ComponentBody>(true);
-			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>();
 			this.m_componentHealth = base.Entity.FindComponent<ComponentHealth>();
-			this.m_font = ContentManager.Get<BitmapFont>("Fonts/Pericles");
-
-			this.ActivationDistance = values.GetValue<float>("ActivationDistance", 5f);
-			this.DisplayDistance = values.GetValue<float>("DisplayDistance", 10f);
-			this.MinInterval = values.GetValue<float>("MinInterval", 8f);
-			this.MaxInterval = values.GetValue<float>("MaxInterval", 30f);
-			this.RiseDuration = values.GetValue<float>("RiseDuration", 2f);
-			this.FadeDuration = values.GetValue<float>("FadeDuration", 0.5f);
-
 			this.SetNextChatterTime();
 		}
 
 		public void Update(float dt)
 		{
-			// 🚫 No hablar si está muerto
-			if (this.m_componentHealth != null && this.m_componentHealth.Health <= 0f)
-			{
-				this.m_currentState = State.Inactive;
-				this.m_activePhrase = null;
-				return;
-			}
-
-			double gameTime = this.m_subsystemTime.GameTime;
-
-			if (this.m_currentState == State.Inactive)
-			{
-				if (gameTime > this.m_nextChatterTime)
-				{
-					bool playerNear = false;
-					foreach (PlayerData playerData in this.m_subsystemPlayers.PlayersData)
-					{
-						ComponentPlayer componentPlayer = playerData.ComponentPlayer;
-						if (((componentPlayer != null) ? componentPlayer.ComponentBody : null) != null &&
-							Vector3.DistanceSquared(this.m_componentBody.Position, playerData.ComponentPlayer.ComponentBody.Position) < this.ActivationDistance * this.ActivationDistance)
-						{
-							playerNear = true;
-							break;
-						}
-					}
-					if (playerNear)
-					{
-						this.m_activePhrase = m_phrases[this.m_random.Int(0, m_phrases.Count - 1)];
-						this.m_currentState = State.Rising;
-						this.m_riseStartTime = gameTime;
-						this.SetNextChatterTime();
-						return;
-					}
-					this.m_nextChatterTime = gameTime + 1.0;
-					return;
-				}
-			}
-			else if (this.m_currentState == State.Rising)
-			{
-				double riseProgress = (gameTime - this.m_riseStartTime) / this.RiseDuration;
-
-				if (riseProgress >= 1f)
-				{
-					this.m_currentState = State.FadeOut;
-					this.m_fadeStartTime = gameTime;
-				}
-			}
-			else if (this.m_currentState == State.FadeOut)
-			{
-				if (gameTime > this.m_fadeStartTime + this.FadeDuration)
-				{
-					this.m_currentState = State.Inactive;
-					this.m_activePhrase = null;
-				}
-			}
-		}
-
-		public void Draw(Camera camera, int drawOrder)
-		{
 			if (this.m_componentHealth != null && this.m_componentHealth.Health <= 0f)
 				return;
-			if (this.m_currentState == State.Inactive || string.IsNullOrEmpty(this.m_activePhrase))
-			{
-				return;
-			}
 
-			// Verificar distancia de visualización
-			bool playerInRange = false;
+			if (this.m_subsystemTime.GameTime < this.m_nextChatterTime)
+				return;
+
+			bool playerNear = false;
 			foreach (PlayerData playerData in this.m_subsystemPlayers.PlayersData)
 			{
 				ComponentPlayer componentPlayer = playerData.ComponentPlayer;
 				if (((componentPlayer != null) ? componentPlayer.ComponentBody : null) != null &&
-					Vector3.DistanceSquared(this.m_componentBody.Position, playerData.ComponentPlayer.ComponentBody.Position) < this.DisplayDistance * this.DisplayDistance)
+					Vector3.DistanceSquared(this.m_componentBody.Position, playerData.ComponentPlayer.ComponentBody.Position) < 25f)
 				{
-					playerInRange = true;
+					playerNear = true;
 					break;
 				}
 			}
-
-			if (!playerInRange)
+			if (!playerNear)
 				return;
 
-			// Calcular alpha basado en el estado actual
-			float alpha = 1f;
-			double currentTime = this.m_subsystemTime.GameTime;
-
-			if (this.m_currentState == State.FadeOut)
-			{
-				double fadeProgress = (currentTime - this.m_fadeStartTime) / this.FadeDuration;
-				alpha = 1f - MathUtils.Clamp((float)fadeProgress, 0f, 1f);
-			}
-
-			// Calcular progreso del ascenso
-			double riseProgress = (currentTime - this.m_riseStartTime) / this.RiseDuration;
-			float progress = MathUtils.Clamp((float)riseProgress, 0f, 1f);
-
-			FontBatch3D fontBatch = this.m_subsystemModelsRenderer.PrimitivesRenderer.FontBatch(this.m_font, 1, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
-
-			Vector3 center = (this.m_componentBody.BoundingBox.Min + this.m_componentBody.BoundingBox.Max) * 0.5f;
-			float height = this.m_componentBody.BoundingBox.Max.Y - this.m_componentBody.BoundingBox.Min.Y;
-
-			// Posición que asciende desde las rodillas hasta la cabeza
-			float startHeight = height * 0.3f; // Rodillas
-			float endHeight = height * 0.9f;   // Cabeza
-			float currentHeight = startHeight + (endHeight - startHeight) * progress;
-
-			Vector3 position = new Vector3(center.X, center.Y + currentHeight, center.Z);
-
-			Vector3 right = Vector3.Normalize(Vector3.Cross(camera.ViewDirection, camera.ViewUp));
-			float scale = 0.005f;
-
-			Vector3 screenPos = Vector3.Transform(position, camera.ViewMatrix);
-			Vector3 rightVec = Vector3.TransformNormal(right, camera.ViewMatrix) * scale;
-			Vector3 downVec = Vector3.TransformNormal(-Vector3.UnitY, camera.ViewMatrix) * scale;
-
-			Color color = Color.White * alpha;
-			fontBatch.QueueText(this.m_activePhrase, screenPos, rightVec, downVec, color, TextAnchor.Center);
-			fontBatch.Flush(camera.ViewProjectionMatrix, false);
+			// CORREGIDO: Se quita el 'this.' porque es miembro estático
+			string phrase = m_phrases[this.m_random.Int(0, m_phrases.Count - 1)];
+			Vector3 pos = (this.m_componentBody.BoundingBox.Min + this.m_componentBody.BoundingBox.Max) * 0.5f;
+			pos.Y = this.m_componentBody.BoundingBox.Max.Y;
+			this.m_subsystemParticles.AddParticleSystem(new ChatterParticleSystem(pos, Color.White, phrase, 2.5f));
+			this.SetNextChatterTime();
 		}
 
 		private void SetNextChatterTime()
 		{
-			this.m_nextChatterTime = this.m_subsystemTime.GameTime + (double)this.m_random.Float(this.MinInterval, this.MaxInterval);
+			this.m_nextChatterTime = this.m_subsystemTime.GameTime + 30.0;
 		}
 
-		private ComponentCreature m_componentCreature;
-		private ComponentHealth m_componentHealth;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemPlayers m_subsystemPlayers;
-		private SubsystemModelsRenderer m_subsystemModelsRenderer;
+		private SubsystemParticles m_subsystemParticles;
 		private ComponentBody m_componentBody;
-		private BitmapFont m_font;
+		private ComponentHealth m_componentHealth;
 		private Game.Random m_random = new Game.Random();
-		private State m_currentState;
-		private string m_activePhrase;
-		private double m_riseStartTime;
-		private double m_fadeStartTime;
 		private double m_nextChatterTime;
-
-		private enum State
-		{
-			Inactive,
-			Rising,
-			FadeOut
-		}
 
 		private static readonly List<string> m_phrases = new List<string>
 		{
