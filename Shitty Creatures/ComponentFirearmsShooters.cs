@@ -9,6 +9,23 @@ namespace Game
 {
 	public class ComponentFirearmsShooters : Component, IUpdateable
 	{
+		// ============================================================
+		// ENUM DE ESTADOS DE DIÁLOGO (Cargado, Recargando, Curado)
+		// ============================================================
+		public enum ShooterStatus
+		{
+			Loaded,    // CARGADO!  - al finalizar la recarga
+			Reloading, // RECARGANDO! - al iniciar la recarga
+			Healed     // CURADO!   - al curarse la vida
+		}
+
+		// ============================================================
+		// CAMPOS DE LA MÁQUINA DE ESTADOS DE DIÁLOGO
+		// ============================================================
+		private ShooterStatus? m_currentStatus;   // Estado actual (null = Idle/Ninguno)
+		private double m_statusStartTime;          // Momento en el que entró al estado
+		private const double StatusDisplayDuration = 2.0; // Duración visible del estado (s)
+
 		private static readonly Dictionary<int, FirearmConfig> FirearmConfigs = new Dictionary<int, FirearmConfig>();
 
 		public Vector2 MaxShootingDistance = new Vector2(5f, 100f);
@@ -42,7 +59,6 @@ namespace Game
 		private ComponentCreature m_componentCreature;
 		private ComponentInventory m_componentInventory;
 
-		// INTEGRACIÓN: Variable para acceder al nuevo diccionario por nombres si existe
 		private ComponentNewInventory m_componentNewInventory;
 
 		private ComponentChaseBehavior m_componentChaseBehavior;
@@ -61,6 +77,33 @@ namespace Game
 		private double m_lastMeleeAttackTime;
 		private ComponentMiner m_componentMiner;
 		private ComponentPathfinding m_componentPathfinding;
+
+		// ============================================================
+		// MÉTODOS DE LA MÁQUINA DE ESTADOS DE DIÁLOGO
+		// ============================================================
+		/// <summary>Transiciona a un nuevo estado de diálogo y registra el tiempo de entrada.</summary>
+		private void TransitionToStatus(ShooterStatus newStatus)
+		{
+			m_currentStatus = newStatus;
+			m_statusStartTime = m_subsystemTime != null ? m_subsystemTime.GameTime : 0.0;
+		}
+
+		/// <summary>Limpia el estado de diálogo actual (regresa a Idle).</summary>
+		private void ClearStatus()
+		{
+			m_currentStatus = null;
+		}
+
+		/// <summary>Actualiza la máquina de estados de diálogo: limpia el estado si ya expiró.</summary>
+		private void UpdateStatusStateMachine(double currentTime)
+		{
+			if (m_currentStatus.HasValue &&
+				currentTime - m_statusStartTime >= StatusDisplayDuration)
+			{
+				// El estado visible ya expiró, regresar a Idle
+				ClearStatus();
+			}
+		}
 
 		private ComponentCreature GetTarget()
 		{
@@ -99,11 +142,7 @@ namespace Game
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 
-			// INTEGRACIÓN: Carga el inventario. Si la entidad tiene "NewInventory", lo detectará aquí automáticamente 
-			// porque NewInventory hereda de Inventory. Por lo tanto, m_componentInventory tendrá los slots ya llenos.
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
-
-			// INTEGRACIÓN: Intenta obtener la referencia específica del NewInventory (no lanza error si no existe)
 			m_componentNewInventory = base.Entity.FindComponent<ComponentNewInventory>(false);
 
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(false);
@@ -122,6 +161,10 @@ namespace Game
 			{
 				throw new InvalidOperationException("NPC necesita ComponentCreature y ComponentInventory para usar armas de fuego.");
 			}
+
+			// INICIALIZACIÓN DE LA MÁQUINA DE ESTADOS DE DIÁLOGO
+			m_currentStatus = null;
+			m_statusStartTime = 0.0;
 		}
 
 		private void InitializeFirearmConfigs()
@@ -465,14 +508,19 @@ namespace Game
 
 		public void Update(float dt)
 		{
-
-			// Si la celebración está activa, no realizar ninguna acción de disparo/ataque
 			if (AchievementsManager.IsCelebrationActive) return;
 
 			double currentTime = m_subsystemTime.GameTime;
+
+			// ============================================================
+			// MÁQUINA DE ESTADOS DE DIÁLOGO: actualiza/cierra estado visible
+			// ============================================================
+			UpdateStatusStateMachine(currentTime);
+
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 			{
 				ResetAnimations();
+				ClearStatus(); // Limpia el estado al morir
 				return;
 			}
 			ComponentBanditHerdBehavior ourBanditHerd = Entity.FindComponent<ComponentBanditHerdBehavior>();
@@ -497,7 +545,6 @@ namespace Game
 			{
 				ApplyReloadingAnimation(dt);
 
-				// Calcular el tiempo real de recarga considerando los multiplicadores de cada arma
 				double actualReloadTime = ReloadTime;
 				if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.Izh43Block), true, false))
 				{
@@ -539,6 +586,11 @@ namespace Game
 								string text = LanguageControl.Get("ComponentFirearmsShooters", "2"); // "CARGADO!"
 								var ps = new ReloadStatusParticleSystem(pos, vel, text);
 								m_subsystemParticles.AddParticleSystem(ps, false);
+
+								// ============================================================
+								// TRANSICIÓN DE ESTADO: -> Loaded (Cargado)
+								// ============================================================
+								TransitionToStatus(ShooterStatus.Loaded);
 							}
 						}
 						catch (Exception ex)
@@ -581,18 +633,20 @@ namespace Game
 				{
 					if (m_random.Float(0f, 1f) < SelfHealProbability)
 					{
-						// Curar salud completa
 						m_componentCreature.ComponentHealth.Heal(1f);
 
-						// Efecto de texto arcoíris desde las piernas
 						if (m_subsystemParticles != null)
 						{
 							Vector3 feetPos = m_componentCreature.ComponentBody.Position;
 							Vector3 velocity = new Vector3(0f, 0.5f, 0f);
-							// Obtener texto localizado usando LanguageControl
 							string healText = LanguageControl.Get("ComponentFirearmsShooters", "0");
 							var particleSystem = new HealTextParticleSystem(feetPos, velocity, healText);
 							m_subsystemParticles.AddParticleSystem(particleSystem, false);
+
+							// ============================================================
+							// TRANSICIÓN DE ESTADO: -> Healed (Curado)
+							// ============================================================
+							TransitionToStatus(ShooterStatus.Healed);
 						}
 					}
 					m_nextSelfHealTime = currentTime + 0.5;
@@ -601,17 +655,14 @@ namespace Game
 
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
 
-			// Reemplazo del antiguo bloque UseMeleeSwitch
 			if (distance <= MaxShootingDistance.X)
 			{
 				if (!m_isMelee)
 				{
-					// 1. Intentar equipar un arma cuerpo a cuerpo real
 					if (FindMeleeWeapon())
 					{
 						SwitchToMeleeMode();
 					}
-					// 2. Si no tiene arma pero es Bandit2/8, cambiar a slot vacío (mano vacía)
 					else if (IsUnarmedMeleeAllowed() && FindEmptySlot())
 					{
 						SwitchToMeleeMode();
@@ -622,7 +673,6 @@ namespace Game
 					UpdateMeleeMode(dt, target);
 					return;
 				}
-				// Si no tiene arma melee y no se le permite atacar a puño, continúa con el arma de fuego
 			}
 			else
 			{
@@ -1075,13 +1125,6 @@ namespace Game
 					m_subsystemProjectiles.FireProjectile(bulletValue, shootPosition, config.BulletSpeed * (direction + spread), Vector3.Zero, m_componentCreature);
 				}
 
-				// ============================================================
-				// 1. PARTÍCULAS DE LA ESPALDA - ELIMINADAS (ya no están aquí)
-				// ============================================================
-
-				// ============================================================
-				// 2. PARTÍCULAS DE LA BOCA DEL CAÑÓN - SE MANTIENEN
-				// ============================================================
 				if (m_subsystemParticles != null && m_subsystemTerrain != null)
 				{
 					m_subsystemParticles.AddParticleSystem(
@@ -1090,7 +1133,6 @@ namespace Game
 					);
 				}
 
-				// Ruido
 				if (m_subsystemNoise != null)
 				{
 					m_subsystemNoise.MakeNoise(shootPosition, 0.8f, config.NoiseRadius);
@@ -1103,7 +1145,6 @@ namespace Game
 				}
 				m_subsystemAudio.PlaySound(config.ShootSound, SoundVolume, pitchVariation, shootPosition, SoundRange, true);
 
-				// Sonido de ataque
 				if (m_componentCreatureSounds != null)
 				{
 					m_componentCreatureSounds.PlayAttackSound();
@@ -1167,7 +1208,7 @@ namespace Game
 						m_subsystemParticles.AddParticleSystem(additionalParticles, false);
 					}
 
-					// --- NUEVO: Mostrar texto "RECARGANDO!" con efecto arcoíris ---
+					// --- Mostrar texto "RECARGANDO!" con efecto arcoíris ---
 					if (m_subsystemParticles != null && m_componentCreature != null)
 					{
 						Vector3 pos = m_componentCreature.ComponentCreatureModel.EyePosition + new Vector3(0f, 0.2f, 0f);
@@ -1175,6 +1216,11 @@ namespace Game
 						string text = LanguageControl.Get("ComponentFirearmsShooters", "1"); // "RECARGANDO!"
 						var ps = new ReloadStatusParticleSystem(pos, vel, text);
 						m_subsystemParticles.AddParticleSystem(ps, false);
+
+						// ============================================================
+						// TRANSICIÓN DE ESTADO: -> Reloading (Recargando)
+						// ============================================================
+						TransitionToStatus(ShooterStatus.Reloading);
 					}
 				}
 				catch (Exception ex)
@@ -1235,7 +1281,6 @@ namespace Game
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
 			}
-			// Eliminar la llamada a FindMeleeWeapon() que estaba aquí
 		}
 
 		private void SwitchToRangedMode()
@@ -1246,8 +1291,6 @@ namespace Game
 
 		private void UpdateMeleeMode(float dt, ComponentCreature target)
 		{
-			// Solo intentar encontrar arma melee si actualmente no tenemos arma equipada
-			// pero no para los que atacan a puño (slot vacío)
 			if (!HasMeleeWeaponEquipped() && !IsUnarmedMeleeAllowed())
 			{
 				FindMeleeWeapon();
@@ -1340,7 +1383,6 @@ namespace Game
 
 		private bool IsUnarmedMeleeAllowed()
 		{
-			// Obtener el nombre de la plantilla de la entidad
 			var dbObject = base.Entity?.ValuesDictionary?.DatabaseObject;
 			if (dbObject == null) return false;
 			string templateName = dbObject.Name;
