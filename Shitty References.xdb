@@ -399,11 +399,9 @@
     <Parameter Name="MinReloadInterval" Value="5" Type="float" Guid="9120d3e1-2f7c-47f0-9fee-ff0119236f26" Description="Segundos mínimos entre recargas"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool" Guid="786e20f7-df47-4c67-889b-8155bb125182" Description="Si es true, activa recargas aleatorias basadas en ReloadChance"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float" Guid="1324e873-eb18-4495-909f-03011ea74cc0" Description="Ajuste vertical del apuntado (0 = cabeza, 0.5 = torso, 1.0 = pies)"/>
-    <Parameter Name="MeleeAttackInterval" Value="0.8" Type="float" Guid="7072b92e-1bed-44ec-893a-5429ceff71f8" Description="Tiempo entre ataques cuerpo a cuerpo (en segundos)"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float" Guid="f94332f8-dacb-4d13-b40f-afbd6b171d65" Description="Tiempo de recarga de armas de fuego (en segundos)"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float" Guid="c2358547-8d40-4f5d-8089-1e0c267b9656" Description="Tiempo de apuntado para armas no automáticas (en segundos)"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float" Guid="8b2b6f61-4ca1-43c3-ac39-b18a2c9dbfff" Description="Tiempo de apuntado para rifles de francotirador (en segundos)"/>
-    <Parameter Name="CanHealSelf" Value="false" Type="bool" Guid="b16dce50-f923-4cda-b9dd-1f821dd2422f" Description="Indica si la criatura puede curarse a sí misma"/>
     <Parameter Name="SelfHealProbability" Value="0.0" Type="float" Guid="711226b5-ac84-432a-9629-9a888e69bec0" Description="Probabilidad de autocuración (0-1) cada 3 segundos"/>
 </ComponentTemplate>
 
