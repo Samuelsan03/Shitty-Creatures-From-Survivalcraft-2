@@ -100,14 +100,7 @@
                 <Parameter Name="Description" Guid="9ff6dfde-0028-41bc-afce-2e91e12ca24f" Value="[Description:Naomi]" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="4a3c5fa5-e9c3-4a6c-8102-5cdeb05f6f46" Value="Kicked your ass,shit with fists" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="RandomChatter" Guid="92e6e0d6-a0d7-4a08-b001-2eb7fba77918" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+            <MemberComponentTemplate Name="RandomChatter" Guid="92e6e0d6-a0d7-4a08-b001-2eb7fba77918" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="3dcb1135-4e9b-46cd-8d37-fe7e7e7061b0" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="d8f846bf-1b14-41a0-9154-5152965c9007" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="9173da36-bf4c-49dd-93b2-c5736f610fc0" Value="2" Type="float"/>
@@ -258,14 +251,7 @@
                 <Parameter Name="Description" Guid="c9d0e1f2-a3b4-4i56-9j78-e9f0a1b2c3d4" Value="[Description:Ricardo]" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="d0e1f2a3-b4c5-4j67-9k89-f0a1b2c3d4e5" Value="Quartered" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="RandomChatter" Guid="4736ee89-4570-4ce7-8c66-39b987a94c76" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+            <MemberComponentTemplate Name="RandomChatter" Guid="4736ee89-4570-4ce7-8c66-39b987a94c76" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e1f2a3b4-c5d6-4k78-9l90-a1b2c3d4e5f6" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="f2a3b4c5-d6e7-4l89-9m01-b2c3d4e5f6a7" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="a3b4c5d6-e7f8-4m90-9n12-c3d4e5f6a7b8" Value="3.0" Type="float"/>
@@ -417,14 +403,7 @@
         <Parameter Name="KillVerbs" Guid="d8e9f0a1-b2c3-7456-bcde-f0123456789a" Value="Pecked" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="facfeda6-3f52-4eec-8d96-c1b446e643fe" Value="True" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RandomChatter" Guid="91d9a8ec-276f-4dec-8591-965f594eae9b" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RandomChatter" Guid="91d9a8ec-276f-4dec-8591-965f594eae9b" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e9f0a1b2-c3d4-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="f0a1b2c3-d4e5-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-7789-ef01-23456789abcd" Value="4.0" Type="float"/>
@@ -568,14 +547,7 @@
         <Parameter Name="Description" Guid="b4c5d6e7-f8a9-7012-7890-f0123456789a" Value="[Description:Barack]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="c5d6e7f8-a9b0-7123-8901-0123456789ab" Value="Negotiated" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RandomChatter" Guid="210780ff-1756-470a-a0b8-2168da58fb71" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RandomChatter" Guid="210780ff-1756-470a-a0b8-2168da58fb71" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="d6e7f8a9-b0c1-7234-9012-123456789abc" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="e7f8a9b0-c1d2-7345-0123-23456789abcd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="f8a9b0c1-d2e3-7456-1234-3456789abcde" Value="4.95" Type="float"/>
@@ -715,14 +687,7 @@
         <Parameter Name="Description" Guid="cedc98b7-5e9a-47dc-af72-fe4542a5e4da" Value="[Description:ElMarihuanero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="e86ffc5f-0e5a-438b-b14f-7dc83a9ea82e" Value="He put the weed up your ass" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RandomChatter" Guid="1adf0a5d-39b2-4b5b-806e-f2e6ef5c9d88" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RandomChatter" Guid="1adf0a5d-39b2-4b5b-806e-f2e6ef5c9d88" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="325937f0-e327-4fac-b236-33d0317a8c73" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="71e06217-4d5d-439b-b4ea-a1e11d778115" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="841fa564-4d90-44a0-8071-1effc03bd6cf" Value="3.25" Type="float"/>
@@ -871,14 +836,7 @@
         <Parameter Name="Description" Guid="954d9f04-d47b-4033-843f-03757c3b2fbd" Value="[Description:ElMarihuaneroMamon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="dd068946-0f2d-42f6-baa5-d59bc07290ce" Value="Shot drugged" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RandomChatter" Guid="6f0c56e3-849c-436d-9ba4-0b1e81007552" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="1" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RandomChatter" Guid="6f0c56e3-849c-436d-9ba4-0b1e81007552" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="7a5f28d1-f3eb-4923-9e6d-7a0b42c22d0f" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="5226597d-239d-4f09-a61f-147907109158" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="02c0ca9d-43ea-4533-be55-b241256d234e" Value="4.85" Type="float"/>
@@ -1270,14 +1228,7 @@
         <Parameter Name="Description" Guid="d1e2f3a4-b5c6-7789-ef01-3456789abcd6" Value="[Description:ClaudeSpeed]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="e2f3a4b5-c6d7-7890-f012-456789abcde7" Value="Outran" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RandomChatter" Guid="1eac9f2d-2b62-4fca-9295-858ee66f75e5" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RandomChatter" Guid="1eac9f2d-2b62-4fca-9295-858ee66f75e5" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f3a4b5c6-d7e8-7901-0123-56789abcdef8" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="a4b5c6d7-e8f9-8012-1234-6789abcdef09" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="b5c6d7e8-f9a0-8123-2345-789abcdef01a" Value="0.8" Type="float"/>
@@ -1429,14 +1380,7 @@
         <Parameter Name="Description" Guid="5a6297d1-3d1e-48a7-a522-ba03f0d1452d" Value="[Description:TommyVercetti]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="10b26c1d-50f4-451f-960f-6eccb071ddd0" Value="Eliminated" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RandomChatter" Guid="19c93dc5-1cc4-4ebc-955b-d5c459b6e129" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RandomChatter" Guid="19c93dc5-1cc4-4ebc-955b-d5c459b6e129" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="7747c314-2fd2-4b31-9fd8-82798fb5dd4c" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="158a2c37-3109-4a5d-9fce-951f6237e49b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="ae4c853b-8a7b-4b84-a55a-4eb45b3ab9a3" Value="6.5" Type="float"/>
@@ -1549,14 +1493,7 @@
         <Parameter Name="KillVerbs" Guid="a4b5c6d7-e8f9-7890-f012-456789abcde9" Value="Annihilated" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="0dbcd5c6-7ccd-466a-b92f-5c0dca33d39e" Value="True" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RandomChatter" Guid="8a17bf8c-e4a7-4e2d-8de5-5646aa56a747" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RandomChatter" Guid="8a17bf8c-e4a7-4e2d-8de5-5646aa56a747" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
 <MemberComponentTemplate Name="Spawn" Guid="096697fa-a354-4d4f-92b5-819c3e747943">
     <Parameter Name="AutoDespawn" Guid="9c30bebe-f3ad-4297-8afd-f4c855f20fdd" Value="False" Type="bool"/>
 </MemberComponentTemplate>
@@ -1669,14 +1606,7 @@
     <MemberComponentTemplate Name="Spawn" Guid="e369fa16-daf7-4131-baf0-6161ba2202cd">
     <Parameter Name="AutoDespawn" Guid="438af5d9-c575-4d50-9eaf-40ea11194411" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RandomChatter2" Guid="e9e0742a-bb2d-437a-9e86-66159cd0b984" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RandomChatter2" Guid="e9e0742a-bb2d-437a-9e86-66159cd0b984" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e9f0a1b2-c3d4-7890-5678-678901234567" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="f0a1b2c3-d4e5-7901-6789-789012345678" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-8012-7890-890123456789" Value="4.5" Type="float"/>
@@ -1790,14 +1720,7 @@
     <MemberComponentTemplate Name="Spawn" Guid="1fc6bce3-d7c0-4afe-834e-3fce8a40cc7e">
     <Parameter Name="AutoDespawn" Guid="5cc7abc3-90f3-43e2-9bd2-18fc5a742a45" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter2" Guid="f17b8472-ed3c-44b1-bf18-a2da395e4bd8" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter2" Guid="f17b8472-ed3c-44b1-bf18-a2da395e4bd8" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a0b1c2d3-e4f5-7890-5678-778901234567" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b1c2d3e4-f5a6-7901-6789-889012345678" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c2d3e4f5-a6b7-8012-7890-990123456789" Value="6.35" Type="float"/>
@@ -2711,14 +2634,7 @@
         <Parameter Name="Description" Guid="59a9b248-9e3c-4986-a524-cc42162a646c" Value="[Description:ElBallestador]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="b7337a01-ab16-4208-ade1-7ee7d5882412" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter2" Guid="1590c031-a9ad-4c6a-8981-d377fbc0339a" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter2" Guid="1590c031-a9ad-4c6a-8981-d377fbc0339a" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5"/>
 <MemberComponentTemplate Name="PoisonInfected" Guid="13759dcc-5ef4-4c5c-a73f-cb6c37f585dd">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2978,14 +2894,7 @@
         <Parameter Name="Description" Guid="a82cd753-b101-46bb-bbab-cc2c75bfef07" Value="[Description:ElArquero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="7ce38653-070e-46db-934e-86457828cfe8" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter2" Guid="affb4d68-bd1c-44a0-bcc8-b2cd04f500ca" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter2" Guid="affb4d68-bd1c-44a0-bcc8-b2cd04f500ca" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="335b40bd-1a56-4e68-9e53-752938d5d946" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="018d2078-f08f-4988-b0e5-dd26a4d69f7d" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="812eb111-ff65-435e-bf32-3cd84caad593" Value="10" Type="float"/>
@@ -3122,14 +3031,7 @@
         <Parameter Name="Description" Guid="1bad7bdc-f43d-4a20-9390-83392199b486" Value="[Description:ArqueroPrisionero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="1054cce7-47a3-48fc-b102-0be025ff0145" Value="Hunted with arrows" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="e628dda2-f007-4bc7-9c6c-7e38c33c2dbc" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="e628dda2-f007-4bc7-9c6c-7e38c33c2dbc" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="d49516b6-0991-4ae0-9b53-01e5da652a47" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="ec18be0a-bd32-45c5-87d4-d2a6c95acfb3" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="524cc0ab-fc9a-48ab-934b-50c53f64e739" Value="15" Type="float"/>
@@ -3266,14 +3168,7 @@
         <Parameter Name="Description" Guid="e7f8a9b0-c1d2-7678-3456-123456789abc" Value="[Description:BallestadoraMusculosa]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="d516d9ca-cb34-4508-a1de-45e41c9deeb4" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="7fb12d64-65aa-4d63-933a-4a3729df453f" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="7fb12d64-65aa-4d63-933a-4a3729df453f" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="dae23531-9ea2-481b-bf77-e9cea7be0d0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="50150646-6812-459d-b085-dbf9a6e3bf14" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="5852c536-3cc4-421a-833e-673987d16bca" Value="8" Type="float"/>
@@ -3422,14 +3317,7 @@
         <Parameter Name="Description" Guid="9da16f92-3c03-400c-bf22-d8550f9fcf30" Value="[Description:WalterZombie]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="dc09bd32-722f-4e8c-bab2-72c19e6afe75" Value="Eaten" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="83be6e5d-08ff-4d73-9e71-10100cd45034" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="83be6e5d-08ff-4d73-9e71-10100cd45034" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="de13a336-a0c2-418f-a400-ee599be26e1d" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="6f4ec9c1-5d50-4d86-aa0c-47f704ea8887" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="3abe2de4-f58d-4652-acb2-ee932fb6bb49" Value="4.25" Type="float"/>
@@ -3681,14 +3569,7 @@
         <Parameter Name="Description" Guid="f6a7b8c9-d0e1-7345-abcd-ef0123456789" Value="[Description:AladinaCorrupta]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="a7b8c9d0-e1f2-7456-bcde-f0123456789a" Value="beaten" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter2" Guid="3114daf6-0708-4be1-b0a4-35021b586ed7" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter2" Guid="3114daf6-0708-4be1-b0a4-35021b586ed7" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b8c9d0e1-f2a3-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c9d0e1f2-a3b4-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="d0e1f2a3-b4c5-7789-ef01-23456789abcd" Value="3.5" Type="float"/>
@@ -3832,14 +3713,7 @@
         <Parameter Name="Mass" Guid="f2a3b4c5-d6e7-7123-8901-cdef01234567" Value="85" Type="float"/>
         <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="dcbc7f4e-7665-4d02-b4ba-ff94b498e646" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="dcbc7f4e-7665-4d02-b4ba-ff94b498e646" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="Creature" Guid="b4c5d6e7-f8a9-7345-0123-ef0123456789">
         <Parameter Name="DisplayName" Guid="1b70ac5c-bedd-445e-8287-245c1c58cc3f" Value="[DisplayName:CarlJohnson]" Type="string"/>
         <Parameter Name="Category" Guid="1b33f68a-e546-4100-87ba-75b6e8838444" Value="LandOther" Type="Game.CreatureCategory"/>
@@ -3997,14 +3871,7 @@
                 <Parameter Name="Description" Guid="af14ffb2-c189-40a5-adfc-6d9fe634b122" Value="[Description:ElGuerrillero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="297871a8-61fc-4376-a2dc-882348a4af4f" Value="fusiled" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter2" Guid="20d6a84c-db2c-4366-99ff-46bcb2325555" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter2" Guid="20d6a84c-db2c-4366-99ff-46bcb2325555" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="c3b678ae-4154-4165-a673-01fad2b62f5b" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="5fab7c99-362d-451f-a651-d4877a7830b8" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="8d4f77f8-005e-4399-9629-1d16e606a406" Value="10" Type="float"/>
@@ -4167,14 +4034,7 @@
         <Parameter Name="Description" Guid="1d666495-02d9-483c-bc77-2f828d919c1f" Value="[Description:ElGuerrilleroTenebroso]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="2bb9a103-ca17-4a55-9d05-04a4b1157b4d" Value="fusiled" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter2" Guid="fb06ce12-27e2-46ac-adb7-ad597f374c43" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter2" Guid="fb06ce12-27e2-46ac-adb7-ad597f374c43" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="c14e135a-f7b5-4f1a-88e2-4080465a0eba" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="d596db2e-c9c3-4624-81cb-7e62e29ed4fe" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="f1e7b3a8-87ba-4164-871f-623d105fbf4d" Value="15.5" Type="float"/>
@@ -4295,14 +4155,7 @@
         <Parameter Name="Description" Guid="e2f3a4b5-c6d7-7789-ef01-3456789abcd7" Value="[Description:CamisasMorenas]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="f3a4b5c6-d7e8-7890-f012-456789abcde8" Value="torn to shreds" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter2" Guid="e4835493-73ab-448e-a6db-e08473f87ec7" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter2" Guid="e4835493-73ab-448e-a6db-e08473f87ec7" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a4b5c6d7-e8f9-7901-0123-56789abcdef9" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b5c6d7e8-f9a0-8012-1234-6789abcdef0a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c6d7e8f9-a0b1-8123-2345-789abcdef01b" Value="2.25" Type="float"/>
@@ -4432,14 +4285,7 @@
     <MemberComponentTemplate Name="Spawn" Guid="9c361b96-e4c1-4f56-8e58-28dc03159318">
         <Parameter Name="AutoDespawn" Guid="5ffcb004-1236-4c81-bb10-58e49da77531" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter2" Guid="87e70b5d-f471-4e43-8b3d-774c96c9b0c7" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter2" Guid="87e70b5d-f471-4e43-8b3d-774c96c9b0c7" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="ba520229-b06a-4b09-949e-4217be90a7c3" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c1a2e28a-4292-4229-acce-7373a0c256a0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="bb34c589-5102-4e76-a25c-deca29dcdd6b" Value="3" Type="float"/>
@@ -4623,14 +4469,7 @@
   <MemberComponentTemplate Name="Spawn" Guid="f135611a-4950-4afb-acd7-feb01cef3c68">
     <Parameter Name="AutoDespawn" Guid="a5f45d1b-2fc8-4f8e-abb9-2f44d396a39b" Value="False" Type="bool"/>
   </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="b8c9ea67-e0ad-48e3-b192-e2b035565f0e" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="b8c9ea67-e0ad-48e3-b192-e2b035565f0e" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
   <MemberComponentTemplate Name="FindPlayerBehavior" Guid="7da8c34c-dbc2-48cd-8083-7eaaf8e533af" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
   <MemberComponentTemplate Name="Miner" Guid="36b76dd2-ba89-4a1b-8172-898ff9272dd3" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
     <Parameter Name="AttackPower" Guid="db06c6c8-e973-448a-a5eb-f4e6fe517256" Value="15" Type="float"/>
@@ -4774,14 +4613,7 @@
         <Parameter Name="Description" Guid="adda200c-cc69-456b-8965-d0cd3687d226" Value="[Description:Tulio]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="cd45666c-3037-4a88-a642-1f0890b8e0d2" Value="lynched,asphyxiated" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="03bd350c-564e-4d90-8dd4-b5d2f34c6a6d" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="03bd350c-564e-4d90-8dd4-b5d2f34c6a6d" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="950cbca8-ca49-4c25-94e8-ce79640b1e4c" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="e07ceeff-1e7e-4850-970a-89d7e6452df9" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="0ea9739c-0eda-44c5-b16f-ef3713527f53" Value="4.95" Type="float"/>
@@ -4937,14 +4769,7 @@
         <Parameter Name="Description" Guid="613ec9d6-aa8c-40cc-8975-5531c7084993" Value="[Description:Brayan]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="db5d91f1-9ed2-4a85-9d20-9a8fa1fcc934" Value="bitched,broken arm,broken skull" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="a0b22eed-df29-454f-b954-b530800c11d9" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="a0b22eed-df29-454f-b954-b530800c11d9" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f1216d73-866f-410b-9c41-17ad15184515" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="20d2366f-02f2-4fb9-935d-8971d7b6af45" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="f2715b92-1af2-495c-bcbe-44721bc5f695" Value="4.95" Type="float"/>
@@ -5084,14 +4909,7 @@
                 <Parameter Name="Description" Guid="732f9735-e455-4a2c-b04e-2ae5c5a93132" Value="[Description:Richard]" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="fd9e5488-58e9-4b2b-b2c2-e211982cb8e6" Value="lynched" Type="string"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="42e6fbab-2022-491a-a922-ce0e7a4cacd6" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="42e6fbab-2022-491a-a922-ce0e7a4cacd6" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f458df98-a9f4-4341-9487-0bfc7d7ff172" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="5d147685-a72a-42bd-b5b5-54ba9d0ea62b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="d9264d1d-6702-4952-864d-19b7bdcc223c" Value="3.5" Type="float"/>
@@ -5572,14 +5390,7 @@
             <MemberComponentTemplate Name="Spawn" Guid="a10a1e28-226e-4239-97f3-e36001e733a8">
     <Parameter Name="AutoDespawn" Guid="96adca7b-0959-45b8-96eb-09641f76cb6e" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="20f18742-4272-449f-b937-00d609e0d250" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="20f18742-4272-449f-b937-00d609e0d250" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="1a638a0c-c6f1-43bd-a217-4e91c380d24b" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="15c88ded-ceba-4626-a390-df3f4d5d286a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="c5c7c0da-32b5-4d25-87e4-defa7ecca35f" Value="10" Type="float"/>
@@ -5849,14 +5660,7 @@
             <MemberComponentTemplate Name="Spawn" Guid="c9be37bb-21b3-485c-8100-fa6554d62a39">
     <Parameter Name="AutoDespawn" Guid="17625ed5-622d-427d-82fb-8187ea297bd2" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="RandomChatter" Guid="cfada442-a12c-47fd-9e82-7e77d1314716" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
-    <Parameter Name="MinInterval" Value="5" Type="float"/>
-    <Parameter Name="MaxInterval" Value="20" Type="float"/>
-    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter" Guid="cfada442-a12c-47fd-9e82-7e77d1314716" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f"/>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="084e4ddb-95fe-4f83-a033-b8e565341ca0" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="802f0e25-0910-497f-8e4a-cd1b9e412fbe" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="c5cb2a31-78c4-449d-97f7-6f3194f0b7cc" Value="6.5" Type="float"/>
