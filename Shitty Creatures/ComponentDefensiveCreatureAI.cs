@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using System.Reflection;
@@ -2157,14 +2157,13 @@ namespace Game
 			if (Terrain.ExtractContents(activeValue) == doubleMusketIndex)
 			{
 				int data = Terrain.ExtractData(activeValue);
-				bool isLoaded = DoubleMusketBlock.IsLoaded(data);
+				DoubleMusketBlock.LoadState loadState = DoubleMusketBlock.GetLoadState(data);
 				int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
-				if (!isLoaded || shotsRemaining < 2)
+				if (loadState != DoubleMusketBlock.LoadState.AntiTanksBullet || shotsRemaining < 2)
 				{
 					int newData = data;
-					newData = DoubleMusketBlock.SetLoaded(newData, true);
+					newData = DoubleMusketBlock.SetLoadState(newData, DoubleMusketBlock.LoadState.AntiTanksBullet);
 					newData = DoubleMusketBlock.SetShotsRemaining(newData, 2);
-					newData = DoubleMusketBlock.SetAntiTanksBullet(newData, true);
 					newData = DoubleMusketBlock.SetHammerState(newData, false);
 					int newValue = Terrain.MakeBlockValue(doubleMusketIndex, 0, newData);
 					inventory.RemoveSlotItems(activeSlot, 1);
