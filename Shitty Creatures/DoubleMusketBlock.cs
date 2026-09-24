@@ -11,6 +11,13 @@ namespace Game
 		public BlockMesh m_standaloneBlockMeshUnloaded;
 		public BlockMesh m_standaloneBlockMeshLoaded;
 
+		// Enum de estado de carga: vacío o cargado con bala anti-tanque
+		public enum LoadState
+		{
+			Empty,
+			AntiTanksBullet
+		}
+
 		public override void Initialize()
 		{
 			Model model = ContentManager.Get<Model>("Models/ShotGun2");
@@ -55,11 +62,11 @@ namespace Game
 			return Terrain.ReplaceData(value, data);
 		}
 
-		// Estado de carga
-		public static bool IsLoaded(int data) => (data & 1) != 0;
-		public static int SetLoaded(int data, bool loaded) => (data & ~1) | (loaded ? 1 : 0);
+		// Estado de carga (bit 0)
+		public static LoadState GetLoadState(int data) => (LoadState)(data & 1);
+		public static int SetLoadState(int data, LoadState state) => (data & ~1) | ((int)state & 1);
 
-		// Martillo
+		// Martillo (bit 1)
 		public static bool GetHammerState(int data) => (data & 2) != 0;
 		public static int SetHammerState(int data, bool state) => (data & ~2) | ((state ? 1 : 0) << 1);
 
@@ -70,10 +77,5 @@ namespace Game
 			shots = Math.Clamp(shots, 0, 2);
 			return (data & ~0x300) | ((shots & 3) << 8);
 		}
-
-		// Flag Anti-Tanque -> bit 10
-		private const int AntiTanksBulletFlag = 1 << 10;
-		public static bool IsAntiTanksBullet(int data) => (data & AntiTanksBulletFlag) != 0;
-		public static int SetAntiTanksBullet(int data, bool isAntiTanks) => isAntiTanks ? (data | AntiTanksBulletFlag) : (data & ~AntiTanksBulletFlag);
 	}
 }
