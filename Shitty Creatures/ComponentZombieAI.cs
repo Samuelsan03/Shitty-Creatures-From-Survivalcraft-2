@@ -49,6 +49,7 @@ namespace Game
 		private ComponentPathfinding m_pathfinding;
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
+		private ComponentNoiseAttraction m_componentNoiseAttraction;
 
 		// Nuevo: capacidad de montar
 		public bool CanBeMounted = false;
@@ -184,6 +185,7 @@ namespace Game
 			m_importanceLevel = 0f;
 			m_canUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
 			m_canEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing", false);
+			m_componentNoiseAttraction = base.Entity.FindComponent<ComponentNoiseAttraction>(false);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
@@ -315,7 +317,8 @@ namespace Game
 
 			// Nota: "AttractedToNoise" no existe en ComponentZombieChaseBehavior actual, 
 			// el estado es "InvestigatingNoise"
-			bool isNoiseState = (chaseState == "InvestigatingNoise");
+			bool isNoiseState = (chaseState == "InvestigatingNoise")
+	|| (m_componentNoiseAttraction != null && m_componentNoiseAttraction.IsInvestigatingNoise);
 
 			// Si estamos investigando un ruido, detener todas las acciones de combate inmediatamente
 			if (isNoiseState)
@@ -1419,9 +1422,8 @@ namespace Game
 			m_inventory.RemoveSlotItems(activeSlot, 1);
 
 			int data = 0;
-			data = DoubleMusketBlock.SetLoaded(data, true);
+			data = DoubleMusketBlock.SetLoadState(data, DoubleMusketBlock.LoadState.AntiTanksBullet);
 			data = DoubleMusketBlock.SetShotsRemaining(data, 2);
-			data = DoubleMusketBlock.SetAntiTanksBullet(data, true);
 			data = DoubleMusketBlock.SetHammerState(data, false);
 
 			int newValue = Terrain.MakeBlockValue(DoubleMusketBlock.Index, 0, data);
