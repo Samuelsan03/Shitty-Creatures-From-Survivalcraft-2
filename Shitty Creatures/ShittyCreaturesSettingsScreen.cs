@@ -22,7 +22,6 @@ namespace Game
 		private BevelledButtonWidget m_fastMeleeButton;
 		private BevelledButtonWidget m_musicButton;
 		private BevelledButtonWidget m_deathMusicButton;
-		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
 		public ShittyCreaturesSettingsScreen()
@@ -33,89 +32,65 @@ namespace Game
 			m_titleLabel = this.Children.Find<LabelWidget>("TopBar.Label", true);
 			m_titleLabel.Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "ScreenTitle" });
 
-			m_contentPanel = this.Children.Find<StackPanelWidget>("Content", true);
+			m_ghostButton = this.Children.Find<BevelledButtonWidget>("GhostButton", true);
+			this.Children.Find<LabelWidget>("GhostDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "GhostDescription" });
+			m_ghostButton.Text = GetGhostButtonText();
 
-			CreateOptionRow("ShittyCreaturesSettings", "GhostDescription", out m_ghostButton, Color.Gray, GetGhostButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "TankDescription", out m_tankButton, Color.Red, GetTankButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "SpawnDescription", out m_spawnButton, Color.LightGreen, GetSpawnButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "ThirstDescription", out m_thirstButton, GetThirstButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "CoordinateDisplay", out m_coordinateButton, GetCoordinateButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "PunchCommandDescription", out m_punchCommandButton, GetPunchCommandButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "CreativeDefenseDescription", out m_creativeDefenseButton, GetCreativeDefenseButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "FreeCameraDescription", out m_freeCameraButton, GetFreeCameraButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "BleedingDescription", out m_bleedingButton, GetBleedingButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "HealthBarDescription", out m_healthBarButton, GetHealthBarButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "SkeletonSpawnDescription", out m_skeletonSpawnButton, GetSkeletonSpawnButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "SpiderSpawnDescription", out m_spiderSpawnButton, GetSpiderSpawnButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "FastMeleeDescription", out m_fastMeleeButton, GetFastMeleeButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "InGameMusicDescription", out m_musicButton, GetMusicButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "DeathMusicDescription", out m_deathMusicButton, GetDeathMusicButtonText);
-		}
+			m_tankButton = this.Children.Find<BevelledButtonWidget>("TankButton", true);
+			this.Children.Find<LabelWidget>("TankDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "TankDescription" });
+			m_tankButton.Text = GetTankButtonText();
 
-		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
-		{
-			var rowPanel = new UniformSpacingPanelWidget
-			{
-				Direction = LayoutDirection.Horizontal,
-				Margin = new Vector2(0f, 8f)
-			};
+			m_spawnButton = this.Children.Find<BevelledButtonWidget>("SpawnButton", true);
+			this.Children.Find<LabelWidget>("SpawnDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "SpawnDescription" });
+			m_spawnButton.Text = GetSpawnButtonText();
 
-			var descriptionLabel = new LabelWidget
-			{
-				Text = LanguageControl.Get(new string[] { category, descriptionKey }),
-				HorizontalAlignment = WidgetAlignment.Far,
-				VerticalAlignment = WidgetAlignment.Center,
-				Margin = new Vector2(20f, 0f),
-				Size = new Vector2(600f, -1f),
-				WordWrap = true
-			};
+			m_thirstButton = this.Children.Find<BevelledButtonWidget>("ThirstButton", true);
+			this.Children.Find<LabelWidget>("ThirstDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "ThirstDescription" });
+			m_thirstButton.Text = GetThirstButtonText();
 
-			button = new BevelledButtonWidget
-			{
-				Size = new Vector2(310f, 60f),
-				BevelColor = buttonColor,
-				CenterColor = buttonColor,
-				Name = $"Button_{descriptionKey}",
-				VerticalAlignment = WidgetAlignment.Center,
-				Margin = new Vector2(20f, 0f),
-				Text = getButtonTextFunc()
-			};
+			m_coordinateButton = this.Children.Find<BevelledButtonWidget>("CoordinateButton", true);
+			this.Children.Find<LabelWidget>("CoordinateDisplayLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "CoordinateDisplay" });
+			m_coordinateButton.Text = GetCoordinateButtonText();
 
-			rowPanel.Children.Add(descriptionLabel);
-			rowPanel.Children.Add(button);
-			m_contentPanel.Children.Add(rowPanel);
-		}
+			m_punchCommandButton = this.Children.Find<BevelledButtonWidget>("PunchCommandButton", true);
+			this.Children.Find<LabelWidget>("PunchCommandDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "PunchCommandDescription" });
+			m_punchCommandButton.Text = GetPunchCommandButtonText();
 
-		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Func<string> getButtonTextFunc)
-		{
-			var rowPanel = new UniformSpacingPanelWidget
-			{
-				Direction = LayoutDirection.Horizontal,
-				Margin = new Vector2(0f, 8f)
-			};
+			m_creativeDefenseButton = this.Children.Find<BevelledButtonWidget>("CreativeDefenseButton", true);
+			this.Children.Find<LabelWidget>("CreativeDefenseDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "CreativeDefenseDescription" });
+			m_creativeDefenseButton.Text = GetCreativeDefenseButtonText();
 
-			var descriptionLabel = new LabelWidget
-			{
-				Text = LanguageControl.Get(new string[] { category, descriptionKey }),
-				HorizontalAlignment = WidgetAlignment.Far,
-				VerticalAlignment = WidgetAlignment.Center,
-				Margin = new Vector2(20f, 0f),
-				Size = new Vector2(600f, -1f),
-				WordWrap = true
-			};
+			m_freeCameraButton = this.Children.Find<BevelledButtonWidget>("FreeCameraButton", true);
+			this.Children.Find<LabelWidget>("FreeCameraDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "FreeCameraDescription" });
+			m_freeCameraButton.Text = GetFreeCameraButtonText();
 
-			button = new BevelledButtonWidget
-			{
-				Size = new Vector2(310f, 60f),
-				Name = $"Button_{descriptionKey}",
-				VerticalAlignment = WidgetAlignment.Center,
-				Margin = new Vector2(20f, 0f),
-				Text = getButtonTextFunc()
-			};
+			m_bleedingButton = this.Children.Find<BevelledButtonWidget>("BleedingButton", true);
+			this.Children.Find<LabelWidget>("BleedingDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "BleedingDescription" });
+			m_bleedingButton.Text = GetBleedingButtonText();
 
-			rowPanel.Children.Add(descriptionLabel);
-			rowPanel.Children.Add(button);
-			m_contentPanel.Children.Add(rowPanel);
+			m_healthBarButton = this.Children.Find<BevelledButtonWidget>("HealthBarButton", true);
+			this.Children.Find<LabelWidget>("HealthBarDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "HealthBarDescription" });
+			m_healthBarButton.Text = GetHealthBarButtonText();
+
+			m_skeletonSpawnButton = this.Children.Find<BevelledButtonWidget>("SkeletonSpawnButton", true);
+			this.Children.Find<LabelWidget>("SkeletonSpawnDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "SkeletonSpawnDescription" });
+			m_skeletonSpawnButton.Text = GetSkeletonSpawnButtonText();
+
+			m_spiderSpawnButton = this.Children.Find<BevelledButtonWidget>("SpiderSpawnButton", true);
+			this.Children.Find<LabelWidget>("SpiderSpawnDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "SpiderSpawnDescription" });
+			m_spiderSpawnButton.Text = GetSpiderSpawnButtonText();
+
+			m_fastMeleeButton = this.Children.Find<BevelledButtonWidget>("FastMeleeButton", true);
+			this.Children.Find<LabelWidget>("FastMeleeDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "FastMeleeDescription" });
+			m_fastMeleeButton.Text = GetFastMeleeButtonText();
+
+			m_musicButton = this.Children.Find<BevelledButtonWidget>("MusicButton", true);
+			this.Children.Find<LabelWidget>("InGameMusicDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "InGameMusicDescription" });
+			m_musicButton.Text = GetMusicButtonText();
+
+			m_deathMusicButton = this.Children.Find<BevelledButtonWidget>("DeathMusicButton", true);
+			this.Children.Find<LabelWidget>("DeathMusicDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "DeathMusicDescription" });
+			m_deathMusicButton.Text = GetDeathMusicButtonText();
 		}
 
 		private string GetGhostButtonText() => ShittyCreaturesSettingsManager.GhostMusicEnabled ? LanguageControl.On : LanguageControl.Off;
@@ -133,6 +108,7 @@ namespace Game
 		private string GetFastMeleeButtonText() => ShittyCreaturesSettingsManager.FastMeleeEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetMusicButtonText() => ShittyCreaturesSettingsManager.InGameMusicButtonEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetDeathMusicButtonText() => ShittyCreaturesSettingsManager.DeathMusicEnabled ? LanguageControl.On : LanguageControl.Off;
+
 		public override void Update()
 		{
 			if (base.Input.Back || base.Input.Cancel || this.Children.Find<ButtonWidget>("TopBar.Back", true).IsClicked)
