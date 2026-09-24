@@ -125,12 +125,12 @@ namespace Game
 						float projectileSpeed = 0f;
 						Vector3 projectileSpread = Vector3.Zero;
 
-						bool isLoaded = DoubleMusketBlock.IsLoaded(data);
+						DoubleMusketBlock.LoadState loadState = DoubleMusketBlock.GetLoadState(data);
 						int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
 
 						if (DoubleMusketBlock.GetHammerState(Terrain.ExtractData(newValue)))
 						{
-							if (!isLoaded || shotsRemaining <= 0)
+							if (loadState == DoubleMusketBlock.LoadState.Empty || shotsRemaining <= 0)
 							{
 								ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
 								if (componentPlayer2 != null)
@@ -177,9 +177,8 @@ namespace Game
 							int newData = data;
 							if (shotsRemaining <= 0)
 							{
-								newData = DoubleMusketBlock.SetLoaded(newData, false);
+								newData = DoubleMusketBlock.SetLoadState(newData, DoubleMusketBlock.LoadState.Empty);
 								newData = DoubleMusketBlock.SetShotsRemaining(newData, 0);
-								newData = DoubleMusketBlock.SetAntiTanksBullet(newData, false);
 							}
 							else
 							{
@@ -218,7 +217,6 @@ namespace Game
 			int data = Terrain.ExtractData(slotValue);
 			int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
 
-			// Cambiado a < 2: Permite cargar si está vacío (0) o si queda poca bala (1)
 			if (shotsRemaining < 2 && contents == m_AntiTanksBulletBlockIndex)
 			{
 				return 1;
@@ -237,12 +235,10 @@ namespace Game
 			int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
 			int ammoContents = Terrain.ExtractContents(value);
 
-			// Cambiado a < 2: Al colocar 1 bala anti-tanque, siempre recarga al máximo (2 disparos)
 			if (shotsRemaining < 2 && ammoContents == m_AntiTanksBulletBlockIndex)
 			{
-				int newData = DoubleMusketBlock.SetLoaded(data, true);
+				int newData = DoubleMusketBlock.SetLoadState(data, DoubleMusketBlock.LoadState.AntiTanksBullet);
 				newData = DoubleMusketBlock.SetShotsRemaining(newData, 2);
-				newData = DoubleMusketBlock.SetAntiTanksBullet(newData, true);
 
 				processedValue = 0;
 				processedCount = 0;
