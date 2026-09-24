@@ -39,7 +39,6 @@ namespace Game
 		public float ReloadTime = 1.0f;
 		public float PistolAimTime = 0.5f;
 		public float SniperAimTime = 1.0f;
-		public bool CanHealSelf = false;
 		public float SelfHealProbability = 0f;
 		private double m_nextSelfHealTime;
 
@@ -130,7 +129,6 @@ namespace Game
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 1.0f);
 			PistolAimTime = valuesDictionary.GetValue<float>("PistolAimTime", 0.5f);
 			SniperAimTime = valuesDictionary.GetValue<float>("SniperAimTime", 1.0f);
-			CanHealSelf = valuesDictionary.GetValue<bool>("CanHealSelf", false);
 			SelfHealProbability = valuesDictionary.GetValue<float>("SelfHealProbability", 0f);
 			m_nextSelfHealTime = 0.0;
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
@@ -627,7 +625,7 @@ namespace Game
 			}
 
 			// ===== AUTOCURACIÓN SOLO CUANDO ESTÁ A PUNTO DE MORIR (salud <= 20%) =====
-			if (CanHealSelf && m_componentCreature.ComponentHealth.Health > 0f && m_componentCreature.ComponentHealth.Health <= 0.2f)
+			if (m_componentCreature.ComponentHealth.Health > 0f && m_componentCreature.ComponentHealth.Health <= 0.2f)
 			{
 				if (currentTime >= m_nextSelfHealTime)
 				{
@@ -649,7 +647,7 @@ namespace Game
 							TransitionToStatus(ShooterStatus.Healed);
 						}
 					}
-					m_nextSelfHealTime = currentTime + 0.5;
+					m_nextSelfHealTime = currentTime + 0.5; // cooldown conservado
 				}
 			}
 
