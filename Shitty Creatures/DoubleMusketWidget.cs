@@ -54,10 +54,10 @@ namespace Game
 			}
 
 			int data = Terrain.ExtractData(slotValue);
-			bool isLoaded = DoubleMusketBlock.IsLoaded(data);
+			DoubleMusketBlock.LoadState loadState = DoubleMusketBlock.GetLoadState(data);
 			int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
 
-			if (isLoaded && shotsRemaining > 0)
+			if (loadState != DoubleMusketBlock.LoadState.Empty && shotsRemaining > 0)
 				m_instructionsLabel.Text = string.Format(LanguageControl.GetContentWidgets(fName, 3), shotsRemaining);
 			else
 				m_instructionsLabel.Text = LanguageControl.GetContentWidgets(fName, 0);
