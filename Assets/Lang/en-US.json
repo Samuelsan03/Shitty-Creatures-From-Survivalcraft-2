@@ -35,6 +35,14 @@
   "SubsystemBanditEggBlockBehavior": {
     "1": "Failed to spawn bandit, check game log."
   },
+  "InfectedSpawnEggBlock": [
+    "Common Infected Egg",
+    "Boomer Infected Egg",
+    "Special Infected Egg",
+    "Flying Infected Egg",
+    "Animal Infected Egg",
+    "Ghost Infected Egg"
+  ],
   "FirstAidKitBlock": [
   "Large First Aid Kit",
   "Medium First Aid Kit"
@@ -1590,27 +1598,21 @@
   "Description": "Reinforced tactical boots with ballistic protection. Cannot be crafted; can only be obtained by defeating La Bandida."
 },
 "InfectedSpawnEggBlock:0": {
-  "DisplayName": "Common Infected Spawn Egg",
   "Description": "Summons an infected creature when thrown against a solid object. The resulting being displays standard aggressive tendencies, with some variations capable of delivering poison or freezing effects through their attacks."
 },
 "InfectedSpawnEggBlock:1": {
-  "DisplayName": "Boomer Spawn Egg",
   "Description": "Creates an unstable infected upon impact with a hard surface. This volatile entity detonates in a devastating explosion at the moment of death, producing a powerful shockwave that destroys terrain and inflicts massive damage to anything nearby."
 },
 "InfectedSpawnEggBlock:2": {
-  "DisplayName": "Special Infected Spawn Egg",
   "Description": "Generates an exceptionally powerful boss-class infected when shattered. These formidable opponents possess immense durability and strength, demanding superior weaponry and tactics to overcome in combat."
 },
 "InfectedSpawnEggBlock:3": {
-  "DisplayName": "Flying Infected Spawn Egg",
   "Description": "Releases an airborne infected upon destruction against any surface. The resulting creature takes to the skies, granting it the ability to bypass ground-level obstacles and assault players from elevated positions."
 },
 "InfectedSpawnEggBlock:4": {
-  "DisplayName": "Animal Infected Spawn Egg",
   "Description": "Spawns a bestial infected after being thrown and broken. Drawing from animalistic traits, this variant relies on raw speed and ferocity rather than supernatural abilities to overwhelm its prey."
 },
 "InfectedSpawnEggBlock:5": {
-  "DisplayName": "Ghost Infected Spawn Egg",
   "Description": "Conjures an ethereal infected when smashed. These spectral entities move with unnatural swiftness and possess a degree of intangibility, enabling them to slip through attacks and strike with ghostly precision."
   }
 },
