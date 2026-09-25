@@ -1,4 +1,13 @@
 {
+"CannonWidget": {
+  "0": "放置一枚炮弹以装填",
+  "1": "加农炮",
+  "2": "物品栏",
+  "3": "准备开火！"
+},
+"SubsystemCannonBlockBehavior": {
+  "0": "加农炮是空的"
+},
   "SubsystemFarmerWandBlockBehavior": {
   "0": "指向一个方块以标记耕作区域。",
   "1": "已标记点 A：({0}, {1}, {2})",
@@ -35,6 +44,9 @@
   "SubsystemBanditEggBlockBehavior": { 
     "1": "生成强盗失败，请检查游戏日志。" 
   },
+  "CannonBallBlock": [
+  "炮弹"
+],
   "InfectedSpawnEggBlock": [
   "普通感染者生成蛋",
   "Boomer感染者生成蛋",
@@ -476,9 +488,6 @@
     "MusicTrack": "音乐曲目",
     "MusicFileNotFound": "未找到音乐文件",
     "MusicPlayError": "播放音乐时出错"
-  },
-  "ItemsLauncher": {
-    "YouNeedAmmunition": "你需要弹药才能发射物品发射器"
   },
   "GreenNightSky": {
     "GreenMoonBegins": "绿夜已经开始！",
@@ -1258,11 +1267,16 @@
       "Description": "以火山效率耕作土壤",
       "CRDescription:0": "以火山效率耕作土壤。"
     },
-    "ItemsLauncherBlock:0": {
-      "DisplayName": "物品发射器",
-      "Description": "可发射任意类型的方块或物品。尽管制作昂贵，但它是像滑膛枪一样的强大武器。请小心使用！",
-      "CRDescription:0": "发射任何物品的强大武器。"
-    },
+    "CannonBlock:0": {
+  "DisplayName": "加农炮",
+  "Description": "加农炮可以用来发射炮弹。不需要火药，只需装填炮弹并瞄准即可开火。",
+  "CRDescription:0": "用铁块和铁杆制作加农炮"
+},
+"CannonBallBlock:0": {
+  "DisplayName": "炮弹",
+  "Description": "炮弹由加农炮发射。",
+  "CRDescription:0": "用铁块制作炮弹"
+},
     "RepeatCrossbowBlock:0": {
       "DisplayName": "连发弩",
       "Description": "标准弩的强化版本，专为持续远程火力而设计。与只能单发装填的普通弩不同，连发弩内置8发弩箭弹仓，并采用渐进式拉弦机制，可进行连续射击。单发伤害略低于普通弩，但射速更快、装填更迅速。兼容多种特殊弩箭：铜、铁、钻石、爆炸、毒素。",
@@ -1748,16 +1762,6 @@
     "SlotEmpty": "此槽为空。",
     "InfoLabelFormat": "{0} 核子硬币"
 },
-  "AutoCannonWidget": {
-    "Title": "自动炮",
-    "InventoryTitle": "库存",
-    "ProjectileSpeed": "弹丸速度",
-    "ShotsPerSecond": "每秒发射次数",
-    "ProjectileSpread": "弹丸散布",
-    "Fuel": "燃料",
-    "HelpTitle": "使用自动炮",
-    "HelpText": "作者\nFire Dragon\nKike\n----------\n该武器使用快捷栏的第一个槽位或第一个有物品的槽位。要保存更改，请按“接受”，或按“X”取消。散布和速度设置决定弹丸的方向和距离。\n\n使用方法：在PC上按住右键，或在移动设备上按住屏幕，它会按你配置的每秒发射次数自动开火。可用于快速大量发射刷怪蛋生成生物。\n\n你也可以发射烟花或其他任何物品来娱乐。\n\n\n代码由Samuelsan03窃取，所以你可以随意使用此代码 xd"
-  },
     "CreatureInventoryWidget": {
       "0": "生物库存",
       "1": "农民",
