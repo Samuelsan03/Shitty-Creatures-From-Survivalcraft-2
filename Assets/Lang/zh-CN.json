@@ -35,6 +35,14 @@
   "SubsystemBanditEggBlockBehavior": { 
     "1": "生成强盗失败，请检查游戏日志。" 
   },
+  "InfectedSpawnEggBlock": [
+  "普通感染者生成蛋",
+  "Boomer感染者生成蛋",
+  "特殊感染者生成蛋",
+  "飞行感染者生成蛋",
+  "动物感染者生成蛋",
+  "幽灵感染者生成蛋"
+],
   "FirstAidKitBlock": [
   "大型急救箱",
   "中型急救箱"
@@ -1590,27 +1598,21 @@
   "Description": "配备防弹防护的强化战术靴。无法制作；只能通过击败 La Bandida 获得。"
 },
 "InfectedSpawnEggBlock:0": {
-  "DisplayName": "普通感染者生成蛋",
   "Description": "将其投掷到坚固表面后会召唤一只感染生物。生成的感染者具有标准的攻击性行为，部分变种还能通过攻击施加中毒或冰冻效果。"
 },
 "InfectedSpawnEggBlock:1": {
-  "DisplayName": "Boomer生成蛋",
   "Description": "撞击坚硬表面时会生成一只极不稳定的感染者。这种危险的生物会在死亡瞬间引发毁灭性爆炸，释放强大的冲击波，摧毁地形并对周围所有目标造成巨额伤害。"
 },
 "InfectedSpawnEggBlock:2": {
-  "DisplayName": "特殊感染者生成蛋",
   "Description": "破碎后会生成一只极其强大的首领级感染者。这些可怕的敌人拥有惊人的生命力和力量，需要更强大的武器和高超的战术才能将其击败。"
 },
 "InfectedSpawnEggBlock:3": {
-  "DisplayName": "飞行感染者生成蛋",
   "Description": "撞击任意表面破碎后会释放一只飞行感染者。生成的生物能够在空中飞行，轻松越过地面障碍，并从高处对玩家发起攻击。"
 },
 "InfectedSpawnEggBlock:4": {
-  "DisplayName": "动物感染者生成蛋",
   "Description": "投掷并破碎后会生成一只野兽般的感染者。该变种继承了动物的特性，依靠惊人的速度与凶猛的攻击性，而非超自然能力来猎杀猎物。"
 },
 "InfectedSpawnEggBlock:5": {
-  "DisplayName": "幽灵感染者生成蛋",
   "Description": "破碎后会召唤一只幽灵般的感染者。这些幽灵实体拥有异常迅捷的移动速度，并具备一定程度的虚化能力，使其能够穿过攻击并以鬼魅般的精准发动袭击。"
   }
 },
