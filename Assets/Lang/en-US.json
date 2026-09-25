@@ -1,4 +1,13 @@
 {
+"CannonWidget": {
+  "0": "Place a Cannon Ball to load",
+  "1": "Cannon",
+  "2": "Inventory",
+  "3": "Ready to Fire!"
+},
+"SubsystemCannonBlockBehavior": {
+  "0": "Cannon is empty"
+},
   "SubsystemFarmerWandBlockBehavior": {
   "0": "Point at a block to mark the farming area.",
   "1": "Point A marked: ({0}, {1}, {2})",
@@ -35,6 +44,9 @@
   "SubsystemBanditEggBlockBehavior": {
     "1": "Failed to spawn bandit, check game log."
   },
+  "CannonBallBlock": [
+    "Cannon Ball"
+  ],
   "InfectedSpawnEggBlock": [
     "Common Infected Egg",
     "Boomer Infected Egg",
@@ -476,9 +488,6 @@
     "MusicTrack": "Music track",
     "MusicFileNotFound": "Music file not found",
     "MusicPlayError": "Error playing music"
-  },
-  "ItemsLauncher": {
-    "YouNeedAmmunition": "You need ammunition to fire the item launcher"
   },
   "GreenNightSky": {
     "GreenMoonBegins": "The Green Night has begun!",
@@ -1230,11 +1239,15 @@
       "Description": "Tills soil with volcanic efficiency",
       "CRDescription:0": "Tills soil with volcanic efficiency"
     },
-    "ItemsLauncherBlock:0": {
-      "DisplayName": "Items Launcher",
-      "Description": "Launches any type of block or object. Although expensive to craft, it's a powerful weapon like the musket. Be careful!",
-      "CRDescription:0": "Launches any block or item. Expensive but powerful, similar to the musket."
-    },
+    "CannonBlock:0": {
+    "DisplayName": "Cannon",
+    "Description": "A cannon can be used to fire cannon balls. It requires no gunpowder, just load a cannon ball and aim to fire.",
+    "CRDescription:0": "Make a cannon from iron blocks and rods"
+},
+"CannonBallBlock:0": {
+    "Description": "Cannon balls are fired from cannons.",
+    "CRDescription:0": "Make cannon balls from iron blocks"
+},
     "FlameThrowerBlock:0": {
       "DisplayName": "Flamethrower",
       "Description": "The flamethrower is an incendiary weapon designed to project controlled fire. It was invented by Richard Fiedler in 1901 and first used in combat by the German army in 1915 during World War I. It works by using a fuel tank (usually thickened gasoline or oil) and compressed gas to propel the burning stream through a nozzle with ignition. To use it, the operator must insert Flame Bullets as ammunition, then pull the trigger to unleash fire against enemy fortifications or groups of soldiers. The advantage is that it supports up to 15 rounds (15/15), giving the player sustained firepower before reloading. The Flame Bullet is the secondary ammunition: incendiary projectiles that complement the flamethrower, useful for ranged attacks and maintaining pressure on the enemy.",
@@ -1736,16 +1749,6 @@
     "Title": "Guns Trader",
     "Inventory": "Inventory"
 },
-  "AutoCannonWidget": {
-    "Title": "Auto-Cannon",
-    "InventoryTitle": "Inventory",
-    "ProjectileSpeed": "Projectile Speed",
-    "ShotsPerSecond": "Shots Per Second",
-    "ProjectileSpread": "Projectile Spread",
-    "Fuel": "Fuel",
-    "HelpTitle": "Use Auto-Cannon",
-    "HelpText": "Authors\nFire Dragon\nKike\n----------\nThis weapon uses the first slot of the hotbar or the first available slot with an object. To save any changes, you must press 'Accept', or 'X' to discard. The spread and velocity settings determine the direction and distance of the projectiles.\n\nTo use it, simply hold right click if you are on PC, or hold the screen if you are on a mobile device, and it will automatically fire the times per second you have configured. Useful for shooting spawn eggs and generating creatures in large quantities in a short time.\n\nYou can also have fun launching fireworks or any other object.\n\n\nShitty code stolen by Samuelsan03, so do whatever you want with this code xd"
-  },
     "CreatureInventoryWidget": {
       "0": "Creature Inventory",
       "1": "Farmer",
