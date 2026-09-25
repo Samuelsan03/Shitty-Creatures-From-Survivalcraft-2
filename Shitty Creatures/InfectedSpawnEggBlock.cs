@@ -47,7 +47,7 @@ namespace Game
 		public InfectedSpawnEggBlock()
 		{
 			DefaultCategory = "Spawner Eggs";
-			StaticBlockIndex = true;    // <--- indica que el índice es fijo
+			StaticBlockIndex = true;
 		}
 
 		public override void Initialize()
@@ -55,7 +55,6 @@ namespace Game
 			Model model = ContentManager.Get<Model>("Models/Egg");
 			Matrix boneTransform = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh("Egg", true).ParentBone);
 
-			// ✅ Cambiado a false para no crashear si no existe
 			m_alertTexture = ContentManager.Get<Texture2D>("Textures/alerta", throwOnNotFound: false);
 
 			m_blockMesh = new BlockMesh();
@@ -91,21 +90,37 @@ namespace Game
 			float scale = s_scales[type];
 			Color typeColor = s_colors[type];
 
-			// ✅ FORMA LITERAL CORRECTA EN SURVIVAL CRAFT
-			// Se extrae el Vector3 (R, G, B) del color del tipo, se multiplica por la intensidad del color del entorno (que actúa como luz/alpha)
-			Color finalColor = new Color((byte)((float)typeColor.R * color.R / 255f), (byte)((float)typeColor.G * color.G / 255f), (byte)((float)typeColor.B * color.B / 255f));
+			Color finalColor = new Color(
+				(byte)((float)typeColor.R * color.R / 255f),
+				(byte)((float)typeColor.G * color.G / 255f),
+				(byte)((float)typeColor.B * color.B / 255f)
+			);
 
 			float scaledSize = size * scale;
 
 			if (m_alertTexture != null)
 			{
-				// ✅ TU TEXTURA CONSERVADA
 				BlocksManager.DrawMeshBlock(primitivesRenderer, m_blockMesh, m_alertTexture, finalColor, scaledSize, ref matrix, environmentData);
 			}
 			else
 			{
 				BlocksManager.DrawMeshBlock(primitivesRenderer, m_blockMesh, finalColor, scaledSize, ref matrix, environmentData);
 			}
+		}
+
+		// ✅ NUEVO: GetDisplayName usando array JSON como BulletBlock
+		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
+		{
+			InfectedType type = GetInfectedType(value);
+			int typeIndex = (int)type;
+
+			// Validación de rango, igual que BulletBlock
+			if (typeIndex < 0 || typeIndex >= Enum.GetValues(typeof(InfectedType)).Length)
+			{
+				return string.Empty;
+			}
+
+			return LanguageControl.Get("InfectedSpawnEggBlock", typeIndex);
 		}
 
 		public override IEnumerable<int> GetCreativeValues()
