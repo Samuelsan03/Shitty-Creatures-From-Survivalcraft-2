@@ -474,19 +474,8 @@
     <Parameter Name="Class" Guid="a48fe137-0abb-4b57-b215-364d7e60f86d" Value="Game.ComponentBowShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="ItemsLauncherShooterBehavior" Description="Comportamiento para NPCs que usan ItemsLauncher (AutoCannon) con animaciones de apuntado y recarga" Guid="36981492-9288-4f1a-a0ae-46ef5f5b9b90" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="3b2a3cd0-f4db-4196-be76-d1177d4d74d2" Value="5" Type="float"/>
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="50b6851e-048c-4a71-a1cf-8be528e6bd70" Value="25" Type="float"/>
-    <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="41c964ea-bc0a-406c-a895-bd7b60213a5d" Value="1.5" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="f72590e5-45e7-4f77-b440-ba2bddf1f2fb" Value="0.8" Type="float"/>
-    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="226d5ae4-0b64-407a-845b-2a743a928888" Value="0.05" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="5e11b0ad-c4d0-4d19-be04-303fdbc31660" Value="true" Type="bool"/>
-    <Parameter Name="BulletSpeed" Description="Velocidad base del proyectil" Guid="31340e21-7084-43aa-b482-55b53b4515c2" Value="35" Type="float"/>
-    <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar" Guid="87996b4f-614c-4901-8091-3136a041fea1" Value="true" Type="bool"/>
-    <Parameter Name="SpeedLevel" Description="Nivel de velocidad del ItemsLauncher (1-3)" Guid="dd1c1304-422c-45b0-83ca-dae957a25bb1" Value="2" Type="int"/>
-    <Parameter Name="RateLevel" Description="Nivel de cadencia del ItemsLauncher (1-15)" Guid="95432cd7-28fa-4106-a62c-ab8e93cad775" Value="2" Type="int"/>
-    <Parameter Name="SpreadLevel" Description="Nivel de dispersión del ItemsLauncher (1-3)" Guid="71552142-ade1-4673-b779-bb732c3fc7e2" Value="2" Type="int"/>
-    <Parameter Name="Class" Guid="293422c9-9c60-4d3f-b949-a8e6cc3b2d5a" Value="Game.ComponentItemsLauncherShooterBehavior" Type="string"/>
+<ComponentTemplate Name="CannonShooterBehavior" Description="Comportamiento para NPCs que usan Cañon" Guid="36981492-9288-4f1a-a0ae-46ef5f5b9b90" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="293422c9-9c60-4d3f-b949-a8e6cc3b2d5a" Value="Game.ComponentCannonShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="MusketShooterBehavior" Description="Comportamiento especializado para NPCs que usan mosquetes con animaciones de apuntado, recarga y amartillado." Guid="68a0cf69-c292-490d-9ca9-9ddc9930effb" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -577,6 +566,12 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="CannonBallBlockBehavior" Guid="29d59700-f115-47dd-93fe-24188528c8e5" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+  <Parameter Name="Class" Guid="9c0e5dac-82f4-464f-a579-a3019c4a5ea5" Value="Game.SubsystemCannonBallBlockBehavior" Type="string"/>
+</MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="CannonBlockBehavior" Guid="ffdd2985-7509-4881-92a2-dc0d3d226d39" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+  <Parameter Name="Class" Guid="fa520ae2-7c0d-4c10-b4f9-f3fc30c1ccc6" Value="Game.SubsystemCannonBlockBehavior" Type="string"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="FarmerWandBlockBehavior" Guid="a7cdb608-f0f3-4bda-9775-6838bce15414" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
           <Parameter Name="Class" Guid="a77b7dc2-2b78-405c-81df-409642479580" Value="Game.SubsystemFarmerWandBlockBehavior" Type="string" />
         </MemberSubsystemTemplate>
@@ -765,9 +760,6 @@
     </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="RefrigeratorXiaomiBlockBehavior" Guid="d1a72eee-bad4-461e-af34-aba1c3e4abc9" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="a184ea7f-480d-46e8-8bce-62c04a67562d" Value="Game.SubsystemRefrigeratorXiaomiBlockBehavior" Type="string"/>
-    </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="ItemsLauncherBlockBehavior" Guid="addaadea-e865-4840-8d4b-682b5accdd20" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-        <Parameter Name="Class" Guid="f4147ab1-38b5-4fee-bccc-9c520b17874e" Value="Game.SubsystemItemsLauncherBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="RepeatCrossbowBlockBehavior" Guid="3d1d067f-3af8-42c5-a843-469089a86bfa" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="ecbac4c9-78af-4f01-a123-0200d3f8b26c" Value="Game.SubsystemRepeatCrossbowBlockBehavior" Type="string"/>
