@@ -22,8 +22,8 @@ namespace Game
 		public static float FlameThrowerAimTime = 1.5f;
 		public static float DoubleMusketCooldown = 0.02f;
 		public static float DoubleMusketAimTime = 1.5f;
-		public static float ItemsLauncherCooldown = 0.02f;
-		public static float ItemsLauncherAimTime = 1.0f;
+		public static float CannonCooldown = 0.02f;
+		public static float CannonAimTime = 1.5f;
 
 		public Vector2 AttackRange = new Vector2(5f, 100f);
 		public Vector2 ExplosiveRange = new Vector2(20f, 100f);
@@ -446,13 +446,13 @@ namespace Game
 			Block activeBlock = BlocksManager.Blocks[activeBlockIndex];
 			bool isThrowable = IsThrowableBlock(activeBlockIndex);
 			bool isRanged = activeBlock is MusketBlock ||
-							activeBlock is CrossbowBlock ||
-							activeBlock is RepeatCrossbowBlock ||
-							activeBlock is BowBlock ||
-							activeBlock is FlameThrowerBlock ||
-							activeBlock is DoubleMusketBlock ||
-							activeBlock is ItemsLauncherBlock ||
-							m_firearmConfigs.ContainsKey(activeBlockIndex);
+				activeBlock is CrossbowBlock ||
+				activeBlock is RepeatCrossbowBlock ||
+				activeBlock is BowBlock ||
+				activeBlock is FlameThrowerBlock ||
+				activeBlock is DoubleMusketBlock ||
+				activeBlockIndex == CannonBlock.Index ||
+				m_firearmConfigs.ContainsKey(activeBlockIndex);
 			bool isMelee = !isRanged && !isThrowable && activeBlock.GetMeleePower(activeValue) > 0f;
 
 			float meleeDist = GetMeleeDistanceToTarget(target.ComponentBody);
@@ -800,62 +800,6 @@ namespace Game
 				return;
 			}
 
-			// ========== ITEMSLAUNCHER - MANEJO COMPLETAMENTE SEPARADO SIN MINER.AIM ==========
-			if (activeBlock is ItemsLauncherBlock)
-			{
-				if (m_cooldownTimer > 0f)
-					m_cooldownTimer -= dt;
-
-				if (!m_isAiming && m_cooldownTimer <= 0f)
-				{
-					m_isAiming = true;
-					m_aimTimer = 0f;
-				}
-
-				if (m_isAiming)
-				{
-					m_aimTimer += dt;
-					Vector3 eyePos = m_creatureModel.EyePosition;
-					Vector3 dir = Vector3.Normalize(targetPos + new Vector3(0f, 1f, 0f) - eyePos);
-
-					bool isNormal = IsNormalHumanoid();
-
-					if (m_aimTimer < ItemsLauncherAimTime)
-					{
-						// SOLO animaciones manuales, SIN llamar a miner.Aim
-						if (isNormal && m_creatureModel != null)
-						{
-							// Imitar animación de apuntado para humanoides (como lo hace SubsystemItemsLauncherBlockBehavior)
-							m_creatureModel.AimHandAngleOrder = 1.4f;
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-							// Hacer que mire al objetivo
-							if (m_chaseBehavior != null && m_chaseBehavior.Target != null)
-								m_creatureModel.LookAtOrder = m_chaseBehavior.Target.ComponentCreatureModel.EyePosition;
-						}
-						else if (m_creatureModel != null)
-						{
-							// Animación para zombis no humanoides (sin rotación de cabeza hacia el objetivo)
-							m_creatureModel.AimHandAngleOrder = 0f;
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-						}
-					}
-					else
-					{
-						// Disparar manualmente SIN usar miner.Aim
-						FireItemsLauncherManually(eyePos, dir);
-
-						m_isAiming = false;
-						m_cooldownTimer = ItemsLauncherCooldown;
-						m_aimTimer = 0f;
-						ResetModelPose();
-					}
-				}
-				return; // Salir antes de llegar al código de armas clásicas
-			}
-			// ========== FIN ITEMSLAUNCHER ==========
-
 			// Armas clásicas (mosquete, ballesta, etc.) - EXCLUYENDO ItemsLauncher
 			bool isMusket = activeBlock is MusketBlock;
 			bool isCrossbow = activeBlock is CrossbowBlock;
@@ -863,9 +807,9 @@ namespace Game
 			bool isBow = activeBlock is BowBlock;
 			bool isFlameThrower = activeBlock is FlameThrowerBlock;
 			bool isDoubleMusket = activeBlock is DoubleMusketBlock;
-			// ItemsLauncher ya fue manejado arriba, ya no se incluye aquí
+			bool isCannon = activeContents == CannonBlock.Index;
 
-			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket)
+			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket && !isCannon)
 				return;
 
 			float aimTimeValue = 0f, cooldown = 0f;
@@ -875,6 +819,7 @@ namespace Game
 			else if (isBow) { aimTimeValue = BowAimTime; cooldown = BowCooldown; }
 			else if (isFlameThrower) { aimTimeValue = FlameThrowerAimTime; cooldown = FlameThrowerCooldown; }
 			else if (isDoubleMusket) { aimTimeValue = DoubleMusketAimTime; cooldown = DoubleMusketCooldown; }
+			else if (isCannon) { aimTimeValue = CannonAimTime; cooldown = CannonCooldown; }
 
 			if (m_cooldownTimer > 0f)
 				m_cooldownTimer -= dt;
@@ -897,7 +842,7 @@ namespace Game
 					if (!isNormal && m_creatureModel != null)
 					{
 						m_creatureModel.AimHandAngleOrder = 0f;
-						if (isMusket || isDoubleMusket || isFlameThrower)
+						if (isMusket || isDoubleMusket || isFlameThrower || isCannon)
 						{
 							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
@@ -1119,9 +1064,14 @@ namespace Game
 				if (shotsRemaining == 0)
 					ReloadDoubleMusketInstantly();
 			}
-			// ItemsLauncher: NO llamar a ReloadItemsLauncherInstantly() aquí
-			// El disparo se maneja completamente en UpdateRangedCombat sin usar miner.Aim()
-			// Las armas de fuego modernas tampoco necesitan recarga manual aquí
+			else if (activeBlock is CannonBlock)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				CannonBlock.LoadState loadState = CannonBlock.GetLoadState(data);
+				bool hammerState = CannonBlock.GetHammerState(data);
+				if (loadState != CannonBlock.LoadState.Loaded || !hammerState)
+					ReloadCannonInstantly();
+			}
 
 			m_isAiming = true;
 			m_aimTimer = 0f;
@@ -1184,7 +1134,7 @@ namespace Game
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
 			{
 				int slotValue = m_inventory.GetSlotValue(i);
-				if (m_inventory.GetSlotCount(i) > 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is ItemsLauncherBlock)
+				if (m_inventory.GetSlotCount(i) > 0 && Terrain.ExtractContents(slotValue) == CannonBlock.Index)
 				{
 					m_inventory.ActiveSlotIndex = i;
 					return;
@@ -1239,7 +1189,7 @@ namespace Game
 				int blockIndex = Terrain.ExtractContents(slotValue);
 				Block block = BlocksManager.Blocks[blockIndex];
 				if (block is MusketBlock || block is CrossbowBlock || block is RepeatCrossbowBlock || block is BowBlock ||
-					block is FlameThrowerBlock || block is DoubleMusketBlock || block is ItemsLauncherBlock || IsThrowableBlock(blockIndex) || m_firearmConfigs.ContainsKey(blockIndex))
+					block is FlameThrowerBlock || block is DoubleMusketBlock || block is CannonBlock || IsThrowableBlock(blockIndex) || m_firearmConfigs.ContainsKey(blockIndex))
 					continue;
 				float power = block.GetMeleePower(slotValue);
 				if (power > bestPower)
@@ -1428,49 +1378,6 @@ namespace Game
 
 			int newValue = Terrain.MakeBlockValue(DoubleMusketBlock.Index, 0, data);
 			m_inventory.AddSlotItems(activeSlot, newValue, 1);
-		}
-
-		/// <summary>
-		/// Dispara el ItemsLauncher manualmente sin usar miner.Aim, solo dispara MusketBall
-		/// </summary>
-		private void FireItemsLauncherManually(Vector3 eyePos, Vector3 aimDirection)
-		{
-			Vector3 muzzlePos = eyePos + m_componentBody.Matrix.Right * 0.3f - m_componentBody.Matrix.Up * 0.2f;
-			Vector3 dirNorm = Vector3.Normalize(muzzlePos + aimDirection * 10f - muzzlePos);
-
-			// SIEMPRE usar MusketBall como munición principal
-			int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
-			if (bulletBlockIndex <= 0) return;
-
-			int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
-			int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
-
-			float speed = 100f;
-			Vector3 velocity = m_componentCreature.ComponentBody.Velocity + speed * dirNorm;
-
-			// Disparar el proyectil
-			m_subsystemProjectiles.FireProjectile(bulletValue, muzzlePos, velocity, Vector3.Zero, m_componentCreature);
-
-			// Reproducir sonido
-			SubsystemAudio audio = Project.FindSubsystem<SubsystemAudio>(true);
-			if (audio != null)
-			{
-				audio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 1f,
-					m_random.Float(-0.1f, 0.1f), eyePos, 10f, true);
-			}
-
-			// Efecto de humo del cañón
-			SubsystemParticles particles = Project.FindSubsystem<SubsystemParticles>(true);
-			if (particles != null && m_subsystemTerrain != null)
-			{
-				particles.AddParticleSystem(
-					new GunSmokeParticleSystem(m_subsystemTerrain, muzzlePos + 0.3f * dirNorm, dirNorm),
-					false
-				);
-			}
-
-			// Retroceso
-			m_componentBody.ApplyImpulse(-4f * dirNorm);
 		}
 
 		private bool IsThrowableBlock(int blockIndex)
@@ -1723,6 +1630,21 @@ namespace Game
 					mountBody.Velocity = new Vector3(0f, vel.Y, 0f);
 				}
 			}
+		}
+
+		private void ReloadCannonInstantly()
+		{
+			int activeSlot = m_inventory.ActiveSlotIndex;
+			int currentValue = m_inventory.GetSlotValue(activeSlot);
+			if (Terrain.ExtractContents(currentValue) != CannonBlock.Index)
+				return;
+
+			m_inventory.RemoveSlotItems(activeSlot, 1);
+			int data = 0;
+			data = CannonBlock.SetLoadState(data, CannonBlock.LoadState.Loaded);
+			data = CannonBlock.SetCannonBallType(data, CannonBallBlock.CannonBallType.CannonBall);
+			data = CannonBlock.SetHammerState(data, true);
+			m_inventory.AddSlotItems(activeSlot, Terrain.MakeBlockValue(CannonBlock.Index, 0, data), 1);
 		}
 
 		public override void Dispose()
