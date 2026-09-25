@@ -1,4 +1,13 @@
 {
+"CannonWidget": {
+  "0": "Coloca una bala de cañón para cargarlo",
+  "1": "Cañón",
+  "2": "Inventario",
+  "3": "¡Listo para disparar!"
+},
+"SubsystemCannonBlockBehavior": {
+  "0": "El cañón está vacío"
+},
   "SubsystemFarmerWandBlockBehavior": {
     "0": "Apunta a un bloque para marcar el área de cultivo.",
     "1": "Punto A marcado: ({0}, {1}, {2})",
@@ -35,6 +44,9 @@
   "SubsystemBanditEggBlockBehavior": { 
     "1": "No se pudo generar al bandido. Revisa el registro del juego." 
   },
+  "CannonBallBlock": [
+  "Bala de cañón"
+],
   "InfectedSpawnEggBlock": [
   "Huevo de Infectado Común",
   "Huevo de Infectado Boomer",
@@ -476,9 +488,6 @@
     "MusicTrack": "Canción",
     "MusicFileNotFound": "No se encontró el archivo de música",
     "MusicPlayError": "Error al reproducir música"
-  },
-  "ItemsLauncher": {
-    "YouNeedAmmunition": "Necesitas munición para disparar el lanzador"
   },
   "GreenNightSky": {
     "GreenMoonBegins": "¡La Noche Verde ha comenzado!",
@@ -1245,11 +1254,15 @@
       "Description": "Labra el suelo con eficiencia volcánica",
       "CRDescription:0": "Labra el suelo con eficiencia volcánica."
     },
-    "ItemsLauncherBlock:0": {
-      "DisplayName": "Lanzador de Objetos",
-      "Description": "Lanza cualquier tipo de bloque u objeto. Aunque es costoso de fabricar, es un arma poderosa como el mosquete. ¡Ten cuidado!",
-      "CRDescription:0": "Lanza cualquier bloque u objeto. Cuidado, es tan poderoso como el mosquete."
-    },
+    "CannonBlock:0": {
+  "DisplayName": "Cañón",
+  "Description": "Un cañón se puede usar para disparar balas de cañón. No necesita pólvora, solo carga una bala de cañón y apunta para disparar.",
+  "CRDescription:0": "Construye un cañón con bloques y varillas de hierro"
+},
+"CannonBallBlock:0": {
+  "Description": "Las balas de cañón se disparan desde los cañones.",
+  "CRDescription:0": "Fabrica balas de cañón con bloques de hierro"
+},
     "FlameThrowerBlock:0": {
       "DisplayName": "Lanzallamas",
       "Description": "El lanzallamas es un arma incendiaria diseñada para proyectar fuego controlado. Fue inventado por Richard Fiedler en 1901 y utilizado por primera vez en combate por el ejército alemán en 1915 durante la Primera Guerra Mundial. Funciona mediante un tanque de combustible (generalmente gasolina espesa o aceite) y gas comprimido que impulsa la corriente ardiente a través de una boquilla con ignición. Para usarlo, el operador debe insertar Balas de Fuego como munición y luego accionar el gatillo para desatar fuego contra fortificaciones enemigas o grupos de soldados. Lo bueno es que admite hasta 15 disparos (15/15), otorgando al jugador potencia de fuego sostenida antes de recargar. La Bala de Fuego es la munición secundaria: proyectiles incendiarios que complementan el lanzallamas, útiles para ataques a distancia y mantener presión sobre el enemigo.",
@@ -1736,16 +1749,6 @@
     "Title": "Comerciante de Armas",
     "Inventory": "Inventario"
 },
-    "AutoCannonWidget": {
-    "Title": "Auto-Cañón",
-    "InventoryTitle": "Inventario",
-    "ProjectileSpeed": "Velocidad del Proyectil",
-    "ShotsPerSecond": "Disparos por Segundo",
-    "ProjectileSpread": "Dispersión del Proyectil",
-    "Fuel": "Combustible",
-    "HelpTitle": "Usar Auto-Cañón",
-    "HelpText": "Autores\nFire Dragon\nKike\n----------\nEsta arma usa la primera ranura de la barra rápida o la primera ranura disponible con un objeto. Para guardar cambios, presiona 'Aceptar', o 'X' para cancelar. La configuración de dispersión y velocidad determinan la dirección y distancia de los proyectiles.\n\nPara usarlo, simplemente mantén presionado el clic derecho en PC o toca la pantalla en dispositivos móviles, y disparará automáticamente las veces por segundo que hayas configurado. Útil para lanzar huevos de criaturas y generar seres en grandes cantidades en poco tiempo.\n\nTambién puedes divertirte lanzando fuegos artificiales o cualquier otro objeto.\n\n\nCódigo robado por Samuelsan03, así que haz lo que quieras con él xd"
-  },
     "CreatureInventoryWidget": {
       "0": "Inventario de la Criatura",
       "1": "Agricultor",
