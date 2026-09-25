@@ -3690,24 +3690,14 @@
     <Parameter Name="WalkSpeed" Guid="a1b2c3d4-e5f6-6012-def0-123456789abc" Value="2.8" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="b2c3d4e5-f6a7-6123-ef01-23456789abcd" Value="1.5" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewInventory" Guid="e47da2c7-01fe-4ac6-b4e3-d8382fca51cb" InheritanceParent="3271afdb-a575-4749-ba8e-f8debddfce17">
-      <ParameterSet Name="CreatureItems">
-        <ParameterSet Name="CarlJohnson">
-          <Parameter Name="ItemsLauncherBlock" Value="1" Type="int" />
+<MemberComponentTemplate Name="CannonShooterBehavior" Guid="b7c8d9e0-f1a2-4b3c-8d5e-6f7a8b9c0d1e" InheritanceParent="36981492-9288-4f1a-a0ae-46ef5f5b9b90"/>
+<MemberComponentTemplate Name="Inventory" Guid="e8482854-09c4-4f07-a91c-6c9723fbcdb5" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+    <ParameterSet Name="Slots">
+        <ParameterSet Name="Slot0">
+            <Parameter Name="Contents" Value="300" Type="int"/>
+            <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
-      </ParameterSet>
-    </MemberComponentTemplate>
-<MemberComponentTemplate Name="ItemsLauncherShooterBehavior" Guid="b7c8d9e0-f1a2-4b3c-8d5e-6f7a8b9c0d1e" InheritanceParent="36981492-9288-4f1a-a0ae-46ef5f5b9b90">
-    <Parameter Name="MaxDistance" Guid="d2e3f4g5-h6i7-8901-cdef-234567890123" Value="100" Type="float"/>
-    <Parameter Name="ReloadTime" Guid="e3f4g5h6-i7j8-9012-defg-345678901234" Value="1.2" Type="float"/>
-    <Parameter Name="AimTime" Guid="f4g5h6i7-j8k9-0123-efgh-456789012345" Value="0.6" Type="float"/>
-    <Parameter Name="Accuracy" Guid="k9l0m1n2-o3p4-5678-jklm-901234567890" Value="0.04" Type="float"/>
-    <Parameter Name="UseRecoil" Guid="l0m1n2o3-p4q5-6789-klmn-012345678901" Value="true" Type="bool"/>
-    <Parameter Name="BulletSpeed" Guid="m1n2o3p4-q5r6-7890-lmno-123456789012" Value="35" Type="float"/>
-    <Parameter Name="RequireCocking" Guid="n2o3p4q5-r6s7-8901-mnop-234567890123" Value="true" Type="bool"/>
-    <Parameter Name="SpeedLevel" Guid="o3p4q5r6-s7t8-9012-nopq-345678901234" Value="3" Type="int"/>
-    <Parameter Name="RateLevel" Guid="p4q5r6s7-t8u9-0123-opqr-456789012345" Value="3" Type="int"/>
-    <Parameter Name="SpreadLevel" Guid="q5r6s7t8-u9v0-1234-pqrs-567890123456" Value="1" Type="int"/>
+    </ParameterSet>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="e1f2a3b4-c5d6-7012-7890-bcdef0123456">
         <Parameter Name="Mass" Guid="f2a3b4c5-d6e7-7123-8901-cdef01234567" Value="85" Type="float"/>
