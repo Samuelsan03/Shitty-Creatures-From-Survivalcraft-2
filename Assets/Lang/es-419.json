@@ -35,6 +35,14 @@
   "SubsystemBanditEggBlockBehavior": { 
     "1": "No se pudo generar al bandido. Revisa el registro del juego." 
   },
+  "InfectedSpawnEggBlock": [
+  "Huevo de Infectado Común",
+  "Huevo de Infectado Boomer",
+  "Huevo de Infectado Especial",
+  "Huevo de Infectado Volador",
+  "Huevo de Infectado Animal",
+  "Huevo de Infectado Fantasma"
+],
   "FirstAidKitBlock": [
   "Botiquín de primeros auxilios grande",
   "Botiquín de primeros auxilios mediano"
@@ -1590,27 +1598,21 @@
   "Description": "Botas tácticas reforzadas con protección balística. No se pueden fabricar; solo pueden obtenerse derrotando a La Bandida."
 },
   "InfectedSpawnEggBlock:0": {
-  "DisplayName": "Huevo generador de infectado común",
   "Description": "Invoca una criatura infectada al lanzarlo contra una superficie sólida. El ser resultante presenta un comportamiento agresivo estándar, aunque algunas variantes pueden infligir veneno o efectos de congelación con sus ataques."
 },
 "InfectedSpawnEggBlock:1": {
-  "DisplayName": "Huevo generador de Boomer",
   "Description": "Crea un infectado inestable al impactar contra una superficie sólida. Esta entidad volátil detona en una explosión devastadora al morir, produciendo una poderosa onda expansiva que destruye el terreno e inflige un daño masivo a todo lo que se encuentre cerca."
 },
 "InfectedSpawnEggBlock:2": {
-  "DisplayName": "Huevo generador de infectado especial",
   "Description": "Genera un infectado excepcionalmente poderoso de clase jefe al romperse. Estos formidables enemigos poseen una enorme resistencia y fuerza, por lo que requieren armamento superior y tácticas avanzadas para ser derrotados."
 },
 "InfectedSpawnEggBlock:3": {
-  "DisplayName": "Huevo generador de infectado volador",
   "Description": "Libera un infectado aéreo al romperse contra cualquier superficie. La criatura resultante surca los cielos, lo que le permite superar obstáculos a nivel del suelo y atacar a los jugadores desde posiciones elevadas."
 },
 "InfectedSpawnEggBlock:4": {
-  "DisplayName": "Huevo generador de infectado animal",
   "Description": "Genera un infectado de naturaleza bestial tras ser lanzado y romperse. Inspirado en rasgos animales, esta variante confía en su velocidad y ferocidad en lugar de habilidades sobrenaturales para acabar con sus presas."
 },
 "InfectedSpawnEggBlock:5": {
-  "DisplayName": "Huevo generador de infectado fantasma",
   "Description": "Invoca un infectado etéreo al romperse. Estas entidades espectrales se desplazan con una rapidez antinatural y poseen cierto grado de intangibilidad, lo que les permite atravesar ataques y golpear con una precisión fantasmal."
   }
 },
