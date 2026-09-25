@@ -2,7 +2,7 @@
   <PanoramaWidget />
   <StackPanelWidget Direction="Horizontal">
     <CanvasWidget Style="{Widgets/ShittyCreaturesTopBar}">
-      <LabelWidget Name="TopBar.Label" Text="" />
+      <LabelWidget Name="TopBar.Label" Text="[ShittyCreaturesSettings:ScreenTitle]" />
     </CanvasWidget>
     <CanvasWidget Margin="10, 20">
       <BevelledRectangleWidget Style="{Styles/Area}" />
@@ -10,77 +10,77 @@
         <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Name="Content">
           
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="GhostDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="GhostDescriptionLabel" Text="[ShittyCreaturesSettings:GhostDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="GhostButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0" BevelColor="128, 128, 128" CenterColor="128, 128, 128"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="TankDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="TankDescriptionLabel" Text="[ShittyCreaturesSettings:TankDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="TankButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0" BevelColor="255, 0, 0" CenterColor="255, 0, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="SpawnDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="SpawnDescriptionLabel" Text="[ShittyCreaturesSettings:SpawnDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="SpawnButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0" BevelColor="128, 255, 128" CenterColor="128, 255, 128"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="ThirstDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="ThirstDescriptionLabel" Text="[ShittyCreaturesSettings:ThirstDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="ThirstButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="CoordinateDisplayLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="CoordinateDisplayLabel" Text="[ShittyCreaturesSettings:CoordinateDisplay]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="CoordinateButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="PunchCommandDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="PunchCommandDescriptionLabel" Text="[ShittyCreaturesSettings:PunchCommandDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="PunchCommandButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="CreativeDefenseDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="CreativeDefenseDescriptionLabel" Text="[ShittyCreaturesSettings:CreativeDefenseDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="CreativeDefenseButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="FreeCameraDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="FreeCameraDescriptionLabel" Text="[ShittyCreaturesSettings:FreeCameraDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="FreeCameraButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="BleedingDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="BleedingDescriptionLabel" Text="[ShittyCreaturesSettings:BleedingDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="BleedingButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="HealthBarDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="HealthBarDescriptionLabel" Text="[ShittyCreaturesSettings:HealthBarDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="HealthBarButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="SkeletonSpawnDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="SkeletonSpawnDescriptionLabel" Text="[ShittyCreaturesSettings:SkeletonSpawnDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="SkeletonSpawnButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="SpiderSpawnDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="SpiderSpawnDescriptionLabel" Text="[ShittyCreaturesSettings:SpiderSpawnDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="SpiderSpawnButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="FastMeleeDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="FastMeleeDescriptionLabel" Text="[ShittyCreaturesSettings:FastMeleeDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="FastMeleeButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="InGameMusicDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="InGameMusicDescriptionLabel" Text="[ShittyCreaturesSettings:InGameMusicDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="MusicButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="DeathMusicDescriptionLabel" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
+            <LabelWidget Name="DeathMusicDescriptionLabel" Text="[ShittyCreaturesSettings:DeathMusicDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="DeathMusicButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
 
