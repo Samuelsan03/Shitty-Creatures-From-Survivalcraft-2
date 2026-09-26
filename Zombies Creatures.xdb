@@ -1140,12 +1140,10 @@
     <Parameter Name="CanBeMounted" Guid="f0b7a29d-dfb6-422a-b155-0423b1b8b245" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="396e0dba-027e-4a5c-a640-f0e95fa46b16" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="cc0ea7f0-221b-482f-aeec-0198f3442815" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="60ee627b-ef0e-4c0a-8508-1441cdc5e74d">
-                <Parameter Name="Weapons" Guid="2396642c-7f75-4df7-9310-380ac9cf8c7f" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="6e0a6f69-6a1a-498a-9ffc-db7281afd902" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="CreatureCollect" Guid="b8e7a79d-af13-4ccb-b555-debb97cf00ed" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="5358b173-cde9-4280-8564-a2b33ca5f78f" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="ceedfd89-e28b-4232-af25-00251e6acc61" Value="Clothes, Weapons, Tools, Dyed" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="ae44b50a-b850-4d6f-a655-9d89fec776b5">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1415,12 +1413,10 @@
     <Parameter Name="CanBeMounted" Guid="891ed7aa-d060-4e65-8704-6d40a1c440cd" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="c10ed204-a294-4c01-a004-3e8ea9cb296e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
-            <MemberComponentTemplate Name="CollectPickableBehavior" Guid="b9858880-2b04-4427-9601-49f0f2d5bfae" InheritanceParent="f71c13fd-9888-4e95-9ac2-72e48fe84397">
-              <ParameterSet Name="CollectFactors" Guid="0e7a4a6a-be1d-4cbc-ae92-6f108ed8e1f1">
-                <Parameter Name="Weapons" Guid="8e35211c-1e73-4172-9473-a0c3b0f9c4e3" Value="1" Type="float" />
-                <Parameter Name="Tools" Guid="89a48caf-6e90-4083-8fde-66a7f9e51cfc" Value="1" Type="float" />
-              </ParameterSet>
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="CreatureCollect" Guid="f76b0162-031b-4958-bac2-394dbe7d416d" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="746d1b7e-525f-4a2f-b29d-ef00689dc0a6" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="62f1fa65-1436-4551-8d36-9b1fdcff7793" Value="Clothes, Weapons, Tools, Dyed" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="eded4904-cd6d-4402-beb8-fae6ea54c713">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
