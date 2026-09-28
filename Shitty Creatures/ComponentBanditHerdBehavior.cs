@@ -18,14 +18,14 @@ namespace Game
 			if (target == null) return;
 
 			Vector3 position = target.ComponentBody.Position;
-			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
+			foreach (ComponentCreature componentCreature in m_subsystemCreatureSpawn.Creatures)
 			{
-				if (Vector3.DistanceSquared(position, creature.ComponentBody.Position) < 256f)
+				if (Vector3.DistanceSquared(position, componentCreature.ComponentBody.Position) < 256f)
 				{
-					ComponentBanditHerdBehavior herdBehavior = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
-					if (herdBehavior != null && !string.IsNullOrEmpty(herdBehavior.HerdName) && herdBehavior.HerdName == HerdName && herdBehavior.m_autoNearbyCreaturesHelp)
+					ComponentBanditHerdBehavior componentHerdBehavior = componentCreature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+					if (componentHerdBehavior != null && !string.IsNullOrEmpty(componentHerdBehavior.HerdName) && componentHerdBehavior.HerdName == HerdName && componentHerdBehavior.m_autoNearbyCreaturesHelp)
 					{
-						ComponentChaseBehavior chaseBehavior = creature.Entity.FindComponent<ComponentChaseBehavior>();
+						ComponentBanditChaseBehavior chaseBehavior = componentCreature.Entity.FindComponent<ComponentBanditChaseBehavior>();
 						if (chaseBehavior != null && chaseBehavior.Target == null)
 						{
 							chaseBehavior.Attack(target, maxRange, maxChaseTime, isPersistent);
@@ -43,24 +43,24 @@ namespace Game
 			int count = 0;
 			Vector3 center = Vector3.Zero;
 
-			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
+			foreach (ComponentCreature componentCreature in m_subsystemCreatureSpawn.Creatures)
 			{
-				if (creature.ComponentHealth.Health > 0f)
+				if (componentCreature.ComponentHealth.Health > 0f)
 				{
-					ComponentBanditHerdBehavior herdBehavior = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
-					if (herdBehavior != null && herdBehavior.HerdName == HerdName)
+					ComponentBanditHerdBehavior componentHerdBehavior = componentCreature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+					if (componentHerdBehavior != null && componentHerdBehavior.HerdName == HerdName)
 					{
-						Vector3 creaturePos = creature.ComponentBody.Position;
-						if (Vector3.DistanceSquared(position, creaturePos) < m_herdingRange * m_herdingRange)
+						Vector3 position2 = componentCreature.ComponentBody.Position;
+						if (Vector3.DistanceSquared(position, position2) < m_herdingRange * m_herdingRange)
 						{
-							center += creaturePos;
+							center += position2;
 							count++;
 						}
 					}
 				}
 			}
 
-			return count > 0 ? center / (float)count : (Vector3?)null;
+			return count > 0 ? (Vector3?)(center / (float)count) : null;
 		}
 
 		public virtual void Update(float dt)
@@ -84,31 +84,32 @@ namespace Game
 			m_herdingRange = valuesDictionary.GetValue<float>("HerdingRange");
 			m_autoNearbyCreaturesHelp = valuesDictionary.GetValue<bool>("AutoNearbyCreaturesHelp");
 
-			ComponentHealth health = m_componentCreature.ComponentHealth;
+			ComponentHealth componentHealth = m_componentCreature.ComponentHealth;
 
-			// Si es un bandido, prevenir daño por fuego amigo
+			// Evitar daño entre bandidos de la misma manada
 			if (HerdName == "bandits")
 			{
-				health.Injured += (Injury injury) =>
+				componentHealth.Injured = (Action<Injury>)Delegate.Combine(componentHealth.Injured, new Action<Injury>(delegate (Injury injury)
 				{
 					if (injury.Attacker != null)
 					{
 						ComponentBanditHerdBehavior attackerHerd = injury.Attacker.Entity.FindComponent<ComponentBanditHerdBehavior>();
 						if (attackerHerd != null && attackerHerd.HerdName == "bandits")
 						{
-							injury.Amount = 0f; // Ignorar daño de otros bandidos
+							injury.Amount = 0f;
 						}
 					}
-				};
+				}));
 			}
 
-			// Llamar ayuda cuando sea herido
-			health.Injured += (Injury injury) =>
+			// Pedir ayuda al ser atacado
+			componentHealth.Injured = (Action<Injury>)Delegate.Combine(componentHealth.Injured, new Action<Injury>(delegate (Injury injury)
 			{
 				ComponentCreature attacker = injury.Attacker;
 				CallNearbyCreaturesHelp(attacker, 20f, 30f, false);
-			};
+			}));
 
+			// Restaurado al comportamiento original sin verificar AttackAllCreatures
 			m_stateMachine.AddState("Inactive", null, delegate
 			{
 				if (m_subsystemTime.PeriodicGameTimeEvent(1.0, (double)(1f * (GetHashCode() % 256) / 256f)))
@@ -116,11 +117,11 @@ namespace Game
 					Vector3? center = FindHerdCenter();
 					if (center != null)
 					{
-						float distance = Vector3.Distance(center.Value, m_componentCreature.ComponentBody.Position);
-						if (distance > 10f) m_importanceLevel = 1f;
-						if (distance > 12f) m_importanceLevel = 3f;
-						if (distance > 16f) m_importanceLevel = 50f;
-						if (distance > 20f) m_importanceLevel = 250f;
+						float num = Vector3.Distance(center.Value, m_componentCreature.ComponentBody.Position);
+						if (num > 10f) m_importanceLevel = 1f;
+						if (num > 12f) m_importanceLevel = 3f;
+						if (num > 16f) m_importanceLevel = 50f;
+						if (num > 20f) m_importanceLevel = 250f;
 					}
 				}
 				if (IsActive)
