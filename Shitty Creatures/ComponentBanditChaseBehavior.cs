@@ -7,9 +7,8 @@ namespace Game
 {
 	public class ComponentBanditChaseBehavior : ComponentBehavior, IUpdateable
 	{
-		// Propiedades específicas del bandido
+		// Propiedad específica del bandido
 		public bool IsDrugTraffickerMode { get; set; }
-		public bool AttackAllCreatures { get; set; }
 
 		private ComponentBanditHerdBehavior m_banditHerd;
 		private SubsystemBanditInvasion m_subsystemBanditInvasion;
@@ -91,7 +90,6 @@ namespace Game
 			m_chaseTime = maxChaseTime;
 			m_isPersistent = isPersistent;
 			m_importanceLevel = isPersistent ? ImportanceLevelPersistent : ImportanceLevelNonPersistent;
-			// Sin hooks
 		}
 
 		public virtual void StopAttack()
@@ -104,7 +102,6 @@ namespace Game
 			m_chaseTime = 0f;
 			m_isPersistent = false;
 			m_importanceLevel = 0f;
-			// Sin hooks
 		}
 
 		public virtual void Update(float dt)
@@ -113,9 +110,7 @@ namespace Game
 			{
 				StopAttack();
 			}
-
 			m_autoChaseSuppressionTime -= dt;
-
 			if (IsActive && m_target != null)
 			{
 				m_chaseTime -= dt;
@@ -135,13 +130,8 @@ namespace Game
 						float chaseTimeBefore = m_chaseTime;
 						float x = m_isPersistent ? m_random.Float(8f, 10f) : 2f;
 						m_chaseTime = MathUtils.Max(m_chaseTime, x);
-						// Sin hooks: siempre golpear y reproducir sonido
 						m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 						m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
-					}
-					else
-					{
-						// Sin hooks
 					}
 				}
 			}
@@ -156,9 +146,8 @@ namespace Game
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			// Cargar propiedades del bandido
+			// Cargar propiedad del bandido
 			IsDrugTraffickerMode = valuesDictionary.GetValue<bool>("IsDrugTraffickerMode", false);
-			AttackAllCreatures = valuesDictionary.GetValue<bool>("AttackAllCreatures", false);
 
 			// Inicializar subsistemas (igual que base)
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
@@ -252,7 +241,6 @@ namespace Game
 					if (!Suppressed && m_autoChaseSuppressionTime <= 0f && (m_target == null || ScoreTarget(m_target) <= 0f) && m_componentCreature.ComponentHealth.Health > MinHealthToAttackActively)
 					{
 						m_range = ((m_subsystemSky.SkyLightIntensity < 0.2f) ? m_nightChaseRange : m_dayChaseRange);
-						m_range *= m_componentFactors.GetOtherFactorResult("ChaseRange", false, false);
 						ComponentCreature found = FindTarget();
 						if (found != null)
 						{
@@ -270,7 +258,6 @@ namespace Game
 							Attack(found, maxRange, maxChaseTime, !isDay);
 						}
 					}
-					// Sin hooks
 				},
 				null
 			);
@@ -360,7 +347,11 @@ namespace Game
 						}
 						else
 						{
-							int maxPathfindingPositions = m_isPersistent ? ((m_subsystemTime.FixedTimeStep != null) ? 2000 : 500) : 0;
+							int maxPathfindingPositions = 0;
+							if (m_isPersistent)
+							{
+								maxPathfindingPositions = ((m_subsystemTime.FixedTimeStep != null) ? 2000 : 500);
+							}
 							BoundingBox bbSelf = m_componentCreature.ComponentBody.BoundingBox;
 							BoundingBox bbTarget = m_target.ComponentBody.BoundingBox;
 							Vector3 centerSelf = 0.5f * (bbSelf.Min + bbSelf.Max);
@@ -376,7 +367,6 @@ namespace Game
 							}
 						}
 					}
-					// Sin hooks
 				},
 				null
 			);
@@ -411,86 +401,52 @@ namespace Game
 			m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), m_range, m_componentBodies);
 			for (int i = 0; i < m_componentBodies.Count; i++)
 			{
-				ComponentCreature creature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
-				if (creature != null)
+				ComponentCreature componentCreature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+				if (componentCreature != null)
 				{
-					float score = ScoreTarget(creature);
-					if (score > bestScore)
+					float num2 = ScoreTarget(componentCreature);
+					if (num2 > bestScore)
 					{
-						bestScore = score;
-						result = creature;
+						bestScore = num2;
+						result = componentCreature;
 					}
 				}
 			}
 			return result;
 		}
 
-		public virtual float ScoreTarget(ComponentCreature target)
+		public virtual float ScoreTarget(ComponentCreature componentCreature)
 		{
-			if (target == null || target == m_componentCreature)
-				return 0f;
+			float score = 0f;
+			bool isPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>() != null;
+			bool isNotWaterCreature = m_componentCreature.Category != CreatureCategory.WaterPredator && m_componentCreature.Category != CreatureCategory.WaterOther;
+			bool isPlayerTargetValid = componentCreature == Target || m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless;
+			bool matchesAutoChaseMask = (componentCreature.Category & m_autoChaseMask) > (CreatureCategory)0;
+			bool isNonPlayerTargetValid = componentCreature == Target || (matchesAutoChaseMask && MathUtils.Remainder(0.004999999888241291 * m_subsystemTime.GameTime + (double)((float)(GetHashCode() % 1000) / 1000f) + (double)((float)(componentCreature.GetHashCode() % 1000) / 1000f), 1.0) < (double)m_chaseNonPlayerProbability);
 
-			if (target.ComponentHealth.Health <= 0f)
-				return 0f;
-
-			bool isPlayer = target.Entity.FindComponent<ComponentPlayer>() != null;
-			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
-			float currentRange = (m_subsystemSky.SkyLightIntensity < 0.2f) ? m_nightChaseRange : m_dayChaseRange;
-			currentRange *= m_componentFactors.GetOtherFactorResult("ChaseRange", false, false);
-
-			if (distance >= currentRange)
-				return 0f;
-
-			// Verificar estado global de invasión
+			// Verificar modo narcotraficante: perseguir jugador obsesivamente
 			bool invasionActive = (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive);
 			bool drugMode = IsDrugTraffickerMode || invasionActive;
 
-			// Modo narcotraficante: perseguir jugador obsesivamente
 			if (drugMode && isPlayer)
-				return (currentRange - distance) * 1000f;
-
-			// Modo atacar a TODAS las criaturas (excepto jugador)
-			if (AttackAllCreatures && !isPlayer)
 			{
-				CreatureCategory targetCategory = target.Category;
-				if (targetCategory == CreatureCategory.LandPredator ||
-					targetCategory == CreatureCategory.LandOther ||
-					targetCategory == CreatureCategory.WaterPredator ||
-					targetCategory == CreatureCategory.WaterOther ||
-					targetCategory == CreatureCategory.Bird)
+				float num = Vector3.Distance(m_componentCreature.ComponentBody.Position, componentCreature.ComponentBody.Position);
+				if (num < m_range)
 				{
-					return currentRange - distance;
+					return (m_range - num) * 1000f;
+				}
+				return 0f;
+			}
+
+			if (componentCreature != m_componentCreature && ((!isPlayer && isNonPlayerTargetValid) || (isPlayer && isPlayerTargetValid)) && componentCreature.Entity.IsAddedToProject && componentCreature.ComponentHealth.Health > 0f && (isNotWaterCreature || IsTargetInWater(componentCreature.ComponentBody)))
+			{
+				float num = Vector3.Distance(m_componentCreature.ComponentBody.Position, componentCreature.ComponentBody.Position);
+				if (num < m_range)
+				{
+					score = m_range - num;
 				}
 			}
-
-			// Lógica de persecución original (copiada de la clase base)
-			bool isPlayerTarget = isPlayer;
-			bool isWaterPredatorOrOther = (m_componentCreature.Category == CreatureCategory.WaterPredator || m_componentCreature.Category == CreatureCategory.WaterOther);
-			bool canAttackPlayer = (isPlayerTarget && m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless);
-			bool canAttackNonPlayer = (!isPlayerTarget && (target.Category & m_autoChaseMask) > (CreatureCategory)0);
-			bool isTargetValid = (canAttackPlayer || canAttackNonPlayer) && target.Entity.IsAddedToProject && target.ComponentHealth.Health > 0f;
-
-			if (!isTargetValid)
-				return 0f;
-
-			// Si es jugador y no estamos en modo droga, no atacar (a menos que sea por autoChaseMask)
-			if (isPlayerTarget)
-				return 0f; // El jugador solo es atacado en modo droga o si está en la máscara, pero lo hemos excluido arriba
-
-			// Para criaturas no jugador, aplicar probabilidad de ataque
-			if (!isPlayerTarget && !drugMode && !AttackAllCreatures)
-			{
-				// Probabilidad de ataque (similar a base)
-				double chance = 0.004999999888241291 * m_subsystemTime.GameTime + (double)((float)(GetHashCode() % 1000) / 1000f) + (double)((float)(target.GetHashCode() % 1000) / 1000f);
-				if (MathUtils.Remainder(chance, 1.0) >= m_chaseNonPlayerProbability)
-					return 0f;
-			}
-
-			// Si es criatura acuática pero el bandido no es acuático, no atacar (a menos que esté en agua)
-			if (!isWaterPredatorOrOther && !IsTargetInWater(target.ComponentBody))
-				return 0f;
-
-			return currentRange - distance;
+			return score;
 		}
 
 		public virtual bool IsTargetInWater(ComponentBody target)
@@ -552,8 +508,8 @@ namespace Game
 		public virtual ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
 		{
 			Vector3 origin = m_componentCreature.ComponentBody.BoundingBox.Center();
-			Vector3 direction = Vector3.Normalize(target.BoundingBox.Center() - origin);
-			Ray3 ray = new Ray3(origin, direction);
+			Vector3 v = target.BoundingBox.Center();
+			Ray3 ray = new Ray3(origin, Vector3.Normalize(v - origin));
 			BodyRaycastResult? result = m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
 			if (result != null && result.Value.Distance < MaxAttackRange &&
 				(result.Value.ComponentBody == target || result.Value.ComponentBody.IsChildOfBody(target) || target.IsChildOfBody(result.Value.ComponentBody) ||
