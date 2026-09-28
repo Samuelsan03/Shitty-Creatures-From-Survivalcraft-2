@@ -32,9 +32,8 @@
   <Parameter Name="DayChaseTime" Guid="8fe9b019-32a8-4f0d-a67b-4e06e5c64bad" Value="999" Type="float" />
   <Parameter Name="NightChaseRange" Guid="7559e5ca-22ef-4f6c-b0b9-219cebf24288" Value="999" Type="float" />
   <Parameter Name="AutoChaseMask" Guid="ccaa1588-f840-48cc-8ccc-ab61ab4eb3ca" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
-  <Parameter Name="ChaseNonPlayerProbability" Guid="b87ac98e-7953-4fda-b0bf-d8e472678ab4" Value="1" Type="float" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="b87ac98e-7953-4fda-b0bf-d8e472678ab4" Value="1.0" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="3a627c10-0a37-4014-a9e7-7b2ebf140b03" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="4106caef-eb78-4f4a-9ef9-0d92b213ea42" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="4af736a0-7b96-4d58-8f50-158f887f0b89" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="cc4b1bfa-4b85-4e52-9ad1-ada4649509da" Value="0" Type="float"/>
@@ -275,7 +274,6 @@
   <Parameter Name="AutoChaseMask" Guid="7a38a74b-660c-4f6c-91b6-8cf0dd53967b" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="0129f61f-ffe8-4d55-a45f-79d9827e4f37" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="d196a479-d108-4edf-a315-a4652a17df8a" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="df22b2da-3981-4ba3-8d91-ce1a4ac55d25" Value="true" Type="bool" />
 </MemberComponentTemplate>
 </EntityTemplate>
 
@@ -403,9 +401,8 @@
   <Parameter Name="DayChaseTime" Guid="4dbb8cb8-67aa-498b-8aaa-8a4adcd4ced5" Value="999" Type="float" />
   <Parameter Name="NightChaseRange" Guid="5ec31e88-e3c0-4705-9732-e33addb0a936" Value="999" Type="float" />
   <Parameter Name="AutoChaseMask" Guid="9167a435-d5f0-4d50-955b-19ef611cdf8a" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
-  <Parameter Name="ChaseNonPlayerProbability" Guid="b68508d2-9b1f-47a9-9700-9b5d02f7af59" Value="1" Type="float" />
+  <Parameter Name="ChaseNonPlayerProbability" Guid="b68508d2-9b1f-47a9-9700-9b5d02f7af59" Value="1.0" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="c8b79425-8045-4c19-aa95-b54ae6984a22" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="c5673d6d-7f7c-46b8-aff0-22217d694c02" Value="true" Type="bool" />
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditHerdBehavior" Guid="39723cdd-a5b1-40a7-99c8-a520b3b38eed" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
@@ -551,7 +548,6 @@
   <Parameter Name="AutoChaseMask" Guid="df43846d-9ddc-425e-9325-130a234d7079" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="c1045df4-24b9-4901-8ff7-ddf3c2e54bc4" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="b92c774f-33e5-4507-aacb-12fc1df6dce9" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="e6f225e4-5a62-4f71-80ae-4349b5e83b8e" Value="true" Type="bool" />
 </MemberComponentTemplate>
 </EntityTemplate>
 
@@ -691,7 +687,6 @@
   <Parameter Name="AutoChaseMask" Guid="1fcdd55b-d68e-4221-b699-467f0000b307" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="b4900478-ddfd-4e56-8bcb-2565e8b794b9" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="fd09d8d4-7c05-46e7-b1a3-b9b92a2e689e" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="05284ca1-72be-4671-b672-cbac9e036d1b" Value="true" Type="bool" />
 </MemberComponentTemplate>
 </EntityTemplate>
 
@@ -831,7 +826,6 @@
   <Parameter Name="AutoChaseMask" Guid="90f30a7d-323d-4f84-bcc7-31eb385d7e29" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="686a2259-c78a-4df3-97f5-5eae81ff5eda" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="609df918-f8ec-4621-99ff-c412c8dd4eba" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="b88cfc57-5bd0-496b-a708-d5ffa6446541" Value="true" Type="bool" />
 </MemberComponentTemplate>
 </EntityTemplate>
 
@@ -1128,7 +1122,6 @@
   <Parameter Name="AutoChaseMask" Guid="69d790d5-0215-4302-917d-480f09599fc2" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="545e4001-7edc-42bd-a267-9bd8814f23f7" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="4aefa1fc-82ad-45d1-9817-20dcb660e2a5" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="4308a228-86af-4885-aa62-058658285129" Value="true" Type="bool" />
 </MemberComponentTemplate>
 </EntityTemplate>
 
@@ -1268,7 +1261,6 @@
   <Parameter Name="AutoChaseMask" Guid="5dbf221e-71ae-41e5-a3b3-1a23692304ca" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="0a610ea9-eaf6-4d69-a0bb-332cc12d2913" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="91ddb132-792a-4629-88d3-6c6aa544a31e" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="ca57d5f0-08f7-4e17-ac9c-4a35997d9636" Value="true" Type="bool" />
 </MemberComponentTemplate>
 </EntityTemplate>
 
@@ -1408,7 +1400,6 @@
   <Parameter Name="AutoChaseMask" Guid="8fd24b95-b364-49a3-97be-eb2d27c8adf3" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="4bb5bda2-b317-474a-84c3-374154a66996" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="434a9ebc-502e-42b3-83ce-c542a0073d8e" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="3c6ba93a-6aa4-452f-8ff8-abc13aa2d3dc" Value="true" Type="bool" />
 </MemberComponentTemplate>
 </EntityTemplate>
 
@@ -1857,7 +1848,6 @@
   <Parameter Name="AutoChaseMask" Guid="5dd448c0-1f41-4bd5-b9c8-8c970a539db3" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="83b35e67-91ee-400c-b6cb-9c9df63cd806" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="cc2b6286-cac9-4a16-9088-00fba4a4a00f" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="acc7ff95-135c-41b1-adfa-878e5367db51" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="0964edc6-a59a-4803-83e7-f5de7f20d416"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="43cb7c60-11f1-4312-a50b-e087466f1b2c" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -1997,7 +1987,6 @@
   <Parameter Name="AutoChaseMask" Guid="d1528813-1985-4f23-a73a-c57482cc3fd9" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="0e039c49-e913-4e83-8b07-bc5db3eba794" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="ebcdb31f-c26c-46b3-9608-e03dd41396ff" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="dd352857-bc9a-43ed-9053-ccff2caccffe" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="476cc074-85ad-47ab-a0ae-9d5117eb7cf9"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ec0d6441-f58c-4eed-afbd-b3693dc1a0e7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2138,7 +2127,6 @@
   <Parameter Name="AutoChaseMask" Guid="c36800b1-d2aa-4deb-851a-6aa624c99e05" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="38c891f8-f80d-4023-be62-6de60c85a496" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="46c84063-88ea-4d1a-ad66-f648a3606147" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="69df6a44-a0bb-46c0-8108-745374a1b0fd" Value="true" Type="bool" />
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="264a54d0-a57f-46ca-aadc-b4b0d40b932e"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="471cb201-bfdf-444a-91c1-ae2795ff09e4" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2363,7 +2351,6 @@
   <Parameter Name="AutoChaseMask" Guid="363b5332-55d9-4f1c-bfff-bfd5a6026b68" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="69238425-e627-4c04-b6e0-ce5fbfe678e6" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="9aafcfda-1ca7-4534-8d00-dbf91c17d16b" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="95655b60-be0d-4b9e-97a3-11779482cf77" Value="true" Type="bool" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Locomotion" Guid="a8c10747-e1a1-4941-860e-4f7cb6fecc6d">
               <Parameter Name="LadderSpeed" Guid="a36f279c-ba26-44d5-aae3-fcf139d97725" Value="1.0" Type="float"/>
@@ -2617,7 +2604,6 @@
   <Parameter Name="AutoChaseMask" Guid="9873e730-1126-4e08-bb7c-a99b6e3b9558" Value="LandOther, LandPredator, WaterOther, WaterPredator, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="4714d9c3-754a-4e28-8a54-b8f0e6f16483" Value="1" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Guid="833703ce-95ce-44df-b2b0-28cb7690bfdc" Value="true" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Guid="c2092268-d46e-402e-a14b-f89d541649d6" Value="true" Type="bool" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Locomotion" Guid="1f46d221-824e-4894-8b2b-feea5385c02f">
                 <Parameter Name="AccelerationFactor" Guid="0faecc6b-5a78-442c-b388-3887daa93b45" Value="1.5" Type="float"/>
