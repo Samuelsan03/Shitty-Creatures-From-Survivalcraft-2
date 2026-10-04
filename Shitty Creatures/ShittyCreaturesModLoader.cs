@@ -112,6 +112,7 @@ namespace Game
 		public override void __ModInitialize()
 		{
 			// Hooks originales de ShittyModLoader
+			ModsManager.RegisterHook("MenuPlayMusic", this);
 			ModsManager.RegisterHook("OnMainMenuScreenCreated", this);
 			ModsManager.RegisterHook("BeforeWidgetUpdate", this);
 
@@ -171,6 +172,11 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		// Métodos auxiliares privados
 		// ---------------------------------------------------------------------------------
+
+		public override void MenuPlayMusic(out string musicPath)
+		{
+			musicPath = "MenuMusic/Sega Master System Japan version BIOS";
+		}
 
 		/// <summary>
 		/// Hook para reemplazar bowls consumidas por bowl vacía (misma lógica que vanilla con buckets).
