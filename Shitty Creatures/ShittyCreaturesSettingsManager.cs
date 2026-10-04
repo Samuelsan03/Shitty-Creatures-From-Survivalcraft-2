@@ -24,7 +24,6 @@ namespace Game
 		public static bool SkeletonSpawnEnabled { get; set; } = true;
 		public static bool SpiderSpawnEnabled { get; set; } = true;
 		public static bool FastMeleeEnabled { get; set; } = false;
-		public static bool InGameMusicButtonEnabled { get; set; } = true;
 		public static bool DeathMusicEnabled { get; set; } = true;
 
 		public static void Load()
@@ -86,9 +85,6 @@ namespace Game
 								break;
 							case "FastMeleeEnabled":
 								FastMeleeEnabled = value;
-								break;
-							case "InGameMusicButtonEnabled":
-								InGameMusicButtonEnabled = value;
 								break;
 							case "DeathMusicEnabled":
 								DeathMusicEnabled = value;
@@ -179,10 +175,6 @@ namespace Game
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", FastMeleeEnabled)));
 
-					root.Add(new XElement("Value",
-						new XAttribute("Name", "InGameMusicButtonEnabled"),
-						new XAttribute("Type", "bool"),
-						new XAttribute("Value", InGameMusicButtonEnabled)));
 					root.Add(new XElement("Value",
 new XAttribute("Name", "DeathMusicEnabled"),
 new XAttribute("Type", "bool"),

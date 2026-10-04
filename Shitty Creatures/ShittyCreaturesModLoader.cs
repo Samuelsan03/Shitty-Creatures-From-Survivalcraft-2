@@ -127,8 +127,6 @@ namespace Game
 			ModsManager.RegisterHook("OnVitalStatsUpdateSleep", this);
 
 			// MusicModLoader
-			ModsManager.RegisterHook("MenuPlayMusic", this);
-			ModsManager.RegisterHook("PlayInGameMusic", this);
 			_random = new Random();
 
 			// RemoteControlModLoader
@@ -1383,74 +1381,6 @@ namespace Game
 			var banditInvasion = vitalStats.Entity.Project.FindSubsystem<SubsystemBanditInvasion>(false);
 			if (banditInvasion != null && banditInvasion.IsInvasionActive)
 				skipVanilla = true;
-		}
-
-		// ---------------------------------------------------------------------------------
-		// Hook: MenuPlayMusic (MusicModLoader)
-		// ---------------------------------------------------------------------------------
-		public override void MenuPlayMusic(out string contentMusicPath)
-		{
-			// Selección aleatoria como en MusicManager
-			int songIndex = _random.Int(0, 41);
-			while (songIndex == _lastSongIndex)
-			{
-				songIndex = _random.Int(0, 41);
-			}
-			_lastSongIndex = songIndex;
-
-			switch (songIndex)
-			{
-				case 0: contentMusicPath = "MenuMusic/Dragon Quest NES Title Theme"; break;
-				case 1: contentMusicPath = "MenuMusic/Digimon 02 Target Wada Kouji"; break;
-				case 2: contentMusicPath = "MenuMusic/Touhou 2 Mimas Theme Complete Darkness"; break;
-				case 3: contentMusicPath = "MenuMusic/Touhou 2 Eastern Wind"; break;
-				case 4: contentMusicPath = "MenuMusic/Touhou 2 Record of the Sealing of an Oriental Demon"; break;
-				case 5: contentMusicPath = "MenuMusic/Digimon 02 Evolution Break Up Ayumi Miyazaki"; break;
-				case 6: contentMusicPath = "MenuMusic/Digimon Adventure 01 Brave Heart Wada Kouji"; break;
-				case 7: contentMusicPath = "MenuMusic/Digimon Adventure 01 Butterfly Wada Kouji"; break;
-				case 8: contentMusicPath = "MenuMusic/Digimon Savers OP1 Theme Song Gouing Going My Soul Dynamite SHU"; break;
-				case 9: contentMusicPath = "MenuMusic/Digimon Savers OP2 Hirari Wada Kouji"; break;
-				case 10: contentMusicPath = "MenuMusic/EoSD Credits Theme Crimson Belvedere Eastern Dream"; break;
-				case 11: contentMusicPath = "MenuMusic/Digimon Tamers The Biggest Dreamer Wada Kouji"; break;
-				case 12: contentMusicPath = "MenuMusic/Touhou 6 Flandre Scarlets Theme U.N. Owen was her"; break;
-				case 13: contentMusicPath = "MenuMusic/Digimon Frontiers FIRE Wada Kouji"; break;
-				case 14: contentMusicPath = "MenuMusic/Rocket Knight Adventures Stage 1-1"; break;
-				case 15: contentMusicPath = "MenuMusic/Rocket Knight Adventures Stage 1-2"; break;
-				case 16: contentMusicPath = "MenuMusic/Sparkster (SEGA Genesis) Stage 1-1"; break;
-				case 17: contentMusicPath = "MenuMusic/Sparkster (SNES) Stage Lakeside"; break;
-				case 18: contentMusicPath = "MenuMusic/Space Harrier Theme"; break;
-				case 19: contentMusicPath = "MenuMusic/MAGICAL SOUND SHOWER OutRun"; break;
-				case 20: contentMusicPath = "MenuMusic/Super Hang-On Outride A Crisis"; break;
-				case 21: contentMusicPath = "MenuMusic/Super Hang-On Sprinter"; break;
-				case 22: contentMusicPath = "MenuMusic/Super Hang-On Winning Run"; break;
-				case 23: contentMusicPath = "MenuMusic/Nichijou Koigokoro Wa Dangan Mo Yawarakakusuru"; break;
-				case 24: contentMusicPath = "MenuMusic/SEGA Mega CD Japanese European Gamerip BIOS"; break;
-				case 25: contentMusicPath = "MenuMusic/SEGA CD American BIOS Gamerip Version 01"; break;
-				case 26: contentMusicPath = "MenuMusic/SEGA CD American BIOS Gamerip Version 02"; break;
-				case 27: contentMusicPath = "MenuMusic/Sonic The Hedgehog 1991 Spring Yard Zone"; break;
-				case 28: contentMusicPath = "MenuMusic/Sonic The Hedgehog 1991 Marble Zone"; break;
-				case 29: contentMusicPath = "MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone"; break;
-				case 30: contentMusicPath = "MenuMusic/Beat Hit! Ayumi Miyazaki"; break;
-				case 31: contentMusicPath = "MenuMusic/Chrono Trigger Main Theme"; break;
-				case 32: contentMusicPath = "MenuMusic/Twill STAND UP Digimon Xros Wars Hunters"; break;
-				case 33: contentMusicPath = "MenuMusic/Sonar Pocket Never Give Up! Digimon Fusion"; break;
-				case 34: contentMusicPath = "MenuMusic/Prince Of Persia (SNES) Recap"; break;
-				case 35: contentMusicPath = "MenuMusic/Prince Of Persia (SNES) Staff Roll"; break;
-				case 36: contentMusicPath = "MenuMusic/FIELD OF VIEW 渇いた叫び - 捨てられた物。"; break;
-				case 37: contentMusicPath = "MenuMusic/Power Rangers The Movie Title Theme SNES"; break;
-				case 38: contentMusicPath = "MenuMusic/Sonic Boom Closing Theme Sonic CD"; break;
-				case 39: contentMusicPath = "MenuMusic/Sonic Boom Sonic CD"; break;
-				case 40: contentMusicPath = "MenuMusic/You Can Do Anything Sonic CD"; break;
-				default: contentMusicPath = "MenuMusic/Dragon Quest NES Title Theme"; break;
-			}
-		}
-
-		// ---------------------------------------------------------------------------------
-		// Hook: PlayInGameMusic (MusicModLoader)
-		// ---------------------------------------------------------------------------------
-		public override void PlayInGameMusic()
-		{
-			// No se modifica la música del juego (comportamiento original)
 		}
 
 		// ---------------------------------------------------------------------------------

@@ -84,10 +84,6 @@ namespace Game
 			this.Children.Find<LabelWidget>("FastMeleeDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "FastMeleeDescription" });
 			m_fastMeleeButton.Text = GetFastMeleeButtonText();
 
-			m_musicButton = this.Children.Find<BevelledButtonWidget>("MusicButton", true);
-			this.Children.Find<LabelWidget>("InGameMusicDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "InGameMusicDescription" });
-			m_musicButton.Text = GetMusicButtonText();
-
 			m_deathMusicButton = this.Children.Find<BevelledButtonWidget>("DeathMusicButton", true);
 			this.Children.Find<LabelWidget>("DeathMusicDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "DeathMusicDescription" });
 			m_deathMusicButton.Text = GetDeathMusicButtonText();
@@ -106,7 +102,6 @@ namespace Game
 		private string GetSkeletonSpawnButtonText() => ShittyCreaturesSettingsManager.SkeletonSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetSpiderSpawnButtonText() => ShittyCreaturesSettingsManager.SpiderSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetFastMeleeButtonText() => ShittyCreaturesSettingsManager.FastMeleeEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetMusicButtonText() => ShittyCreaturesSettingsManager.InGameMusicButtonEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetDeathMusicButtonText() => ShittyCreaturesSettingsManager.DeathMusicEnabled ? LanguageControl.On : LanguageControl.Off;
 
 		public override void Update()
@@ -189,11 +184,6 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.FastMeleeEnabled = !ShittyCreaturesSettingsManager.FastMeleeEnabled;
 				m_fastMeleeButton.Text = GetFastMeleeButtonText();
-			}
-			if (m_musicButton != null && m_musicButton.IsClicked)
-			{
-				ShittyCreaturesSettingsManager.InGameMusicButtonEnabled = !ShittyCreaturesSettingsManager.InGameMusicButtonEnabled;
-				m_musicButton.Text = GetMusicButtonText();
 			}
 			if (m_deathMusicButton != null && m_deathMusicButton.IsClicked)
 			{
