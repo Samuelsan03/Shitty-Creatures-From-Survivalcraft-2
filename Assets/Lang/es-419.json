@@ -132,7 +132,9 @@
 "ComponentInfiniteChallenge": {
     "0": "¡El duelo contra Infinite ha comenzado!",
     "1": "¡Has demostrado tu fuerza! Infinite ahora se une a tu familia.",
-    "2": "Bienvenido a la familia, guerrero. Mis camaradas lucharán a tu lado."
+    "2": "Bienvenido a la familia, guerrero. Mis camaradas lucharán a tu lado.",
+    "3": "Infinite ha caído en batalla",
+    "4": "El duelo terminó en tragedia. Has ido demasiado lejos, guerrero."
 },
   "MountLock": {
     "0": "No puedes montar esta montura infectada"
