@@ -9,7 +9,7 @@ namespace Game
 {
 	public static class AchievementsManager
 	{
-		private static readonly (string Path, double Duration) s_celebrationMusic = ("MenuMusic/aaron smith dancin 8 bit remix", 258.0); // 4:18 = 258 segundos
+		private static readonly (string Path, double Duration) s_celebrationMusic = ("MenuMusic/Lost Sky - Fearless pt.II (feat. Chris Linton)", 194.0);
 		private static SubsystemAchievements s_subsystemAchievements;
 		private static Project s_currentProject;
 		private static SubsystemTime s_subsystemTime;
