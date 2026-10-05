@@ -465,8 +465,7 @@ namespace Game
 			if (playerWon)
 			{
 				m_hasBeenDefeated = true;
-				// ⬇️ CORRECCIÓN: Restaurar estadísticas originales
-				RestoreOriginalStats();   // <--- Agregar esta línea
+				RestoreOriginalStats();
 				if (m_herd != null)
 					m_herd.HerdName = "player";
 
@@ -484,16 +483,37 @@ namespace Game
 			}
 			else if (playerDied)
 			{
-				RestoreOriginalStats();   // Ya estaba presente
+				RestoreOriginalStats();
 				if (m_herd != null)
 					m_herd.HerdName = m_originalHerdName ?? "player";
 				m_state = ChallengeState.Idle;
 			}
 			else
 			{
-				RestoreOriginalStats();   // Ya estaba presente
+				// ❌ El jugador MATÓ a Infinite (vida llegó a 0 sin alcanzar victoria por umbral)
+				RestoreOriginalStats();
 				if (m_herd != null)
 					m_herd.HerdName = m_originalHerdName ?? "player";
+
+				// ✅ NUEVO: Mostrar mensaje grande de fracaso (estilo FireworksBlockBehavior)
+				// usando DisplayLargeMessage con mensaje principal + subtítulo
+				if (m_challenger != null)
+				{
+					string failureLargeMsg = LanguageControl.Get("ComponentInfiniteChallenge", 3);
+					string failureSmallMsg = LanguageControl.Get("ComponentInfiniteChallenge", 4);
+					m_challenger.ComponentGui.DisplayLargeMessage(
+						failureLargeMsg,   // "Infinite has fallen in battle"
+						failureSmallMsg,   // "The duel ended in tragedy. You went too far, warrior."
+						6f,                // 6 segundos de duración (coincide con el audio)
+						0f);               // Sin delay
+				}
+
+				// ✅ NUEVO: Reproducir audio de Game Over (dura 6 segundos)
+				if (m_subsystemAudio != null)
+				{
+					m_subsystemAudio.PlaySound("Audio/UI/Sonic Advance 1 Game Over", 1f, 0f, 0f, 0f);
+				}
+
 				m_state = ChallengeState.Idle;
 			}
 
