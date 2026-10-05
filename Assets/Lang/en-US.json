@@ -477,18 +477,6 @@
   "HealthBar": {
     "HP": "HP"
   },
-  "InGameMusic": {
-    "MusicEnabled": "Music enabled",
-    "MusicDisabled": "Music disabled",
-    "MusicToggleButton": "Music\n",
-    "MusicOn": "On",
-    "MusicOff": "Off",
-    "NowPlaying": "Now playing: ",
-    "UnknownTrack": "Unknown track",
-    "MusicTrack": "Music track",
-    "MusicFileNotFound": "Music file not found",
-    "MusicPlayError": "Error playing music"
-  },
   "GreenNightSky": {
     "GreenMoonBegins": "The Green Night has begun!",
     "GreenMoonEnds": "The Green Night has ended."
