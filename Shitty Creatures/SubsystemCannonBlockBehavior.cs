@@ -61,11 +61,6 @@ namespace Game
 										componentMiner.ComponentCreature.ComponentCreatureSounds.PlayMoanSound();
 										return true;
 									}
-									if (num4 > 0.5f && !CannonBlock.GetHammerState(Terrain.ExtractData(num2)))
-									{
-										num2 = Terrain.MakeBlockValue(num, 0, CannonBlock.SetHammerState(Terrain.ExtractData(num2), true));
-										this.m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, this.m_random.Float(-0.1f, 0.1f), 0f, 0f);
-									}
 									ComponentFirstPersonModel componentFirstPersonModel = componentMiner.Entity.FindComponent<ComponentFirstPersonModel>();
 									if (componentFirstPersonModel != null)
 									{
@@ -82,14 +77,6 @@ namespace Game
 									componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 									break;
 								}
-							case AimState.Cancelled:
-								if (CannonBlock.GetHammerState(Terrain.ExtractData(num2)))
-								{
-									num2 = Terrain.MakeBlockValue(num, 0, CannonBlock.SetHammerState(Terrain.ExtractData(num2), false));
-									this.m_subsystemAudio.PlaySound("Audio/Items/Hammer Uncock Remake", 1f, this.m_random.Float(-0.1f, 0.1f), 0f, 0f);
-								}
-								this.m_aimStartTimes.Remove(componentMiner);
-								break;
 							case AimState.Completed:
 								{
 									bool flag = false;
@@ -98,63 +85,133 @@ namespace Game
 									float s = 0f;
 									Vector3 zero = Vector3.Zero;
 									CannonBlock.LoadState loadState = CannonBlock.GetLoadState(data);
-									if (CannonBlock.GetHammerState(Terrain.ExtractData(num2)))
+
+									switch (loadState)
 									{
-										switch (loadState)
-										{
-											case CannonBlock.LoadState.Empty:
+										case CannonBlock.LoadState.Empty:
+											{
+												ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
+												if (componentPlayer2 != null)
 												{
-													ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
-													if (componentPlayer2 != null)
-													{
-														componentPlayer2.ComponentGui.DisplaySmallMessage(LanguageControl.Get(SubsystemCannonBlockBehavior.fName, 0), Color.White, true, false);
-													}
-													break;
+													componentPlayer2.ComponentGui.DisplaySmallMessage(
+														LanguageControl.Get(SubsystemCannonBlockBehavior.fName, 0),
+														Color.White,
+														true,
+														false
+													);
 												}
-											case CannonBlock.LoadState.Loaded:
-												flag = true;
-												value = Terrain.MakeBlockValue(this.m_CannonBallBlockIndex, 0, CannonBallBlock.SetCannonBallType(0, CannonBallBlock.CannonBallType.CannonBall));
-												num6 = 1;
-												zero = new Vector3(0.02f, 0.02f, 0f);
-												s = 150f;
 												break;
-										}
+											}
+
+										case CannonBlock.LoadState.Loaded:
+											flag = true;
+											value = Terrain.MakeBlockValue(
+												this.m_CannonBallBlockIndex,
+												0,
+												CannonBallBlock.SetCannonBallType(
+													0,
+													CannonBallBlock.CannonBallType.CannonBall
+												)
+											);
+											num6 = 1;
+											zero = new Vector3(0.02f, 0.02f, 0f);
+											s = 150f;
+											break;
 									}
+
 									if (flag)
 									{
 										if (componentMiner.ComponentCreature.ComponentBody.ImmersionFactor > 0.4f)
 										{
-											this.m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 5f, true);
+											this.m_subsystemAudio.PlaySound(
+												"Audio/MusketMisfire",
+												1f,
+												this.m_random.Float(-0.1f, 0.1f),
+												componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition,
+												5f,
+												true
+											);
 										}
 										else
 										{
-											Vector3 vector = componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition + componentMiner.ComponentCreature.ComponentBody.Matrix.Right * 0.4f - componentMiner.ComponentCreature.ComponentBody.Matrix.Up * 0.25f;
-											Vector3 vector2 = Vector3.Normalize(vector + aim.Direction * 10f - vector);
-											Vector3 vector3 = Vector3.Normalize(Vector3.Cross(vector2, Vector3.UnitY));
-											Vector3 v2 = Vector3.Normalize(Vector3.Cross(vector2, vector3));
+											Vector3 vector =
+												componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition +
+												componentMiner.ComponentCreature.ComponentBody.Matrix.Right * 0.4f -
+												componentMiner.ComponentCreature.ComponentBody.Matrix.Up * 0.25f;
+
+											Vector3 vector2 = Vector3.Normalize(
+												vector + aim.Direction * 10f - vector
+											);
+
+											Vector3 vector3 = Vector3.Normalize(
+												Vector3.Cross(vector2, Vector3.UnitY)
+											);
+
+											Vector3 v2 = Vector3.Normalize(
+												Vector3.Cross(vector2, vector3)
+											);
+
 											for (int i = 0; i < num6; i++)
 											{
-												Vector3 v3 = this.m_random.Float(0f - zero.X, zero.X) * vector3 + this.m_random.Float(0f - zero.Y, zero.Y) * v2 + this.m_random.Float(0f - zero.Z, zero.Z) * vector2;
-												Vector3 velocity = componentMiner.ComponentCreature.ComponentBody.Velocity + s * (vector2 + v3);
-												Projectile projectile = this.m_subsystemProjectiles.FireProjectile(value, vector, velocity, Vector3.Zero, componentMiner.ComponentCreature);
+												Vector3 v3 =
+													this.m_random.Float(-zero.X, zero.X) * vector3 +
+													this.m_random.Float(-zero.Y, zero.Y) * v2 +
+													this.m_random.Float(-zero.Z, zero.Z) * vector2;
+
+												Vector3 velocity =
+													componentMiner.ComponentCreature.ComponentBody.Velocity +
+													s * (vector2 + v3);
+
+												Projectile projectile =
+													this.m_subsystemProjectiles.FireProjectile(
+														value,
+														vector,
+														velocity,
+														Vector3.Zero,
+														componentMiner.ComponentCreature
+													);
+
 												if (projectile != null)
 												{
-													projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+													projectile.ProjectileStoppedAction =
+														ProjectileStoppedAction.Disappear;
 												}
 											}
-											this.m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 15f, true);
-											this.m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(this.m_subsystemTerrain, vector + 0.5f * vector2, vector2), false);
+
+											this.m_subsystemAudio.PlaySound(
+												"Audio/Items/ItemLauncher/Item Cannon Fire",
+												1f,
+												this.m_random.Float(-0.1f, 0.1f),
+												componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition,
+												15f,
+												true
+											);
+
+											this.m_subsystemParticles.AddParticleSystem(
+												new GunSmokeParticleSystem(
+													this.m_subsystemTerrain,
+													vector + 0.5f * vector2,
+													vector2
+												),
+												false
+											);
+
 											this.m_subsystemNoise.MakeNoise(vector, 1f, 60f);
 											componentMiner.ComponentCreature.ComponentBody.ApplyImpulse(-8f * vector2);
 										}
-										num2 = Terrain.MakeBlockValue(Terrain.ExtractContents(num2), 0, CannonBlock.SetLoadState(Terrain.ExtractData(num2), CannonBlock.LoadState.Empty));
+
+										num2 = Terrain.MakeBlockValue(
+											Terrain.ExtractContents(num2),
+											0,
+											CannonBlock.SetLoadState(
+												Terrain.ExtractData(num2),
+												CannonBlock.LoadState.Empty
+											)
+										);
+
 										num3 = 1;
 									}
-									if (CannonBlock.GetHammerState(Terrain.ExtractData(num2)))
-									{
-										num2 = Terrain.MakeBlockValue(Terrain.ExtractContents(num2), 0, CannonBlock.SetHammerState(Terrain.ExtractData(num2), false));
-										this.m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Hammer Release", 1f, this.m_random.Float(-0.1f, 0.1f), 0f, 0f);
-									}
+
 									this.m_aimStartTimes.Remove(componentMiner);
 									break;
 								}
