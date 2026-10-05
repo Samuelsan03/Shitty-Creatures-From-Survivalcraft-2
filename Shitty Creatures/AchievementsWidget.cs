@@ -1053,9 +1053,22 @@ namespace Game
 			if (subsystemAchievements == null) return;
 
 			int unlockedCount = subsystemAchievements.GetUnlockedAchievementCount();
-			int percentage = m_totalAchievements > 0 ? (int)((float)unlockedCount / m_totalAchievements * 100f) : 0;
 
-			string progressText = $"{LanguageControl.Get("AchievementsMessages", 6)}: {percentage}%";
+			// CORRECCIÓN: Usar Math.Round con 1 decimal en lugar de truncar con (int)
+			// Antes: (int)((float)unlockedCount / m_totalAchievements * 100f) 
+			//   → truncaba 6.85% a 6%, 13.70% a 13%, etc.
+			// Ahora: Math.Round(..., 1) 
+			//   → 6.85% se redondea a 6.9%, 13.70% a 13.7%, etc.
+			double percentage = m_totalAchievements > 0
+				? Math.Round((double)unlockedCount / m_totalAchievements * 100.0, 1)
+				: 0.0;
+
+			// Formatear: si el valor es entero (ej: 50.0), mostrar "50%", si no, mostrar "50.5%"
+			string percentageStr = percentage == Math.Truncate(percentage)
+				? $"{(int)percentage}%"
+				: $"{percentage:F1}%";
+
+			string progressText = $"{LanguageControl.Get("AchievementsMessages", 6)}: {percentageStr}";
 			string unlockedText = $"{LanguageControl.Get("AchievementsMessages", 7)}: {unlockedCount}/{m_totalAchievements}";
 
 			m_progressLabel.Text = progressText;
