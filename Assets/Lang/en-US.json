@@ -132,7 +132,9 @@
   "ComponentInfiniteChallenge": {
     "0": "The duel against Infinite has begun!",
     "1": "You have proven your strength! Infinite now joins your family.",
-    "2": "Welcome to the family, warrior. My kin will fight alongside you."
+    "2": "Welcome to the family, warrior. My kin will fight alongside you.",
+    "3": "Infinite has fallen in battle",
+    "4": "The duel ended in tragedy. You went too far, warrior."
   },
   "MountLock": {
     "0": "You cannot mount this infected mount"
