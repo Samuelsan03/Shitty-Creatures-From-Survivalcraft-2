@@ -181,237 +181,7 @@ namespace Game
 				}
 			}
 
-			BuildStateMachine();
-			m_stateMachineBuilt = true;
-
-			m_initialized = false;
-		}
-
-		/// <summary>Guarda centro y límites del área sin tocar el state machine.</summary>
-		private void ApplyFarmAreaBounds(Point3 a, Point3 b)
-		{
-			int minX = Math.Min(a.X, b.X), maxX = Math.Max(a.X, b.X);
-			int minY = Math.Min(a.Y, b.Y), maxY = Math.Max(a.Y, b.Y);
-			int minZ = Math.Min(a.Z, b.Z), maxZ = Math.Max(a.Z, b.Z);
-
-			m_farmAreaMin = new Point3(minX, minY, minZ);
-			m_farmAreaMax = new Point3(maxX, maxY, maxZ);
-			m_hasFarmAreaBounds = true;
-
-			m_farmAreaCenter = new Vector3(
-				(minX + maxX + 1) * 0.5f,
-				(minY + maxY + 1) * 0.5f,
-				(minZ + maxZ + 1) * 0.5f);
-			m_hasFarmAreaCenter = true;
-		}
-
-		/// <summary>
-		/// Asigna al granjero un área de cultivo definida por dos esquinas.
-		/// Restringe su escaneo a esos límites y lo reubica si está fuera.
-		/// </summary>
-		public void SetFarmArea(Point3 a, Point3 b)
-		{
-			ApplyFarmAreaBounds(a, b);
-
-			m_nextScanTime = 0;
-
-			if (m_importanceLevel < BASE_IMPORTANCE_MIN)
-				m_importanceLevel = BASE_IMPORTANCE_MIN;
-
-			if (m_stateMachineBuilt && m_initialized)
-			{
-				m_stateMachine.TransitionTo("Inactive");
-			}
-		}
-
-		private bool HasFarmingTools()
-		{
-			return HasTool(typeof(RakeBlock)) || HasAnySeed();
-		}
-
-		private bool IsFarmingTool(int contents)
-		{
-			if (contents <= 0 || contents >= BlocksManager.Blocks.Length) return false;
-			Block block = BlocksManager.Blocks[contents];
-			if (block == null) return false;
-
-			// NUEVO: añadir WatermelonSeedBlock y BlueberrySeedBlock a la lista.
-			return block is RakeBlock
-				|| block is SeedsBlock
-				|| block is SaltpeterChunkBlock
-				|| block is WatermelonSeedBlock
-				|| block is BlueberrySeedBlock;
-		}
-
-		private bool EnsureFarmingToolEquipped()
-		{
-			if (m_inventory == null) return false;
-
-			int activeSlot = m_inventory.ActiveSlotIndex;
-			int activeValue = m_inventory.GetSlotValue(activeSlot);
-			int activeContents = Terrain.ExtractContents(activeValue);
-
-			if (IsFarmingTool(activeContents))
-			{
-				m_lastKnownActiveSlotIndex = activeSlot;
-				return true;
-			}
-
-			int rakeSlot = FindSlotWithTool(typeof(RakeBlock));
-			if (rakeSlot >= 0)
-			{
-				m_inventory.ActiveSlotIndex = rakeSlot;
-				m_lastKnownActiveSlotIndex = rakeSlot;
-				return true;
-			}
-
-			int seedSlot = FindSlotWithSeed();
-			if (seedSlot >= 0)
-			{
-				m_inventory.ActiveSlotIndex = seedSlot;
-				m_lastKnownActiveSlotIndex = seedSlot;
-				return true;
-			}
-
-			int fertilizerSlot = FindSlotWithFertilizer();
-			if (fertilizerSlot >= 0)
-			{
-				m_inventory.ActiveSlotIndex = fertilizerSlot;
-				m_lastKnownActiveSlotIndex = fertilizerSlot;
-				return true;
-			}
-
-			return false;
-		}
-
-		private bool CheckAndRestoreFarmingTool()
-		{
-			if (m_inventory == null) return false;
-
-			int currentSlot = m_inventory.ActiveSlotIndex;
-			int currentValue = m_inventory.GetSlotValue(currentSlot);
-			int currentContents = Terrain.ExtractContents(currentValue);
-
-			if (IsFarmingTool(currentContents))
-			{
-				m_lastKnownActiveSlotIndex = currentSlot;
-				return true;
-			}
-
-			if (currentSlot != m_lastKnownActiveSlotIndex)
-			{
-				return EnsureFarmingToolEquipped();
-			}
-
-			return false;
-		}
-
-		private int FindSlotWithTool(Type toolType)
-		{
-			if (m_inventory == null) return -1;
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				if (value == 0) continue;
-				int contents = Terrain.ExtractContents(value);
-				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
-				Block block = BlocksManager.Blocks[contents];
-				if (block != null && toolType.IsAssignableFrom(block.GetType()))
-					return i;
-			}
-			return -1;
-		}
-
-		private int FindSlotWithSeed()
-		{
-			if (m_inventory == null) return -1;
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				if (value == 0) continue;
-				int contents = Terrain.ExtractContents(value);
-				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
-				Block block = BlocksManager.Blocks[contents];
-
-				// NUEVO: aceptar SeedsBlock genérico, WatermelonSeedBlock y
-				// BlueberrySeedBlock (ninguno de los dos últimos hereda de SeedsBlock).
-				if (block != null && (block is SeedsBlock || block is WatermelonSeedBlock || block is BlueberrySeedBlock))
-					return i;
-			}
-			return -1;
-		}
-
-		private int FindSlotWithFertilizer()
-		{
-			if (m_inventory == null) return -1;
-			for (int i = 0; i < m_inventory.SlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				if (value == 0) continue;
-				int contents = Terrain.ExtractContents(value);
-				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
-				if (BlocksManager.Blocks[contents] is SaltpeterChunkBlock)
-					return i;
-			}
-			return -1;
-		}
-
-		private bool IsTooFarFromArea()
-		{
-			if (!m_hasFarmAreaBounds)
-			{
-				// Fallback al comportamiento antiguo (por centro/radio)
-				if (!m_hasFarmAreaCenter) return false;
-				Vector3 pos0 = m_componentCreature.ComponentBody.Position;
-				float dx0 = pos0.X - m_farmAreaCenter.X;
-				float dz0 = pos0.Z - m_farmAreaCenter.Z;
-				return MathF.Sqrt(dx0 * dx0 + dz0 * dz0) > MAX_DISTANCE_FROM_AREA;
-			}
-
-			// Distancia horizontal del farmer al punto más cercano del rectángulo.
-			Vector3 pos = m_componentCreature.ComponentBody.Position;
-			int px = (int)MathF.Floor(pos.X);
-			int pz = (int)MathF.Floor(pos.Z);
-
-			int nearestX = Math.Clamp(px, m_farmAreaMin.X, m_farmAreaMax.X);
-			int nearestZ = Math.Clamp(pz, m_farmAreaMin.Z, m_farmAreaMax.Z);
-
-			int dx = px - nearestX;
-			int dz = pz - nearestZ;
-			float distSq = dx * dx + dz * dz;
-
-			return distSq > SCAN_RADIUS * SCAN_RADIUS; // 15 bloques
-		}
-
-		private float GetDistanceToAreaCenter()
-		{
-			if (!m_hasFarmAreaCenter) return 0f;
-
-			Vector3 pos = m_componentCreature.ComponentBody.Position;
-			float dx = pos.X - m_farmAreaCenter.X;
-			float dz = pos.Z - m_farmAreaCenter.Z;
-			return MathF.Sqrt(dx * dx + dz * dz);
-		}
-
-		private Vector3 GetRandomPointInArea()
-		{
-			float angle = m_random.Float(0, MathF.PI * 2);
-			float distance = m_random.Float(0, SCAN_RADIUS * 0.8f);
-			return new Vector3(
-				m_farmAreaCenter.X + MathF.Cos(angle) * distance,
-				m_farmAreaCenter.Y,
-				m_farmAreaCenter.Z + MathF.Sin(angle) * distance
-			);
-		}
-
-		private void UpdateFarmAreaCenter()
-		{
-			m_farmAreaCenter = m_componentCreature.ComponentBody.Position;
-			m_hasFarmAreaCenter = true;
-		}
-
-		private void BuildStateMachine()
-		{
+			// --- Máquina de estados mudada al Load ---
 			m_stateMachine.AddState("Inactive",
 				enter: () =>
 				{
@@ -971,6 +741,234 @@ namespace Game
 				},
 				leave: null
 			);
+			// --- Fin de la máquina de estados ---
+
+			m_stateMachineBuilt = true;
+
+			m_initialized = false;
+		}
+
+		/// <summary>Guarda centro y límites del área sin tocar el state machine.</summary>
+		private void ApplyFarmAreaBounds(Point3 a, Point3 b)
+		{
+			int minX = Math.Min(a.X, b.X), maxX = Math.Max(a.X, b.X);
+			int minY = Math.Min(a.Y, b.Y), maxY = Math.Max(a.Y, b.Y);
+			int minZ = Math.Min(a.Z, b.Z), maxZ = Math.Max(a.Z, b.Z);
+
+			m_farmAreaMin = new Point3(minX, minY, minZ);
+			m_farmAreaMax = new Point3(maxX, maxY, maxZ);
+			m_hasFarmAreaBounds = true;
+
+			m_farmAreaCenter = new Vector3(
+				(minX + maxX + 1) * 0.5f,
+				(minY + maxY + 1) * 0.5f,
+				(minZ + maxZ + 1) * 0.5f);
+			m_hasFarmAreaCenter = true;
+		}
+
+		/// <summary>
+		/// Asigna al granjero un área de cultivo definida por dos esquinas.
+		/// Restringe su escaneo a esos límites y lo reubica si está fuera.
+		/// </summary>
+		public void SetFarmArea(Point3 a, Point3 b)
+		{
+			ApplyFarmAreaBounds(a, b);
+
+			m_nextScanTime = 0;
+
+			if (m_importanceLevel < BASE_IMPORTANCE_MIN)
+				m_importanceLevel = BASE_IMPORTANCE_MIN;
+
+			if (m_stateMachineBuilt && m_initialized)
+			{
+				m_stateMachine.TransitionTo("Inactive");
+			}
+		}
+
+		private bool HasFarmingTools()
+		{
+			return HasTool(typeof(RakeBlock)) || HasAnySeed();
+		}
+
+		private bool IsFarmingTool(int contents)
+		{
+			if (contents <= 0 || contents >= BlocksManager.Blocks.Length) return false;
+			Block block = BlocksManager.Blocks[contents];
+			if (block == null) return false;
+
+			// NUEVO: añadir WatermelonSeedBlock y BlueberrySeedBlock a la lista.
+			return block is RakeBlock
+				|| block is SeedsBlock
+				|| block is SaltpeterChunkBlock
+				|| block is WatermelonSeedBlock
+				|| block is BlueberrySeedBlock;
+		}
+
+		private bool EnsureFarmingToolEquipped()
+		{
+			if (m_inventory == null) return false;
+
+			int activeSlot = m_inventory.ActiveSlotIndex;
+			int activeValue = m_inventory.GetSlotValue(activeSlot);
+			int activeContents = Terrain.ExtractContents(activeValue);
+
+			if (IsFarmingTool(activeContents))
+			{
+				m_lastKnownActiveSlotIndex = activeSlot;
+				return true;
+			}
+
+			int rakeSlot = FindSlotWithTool(typeof(RakeBlock));
+			if (rakeSlot >= 0)
+			{
+				m_inventory.ActiveSlotIndex = rakeSlot;
+				m_lastKnownActiveSlotIndex = rakeSlot;
+				return true;
+			}
+
+			int seedSlot = FindSlotWithSeed();
+			if (seedSlot >= 0)
+			{
+				m_inventory.ActiveSlotIndex = seedSlot;
+				m_lastKnownActiveSlotIndex = seedSlot;
+				return true;
+			}
+
+			int fertilizerSlot = FindSlotWithFertilizer();
+			if (fertilizerSlot >= 0)
+			{
+				m_inventory.ActiveSlotIndex = fertilizerSlot;
+				m_lastKnownActiveSlotIndex = fertilizerSlot;
+				return true;
+			}
+
+			return false;
+		}
+
+		private bool CheckAndRestoreFarmingTool()
+		{
+			if (m_inventory == null) return false;
+
+			int currentSlot = m_inventory.ActiveSlotIndex;
+			int currentValue = m_inventory.GetSlotValue(currentSlot);
+			int currentContents = Terrain.ExtractContents(currentValue);
+
+			if (IsFarmingTool(currentContents))
+			{
+				m_lastKnownActiveSlotIndex = currentSlot;
+				return true;
+			}
+
+			if (currentSlot != m_lastKnownActiveSlotIndex)
+			{
+				return EnsureFarmingToolEquipped();
+			}
+
+			return false;
+		}
+
+		private int FindSlotWithTool(Type toolType)
+		{
+			if (m_inventory == null) return -1;
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value == 0) continue;
+				int contents = Terrain.ExtractContents(value);
+				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
+				Block block = BlocksManager.Blocks[contents];
+				if (block != null && toolType.IsAssignableFrom(block.GetType()))
+					return i;
+			}
+			return -1;
+		}
+
+		private int FindSlotWithSeed()
+		{
+			if (m_inventory == null) return -1;
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value == 0) continue;
+				int contents = Terrain.ExtractContents(value);
+				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
+				Block block = BlocksManager.Blocks[contents];
+
+				// NUEVO: aceptar SeedsBlock genérico, WatermelonSeedBlock y
+				// BlueberrySeedBlock (ninguno de los dos últimos hereda de SeedsBlock).
+				if (block != null && (block is SeedsBlock || block is WatermelonSeedBlock || block is BlueberrySeedBlock))
+					return i;
+			}
+			return -1;
+		}
+
+		private int FindSlotWithFertilizer()
+		{
+			if (m_inventory == null) return -1;
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value == 0) continue;
+				int contents = Terrain.ExtractContents(value);
+				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
+				if (BlocksManager.Blocks[contents] is SaltpeterChunkBlock)
+					return i;
+			}
+			return -1;
+		}
+
+		private bool IsTooFarFromArea()
+		{
+			if (!m_hasFarmAreaBounds)
+			{
+				// Fallback al comportamiento antiguo (por centro/radio)
+				if (!m_hasFarmAreaCenter) return false;
+				Vector3 pos0 = m_componentCreature.ComponentBody.Position;
+				float dx0 = pos0.X - m_farmAreaCenter.X;
+				float dz0 = pos0.Z - m_farmAreaCenter.Z;
+				return MathF.Sqrt(dx0 * dx0 + dz0 * dz0) > MAX_DISTANCE_FROM_AREA;
+			}
+
+			// Distancia horizontal del farmer al punto más cercano del rectángulo.
+			Vector3 pos = m_componentCreature.ComponentBody.Position;
+			int px = (int)MathF.Floor(pos.X);
+			int pz = (int)MathF.Floor(pos.Z);
+
+			int nearestX = Math.Clamp(px, m_farmAreaMin.X, m_farmAreaMax.X);
+			int nearestZ = Math.Clamp(pz, m_farmAreaMin.Z, m_farmAreaMax.Z);
+
+			int dx = px - nearestX;
+			int dz = pz - nearestZ;
+			float distSq = dx * dx + dz * dz;
+
+			return distSq > SCAN_RADIUS * SCAN_RADIUS; // 15 bloques
+		}
+
+		private float GetDistanceToAreaCenter()
+		{
+			if (!m_hasFarmAreaCenter) return 0f;
+
+			Vector3 pos = m_componentCreature.ComponentBody.Position;
+			float dx = pos.X - m_farmAreaCenter.X;
+			float dz = pos.Z - m_farmAreaCenter.Z;
+			return MathF.Sqrt(dx * dx + dz * dz);
+		}
+
+		private Vector3 GetRandomPointInArea()
+		{
+			float angle = m_random.Float(0, MathF.PI * 2);
+			float distance = m_random.Float(0, SCAN_RADIUS * 0.8f);
+			return new Vector3(
+				m_farmAreaCenter.X + MathF.Cos(angle) * distance,
+				m_farmAreaCenter.Y,
+				m_farmAreaCenter.Z + MathF.Sin(angle) * distance
+			);
+		}
+
+		private void UpdateFarmAreaCenter()
+		{
+			m_farmAreaCenter = m_componentCreature.ComponentBody.Position;
+			m_hasFarmAreaCenter = true;
 		}
 
 		private bool HasPlantAbove(int x, int y, int z)
