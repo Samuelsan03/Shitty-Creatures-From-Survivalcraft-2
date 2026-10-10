@@ -1185,23 +1185,27 @@ namespace Game
 		// Hook: OnPlayerInputInteract (unificado: HireableNPC, CreatureInventory, GunsTrader, PirateTrader, RemoteControl)
 		// Se respeta el orden de prioridad manual: primero Hireable (alta), luego el resto.
 		// ---------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------
+		// Hook: OnPlayerInputInteract (unificado: HireableNPC, CreatureInventory, GunsTrader, PirateTrader, RemoteControl, Digivice)
+		// ---------------------------------------------------------------------------------
 		public override void OnPlayerInputInteract(
-	ComponentPlayer player,
-	ref bool playerOperated,
-	ref double timeIntervalLastActionTime,
-	ref int priorityUse,
-	ref int priorityInteract,
-	ref int priorityPlace)
+ComponentPlayer player,
+ref bool playerOperated,
+ref double timeIntervalLastActionTime,
+ref int priorityUse,
+ref int priorityInteract,
+ref int priorityPlace)
 		{
 			if (playerOperated) return;
 
 			var input = player.ComponentInput.PlayerInput;
 			if (input.Interact == null) return;
 
-			// 1. RemoteControl: interacción con el bloque en mano
+			// 1. RemoteControl y Digivice: interacción con el bloque en mano
 			int activeBlockValue = player.ComponentMiner.ActiveBlockValue;
 			int activeBlockIndex = Terrain.ExtractContents(activeBlockValue);
 			Block activeBlock = BlocksManager.Blocks[activeBlockIndex];
+
 			if (activeBlock is RemoteControlBlock)
 			{
 				var greenNightSky = player.Project.FindSubsystem<SubsystemGreenNightSky>(true);
@@ -1280,9 +1284,6 @@ namespace Game
 							Vector3 hitPoint = hitResult.Value.HitPoint();
 							Vector3 hitDirection = input.Interact.Value.Direction;
 
-							// Verificar que el objetivo sea el oponente del duelo (o cualquier enemigo, pero aquí solo interesa el oponente)
-							// Podemos comparar la entidad o simplemente procesar el golpe como siempre.
-							// ProcessHit ya contiene la lógica completa.
 							double dummyTimeInterval = 0.33;
 							ProcessHit(player, hitBody, hitPoint, hitDirection, ref dummyTimeInterval);
 						}
