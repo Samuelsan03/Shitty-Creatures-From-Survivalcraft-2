@@ -302,5 +302,21 @@ namespace Game
 		{
 			return false;
 		}
+
+		public override BlockPlacementData GetPlacementValue(SubsystemTerrain subsystemTerrain, ComponentMiner componentMiner, int value, TerrainRaycastResult raycastResult)
+		{
+			// Al colocar manualmente, forzar tamaño 7 (madura) y no muerta,
+			// para que el granjero la reconozca como cosechable (igual que las calabazas).
+			// Se conservan los demás bits del data (daño, etc.).
+			int oldData = Terrain.ExtractData(value);
+			int newData = SetSize(SetIsDead(oldData, false), 7);
+			int newValue = Terrain.ReplaceData(value, newData);
+
+			return new BlockPlacementData
+			{
+				Value = newValue,
+				CellFace = raycastResult.CellFace
+			};
+		}
 	}
 }
