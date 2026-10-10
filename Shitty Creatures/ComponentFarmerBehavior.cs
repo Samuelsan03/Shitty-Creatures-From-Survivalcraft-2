@@ -37,6 +37,7 @@ namespace Game
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemPickables m_subsystemPickables;
+		private SubsystemSoundMaterials m_subsystemSoundMaterials;
 		private ComponentCreature m_componentCreature;
 		private ComponentMiner m_componentMiner;
 		private ComponentPathfinding m_componentPathfinding;
@@ -143,6 +144,7 @@ namespace Game
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemPickables = Project.FindSubsystem<SubsystemPickables>(true);
+			m_subsystemSoundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
@@ -481,6 +483,13 @@ namespace Game
 						{
 							int newValue = Terrain.MakeBlockValue(soilIndex, 0, 0);
 							m_subsystemTerrain.DestroyCell(0, x, y, z, newValue, true, false, null);
+
+							// Reproducir sonido de impacto del bloque destruido
+							m_subsystemSoundMaterials?.PlayImpactSound(
+								currentValue,
+								new Vector3(x + 0.5f, y + 0.5f, z + 0.5f),
+								1f
+							);
 						}
 					}
 
@@ -658,7 +667,16 @@ namespace Game
 					}
 
 					CellFace harvestedCell = m_targetCellFace.Value;
+					int cellValue = m_subsystemTerrain.Terrain.GetCellValue(harvestedCell.X, harvestedCell.Y, harvestedCell.Z);
+
 					m_subsystemTerrain.DestroyCell(0, harvestedCell.X, harvestedCell.Y, harvestedCell.Z, 0, false, false, null);
+
+					// Reproducir sonido de impacto del bloque destruido
+					m_subsystemSoundMaterials?.PlayImpactSound(
+						cellValue,
+						new Vector3(harvestedCell.X + 0.5f, harvestedCell.Y + 0.5f, harvestedCell.Z + 0.5f),
+						1f
+					);
 
 					CollectPickables();
 				},
