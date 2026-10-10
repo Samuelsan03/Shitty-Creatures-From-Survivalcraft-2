@@ -12016,7 +12016,6 @@
   <Parameter Name="AutoChaseMask" Guid="0aad414b-f17c-4e21-80fe-13b0e77c8790" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="38980321-2737-4591-8fbc-41335a7a9bc7" Value="1" Type="float"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="5fa9f3a9-395d-4719-b9bb-52c5e685bf54" Value="true" Type="bool"/>
-  <Parameter Name="PlaceBlocksWhenTargetHigh" Guid="b7ba5657-124c-4265-be65-8f2feef83f6b" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="b2e92bba-3c8a-43f1-a6a9-7d55bcfa0d0b" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="91352433-a6f8-441a-af7a-013d2231ff56"/>
