@@ -34,7 +34,7 @@ namespace Game
 
 		public bool IsFinalWave => m_currentWave == MaxWave;
 
-		private List<WaveEntry> m_specialWaveEntries;
+		private List<WavesData.WaveEntry> m_specialWaveEntries;
 		private bool m_specialWaveActive = false;
 
 		// ===== PROPIEDADES PÚBLICAS PARA DIÁLOGOS Y COMPONENTES =====
@@ -113,9 +113,9 @@ namespace Game
 		private const float BaseSpawnInterval = 2.5f;
 
 		// Datos de oleadas
-		private Dictionary<int, List<WaveEntry>> m_waves = new Dictionary<int, List<WaveEntry>>();
+		private Dictionary<int, List<WavesData.WaveEntry>> m_waves = new Dictionary<int, List<WavesData.WaveEntry>>();
 		private int m_currentWave = 1;
-		private List<WaveEntry> m_currentWaveEntries;
+		private List<WavesData.WaveEntry> m_currentWaveEntries;
 
 		// Control de spawn (noche verde)
 		private float m_spawnTimer;
@@ -1438,7 +1438,7 @@ namespace Game
 		// ===== FIN MÉTODOS COMPARTIDOS =====
 
 		// ===== OPTIMIZACIÓN: VERSIÓN OPTIMIZADA DE GetRandomWeightedEntry =====
-		private WaveEntry GetRandomWeightedEntry(List<WaveEntry> entries)
+		private WavesData.WaveEntry GetRandomWeightedEntry(List<WavesData.WaveEntry> entries)
 		{
 			if (entries == null || entries.Count == 0) return null;
 
@@ -1694,38 +1694,37 @@ namespace Game
 			}
 			else
 			{
-				// Fallback si no existe
-				m_specialWaveEntries = new List<WaveEntry>
-		{
-			new WaveEntry("HumanoidSkeleton", 40),
-			new WaveEntry("InfectedBird", 35),
-			new WaveEntry("InfectedNormal1", 30),
-			new WaveEntry("InfectedNormal2", 30),
-			new WaveEntry("InfectedFast1", 25),
-			new WaveEntry("InfectedFast2", 25),
-			new WaveEntry("InfectedMuscle1", 20),
-			new WaveEntry("InfectedMuscle2", 20),
-			new WaveEntry("PoisonousInfected1", 15),
-			new WaveEntry("PoisonousInfected2", 15),
-			new WaveEntry("InfectedFly1", 10),
-			new WaveEntry("InfectedFly2", 10),
-			new WaveEntry("InfectedFly3", 10),
-			new WaveEntry("Boomer1", 8),
-			new WaveEntry("Boomer2", 8),
-			new WaveEntry("Boomer3", 8),
-			new WaveEntry("GhostBoomer1", 6),
-			new WaveEntry("Charger1", 5),
-			new WaveEntry("Charger2", 5),
-			new WaveEntry("InfectedHyena", 4),
-			new WaveEntry("InfectedWildboar", 4),
-			new WaveEntry("InfectedBear", 3),
-			new WaveEntry("PredatoryChameleon", 3),
-			new WaveEntry("InfectedWolf", 3),
-			new WaveEntry("InfectedWerewolf", 3),
-			new WaveEntry("InfectedSpider", 2),
-			new WaveEntry("InfectedFreezer", 1),
-			new WaveEntry("FrozenGhost", 1)
-		};
+				m_specialWaveEntries = new List<WavesData.WaveEntry>
+{
+	new WavesData.WaveEntry("HumanoidSkeleton", 40),
+	new WavesData.WaveEntry("InfectedBird", 35),
+	new WavesData.WaveEntry("InfectedNormal1", 30),
+	new WavesData.WaveEntry("InfectedNormal2", 30),
+	new WavesData.WaveEntry("InfectedFast1", 25),
+	new WavesData.WaveEntry("InfectedFast2", 25),
+	new WavesData.WaveEntry("InfectedMuscle1", 20),
+	new WavesData.WaveEntry("InfectedMuscle2", 20),
+	new WavesData.WaveEntry("PoisonousInfected1", 15),
+	new WavesData.WaveEntry("PoisonousInfected2", 15),
+	new WavesData.WaveEntry("InfectedFly1", 10),
+	new WavesData.WaveEntry("InfectedFly2", 10),
+	new WavesData.WaveEntry("InfectedFly3", 10),
+	new WavesData.WaveEntry("Boomer1", 8),
+	new WavesData.WaveEntry("Boomer2", 8),
+	new WavesData.WaveEntry("Boomer3", 8),
+	new WavesData.WaveEntry("GhostBoomer1", 6),
+	new WavesData.WaveEntry("Charger1", 5),
+	new WavesData.WaveEntry("Charger2", 5),
+	new WavesData.WaveEntry("InfectedHyena", 4),
+	new WavesData.WaveEntry("InfectedWildboar", 4),
+	new WavesData.WaveEntry("InfectedBear", 3),
+	new WavesData.WaveEntry("PredatoryChameleon", 3),
+	new WavesData.WaveEntry("InfectedWolf", 3),
+	new WavesData.WaveEntry("InfectedWerewolf", 3),
+	new WavesData.WaveEntry("InfectedSpider", 2),
+	new WavesData.WaveEntry("InfectedFreezer", 1),
+	new WavesData.WaveEntry("FrozenGhost", 1)
+};
 			}
 
 			// Precalcular pesos acumulados
@@ -1767,7 +1766,7 @@ namespace Game
 			}
 			else
 			{
-				m_currentWaveEntries = m_waves.ContainsKey(1) ? m_waves[1] : new List<WaveEntry>();
+				m_currentWaveEntries = m_waves.ContainsKey(1) ? m_waves[1] : new List<WavesData.WaveEntry>();
 				m_currentWave = 1;
 				m_spawnInterval = BaseSpawnInterval;
 			}
