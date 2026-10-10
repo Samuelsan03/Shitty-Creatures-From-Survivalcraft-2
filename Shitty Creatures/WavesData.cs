@@ -8,6 +8,18 @@ namespace Game
 {
 	public static class WavesData
 	{
+		public class WaveEntry
+		{
+			public string TemplateName { get; }
+			public int Weight { get; }
+
+			public WaveEntry(string name, int weight)
+			{
+				TemplateName = name;
+				Weight = weight;
+			}
+		}
+
 		public static Dictionary<int, List<WaveEntry>> LoadFromXml()
 		{
 			var result = new Dictionary<int, List<WaveEntry>>();
@@ -137,18 +149,6 @@ namespace Game
 			}
 
 			return result;
-		}
-	}
-
-	public class WaveEntry
-	{
-		public string TemplateName { get; }
-		public int Weight { get; }
-
-		public WaveEntry(string name, int weight)
-		{
-			TemplateName = name;
-			Weight = weight;
 		}
 	}
 }
