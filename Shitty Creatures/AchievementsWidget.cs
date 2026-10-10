@@ -630,8 +630,10 @@ namespace Game
 				achievementContainer.Children.Add(progressBar);
 				CanvasWidget.SetPosition(progressBar, new Vector2(140f, 82f));
 
-				// Porcentaje
-				string percentText = unlocked ? "100%" : (target > 0 ? $"{Math.Min(currentKills, target)}%" : "0%");
+				// Porcentaje (corregido para calcular el porcentaje real)
+				int percentVal = target > 0 ? (int)Math.Round((double)currentKills / target * 100.0) : 0;
+				percentVal = Math.Clamp(percentVal, 0, 100);
+				string percentText = unlocked ? "100%" : $"{percentVal}%";
 				percentLabel = new LabelWidget
 				{
 					Text = percentText,
@@ -1150,7 +1152,9 @@ namespace Game
 
 			if (itemData.PercentLabel != null)
 			{
-				string percentText = unlocked ? "100%" : (target > 0 ? $"{Math.Min(current, target)}%" : "0%");
+				int percentVal = target > 0 ? (int)Math.Round((double)current / target * 100.0) : 0;
+				percentVal = Math.Clamp(percentVal, 0, 100);
+				string percentText = unlocked ? "100%" : $"{percentVal}%";
 				itemData.PercentLabel.Text = percentText;
 			}
 
