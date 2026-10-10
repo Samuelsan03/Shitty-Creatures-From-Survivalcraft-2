@@ -957,11 +957,12 @@ namespace Game
 				m_needsReorder = false;
 			}
 
-			// === EFECTO ARCOÍRIS PARA LOGROS PREMIUM ===
+			// === CÁLCULO DEL COLOR ARCOÍRIS ===
 			float hue = (float)((Time.RealTime * 30.0) % 360.0);
 			Vector3 rainbowRgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
 			Color rainbowColor = new Color(rainbowRgb);
 
+			// === EFECTO ARCOÍRIS PARA LOGROS PREMIUM ===
 			foreach (var kvp in m_achievementItems)
 			{
 				var itemData = kvp.Value;
@@ -971,6 +972,33 @@ namespace Game
 					itemData.TitleLabel.Color = rainbowColor;
 				}
 			}
+
+			// === EFECTO ARCOÍRIS PARA INDICADORES AL 100% ===
+			var subsystemAchievements = m_componentPlayer?.Project?.FindSubsystem<SubsystemAchievements>(true);
+			bool isAllCompleted = false;
+			if (subsystemAchievements != null && m_totalAchievements > 0)
+			{
+				int unlockedCount = subsystemAchievements.GetUnlockedAchievementCount();
+				isAllCompleted = unlockedCount >= m_totalAchievements;
+			}
+
+			if (isAllCompleted)
+			{
+				// Aplicar color arcoíris únicamente a los indicadores de progreso y trofeos
+				if (m_progressLabel != null)
+					m_progressLabel.Color = rainbowColor;
+				if (m_unlockedLabel != null)
+					m_unlockedLabel.Color = rainbowColor;
+			}
+			else
+			{
+				// Restaurar colores normales si no está al 100%
+				if (m_progressLabel != null)
+					m_progressLabel.Color = Color.White;
+				if (m_unlockedLabel != null)
+					m_unlockedLabel.Color = Color.White;
+			}
+			// === FIN EFECTO ARCOÍRIS AL 100% ===
 
 			if (m_closeButton.IsClicked)
 			{
