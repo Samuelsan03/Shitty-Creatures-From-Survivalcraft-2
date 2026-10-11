@@ -198,7 +198,6 @@ namespace Game
 					if (m_farmerEnabled && HasFarmingTools())
 						EnsureFarmingToolEquipped();
 
-					// Importancia baja en reposo: deja que WalkAround (u otras behaviors) tomen el control.
 					m_importanceLevel = 0f;
 					m_stateEnterTime = m_subsystemTime.GameTime;
 				},
@@ -210,20 +209,30 @@ namespace Game
 						return;
 					}
 
-					// Sin área asignada (o sin esquinas válidas) → no trabajar.
-					// Se requieren AMBAS condiciones: el ID debe apuntar a un área real
-					// y esa área debe habernos dado un rectángulo (ApplyFarmAreaBounds).
 					if (FarmAreaId < 0 || !m_hasFarmAreaBounds)
 					{
 						m_importanceLevel = 0f;
 						return;
 					}
 
-					if (!HasFarmingTools())
-					{
-						m_importanceLevel = 0f;
-						return;
-					}
+					// >>> CAMBIO <<<
+					// Antes aquí había un:
+					//   if (!HasFarmingTools()) { m_importanceLevel = 0f; return; }
+					// que hacía que el granjero jamás buscara plantas básicas
+					// (pasto alto, flores) mientras esperaba rastrillo/semillas.
+					//
+					// Ahora NO hacemos return aquí. Aunque no tenga herramientas,
+					// dejamos que el escaneo corra: FindBestTask ya prioriza
+					// HarvestMature (plantas maduras) SIN requerir rastrillo ni
+					// semillas, así que el granjero podrá ir a romper pasto alto
+					// y flores, recogerlos con CollectPickables, y convertirlos
+					// en semillas con TryCraftSeedFromHarvest.
+					//
+					// El escaneo encontrará:
+					//   - Plantas maduras (HarvestMature)        → siempre (sin herramientas)
+					//   - Cultivos malos  (ClearBadCrop)        → siempre (romperlos no requiere herramienta)
+					//   - RakeTrampled / Plant / Rake           → solo si tiene rastrillo/semillas
+					// <<< FIN CAMBIO >>>
 
 					if (m_subsystemTime.GameTime - m_lastToolCheckTime > TOOL_CHECK_INTERVAL)
 					{
@@ -231,7 +240,6 @@ namespace Game
 						CheckAndRestoreFarmingTool();
 					}
 
-					// Si se aleja demasiado del área, siempre vuelve (aunque esté descansando).
 					if (IsTooFarFromArea())
 					{
 						m_importanceLevel = 10f;
@@ -239,7 +247,6 @@ namespace Game
 						return;
 					}
 
-					// Escaneo periódico: si aparece una tarea, la tomamos.
 					if (m_subsystemTime.GameTime > m_nextScanTime)
 					{
 						m_nextScanTime = m_subsystemTime.GameTime + m_random.Float(0.4f, 0.8f);
@@ -257,7 +264,6 @@ namespace Game
 						}
 					}
 
-					// Sin tareas → importancia 0 para que WalkAround pueda activarse.
 					m_importanceLevel = 0f;
 				},
 				leave: null
