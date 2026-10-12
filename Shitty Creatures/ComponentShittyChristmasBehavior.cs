@@ -1,5 +1,6 @@
 using System;
 using Engine;
+using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
 
@@ -32,9 +33,14 @@ namespace Game
 			this.m_subsystemSky = base.Project.FindSubsystem<SubsystemSky>(true);
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			this.m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
+			this.m_subsystemPickables = base.Project.FindSubsystem<SubsystemPickables>(true);
 			this.m_componentGui = base.Entity.FindComponent<ComponentGui>(true);
 			this.m_componentPlayer = base.Entity.FindComponent<ComponentPlayer>(true);
 			this.m_componentSleep = base.Entity.FindComponent<ComponentSleep>();
+
+			// Cacheamos el índice del bloque del huevo usando BlocksManager.GetBlock("")
+			Block eggBlock = BlocksManager.GetBlock("ChristmasGiftEggBlock");
+			this.m_eggBlockIndex = (eggBlock != null) ? eggBlock.BlockIndex : -1;
 		}
 
 		public void Update(float dt)
@@ -107,6 +113,87 @@ namespace Game
 					}
 				}
 			}
+
+			// === LLUVIA DE HUEVOS ===
+			// Imítamos el comportamiento de la lluvia: huevos cayendo del cielo alrededor del jugador
+			if (this.m_celebrationActive && !isSleeping && this.m_eggBlockIndex >= 0)
+			{
+				this.UpdateEggRain(dt);
+			}
+		}
+
+		/// <summary>
+		/// Lluvia de huevos: imita la precipitación de SubsystemWeather.
+		/// Spawnea huevos cayendo del cielo en un radio alrededor del jugador,
+		/// con una intensidad variable (similar a PrecipitationIntensity).
+		/// </summary>
+		private void UpdateEggRain(float dt)
+		{
+			// Acumulador de tiempo para espaciar la generación de huevos
+			this.m_eggRainTimer += dt;
+
+			// Intensidad de la lluvia de huevos (oscila con el tiempo para dar variedad)
+			// Lerp entre 3 y 12 huevos por segundo aprox.
+			float intensity = MathUtils.Lerp(3f, 12f, 0.5f * MathF.Sin(0.2f * (float)Time.FrameStartTime) + 0.5f);
+
+			// Probabilidad por frame de soltar un huevo (depende de dt e intensidad)
+			// A diferencia de la lluvia real (partículas), los huevos son Pickables pesados,
+			// así que limitamos la cantidad para no sobrecargar el mundo.
+			float probability = intensity * dt * 0.5f; // factor 0.5 para no saturar
+
+			if (this.m_random.Float(0f, 1f) < probability)
+			{
+				this.SpawnFallingEgg();
+			}
+
+			// Cada cierto tiempo, lanzamos una ráfaga extra de huevos (como chubasco)
+			if (this.m_eggRainTimer > 2.5f)
+			{
+				this.m_eggRainTimer = 0f;
+				int burstCount = this.m_random.Int(2, 5);
+				for (int i = 0; i < burstCount; i++)
+				{
+					this.SpawnFallingEgg();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Genera un huevo que cae del cielo imitando una gota de lluvia.
+		/// Posición: alrededor del jugador, en un radio similar al de la lluvia (visibilidad).
+		/// Altura: por encima del jugador para que tenga espacio de caída.
+		/// Velocidad: hacia abajo con leve desplazamiento horizontal (efecto "viento").
+		/// </summary>
+		private void SpawnFallingEgg()
+		{
+			// Radio de caída alrededor del jugador (similar a m_rainSoundRadius = 7)
+			// pero ampliado un poco para cubrir la zona visible.
+			Vector2 horizontalOffset = this.m_random.Vector2(8f, 30f);
+
+			Vector3 playerPos = this.m_componentPlayer.ComponentBody.Position;
+
+			// Posición de spawn: encima del jugador, a altura suficiente
+			// (similar a como los ejes de precipitación se extienden hacia arriba)
+			float spawnHeight = playerPos.Y + this.m_random.Float(35f, 55f);
+
+			Vector3 spawnPosition = new Vector3(
+				playerPos.X + horizontalOffset.X,
+				spawnHeight,
+				playerPos.Z + horizontalOffset.Y
+			);
+
+			// Velocidad: hacia abajo, con leve viento horizontal (como gotas de lluvia con viento)
+			Vector3 velocity = new Vector3(
+				this.m_random.Float(-1.5f, 1.5f),
+				this.m_random.Float(-8f, -5f),
+				this.m_random.Float(-1.5f, 1.5f)
+			);
+
+			// Crear el valor del bloque del huevo
+			int eggValue = Terrain.MakeBlockValue(this.m_eggBlockIndex, 0, 0);
+
+			// Añadir como Pickable: caerá con gravedad igual que un objeto tirado
+			this.m_subsystemPickables.AddPickable(eggValue, 1, spawnPosition, velocity, null);
 		}
 
 		// Implementación de IPlayerNoiseListener
@@ -135,6 +222,7 @@ namespace Game
 		private SubsystemSky m_subsystemSky;
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemProjectiles m_subsystemProjectiles;
+		private SubsystemPickables m_subsystemPickables;
 		private ComponentGui m_componentGui;
 		private ComponentPlayer m_componentPlayer;
 		private ComponentSleep m_componentSleep;
@@ -142,5 +230,9 @@ namespace Game
 
 		private bool m_celebrationActive = false;
 		private static int m_lastMessageYear = 0;
+
+		// === Campos para la lluvia de huevos ===
+		private int m_eggBlockIndex = -1;       // Índice del bloque ChristmasGiftEggBlock
+		private float m_eggRainTimer = 0f;      // Acumulador para ráfagas
 	}
 }
