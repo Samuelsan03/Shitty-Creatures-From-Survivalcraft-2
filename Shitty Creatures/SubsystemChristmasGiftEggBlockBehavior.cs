@@ -104,7 +104,7 @@ namespace Game
 			"SmallIncendiaryKegBlock", "MediumIncendiaryKegBlock", "LargeIncendiaryKegBlock",
 			"GravestoneBlock", "BoatBlock", "FeatherBlock", "StringBlock", "CanvasBlock", "CarpetBlock",
 			"CampfireBlock", "GunpowderBlock", "PigmentBlock", "JackOLanternBlock", "MagnetBlock",
-			"FurBlock", "LeatherBlock", "SaddleBlock", "ChristmasTreeBlock", "FurnitureBlock",
+			"FurBlock", "LeatherBlock", "SaddleBlock", "ChristmasTreeBlock",
 			"CairnBlock", "FirstAidKitBlock", "AntidotePillBlock", "NuclearCoinBlock",
 
             // ===================== Items (nuevos del CSV) =====================
