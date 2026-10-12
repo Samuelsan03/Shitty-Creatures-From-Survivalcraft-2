@@ -152,6 +152,43 @@ namespace Game
 					s_subsystemAchievements.SetCelebrationEndTime(0);
 				}
 			}
+
+			// ========== VERIFICAR CONTADORES AL CARGAR EL MUNDO ==========
+			// Detecta si el usuario modificó manualmente el XML del mundo inflando los
+			// contadores. Al entrar al mundo, si los contadores superan los umbrales de
+			// logros, se desbloquean con notificación + sonido (comportamiento normal).
+			// Usamos SyncDispatcher en lugar de QueueGameTimeDelayedExecution para evitar 
+			// el error "Collection was modified", ya que CheckLoadedCounters desbloquea logros
+			// y estos programan nuevas ejecuciones retrasadas, lo cual rompe la enumeración
+			// de SubsystemTime.NextFrame().
+			if (s_subsystemTime != null)
+			{
+				double targetGameTime = s_subsystemTime.GameTime + 0.05;
+				GameManager.SyncDispatcher.Add(() =>
+				{
+					if (s_subsystemTime == null || s_subsystemTime.GameTime < targetGameTime)
+					{
+						return false; // Retornar false mantiene la tarea en el dispatcher para el próximo frame
+					}
+
+					try
+					{
+						if (s_subsystemAchievements == null || s_currentProject == null)
+							return true;
+
+						var playersSubsystem = s_currentProject.FindSubsystem<SubsystemPlayers>(true);
+						if (playersSubsystem == null || playersSubsystem.ComponentPlayers.Count == 0)
+							return true;
+
+						CheckLoadedCounters();
+					}
+					catch (Exception ex)
+					{
+						Log.Warning($"[AchievementsManager] Error verifying loaded counters: {ex.Message}");
+					}
+					return true; // Retornar true elimina la tarea del dispatcher
+				});
+			}
 		}
 
 		public static void Shutdown()
@@ -1181,6 +1218,172 @@ namespace Game
 			// InGameMusicManager.Update() maneja la pausa automáticamente
 			// Solo verificar que no esté en pausa (lo cual ya implica estar en GameScreen)
 			return !InGameMusicManager.IsPaused;
+		}
+
+		/// <summary>
+		/// Verifica todos los contadores cargados desde el XML del mundo contra los
+		/// umbrales de logros. Si un contador supera un umbral pero el logro no está
+		/// desbloqueado, lo desbloquea con notificación + sonido.
+		/// Esto cubre el caso en que el usuario edita manualmente el XML del mundo.
+		/// </summary>
+		public static void CheckLoadedCounters()
+		{
+			if (s_subsystemAchievements == null || s_currentProject == null) return;
+			var players = s_currentProject.FindSubsystem<SubsystemPlayers>(true);
+			if (players == null) return;
+
+			foreach (var player in players.ComponentPlayers)
+			{
+				if (player == null) continue;
+				CheckLoadedCountersForPlayer(player);
+			}
+		}
+
+		private static void CheckLoadedCountersForPlayer(ComponentPlayer player)
+		{
+			if (player == null || s_subsystemAchievements == null) return;
+			int idx = player.PlayerData.PlayerIndex;
+
+			// ========== INFECTADOS ==========
+			int infectedKills = s_subsystemAchievements.GetInfectedKills(idx);
+			if (infectedKills > 0 && !s_subsystemAchievements.IsAchievementUnlocked(2))
+				UnlockAchievement(player, 2, "KillInfected", LanguageControl.Get(AchievementsWidget.fName, 8));
+			if (infectedKills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(16))
+				UnlockAchievement(player, 16, "Kill10Infected", LanguageControl.Get(AchievementsWidget.fName, 36));
+			if (infectedKills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(17))
+				UnlockAchievement(player, 17, "Kill50Infected", LanguageControl.Get(AchievementsWidget.fName, 38));
+			if (infectedKills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(18))
+				UnlockAchievement(player, 18, "Kill100Infected", LanguageControl.Get(AchievementsWidget.fName, 40));
+
+			// ========== TANKS ==========
+			int tankKills = s_subsystemAchievements.GetTankKills(idx);
+			if (tankKills > 0 && !s_subsystemAchievements.IsAchievementUnlocked(1))
+				UnlockAchievement(player, 1, "KillTank", LanguageControl.Get(AchievementsWidget.fName, 6));
+			if (tankKills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(22))
+				UnlockAchievement(player, 22, "Kill10Tanks", LanguageControl.Get(AchievementsWidget.fName, 48));
+			if (tankKills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(23))
+				UnlockAchievement(player, 23, "Kill50Tanks", LanguageControl.Get(AchievementsWidget.fName, 50));
+			if (tankKills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(24))
+				UnlockAchievement(player, 24, "Kill100Tanks", LanguageControl.Get(AchievementsWidget.fName, 52));
+
+			// ========== BOSSES ==========
+			int bossKills = s_subsystemAchievements.GetBossKills(idx);
+			if (bossKills > 0 && !s_subsystemAchievements.IsAchievementUnlocked(15))
+				UnlockAchievement(player, 15, "KillBoss", LanguageControl.Get(AchievementsWidget.fName, 34));
+			if (bossKills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(19))
+				UnlockAchievement(player, 19, "Kill10Bosses", LanguageControl.Get(AchievementsWidget.fName, 42));
+			if (bossKills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(20))
+				UnlockAchievement(player, 20, "Kill50Bosses", LanguageControl.Get(AchievementsWidget.fName, 44));
+			if (bossKills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(21))
+				UnlockAchievement(player, 21, "Kill100Bosses", LanguageControl.Get(AchievementsWidget.fName, 46));
+
+			// ========== GHOSTS ==========
+			int ghostKills = s_subsystemAchievements.GetGhostKills(idx);
+			if (ghostKills > 0 && !s_subsystemAchievements.IsAchievementUnlocked(4))
+				UnlockAchievement(player, 4, "KillGhost", LanguageControl.Get(AchievementsWidget.fName, 12));
+			if (ghostKills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(25))
+				UnlockAchievement(player, 25, "Kill10Ghosts", LanguageControl.Get(AchievementsWidget.fName, 54));
+			if (ghostKills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(26))
+				UnlockAchievement(player, 26, "Kill50Ghosts", LanguageControl.Get(AchievementsWidget.fName, 56));
+			if (ghostKills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(27))
+				UnlockAchievement(player, 27, "Kill100Ghosts", LanguageControl.Get(AchievementsWidget.fName, 58));
+
+			// ========== GHOST TANKS ==========
+			int ghostTankKills = s_subsystemAchievements.GetGhostTankKills(idx);
+			if (ghostTankKills > 0 && !s_subsystemAchievements.IsAchievementUnlocked(5))
+				UnlockAchievement(player, 5, "KillGhostTank", LanguageControl.Get(AchievementsWidget.fName, 14));
+			if (ghostTankKills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(28))
+				UnlockAchievement(player, 28, "Kill10GhostTanks", LanguageControl.Get(AchievementsWidget.fName, 60));
+			if (ghostTankKills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(29))
+				UnlockAchievement(player, 29, "Kill50GhostTanks", LanguageControl.Get(AchievementsWidget.fName, 62));
+			if (ghostTankKills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(30))
+				UnlockAchievement(player, 30, "Kill100GhostTanks", LanguageControl.Get(AchievementsWidget.fName, 64));
+
+			// ========== BANDITS ==========
+			int banditKills = s_subsystemAchievements.GetBanditKills(idx);
+			if (banditKills > 0 && !s_subsystemAchievements.IsAchievementUnlocked(3))
+				UnlockAchievement(player, 3, "KillBandit", LanguageControl.Get(AchievementsWidget.fName, 10));
+			if (banditKills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(31))
+				UnlockAchievement(player, 31, "Kill10Bandits", LanguageControl.Get(AchievementsWidget.fName, 66));
+			if (banditKills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(32))
+				UnlockAchievement(player, 32, "Kill50Bandits", LanguageControl.Get(AchievementsWidget.fName, 68));
+			if (banditKills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(33))
+				UnlockAchievement(player, 33, "Kill100Bandits", LanguageControl.Get(AchievementsWidget.fName, 70));
+
+			// ========== HEALS ==========
+			int heals = s_subsystemAchievements.GetHeals(idx);
+			if (heals >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(34))
+				UnlockAchievement(player, 34, "Heal10", LanguageControl.Get(AchievementsWidget.fName, 72));
+			if (heals >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(35))
+				UnlockAchievement(player, 35, "Heal25", LanguageControl.Get(AchievementsWidget.fName, 74));
+			if (heals >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(75))
+				UnlockAchievement(player, 75, "Heal50", LanguageControl.Get(AchievementsWidget.fName, 146));
+			if (heals >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(36))
+				UnlockAchievement(player, 36, "Heal100", LanguageControl.Get(AchievementsWidget.fName, 76));
+
+			// ========== PIRATE KILLS ==========
+			int pirateKills = s_subsystemAchievements.GetPirateKills(idx);
+			if (pirateKills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(38))
+				UnlockAchievement(player, 38, "Kill10Pirates", LanguageControl.Get(AchievementsWidget.fName, 80));
+			if (pirateKills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(39))
+				UnlockAchievement(player, 39, "Kill50Pirates", LanguageControl.Get(AchievementsWidget.fName, 82));
+			if (pirateKills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(40))
+				UnlockAchievement(player, 40, "Kill100Pirates", LanguageControl.Get(AchievementsWidget.fName, 84));
+
+			// ========== FLYING ==========
+			int flyingKills = s_subsystemAchievements.GetFlyingKills(idx);
+			if (flyingKills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(44))
+				UnlockAchievement(player, 44, "Kill10Flying", LanguageControl.Get(AchievementsWidget.fName, 92));
+			if (flyingKills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(45))
+				UnlockAchievement(player, 45, "Kill25Flying", LanguageControl.Get(AchievementsWidget.fName, 94));
+			if (flyingKills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(46))
+				UnlockAchievement(player, 46, "Kill50Flying", LanguageControl.Get(AchievementsWidget.fName, 96));
+			if (flyingKills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(47))
+				UnlockAchievement(player, 47, "Kill100Flying", LanguageControl.Get(AchievementsWidget.fName, 98));
+
+			// ========== BOOMERS ==========
+			int boomerKills = s_subsystemAchievements.GetBoomerKills(idx);
+			if (boomerKills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(48))
+				UnlockAchievement(player, 48, "Kill10Boomers", LanguageControl.Get(AchievementsWidget.fName, 100));
+			if (boomerKills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(49))
+				UnlockAchievement(player, 49, "Kill25Boomers", LanguageControl.Get(AchievementsWidget.fName, 102));
+			if (boomerKills >= 55 && !s_subsystemAchievements.IsAchievementUnlocked(50))
+				UnlockAchievement(player, 50, "Kill55Boomers", LanguageControl.Get(AchievementsWidget.fName, 104));
+			if (boomerKills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(51))
+				UnlockAchievement(player, 51, "Kill100Boomers", LanguageControl.Get(AchievementsWidget.fName, 106));
+
+			// ========== NORMAL TAMES ==========
+			int normalTames = s_subsystemAchievements.GetNormalTames(idx);
+			if (normalTames >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(57))
+				UnlockAchievement(player, 57, "TameNormal10", LanguageControl.Get(AchievementsWidget.fName, 110));
+			if (normalTames >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(58))
+				UnlockAchievement(player, 58, "TameNormal25", LanguageControl.Get(AchievementsWidget.fName, 112));
+			if (normalTames >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(59))
+				UnlockAchievement(player, 59, "TameNormal50", LanguageControl.Get(AchievementsWidget.fName, 114));
+			if (normalTames >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(60))
+				UnlockAchievement(player, 60, "TameNormal100", LanguageControl.Get(AchievementsWidget.fName, 116));
+
+			// ========== BOSS TAMES ==========
+			int bossTames = s_subsystemAchievements.GetBossTames(idx);
+			if (bossTames >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(61))
+				UnlockAchievement(player, 61, "TameBoss10", LanguageControl.Get(AchievementsWidget.fName, 118));
+			if (bossTames >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(62))
+				UnlockAchievement(player, 62, "TameBoss25", LanguageControl.Get(AchievementsWidget.fName, 120));
+			if (bossTames >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(63))
+				UnlockAchievement(player, 63, "TameBoss50", LanguageControl.Get(AchievementsWidget.fName, 122));
+			if (bossTames >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(64))
+				UnlockAchievement(player, 64, "TameBoss100", LanguageControl.Get(AchievementsWidget.fName, 124));
+
+			// ========== GHOST TAMES ==========
+			int ghostTames = s_subsystemAchievements.GetGhostTames(idx);
+			if (ghostTames >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(65))
+				UnlockAchievement(player, 65, "TameGhost10", LanguageControl.Get(AchievementsWidget.fName, 126));
+			if (ghostTames >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(66))
+				UnlockAchievement(player, 66, "TameGhost25", LanguageControl.Get(AchievementsWidget.fName, 128));
+			if (ghostTames >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(67))
+				UnlockAchievement(player, 67, "TameGhost50", LanguageControl.Get(AchievementsWidget.fName, 130));
+			if (ghostTames >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(68))
+				UnlockAchievement(player, 68, "TameGhost100", LanguageControl.Get(AchievementsWidget.fName, 132));
 		}
 	}
 }
