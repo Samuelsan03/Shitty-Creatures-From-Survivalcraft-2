@@ -1,4 +1,11 @@
 {
+  "SubsystemChristmasGiftEggBlockBehavior": {
+  "1": "Failed to spawn gifts, check game log."
+},
+"ComponentShittyChristmasBehavior": {
+  "1": "Christmas has arrived!",
+  "2": "--- May the presents not kill you before you open them ---"
+},
 "CannonWidget": {
   "0": "Place a Cannon Ball to load",
   "1": "Cannon",
@@ -767,6 +774,10 @@
   }
 },
   "Blocks": {
+  "ChristmasGiftEggBlock:0": {
+  "DisplayName": "Christmas Gift Egg",
+  "Description": "A festive egg that bursts into a shower of random gifts and experience orbs when thrown. During Christmas night (December 25th), these eggs will magically rain from the sky!"
+},
     "FarmerWandBlock:0": {
   "DisplayName": "Farmer Wand",
   "Description": "A golden wand used to mark the crop areas where farmers will work. Right-click a block to mark Point A, right-click again to mark Point B.",
