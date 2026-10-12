@@ -107,7 +107,7 @@ namespace Game
 			{
 				return string.Empty;
 			}
-			return LanguageControl.Get("RepeatArrowBlock", arrowType);
+			return LanguageControl.Get("RepeatBoltBlock", arrowType);
 		}
 
 		public static RepeatArrowBlock.ArrowType GetArrowType(int data)
