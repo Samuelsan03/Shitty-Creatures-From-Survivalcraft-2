@@ -17,6 +17,11 @@
 </Folder>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+
+    <ComponentTemplate Name="ShittyChristmasBehavior" Guid="fcb73b47-c2f1-44e0-8d39-cb412f927ab6" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+          <Parameter Name="Class" Guid="b3962f44-540c-4b4b-bafd-d352ed1970f5" Value="Game.ComponentShittyChristmasBehavior" Type="string" />
+        </ComponentTemplate>
+
     <ComponentTemplate Name="NoiseAttraction" Description="Allows the creature to hear noises and investigate their source" Guid="bab44679-20b3-426a-b178-ab6a79326f4c" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Guid="45e9baf1-36d4-4feb-bdf2-ead1bf06bf44" Value="Game.ComponentNoiseAttraction" Type="string" />
 </ComponentTemplate>
@@ -566,6 +571,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="ChristmasGiftEggBlockBehavior" Guid="b320ad59-844a-4174-a2d7-41f0a6307416" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+  <Parameter Name="Class" Guid="f042ecf4-d7eb-4064-aa2e-60f3907e20c2" Value="Game.SubsystemChristmasGiftEggBlockBehavior" Type="string"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="CannonBallBlockBehavior" Guid="29d59700-f115-47dd-93fe-24188528c8e5" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
   <Parameter Name="Class" Guid="9c0e5dac-82f4-464f-a579-a3019c4a5ea5" Value="Game.SubsystemCannonBallBlockBehavior" Type="string"/>
 </MemberSubsystemTemplate>
@@ -783,11 +791,11 @@
     <Parameter Name="LastCheckedDay" Value="0" Type="double" Guid="5b412878-76c4-4031-b90a-dceb01c4e203"/>
     <Parameter Name="DaysSinceLastGreenNight" Value="0" Type="int" Guid="97154c9c-9b04-4464-9cd1-4cf799adc5eb"/>
 </MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="SubsystemInGameMusic" Description="Reproduccion músical durante el juego." Guid="f009f348-e373-4936-bf4d-fbe684c64cbd" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-        <Parameter Name="Class" Guid="12016d6d-2f3a-4c74-88a4-6dc50e5427fe" Value="Game.SubsystemInGameMusic" Type="string"/>
-    </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="PoisonSystem" Description="Sistema de veneno para criaturas" Guid="71b54344-233a-48d5-a71a-7b77d94550a4" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
   <Parameter Name="Class" Guid="a16b7806-06e2-4e13-a8dd-49ba594d3d06" Value="Game.SubsystemPoisonSystem" Type="string"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="PlayerNoise" Guid="ab8540a6-ca7b-4f3d-ae14-b852a905c836" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+  <Parameter Name="Class" Guid="aea7d0a6-08ae-4b91-8da8-f087de099dff" Value="Game.SubsystemPlayerNoise" Type="string"/>
 </MemberSubsystemTemplate>
 </ProjectTemplate>
 </Mod>
