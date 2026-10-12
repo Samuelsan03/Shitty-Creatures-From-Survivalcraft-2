@@ -3,8 +3,8 @@
   "1": "Failed to spawn gifts, check game log."
 },
 "ComponentShittyChristmasBehavior": {
-  "1": "Christmas has arrived!",
-  "2": "--- May the presents not kill you before you open them ---"
+  "1": "Merry Christmas!",
+  "2": "--- Catch the magical gift eggs falling from the sky! ---"
 },
 "CannonWidget": {
   "0": "Place a Cannon Ball to load",
@@ -774,9 +774,9 @@
   }
 },
   "Blocks": {
-  "ChristmasGiftEggBlock:0": {
+"ChristmasGiftEggBlock:0": {
   "DisplayName": "Christmas Gift Egg",
-  "Description": "A festive egg that bursts into a shower of random gifts and experience orbs when thrown. During Christmas night (December 25th), these eggs will magically rain from the sky!"
+  "Description": "A magical festive egg stuffed with holiday gifts. It can be obtained in creative mode, but during Christmas night, these eggs miraculously fall from the sky like rain. Throw it against a hard surface to smash it open and release a random assortment of gifts, including blocks, tools, weapons, food, and clothing. The number of gifts and their stack sizes vary, and it may also drop experience orbs."
 },
     "FarmerWandBlock:0": {
   "DisplayName": "Farmer Wand",
