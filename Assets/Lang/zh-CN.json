@@ -70,15 +70,15 @@
   "火焰子弹",
   "毒子弹"
 ],
-"RepeatArrowBlock": [
-  "重复铜弩箭",
-  "重复铁弩箭",
-  "重复钻石弩箭",
-  "重复爆炸弩箭",
-  "重复毒性弩箭",
-  "重复剧毒弩箭",
-  "重复火焰弩箭"
-],
+  "RepeatBoltBlock": [
+    "铜制连发弩箭",
+    "铁制连发弩箭",
+    "钻石连发弩箭",
+    "爆炸连发弩箭",
+    "毒素连发弩箭",
+    "剧毒连发弩箭",
+    "火焰连发弩箭"
+  ],
 "SubsystemFirstAidKitBlockBehavior": {
   "0": "你的生命值已完全恢复！",
   "1": "{0}的生命值已完全恢复！",
@@ -1283,33 +1283,33 @@
       "CRDescription:0": "增强型弩，内置弹仓支持连续射击。兼容多种特殊弩箭。"
     },
     "RepeatArrowBlock:0": {
-      "Description": "用于连发弩的轻型铜制弩箭。提供中等伤害，并在高速连射时保持良好稳定性。适合持续自动射击。",
-      "CRDescription:0": "连发弩的铜制版本，适合持续射击。"
-    },
-    "RepeatArrowBlock:1": {
-      "Description": "用于连发弩的强化铁制弩箭。相比普通铁弩箭拥有更高伤害和更强穿透力，并能在连续射击中保持精度。",
-      "CRDescription:1": "连发弩的铁制版本，提供更高伤害和穿透力。"
-    },
-    "RepeatArrowBlock:2": {
-  "Description": "采用钻石箭头打造的高级弩箭，专为先进连发弩设计。拥有极强的护甲穿透能力和持续高额伤害。其强化结构可防止撞击时断裂，并在穿过水体时保持大部分飞行速度。",
-  "CRDescription:2": "用于连发弩的钻石弩箭。撞击时不会断裂，并能在水中保持飞行速度。"
-},
-    "RepeatArrowBlock:3": {
-      "Description": "用于连发弩的爆炸弩箭，命中后产生小型爆炸。单发伤害低于普通爆炸弩箭，但可进行爆炸连射，适合清理群体与区域封锁。",
-      "CRDescription:3": "连发弩的爆炸版本，适合群体控制和区域封锁。"
-    },
-    "RepeatArrowBlock:4": {
-      "Description": "低致命性毒素弩箭，初始伤害低，但可造成30秒中毒效果，适合削弱敌人而非立刻击杀。",
-      "CRDescription:4": "连发弩的毒素版本，造成持续中毒效果。"
-    },
-    "RepeatArrowBlock:5": {
-      "Description": "用于连发弩的高强度毒素弩箭，可施加100秒剧毒效果，适合通过快速叠加负面状态削弱敌方群体。",
-      "CRDescription:5": "连发弩的剧毒版本，造成更长时间的剧毒效果。"
-    },
-    "RepeatArrowBlock:6": {
-"Description": "能够点燃目标的燃烧连发弩矢。命中后消失。",
-"CRDescription:6": "使用铜制连发弩矢、硫磺块和羽毛制作火焰连发弩矢"
-},
+    "Description": "一种铜尖弩箭，耐久度适中。",
+    "CRDescription:0": "使用箭、铜锭和羽毛制作8支铜制弩箭。"
+  },
+  "RepeatArrowBlock:1": {
+    "Description": "一种铁尖弩箭，伤害更高，耐久度更强。",
+    "CRDescription:0": "使用铜制弩箭、铁锭和羽毛制作8支铁制弩箭。"
+  },
+  "RepeatArrowBlock:2": {
+    "Description": "一种钻石尖弩箭，能造成大量伤害，并且在水中飞行时不会减速。",
+    "CRDescription:0": "使用铜制弩箭、钻石和羽毛制作8支钻石弩箭。"
+  },
+  "RepeatArrowBlock:3": {
+    "Description": "一种能够在撞击时引爆的爆炸弩箭。",
+    "CRDescription:0": "使用铜制弩箭、火药和羽毛制作8支爆炸弩箭。"
+  },
+  "RepeatArrowBlock:4": {
+    "Description": "一种涂有毒素的弩箭，能够使目标中毒。",
+    "CRDescription:0": "使用铜制弩箭、毒素和羽毛制作8支毒素弩箭。"
+  },
+  "RepeatArrowBlock:5": {
+    "Description": "一种强效毒箭，能够造成持续时间更长的感染。",
+    "CRDescription:0": "通过加热制作配方，使用额外的毒素升级毒素弩箭。"
+  },
+  "RepeatArrowBlock:6": {
+    "Description": "一种燃烧弩箭，能够点燃目标。",
+    "CRDescription:0": "使用铜制弩箭、硫磺块和羽毛制作8支火焰弩箭。"
+  },
     "AKBlock:0": {
     "DisplayName": "AK-47突击步枪",
     "Description": "传奇突击步枪，发射7.62×39毫米弹药。精度良好，后坐力适中。使用AK47Bullet弹药。射速约350发/分钟。",
