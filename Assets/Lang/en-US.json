@@ -70,14 +70,14 @@
     "Flame Bullet",
     "Poison Bullet"
   ],
-  "RepeatArrowBlock": [
-    "Repeating Copper Bolt",
-    "Repeating Iron Bolt",
-    "Repeating Diamond Bolt",
-    "Repeating Explosive Bolt",
-    "Repeating Poison Bolt",
-    "Repeating Severe Poison Bolt",
-    "Repeating Fire Bolt"
+  "RepeatBoltBlock": [
+    "Copper Repeating Crossbow Bolt",
+    "Iron Repeating Crossbow Bolt",
+    "Diamond Repeating Crossbow Bolt",
+    "Explosive Repeating Crossbow Bolt",
+    "Poison Repeating Crossbow Bolt",
+    "Serious Poison Repeating Crossbow Bolt",
+    "Fire Repeating Crossbow Bolt"
   ],
   "SubsystemFirstAidKitBlockBehavior": {
     "0": "You have completely restored your health!",
@@ -1264,39 +1264,39 @@
   "Description": "Chemical projectile for the flamethrower. Releases toxic gas that infects creatures with poison or disease, weakening them over time and dealing additional damage.",
   "CRDescription:1": "Poisonous ammunition for the flamethrower. Infects targets on impact."
 },
-    "RepeatCrossbowBlock:0": {
-      "DisplayName": "Repeating Crossbow",
-      "Description": "An advanced version of the standard crossbow, optimized for sustained ranged fire. Unlike the normal crossbow which fires a single bolt before reloading, the Repeating Crossbow features an internal 8-bolt magazine and progressive tension system allowing continuous fire. It deals slightly less damage per shot than the normal crossbow but has a higher fire rate and faster reload. Compatible with special bolts: Copper, Iron, Diamond, Explosive, and Poison.",
-      "CRDescription:0": "Automatic crossbow with 8-arrow magazine - complex mechanical design"
-    },
-    "RepeatArrowBlock:0": {
-      "Description": "Lightweight bolt for repeating crossbows, made of copper. Provides moderate damage and high stability during rapid firing. Optimized to maintain accuracy in sustained automatic fire.",
-      "CRDescription:0": "Copper bolt for repeating crossbows. Moderate damage and high stability."
-    },
-    "RepeatArrowBlock:1": {
-      "Description": "Reinforced iron bolt for repeating crossbows. Deals higher damage and better armor penetration than standard iron bolts while maintaining accuracy in sustained bursts.",
-      "CRDescription:1": "Iron bolt for repeating crossbows. Higher damage and better armor penetration."
-    },
-    "RepeatArrowBlock:2": {
-  "Description": "A high-tier bolt tipped with diamond, designed for advanced repeating crossbows. It delivers exceptional armor penetration and consistently high damage. Its reinforced construction prevents breakage on impact and retains much of its velocity while traveling through water.",
-  "CRDescription:2": "Diamond bolt for repeating crossbows. Does not break on impact and retains its velocity in water."
+"RepeatCrossbowBlock:0": {
+  "DisplayName": "Repeating Crossbow",
+  "Description": "An advanced version of the standard crossbow, optimized for sustained ranged fire. Unlike the normal crossbow which fires a single bolt before reloading, the Repeating Crossbow features an internal 8-bolt magazine and progressive tension system allowing continuous fire. It deals slightly less damage per shot than the normal crossbow but has a higher fire rate and faster reload. Compatible with special bolts: Copper, Iron, Diamond, Explosive, and Poison.",
+  "CRDescription:0": "Automatic crossbow with 8-arrow magazine - complex mechanical design"
 },
-    "RepeatArrowBlock:3": {
-      "Description": "Explosive bolt for repeating crossbows. Creates small explosions on impact. While individual damage is lower than standard explosive bolts, it allows rapid explosive bursts, ideal for crowd control and area denial.",
-      "CRDescription:3": "Explosive bolt for repeating crossbows. Rapid explosive bursts for crowd control."
-    },
-    "RepeatArrowBlock:4": {
-      "Description": "Low-lethality poison bolt. Deals low initial damage but applies poison for 30 seconds. Ideal for weakening enemies without killing them instantly.",
-      "CRDescription:4": "Poisonous bolt for repeating crossbows. Low damage but applies poison effect."
-    },
-    "RepeatArrowBlock:5": {
-      "Description": "Highly toxic bolt for repeating crossbows. Applies a severe poison effect for 100 seconds. Designed to weaken entire groups through rapid status application.",
-      "CRDescription:5": "Highly poisonous bolt for repeating crossbows. Applies severe poison effect."
-    },
-    "RepeatArrowBlock:6": {
-    "Description": "Incendiary repeat bolt that sets targets on fire. Disappears on impact.",
-    "CRDescription:6": "Make fire repeat bolt from copper repeat bolt, sulphur chunk and feathers"
-},
+"RepeatArrowBlock:0": {
+    "Description": "A copper-tipped bolt with moderate durability.",
+    "CRDescription:0": "Craft 8 copper bolts using arrows, copper ingots, and feathers."
+  },
+  "RepeatArrowBlock:1": {
+    "Description": "An iron-tipped bolt with improved damage and durability.",
+    "CRDescription:0": "Craft 8 iron bolts using copper bolts, iron ingots, and feathers."
+  },
+  "RepeatArrowBlock:2": {
+    "Description": "A diamond-tipped bolt that deals heavy damage and flies through water without slowing down.",
+    "CRDescription:0": "Craft 8 diamond bolts using copper bolts, diamonds, and feathers."
+  },
+  "RepeatArrowBlock:3": {
+    "Description": "An explosive bolt designed to detonate on impact.",
+    "CRDescription:0": "Craft 8 explosive bolts using copper bolts, gunpowder, and feathers."
+  },
+  "RepeatArrowBlock:4": {
+    "Description": "A toxin-coated bolt that inflicts poison on its target.",
+    "CRDescription:0": "Craft 8 poison bolts using copper bolts, toxin, and feathers."
+  },
+  "RepeatArrowBlock:5": {
+    "Description": "A potent poison bolt that inflicts a longer-lasting infection.",
+    "CRDescription:0": "Upgrade poison bolts with additional toxin using a heated crafting recipe."
+  },
+  "RepeatArrowBlock:6": {
+    "Description": "An incendiary bolt that sets its target ablaze.",
+    "CRDescription:0": "Craft 8 fire bolts using copper bolts, sulfur chunks, and feathers."
+  },
     "AA12Block:0": {
   "DisplayName": "Atchisson AA-12 Auto Shotgun",
   "Description": "A gas-operated, magazine-fed automatic shotgun with an open-bolt design. Originally designed by Maxwell Atchisson in 1972 for military and law enforcement applications, it fires 12-gauge shotgun shells at a rate of 300 RPM with a magazine capacity of 8 to 20 rounds depending on the magazine. Its bullpup configuration and improved recoil system significantly reduce felt recoil, allowing controllable automatic fire even with powerful ammunition. In this mod, it uses AA12Bullet cartridges and fires 8 pellets per shell, being devastating at close to medium range.",
