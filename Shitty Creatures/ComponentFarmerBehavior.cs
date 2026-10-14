@@ -85,6 +85,10 @@ namespace Game
 
 		// Para detectar cuando se cambió el slot activo externamente (ej. por combate)
 		private int m_lastKnownActiveSlotIndex = -1;
+
+		// Última semilla plantada (para rotar entre tipos distintos)
+		private int m_lastSeedSlotIndex = -1;
+		private int m_lastSeedItemValue = -1;
 		private double m_lastToolCheckTime;
 		private const double TOOL_CHECK_INTERVAL = 0.5;
 
@@ -799,14 +803,14 @@ namespace Game
 			ApplyFarmAreaBounds(a, b);
 
 			m_nextScanTime = 0;
+			m_lastSeedSlotIndex = -1;        // ← NUEVO
+			m_lastSeedItemValue = -1;        // ← NUEVO
 
 			if (m_importanceLevel < BASE_IMPORTANCE_MIN)
 				m_importanceLevel = BASE_IMPORTANCE_MIN;
 
 			if (m_stateMachineBuilt && m_initialized)
-			{
 				m_stateMachine.TransitionTo("Inactive");
-			}
 		}
 
 		private bool HasFarmingTools()
@@ -1326,10 +1330,69 @@ namespace Game
 
 		private bool SwitchToSeed()
 		{
-			int slot = FindSlotWithSeed();
+			int slot = FindSeedSlotRotating();
 			if (slot < 0) return false;
+
+			m_lastSeedSlotIndex = slot;
+			m_lastSeedItemValue = m_inventory.GetSlotValue(slot);
 			m_inventory.ActiveSlotIndex = slot;
 			return true;
+		}
+
+		/// <summary>
+		/// Busca un slot con semilla, rotando entre tipos distintos cada vez.
+		/// - Si solo hay un tipo disponible, devuelve el primer slot de ese tipo.
+		/// - Si hay varios tipos, devuelve el primer slot cuyo valor sea DIFERENTE
+		///   al de la última semilla plantada (m_lastSeedItemValue).
+		/// - Si todos los slots disponibles son del mismo tipo que la última usada
+		///   (no hay otra opción), rota al siguiente slot en orden para no
+		///   quedarse siempre en el mismo.
+		/// </summary>
+		private int FindSeedSlotRotating()
+		{
+			if (m_inventory == null) return -1;
+
+			// Recoger todos los slots con semillas válidas
+			var seedSlots = new List<(int slot, int value)>();
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value == 0) continue;
+				int contents = Terrain.ExtractContents(value);
+				if (contents <= 0 || contents >= BlocksManager.Blocks.Length) continue;
+
+				Block block = BlocksManager.Blocks[contents];
+				if (block != null &&
+					(block is SeedsBlock || block is WatermelonSeedBlock || block is BlueberrySeedBlock))
+				{
+					seedSlots.Add((i, value));
+				}
+			}
+
+			if (seedSlots.Count == 0) return -1;
+			if (seedSlots.Count == 1) return seedSlots[0].slot;
+
+			// 1) Preferir un slot cuyo tipo sea DIFERENTE al último usado
+			for (int i = 0; i < seedSlots.Count; i++)
+			{
+				if (seedSlots[i].value != m_lastSeedItemValue)
+					return seedSlots[i].slot;
+			}
+
+			// 2) Todos son del mismo tipo que el último: rotar al siguiente slot
+			//    (round-robin) para no quedarse siempre en el mismo slot
+			int lastIdx = -1;
+			for (int i = 0; i < seedSlots.Count; i++)
+			{
+				if (seedSlots[i].slot == m_lastSeedSlotIndex)
+				{
+					lastIdx = i;
+					break;
+				}
+			}
+
+			int nextIdx = (lastIdx < 0) ? 0 : (lastIdx + 1) % seedSlots.Count;
+			return seedSlots[nextIdx].slot;
 		}
 
 		private bool HasFertilizer()
@@ -1421,6 +1484,9 @@ namespace Game
 			m_targetCellFace = null;
 			m_importanceLevel = 0f;
 
+			m_lastSeedSlotIndex = -1;        // ← NUEVO
+			m_lastSeedItemValue = -1;        // ← NUEVO
+
 			if (m_componentPathfinding != null && m_initialized)
 			{
 				m_componentPathfinding.Stop();
@@ -1428,9 +1494,7 @@ namespace Game
 			}
 
 			if (m_stateMachineBuilt && m_initialized)
-			{
 				m_stateMachine.TransitionTo("Inactive");
-			}
 		}
 
 		/// <summary>
