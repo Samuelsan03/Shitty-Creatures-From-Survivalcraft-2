@@ -1,4 +1,8 @@
 {
+  "SubsystemSlingshotBlockBehavior": {
+  "0": "没有弹药",
+  "1": "你没有可用于射击的弹药"
+},
   "SubsystemChristmasGiftEggBlockBehavior": {
     "1": "礼物生成失败，请检查游戏日志。"
   },
@@ -773,6 +777,11 @@
     }
   },
   "Blocks": {
+"SlingshotBlock:0": {
+  "DisplayName": "弹弓",
+  "Description": "弹弓可用于发射石头、雪球和铅弹。按住以拉伸橡皮筋并瞄准，然后松开发射。拉伸的时间越长，弹丸飞行的速度就越快。",
+  "CRDescription:0": "使用木棍和绳子制作一把弹弓。"
+},
 "ChristmasGiftEggBlock:0": {
   "DisplayName": "圣诞礼物蛋",
   "Description": "一个充满节日礼物的魔法圣诞蛋。可以在创造模式中获得，但在圣诞节的夜晚，这些蛋会奇迹般地像雨点一样从天而降。将它扔向坚硬的表面即可将其砸碎，并释放随机组合的礼物，包括方块、工具、武器、食物和衣物。礼物的数量及其堆叠大小各不相同，也有可能掉落经验球。"
