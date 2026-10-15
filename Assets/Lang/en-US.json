@@ -1,4 +1,8 @@
 {
+  "SubsystemSlingshotBlockBehavior": {
+  "0": "No ammunition",
+  "1": "You don't have any ammunition to shoot"
+},
   "SubsystemChristmasGiftEggBlockBehavior": {
   "1": "Failed to spawn gifts, check game log."
 },
@@ -774,6 +778,11 @@
   }
 },
   "Blocks": {
+"SlingshotBlock:0": {
+  "DisplayName": "Slingshot",
+  "Description": "A slingshot can be used to fire stones, snowballs, and buckshot balls. Hold to pull back the elastic band and aim, then release to shoot. The longer you pull, the faster the projectile travels.",
+  "CRDescription:0": "Craft a slingshot using sticks and string."
+},
 "ChristmasGiftEggBlock:0": {
   "DisplayName": "Christmas Gift Egg",
   "Description": "A magical festive egg stuffed with holiday gifts. It can be obtained in creative mode, but during Christmas night, these eggs miraculously fall from the sky like rain. Throw it against a hard surface to smash it open and release a random assortment of gifts, including blocks, tools, weapons, food, and clothing. The number of gifts and their stack sizes vary, and it may also drop experience orbs."
