@@ -428,7 +428,6 @@
   <Parameter Name="AutoChaseMask" Description="Which creature categories this creature will automatically chase" Guid="d1dc03ff-aebe-4da4-a41a-59b403044e4a" Value="LandOther, Bird" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Description="Probability (0-1) that the creature will chase non-player creatures" Guid="7a075843-7905-46b1-af01-6b0fd2fa9646" Value="0" Type="float" />
   <Parameter Name="IsDrugTraffickerMode" Description="When enabled, the creature prioritizes attacking players over all other targets" Guid="c6c21e5c-ab5e-4646-93f2-cc77f8c08c8d" Value="false" Type="bool" />
-  <Parameter Name="AttackAllCreatures" Description="When enabled, the creature attacks every creature (except same bandit herd) regardless of category" Guid="1bd995b7-b47a-4f1d-9917-4a8b2dff47cf" Value="false" Type="bool" />
 </ComponentTemplate>
 
 <ComponentTemplate Name="Gravity" Description="Makes creature fly away when hit" Guid="a773b42a-6f6d-4829-a453-49a2db96b132" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -571,6 +570,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="SlingshotBlockBehavior" Guid="cd66a5ac-e90c-4dc3-862c-d1efbe43b0c2" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+  <Parameter Name="Class" Guid="95b1dc12-4494-468b-9c53-87a9298887c6" Value="Game.SubsystemSlingshotBlockBehavior" Type="string"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="ChristmasGiftEggBlockBehavior" Guid="b320ad59-844a-4174-a2d7-41f0a6307416" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
   <Parameter Name="Class" Guid="f042ecf4-d7eb-4064-aa2e-60f3907e20c2" Value="Game.SubsystemChristmasGiftEggBlockBehavior" Type="string"/>
 </MemberSubsystemTemplate>
