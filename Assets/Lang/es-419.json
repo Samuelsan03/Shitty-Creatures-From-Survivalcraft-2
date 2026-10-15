@@ -1,4 +1,8 @@
 {
+  "SubsystemSlingshotBlockBehavior": {
+  "0": "Sin municion",
+  "1": "No tienes municion para disparar"
+},
   "SubsystemChristmasGiftEggBlockBehavior": {
     "1": "Error al generar los regalos, revisa el registro del juego."
   },
@@ -773,6 +777,11 @@
     }
   },
   "Blocks": {
+"SlingshotBlock:0": {
+  "DisplayName": "Honda",
+  "Description": "Una honda se puede utilizar para lanzar piedras, bolas de nieve y perdigones. Mantén presionado para estirar la banda elástica y apuntar; luego, suelta para disparar. Cuanto más tiempo la estires, más rápido viajará el proyectil.",
+  "CRDescription:0": "Fabrica una honda utilizando palos e hilo."
+},
 "ChristmasGiftEggBlock:0": {
   "DisplayName": "Huevo de Regalo Navideño",
   "Description": "Un huevo mágico y festivo repleto de regalos navideños. Se puede obtener en el modo creativo, pero durante la noche de Navidad, estos huevos caen milagrosamente del cielo como si fuera lluvia. Lánzalo contra una superficie dura para romperlo y liberar una selección aleatoria de regalos, incluidos bloques, herramientas, armas, comida y ropa. La cantidad de regalos y el tamaño de sus pilas varían, y también puede soltar orbes de experiencia."
