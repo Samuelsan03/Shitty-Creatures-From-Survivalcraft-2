@@ -1,5 +1,10 @@
 <ShittyRecipes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CraftingRecipes.xsd">
     <Recipes>
+    <Recipe Result="SlingshotBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="string" Description="[0]">
+    "a a"
+    "aba"
+    " a "
+</Recipe>
     <Recipe Result="FarmerWandBlock" ResultCount="1" RequiredHeatLevel="0" a="rod" b="seeds:5" Description="[0]">
   " a"
   " b"
@@ -51,9 +56,14 @@
             "aca"
             " b "
             </Recipe>              
-    <Recipe Result="ItemsLauncherBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="10" a="copperblock" b="musket" c="rod" Description="[0]">
-			"bca"
-		</Recipe>
+<Recipe Result="CannonBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="ironblock" b="rod" c="planks" Description="[0]">
+    "bca"
+    " ba"
+    " a "
+</Recipe>
+<Recipe Result="CannonBallBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="ironblock" Description="[0]">
+    "a"
+</Recipe>
         <Recipe Result="WoodMacheteBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="woodenslab" Description="[0]">
             "b"
             "b"
