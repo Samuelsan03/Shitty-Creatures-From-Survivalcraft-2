@@ -155,6 +155,14 @@ namespace Game
 						if (this.m_subsystemTime.PeriodicGameTimeEvent(0.06f, 0.0))
 						{
 							int draw = MathUtils.Min(SlingshotBlock.GetDraw(data) + 1, 15);
+
+							// Reproducir el sonido de estiramiento de la resortera al iniciar el tensado
+							if (draw == 1)
+							{
+								Vector3 position = componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition;
+								this.m_subsystemAudio.PlaySound("Audio/Items/estiramiento slingshot", 1f, this.m_random.Float(-0.1f, 0.1f), position, 3f, true);
+							}
+
 							inventory.RemoveSlotItems(activeSlotIndex, 1);
 							inventory.AddSlotItems(activeSlotIndex, Terrain.MakeBlockValue(contents, 0, SlingshotBlock.SetDraw(data, draw)), 1);
 						}
@@ -223,7 +231,7 @@ namespace Game
 									{
 										data = SlingshotBlock.SetAmmoType(data, SlingshotBlock.AmmoType.Empty);
 									}
-									this.m_subsystemAudio.PlaySound("Audio/Bow", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
+									this.m_subsystemAudio.PlaySound("Audio/Items/rubber band", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
 								}
 							}
 							else
@@ -233,7 +241,7 @@ namespace Game
 
 								if (this.m_subsystemProjectiles.FireProjectile(ammoValue, origin, velocity, Vector3.Zero, componentMiner.ComponentCreature) != null)
 								{
-									this.m_subsystemAudio.PlaySound("Audio/Bow", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
+									this.m_subsystemAudio.PlaySound("Audio/Items/rubber band", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
 								}
 							}
 						}
