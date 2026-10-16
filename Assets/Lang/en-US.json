@@ -443,20 +443,71 @@
 },
   "ShittyCreaturesSettings": {
     "ScreenTitle": "Shitty Creatures Settings",
-    "GhostDescription": "Enable/disable music when ghosts chase you",
-    "TankDescription": "Enable/disable music when tanks chase you",
-    "SpawnDescription": "Enable/disable spawning of NPCs when one dies",
-    "ThirstDescription": "Enable/disable thirst simulation",
-    "CoordinateDisplay": "Show coordinates",
-    "PunchCommandDescription": "Allies will attack and chase any NPC you hit, regardless of the type of attack",
-    "CreativeDefenseDescription": "In Creative mode, when a creature hits the player, allies will attack the attacker",
-    "FreeCameraDescription": "Enable/disable free camera mode (only in non-creative modes)",
-    "BleedingDescription": "Toggle bleeding on wounded creatures",
-    "HealthBarDescription": "Show health bars on creatures",
-    "SkeletonSpawnDescription": "Allows skeletons to spawn during normal nights.",
-    "SpiderSpawnDescription": "Allows infected spiders to spawn during normal nights (including caves).",
-    "InGameMusicDescription": "Show a button in-game to play random music tracks while playing",
-    "DeathMusicDescription": "Enable/disable the music that plays when you die"
+    "GhostMusic": {
+        "Description": "Music played when ghosts chase you",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "TankMusic": {
+        "Description": "Music played when tanks chase you",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "DeathSpawn": {
+        "Description": "Spawning of NPCs when one dies",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "Thirst": {
+        "Description": "Thirst simulation",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "CoordinateDisplay": {
+        "Description": "Display coordinates on screen",
+        "EnabledText": "Visible",
+        "DisabledText": "Hidden"
+    },
+    "PunchCommand": {
+        "Description": "Allies attack and chase any NPC you hit, regardless of the attack type",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "CreativeDefense": {
+        "Description": "In Creative mode, allies attack creatures that hit the player",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "FreeCamera": {
+        "Description": "Free camera mode (only in non-creative modes)",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "Bleeding": {
+        "Description": "Bleeding effect on wounded creatures",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "HealthBar": {
+        "Description": "Health bars on creatures",
+        "EnabledText": "Visible",
+        "DisabledText": "Hidden"
+    },
+    "SkeletonSpawn": {
+        "Description": "Skeletons spawning during normal nights",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "SpiderSpawn": {
+        "Description": "Infected spiders spawning during normal nights (including caves)",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    },
+    "DeathMusic": {
+        "Description": "Music that plays when you die",
+        "EnabledText": "Enabled",
+        "DisabledText": "Disabled"
+    }
 },
   "SpecialThanksScreen": {
   "0": "Special Thanks",
