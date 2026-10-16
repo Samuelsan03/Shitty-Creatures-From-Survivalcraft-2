@@ -29,74 +29,125 @@ namespace Game
 			this.LoadContents(this, node);
 
 			m_titleLabel = this.Children.Find<LabelWidget>("TopBar.Label", true);
-			m_titleLabel.Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "ScreenTitle" });
+			m_titleLabel.Text = LanguageControl.Get("ShittyCreaturesSettings", "ScreenTitle");
 
 			m_ghostButton = this.Children.Find<BevelledButtonWidget>("GhostButton", true);
-			this.Children.Find<LabelWidget>("GhostDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "GhostDescription" });
+			this.Children.Find<LabelWidget>("GhostDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "GhostMusic", "Description");
 			m_ghostButton.Text = GetGhostButtonText();
 
 			m_tankButton = this.Children.Find<BevelledButtonWidget>("TankButton", true);
-			this.Children.Find<LabelWidget>("TankDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "TankDescription" });
+			this.Children.Find<LabelWidget>("TankDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "TankMusic", "Description");
 			m_tankButton.Text = GetTankButtonText();
 
 			m_spawnButton = this.Children.Find<BevelledButtonWidget>("SpawnButton", true);
-			this.Children.Find<LabelWidget>("SpawnDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "SpawnDescription" });
+			this.Children.Find<LabelWidget>("SpawnDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "DeathSpawn", "Description");
 			m_spawnButton.Text = GetSpawnButtonText();
 
 			m_thirstButton = this.Children.Find<BevelledButtonWidget>("ThirstButton", true);
-			this.Children.Find<LabelWidget>("ThirstDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "ThirstDescription" });
+			this.Children.Find<LabelWidget>("ThirstDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "Thirst", "Description");
 			m_thirstButton.Text = GetThirstButtonText();
 
 			m_coordinateButton = this.Children.Find<BevelledButtonWidget>("CoordinateButton", true);
-			this.Children.Find<LabelWidget>("CoordinateDisplayLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "CoordinateDisplay" });
+			this.Children.Find<LabelWidget>("CoordinateDisplayLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "CoordinateDisplay", "Description");
 			m_coordinateButton.Text = GetCoordinateButtonText();
 
 			m_punchCommandButton = this.Children.Find<BevelledButtonWidget>("PunchCommandButton", true);
-			this.Children.Find<LabelWidget>("PunchCommandDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "PunchCommandDescription" });
+			this.Children.Find<LabelWidget>("PunchCommandDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "PunchCommand", "Description");
 			m_punchCommandButton.Text = GetPunchCommandButtonText();
 
 			m_creativeDefenseButton = this.Children.Find<BevelledButtonWidget>("CreativeDefenseButton", true);
-			this.Children.Find<LabelWidget>("CreativeDefenseDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "CreativeDefenseDescription" });
+			this.Children.Find<LabelWidget>("CreativeDefenseDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "CreativeDefense", "Description");
 			m_creativeDefenseButton.Text = GetCreativeDefenseButtonText();
 
 			m_freeCameraButton = this.Children.Find<BevelledButtonWidget>("FreeCameraButton", true);
-			this.Children.Find<LabelWidget>("FreeCameraDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "FreeCameraDescription" });
+			this.Children.Find<LabelWidget>("FreeCameraDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "FreeCamera", "Description");
 			m_freeCameraButton.Text = GetFreeCameraButtonText();
 
 			m_bleedingButton = this.Children.Find<BevelledButtonWidget>("BleedingButton", true);
-			this.Children.Find<LabelWidget>("BleedingDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "BleedingDescription" });
+			this.Children.Find<LabelWidget>("BleedingDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "Bleeding", "Description");
 			m_bleedingButton.Text = GetBleedingButtonText();
 
 			m_healthBarButton = this.Children.Find<BevelledButtonWidget>("HealthBarButton", true);
-			this.Children.Find<LabelWidget>("HealthBarDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "HealthBarDescription" });
+			this.Children.Find<LabelWidget>("HealthBarDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "HealthBar", "Description");
 			m_healthBarButton.Text = GetHealthBarButtonText();
 
 			m_skeletonSpawnButton = this.Children.Find<BevelledButtonWidget>("SkeletonSpawnButton", true);
-			this.Children.Find<LabelWidget>("SkeletonSpawnDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "SkeletonSpawnDescription" });
+			this.Children.Find<LabelWidget>("SkeletonSpawnDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "SkeletonSpawn", "Description");
 			m_skeletonSpawnButton.Text = GetSkeletonSpawnButtonText();
 
 			m_spiderSpawnButton = this.Children.Find<BevelledButtonWidget>("SpiderSpawnButton", true);
-			this.Children.Find<LabelWidget>("SpiderSpawnDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "SpiderSpawnDescription" });
+			this.Children.Find<LabelWidget>("SpiderSpawnDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "SpiderSpawn", "Description");
 			m_spiderSpawnButton.Text = GetSpiderSpawnButtonText();
 
 			m_deathMusicButton = this.Children.Find<BevelledButtonWidget>("DeathMusicButton", true);
-			this.Children.Find<LabelWidget>("DeathMusicDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "DeathMusicDescription" });
+			this.Children.Find<LabelWidget>("DeathMusicDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "DeathMusic", "Description");
 			m_deathMusicButton.Text = GetDeathMusicButtonText();
 		}
 
-		private string GetGhostButtonText() => ShittyCreaturesSettingsManager.GhostMusicEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetTankButtonText() => ShittyCreaturesSettingsManager.TankMusicEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetSpawnButtonText() => ShittyCreaturesSettingsManager.DeathSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetThirstButtonText() => ShittyCreaturesSettingsManager.ThirstEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetCoordinateButtonText() => ShittyCreaturesSettingsManager.CoordinateDisplayEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetPunchCommandButtonText() => ShittyCreaturesSettingsManager.PunchCommandEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetCreativeDefenseButtonText() => ShittyCreaturesSettingsManager.CreativeDefenseEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetFreeCameraButtonText() => ShittyCreaturesSettingsManager.FreeCameraEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetBleedingButtonText() => ShittyCreaturesSettingsManager.BleedingEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetHealthBarButtonText() => ShittyCreaturesSettingsManager.HealthBarEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetSkeletonSpawnButtonText() => ShittyCreaturesSettingsManager.SkeletonSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetSpiderSpawnButtonText() => ShittyCreaturesSettingsManager.SpiderSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetDeathMusicButtonText() => ShittyCreaturesSettingsManager.DeathMusicEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetGhostButtonText() =>
+	ShittyCreaturesSettingsManager.GhostMusicEnabled
+		? LanguageControl.Get("ShittyCreaturesSettings", "GhostMusic", "EnabledText")
+		: LanguageControl.Get("ShittyCreaturesSettings", "GhostMusic", "DisabledText");
+
+		private string GetTankButtonText() =>
+			ShittyCreaturesSettingsManager.TankMusicEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "TankMusic", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "TankMusic", "DisabledText");
+
+		private string GetSpawnButtonText() =>
+			ShittyCreaturesSettingsManager.DeathSpawnEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "DeathSpawn", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "DeathSpawn", "DisabledText");
+
+		private string GetThirstButtonText() =>
+			ShittyCreaturesSettingsManager.ThirstEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "Thirst", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "Thirst", "DisabledText");
+
+		private string GetCoordinateButtonText() =>
+			ShittyCreaturesSettingsManager.CoordinateDisplayEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "CoordinateDisplay", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "CoordinateDisplay", "DisabledText");
+
+		private string GetPunchCommandButtonText() =>
+			ShittyCreaturesSettingsManager.PunchCommandEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "PunchCommand", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "PunchCommand", "DisabledText");
+
+		private string GetCreativeDefenseButtonText() =>
+			ShittyCreaturesSettingsManager.CreativeDefenseEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "CreativeDefense", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "CreativeDefense", "DisabledText");
+
+		private string GetFreeCameraButtonText() =>
+			ShittyCreaturesSettingsManager.FreeCameraEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "FreeCamera", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "FreeCamera", "DisabledText");
+
+		private string GetBleedingButtonText() =>
+			ShittyCreaturesSettingsManager.BleedingEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "Bleeding", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "Bleeding", "DisabledText");
+
+		private string GetHealthBarButtonText() =>
+			ShittyCreaturesSettingsManager.HealthBarEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "HealthBar", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "HealthBar", "DisabledText");
+
+		private string GetSkeletonSpawnButtonText() =>
+			ShittyCreaturesSettingsManager.SkeletonSpawnEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "SkeletonSpawn", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "SkeletonSpawn", "DisabledText");
+
+		private string GetSpiderSpawnButtonText() =>
+			ShittyCreaturesSettingsManager.SpiderSpawnEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "SpiderSpawn", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "SpiderSpawn", "DisabledText");
+
+		private string GetDeathMusicButtonText() =>
+			ShittyCreaturesSettingsManager.DeathMusicEnabled
+				? LanguageControl.Get("ShittyCreaturesSettings", "DeathMusic", "EnabledText")
+				: LanguageControl.Get("ShittyCreaturesSettings", "DeathMusic", "DisabledText");
 
 		public override void Update()
 		{
