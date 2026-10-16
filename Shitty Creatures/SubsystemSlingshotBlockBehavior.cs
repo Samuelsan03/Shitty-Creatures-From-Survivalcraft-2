@@ -117,7 +117,6 @@ namespace Game
 			float elapsed = (float)(this.m_subsystemTime.GameTime - gameTime);
 			float t = (float)MathUtils.Remainder(this.m_subsystemTime.GameTime, 1000.0);
 
-			// El temblor de mano aumenta más rápido por la tensión de la goma elástica
 			Vector3 shake = ((componentMiner.ComponentCreature.ComponentBody.IsCrouching ? 0.03f : 0.05f) + 0.3f * MathUtils.Saturate((elapsed - 1.5f) / 4f)) * new Vector3
 			{
 				X = SimplexNoise.OctavedNoise(t, 2f, 3, 2f, 0.5f, false),
@@ -130,7 +129,6 @@ namespace Game
 			{
 				case AimState.InProgress:
 					{
-						// Cansancio rápido por sostener la goma elástica (6s en lugar de 9s)
 						if (elapsed >= 6f)
 						{
 							componentMiner.ComponentCreature.ComponentCreatureSounds.PlayMoanSound();
@@ -151,12 +149,10 @@ namespace Game
 						componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = new Vector3(0f, 0f, 0f);
 						componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
 
-						// Tensado más rápido: alcanza el máximo en ~1 segundo (0.06s por nivel en lugar de 0.1s)
 						if (this.m_subsystemTime.PeriodicGameTimeEvent(0.06f, 0.0))
 						{
 							int draw = MathUtils.Min(SlingshotBlock.GetDraw(data) + 1, 15);
 
-							// Reproducir el sonido de estiramiento de la resortera al iniciar el tensado
 							if (draw == 1)
 							{
 								Vector3 position = componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition;
@@ -179,7 +175,6 @@ namespace Game
 					{
 						int draw2 = SlingshotBlock.GetDraw(data);
 
-						// Si está vacío, mostrar mensaje (solo jugadores) y cancelar
 						if (ammoType == SlingshotBlock.AmmoType.Empty)
 						{
 							ComponentPlayer p = componentMiner.ComponentPlayer;
@@ -196,23 +191,17 @@ namespace Game
 										   - componentMiner.ComponentCreature.ComponentBody.Matrix.Up * 0.2f;
 							Vector3 dir = Vector3.Normalize(origin + aim.Direction * 10f - origin);
 
-							// Física de liga de resortera: dispara con velocidad base desde el inicio y un máximo de 32
 							float speed = MathUtils.Lerp(8f, 32f, MathF.Pow((float)draw2 / 15f, 1.15f));
 
-							bool isPlayer = componentMiner.ComponentPlayer != null;
-
-							if (isPlayer)
+							if (componentMiner.ComponentPlayer != null)
 							{
-								// Multiplicador de fuerza solo para jugadores
 								speed *= 0.5f * (componentMiner.ComponentPlayer.ComponentLevel.StrengthFactor - 1f) + 1f;
 
-								// Verificar si el jugador tiene la munición en su inventario
 								int ammoSlot = this.FindInventorySlotWithContents(inventory, Terrain.ExtractContents(ammoValue));
 								if (ammoSlot < 0)
 								{
 									componentMiner.ComponentPlayer.ComponentGui.DisplaySmallMessage(LanguageControl.Get(fName, 1), Color.White, true, false);
 
-									// Reset de tension del slingshot y salir sin disparar
 									inventory.RemoveSlotItems(activeSlotIndex, 1);
 									inventory.AddSlotItems(activeSlotIndex, Terrain.MakeBlockValue(contents, 0, SlingshotBlock.SetDraw(data, 0)), 1);
 									this.m_aimStartTimes.Remove(componentMiner);
@@ -223,34 +212,28 @@ namespace Game
 
 								if (this.m_subsystemProjectiles.FireProjectile(ammoValue, origin, velocity, Vector3.Zero, componentMiner.ComponentCreature) != null)
 								{
-									// Consumir 1 del slot que tenia la municion
 									inventory.RemoveSlotItems(ammoSlot, 1);
 
-									// Si nos quedamos sin municion de ese tipo, bajar a vacio automaticamente en no-creativos
 									if (inventory.GetSlotCount(ammoSlot) == 0 && this.m_subsystemGameInfo.WorldSettings.GameMode != GameMode.Creative)
 									{
 										data = SlingshotBlock.SetAmmoType(data, SlingshotBlock.AmmoType.Empty);
 									}
-									this.m_subsystemAudio.PlaySound("Audio/Items/rubber band", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
 								}
 							}
 							else
 							{
-								// Comportamiento de IA: No verifica inventario, solo dispara el proyectil
 								Vector3 velocity = componentMiner.ComponentCreature.ComponentBody.Velocity + dir * speed;
 
-								if (this.m_subsystemProjectiles.FireProjectile(ammoValue, origin, velocity, Vector3.Zero, componentMiner.ComponentCreature) != null)
-								{
-									this.m_subsystemAudio.PlaySound("Audio/Items/rubber band", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
-								}
+								this.m_subsystemProjectiles.FireProjectile(ammoValue, origin, velocity, Vector3.Zero, componentMiner.ComponentCreature);
 							}
+
+							// Audio unificado para jugadores y IA (como en el arco original)
+							this.m_subsystemAudio.PlaySound("Audio/Items/rubber band", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
 						}
 
-						// Reset de tension del slingshot
 						inventory.RemoveSlotItems(activeSlotIndex, 1);
 						inventory.AddSlotItems(activeSlotIndex, Terrain.MakeBlockValue(contents, 0, SlingshotBlock.SetDraw(data, 0)), 1);
 
-						// Dano al slingshot por uso
 						int damageCount = 0;
 						if (draw2 >= 15) damageCount = 2;
 						else if (draw2 >= 4) damageCount = 1;
