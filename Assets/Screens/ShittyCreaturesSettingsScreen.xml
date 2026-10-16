@@ -70,11 +70,6 @@
           </UniformSpacingPanelWidget>
 
           <UniformSpacingPanelWidget Direction="Horizontal">
-            <LabelWidget Name="FastMeleeDescriptionLabel" Text="[ShittyCreaturesSettings:FastMeleeDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
-            <BevelledButtonWidget Name="FastMeleeButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
-          </UniformSpacingPanelWidget>
-
-          <UniformSpacingPanelWidget Direction="Horizontal">
             <LabelWidget Name="DeathMusicDescriptionLabel" Text="[ShittyCreaturesSettings:DeathMusicDescription]" HorizontalAlignment="Far" VerticalAlignment="Center" Margin="20, 0" WordWrap="true" Size="600, -1" />
             <BevelledButtonWidget Name="DeathMusicButton" Style="{Styles/ButtonStyle_310x60}" VerticalAlignment="Center" Margin="20, 0"/>
           </UniformSpacingPanelWidget>
