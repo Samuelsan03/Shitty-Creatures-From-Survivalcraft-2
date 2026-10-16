@@ -254,6 +254,10 @@ namespace Game
 			InitializeThrowableIndices();
 			m_subsystemCollarBlockBehavior = Project.FindSubsystem<SubsystemCollarBlockBehavior>();
 			m_collarBlockIndex = BlocksManager.GetBlockIndex<CollarBlock>(false, false);
+
+			// NUEVO: Suscripción al evento de proyectiles
+			SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
+			subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
 		}
 
 		private int FindCollarInInventory()
@@ -2382,6 +2386,14 @@ namespace Game
 		{
 			if (m_isAiming) CancelAiming();
 			if (m_isCustomAiming) StopCustomAiming();
+
+			// NUEVO: Desuscribir el evento de proyectiles
+			SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
+			if (subsystemProjectiles != null)
+			{
+				subsystemProjectiles.ProjectileAdded -= OnProjectileAdded;
+			}
+
 			base.Dispose();
 		}
 
@@ -2506,6 +2518,19 @@ namespace Game
 				}
 			}
 			return false;
+		}
+
+		private void OnProjectileAdded(Projectile projectile)
+		{
+			if (projectile.Owner == m_componentCreature)
+			{
+				int contents = Terrain.ExtractContents(projectile.Value);
+				// SOLO ROCA! NO OTRAS MUNICIONES!
+				if (contents == StoneChunkBlock.Index)
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
+			}
 		}
 	}
 }
