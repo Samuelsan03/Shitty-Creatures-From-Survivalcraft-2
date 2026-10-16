@@ -19,7 +19,6 @@ namespace Game
 		private BevelledButtonWidget m_healthBarButton;
 		private BevelledButtonWidget m_skeletonSpawnButton;
 		private BevelledButtonWidget m_spiderSpawnButton;
-		private BevelledButtonWidget m_fastMeleeButton;
 		private BevelledButtonWidget m_musicButton;
 		private BevelledButtonWidget m_deathMusicButton;
 		private LabelWidget m_titleLabel;
@@ -80,10 +79,6 @@ namespace Game
 			this.Children.Find<LabelWidget>("SpiderSpawnDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "SpiderSpawnDescription" });
 			m_spiderSpawnButton.Text = GetSpiderSpawnButtonText();
 
-			m_fastMeleeButton = this.Children.Find<BevelledButtonWidget>("FastMeleeButton", true);
-			this.Children.Find<LabelWidget>("FastMeleeDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "FastMeleeDescription" });
-			m_fastMeleeButton.Text = GetFastMeleeButtonText();
-
 			m_deathMusicButton = this.Children.Find<BevelledButtonWidget>("DeathMusicButton", true);
 			this.Children.Find<LabelWidget>("DeathMusicDescriptionLabel", true).Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "DeathMusicDescription" });
 			m_deathMusicButton.Text = GetDeathMusicButtonText();
@@ -101,7 +96,6 @@ namespace Game
 		private string GetHealthBarButtonText() => ShittyCreaturesSettingsManager.HealthBarEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetSkeletonSpawnButtonText() => ShittyCreaturesSettingsManager.SkeletonSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetSpiderSpawnButtonText() => ShittyCreaturesSettingsManager.SpiderSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetFastMeleeButtonText() => ShittyCreaturesSettingsManager.FastMeleeEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetDeathMusicButtonText() => ShittyCreaturesSettingsManager.DeathMusicEnabled ? LanguageControl.On : LanguageControl.Off;
 
 		public override void Update()
@@ -179,11 +173,6 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.SpiderSpawnEnabled = !ShittyCreaturesSettingsManager.SpiderSpawnEnabled;
 				m_spiderSpawnButton.Text = GetSpiderSpawnButtonText();
-			}
-			if (m_fastMeleeButton != null && m_fastMeleeButton.IsClicked)
-			{
-				ShittyCreaturesSettingsManager.FastMeleeEnabled = !ShittyCreaturesSettingsManager.FastMeleeEnabled;
-				m_fastMeleeButton.Text = GetFastMeleeButtonText();
 			}
 			if (m_deathMusicButton != null && m_deathMusicButton.IsClicked)
 			{
