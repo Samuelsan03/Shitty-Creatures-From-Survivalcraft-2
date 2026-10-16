@@ -171,23 +171,9 @@ namespace Game
 					{
 						int draw2 = SlingshotBlock.GetDraw(data);
 
-						bool hasAmmoInInventory = false;
-						int ammoValue = 0;
-
-						if (ammoType != SlingshotBlock.AmmoType.Empty)
+						// Si está vacío, mostrar mensaje (solo jugadores) y cancelar
+						if (ammoType == SlingshotBlock.AmmoType.Empty)
 						{
-							ammoValue = this.GetAmmoBlockValue(ammoType);
-							int ammoSlot = this.FindInventorySlotWithContents(inventory, Terrain.ExtractContents(ammoValue));
-
-							if (ammoSlot >= 0)
-							{
-								hasAmmoInInventory = true;
-							}
-						}
-
-						if (ammoType == SlingshotBlock.AmmoType.Empty || !hasAmmoInInventory)
-						{
-							// 3er mensaje: cuando no tiene nada (vacio) o no encuentra la municion en el inventario e intenta disparar
 							ComponentPlayer p = componentMiner.ComponentPlayer;
 							if (p != null)
 							{
@@ -196,7 +182,7 @@ namespace Game
 						}
 						else
 						{
-							// Disparar el proyectil
+							int ammoValue = this.GetAmmoBlockValue(ammoType);
 							Vector3 origin = componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition
 										   + componentMiner.ComponentCreature.ComponentBody.Matrix.Right * 0.3f
 										   - componentMiner.ComponentCreature.ComponentBody.Matrix.Up * 0.2f;
@@ -204,18 +190,32 @@ namespace Game
 
 							// Física de liga de resortera: dispara con velocidad base desde el inicio y un máximo de 32
 							float speed = MathUtils.Lerp(8f, 32f, MathF.Pow((float)draw2 / 15f, 1.15f));
-							if (componentMiner.ComponentPlayer != null)
-							{
-								speed *= 0.5f * (componentMiner.ComponentPlayer.ComponentLevel.StrengthFactor - 1f) + 1f;
-							}
-							Vector3 velocity = componentMiner.ComponentCreature.ComponentBody.Velocity + dir * speed;
 
-							if (this.m_subsystemProjectiles.FireProjectile(ammoValue, origin, velocity, Vector3.Zero, componentMiner.ComponentCreature) != null)
+							bool isPlayer = componentMiner.ComponentPlayer != null;
+
+							if (isPlayer)
 							{
-								// Consumir 1 del slot que tenia la municion
+								// Multiplicador de fuerza solo para jugadores
+								speed *= 0.5f * (componentMiner.ComponentPlayer.ComponentLevel.StrengthFactor - 1f) + 1f;
+
+								// Verificar si el jugador tiene la munición en su inventario
 								int ammoSlot = this.FindInventorySlotWithContents(inventory, Terrain.ExtractContents(ammoValue));
-								if (ammoSlot >= 0)
+								if (ammoSlot < 0)
 								{
+									componentMiner.ComponentPlayer.ComponentGui.DisplaySmallMessage(LanguageControl.Get(fName, 1), Color.White, true, false);
+
+									// Reset de tension del slingshot y salir sin disparar
+									inventory.RemoveSlotItems(activeSlotIndex, 1);
+									inventory.AddSlotItems(activeSlotIndex, Terrain.MakeBlockValue(contents, 0, SlingshotBlock.SetDraw(data, 0)), 1);
+									this.m_aimStartTimes.Remove(componentMiner);
+									return false;
+								}
+
+								Vector3 velocity = componentMiner.ComponentCreature.ComponentBody.Velocity + dir * speed;
+
+								if (this.m_subsystemProjectiles.FireProjectile(ammoValue, origin, velocity, Vector3.Zero, componentMiner.ComponentCreature) != null)
+								{
+									// Consumir 1 del slot que tenia la municion
 									inventory.RemoveSlotItems(ammoSlot, 1);
 
 									// Si nos quedamos sin municion de ese tipo, bajar a vacio automaticamente en no-creativos
@@ -223,8 +223,18 @@ namespace Game
 									{
 										data = SlingshotBlock.SetAmmoType(data, SlingshotBlock.AmmoType.Empty);
 									}
+									this.m_subsystemAudio.PlaySound("Audio/Bow", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
 								}
-								this.m_subsystemAudio.PlaySound("Audio/Bow", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
+							}
+							else
+							{
+								// Comportamiento de IA: No verifica inventario, solo dispara el proyectil
+								Vector3 velocity = componentMiner.ComponentCreature.ComponentBody.Velocity + dir * speed;
+
+								if (this.m_subsystemProjectiles.FireProjectile(ammoValue, origin, velocity, Vector3.Zero, componentMiner.ComponentCreature) != null)
+								{
+									this.m_subsystemAudio.PlaySound("Audio/Bow", 1f, this.m_random.Float(-0.1f, 0.1f), origin, 3f, true);
+								}
 							}
 						}
 
