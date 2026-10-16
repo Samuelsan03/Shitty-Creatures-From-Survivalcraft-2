@@ -442,20 +442,72 @@
     ]
 },
   "ShittyCreaturesSettings": {
-    "ScreenTitle": "Ajustes de Shitty Creatures",
-    "GhostDescription": "Activar/desactivar la música cuando los fantasmas te persiguen",
-    "TankDescription": "Activar/desactivar la música cuando los Tanks te persiguen",
-    "SpawnDescription": "Activar/desactivar la generación de NPCs al morir uno",
-    "ThirstDescription": "Activar/desactivar la simulación de sed",
-    "CoordinateDisplay": "Mostrar coordenadas",
-    "PunchCommandDescription": "Los aliados atacarán y perseguirán al NPC que golpees, sin importar el tipo de ataque",
-    "CreativeDefenseDescription": "En modo Creativo, cuando una criatura golpea al jugador, los aliados atacarán al agresor",
-    "FreeCameraDescription": "Activar/desactivar el modo de cámara libre (solo en modos no creativos)",
-    "BleedingDescription": "Activar/desactivar sangrado en criaturas heridas",
-    "HealthBarDescription": "Mostrar barras de salud en las criaturas",
-    "SkeletonSpawnDescription": "Permite la aparición de esqueletos en noches normales.",
-    "SpiderSpawnDescription": "Permite la aparición de arañas infectadas en noches normales (incluye cuevas).",
-    "DeathMusicDescription": "Activar/desactivar la música que se reproduce al morir"
+    "ScreenTitle": "Configuración de Shitty Creatures",
+    "GhostMusic": {
+        "Description": "Música que suena cuando los fantasmas te persiguen",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "TankMusic": {
+        "Description": "Música que suena cuando los Tanks te persiguen",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "DeathSpawn": {
+        "Description": "Aparición de NPCs cuando uno muere",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "Thirst": {
+        "Description": "Simulación de sed",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "CoordinateDisplay": {
+        "Description": "Mostrar las coordenadas en pantalla",
+        "EnabledText": "Visible",
+        "DisabledText": "Oculto"
+    },
+    "PunchCommand": {
+        "Description": "Los aliados atacan y persiguen a cualquier NPC al que golpees, independientemente del tipo de ataque",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "CreativeDefense": {
+        "Description": "En el modo Creativo, los aliados atacan a las criaturas que golpean al jugador",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "FreeCamera": {
+        "Description": "Modo de cámara libre (solo en modos que no sean Creativo)",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "Bleeding": {
+        "Description": "Efecto de sangrado en las criaturas heridas",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "HealthBar": {
+        "Description": "Barras de salud de las criaturas",
+        "EnabledText": "Visible",
+        "DisabledText": "Oculto"
+    },
+    "SkeletonSpawn": {
+        "Description": "Aparición de esqueletos durante las noches normales",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "SpiderSpawn": {
+        "Description": "Aparición de arañas infectadas durante las noches normales (incluidas las cuevas)",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    },
+    "DeathMusic": {
+        "Description": "Música que suena cuando mueres",
+        "EnabledText": "Activado",
+        "DisabledText": "Desactivado"
+    }
   },
   "SpecialThanksScreen": {
   "0": "Agradecimientos Especiales",
