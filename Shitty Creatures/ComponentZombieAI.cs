@@ -24,6 +24,8 @@ namespace Game
 		public static float DoubleMusketAimTime = 1.5f;
 		public static float CannonCooldown = 0.02f;
 		public static float CannonAimTime = 1.5f;
+		public static float SlingshotCooldown = 0.01f;
+		public static float SlingshotAimTime = 1.5f;
 
 		public Vector2 AttackRange = new Vector2(5f, 100f);
 		public Vector2 ExplosiveRange = new Vector2(20f, 100f);
@@ -446,13 +448,14 @@ namespace Game
 			Block activeBlock = BlocksManager.Blocks[activeBlockIndex];
 			bool isThrowable = IsThrowableBlock(activeBlockIndex);
 			bool isRanged = activeBlock is MusketBlock ||
-				activeBlock is CrossbowBlock ||
-				activeBlock is RepeatCrossbowBlock ||
-				activeBlock is BowBlock ||
-				activeBlock is FlameThrowerBlock ||
-				activeBlock is DoubleMusketBlock ||
-				activeBlockIndex == CannonBlock.Index ||
-				m_firearmConfigs.ContainsKey(activeBlockIndex);
+	activeBlock is CrossbowBlock ||
+	activeBlock is RepeatCrossbowBlock ||
+	activeBlock is BowBlock ||
+	activeBlock is FlameThrowerBlock ||
+	activeBlock is DoubleMusketBlock ||
+	activeBlockIndex == CannonBlock.Index ||
+	activeBlockIndex == SlingshotBlock.Index ||
+	m_firearmConfigs.ContainsKey(activeBlockIndex);
 			bool isMelee = !isRanged && !isThrowable && activeBlock.GetMeleePower(activeValue) > 0f;
 
 			float meleeDist = GetMeleeDistanceToTarget(target.ComponentBody);
@@ -808,8 +811,9 @@ namespace Game
 			bool isFlameThrower = activeBlock is FlameThrowerBlock;
 			bool isDoubleMusket = activeBlock is DoubleMusketBlock;
 			bool isCannon = activeContents == CannonBlock.Index;
+			bool isSlingshot = activeContents == SlingshotBlock.Index;
 
-			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket && !isCannon)
+			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket && !isCannon && !isSlingshot)
 				return;
 
 			float aimTimeValue = 0f, cooldown = 0f;
@@ -817,6 +821,7 @@ namespace Game
 			else if (isCrossbow) { aimTimeValue = CrossbowAimTime; cooldown = CrossbowCooldown; }
 			else if (isRepeatCrossbow) { aimTimeValue = RepeatCrossbowAimTime; cooldown = RepeatCrossbowCooldown; }
 			else if (isBow) { aimTimeValue = BowAimTime; cooldown = BowCooldown; }
+			else if (isSlingshot) { aimTimeValue = SlingshotAimTime; cooldown = SlingshotCooldown; }
 			else if (isFlameThrower) { aimTimeValue = FlameThrowerAimTime; cooldown = FlameThrowerCooldown; }
 			else if (isDoubleMusket) { aimTimeValue = DoubleMusketAimTime; cooldown = DoubleMusketCooldown; }
 			else if (isCannon) { aimTimeValue = CannonAimTime; cooldown = CannonCooldown; }
@@ -852,7 +857,7 @@ namespace Game
 							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
 							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 						}
-						else if (isBow)
+						else if (isBow || isSlingshot)
 						{
 							m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
 							m_creatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
@@ -865,6 +870,10 @@ namespace Game
 					m_isAiming = false;
 					m_cooldownTimer = cooldown;
 					m_aimTimer = 0f;
+					if (isSlingshot)
+					{
+						ReloadSlingshotInstantly();
+					}
 				}
 			}
 		}
@@ -1051,6 +1060,14 @@ namespace Game
 				if (draw != 15 || arrow == null)
 					ReloadBowInstantly();
 			}
+			else if (activeBlock is SlingshotBlock)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				int draw = SlingshotBlock.GetDraw(data);
+				SlingshotBlock.AmmoType ammo = SlingshotBlock.GetAmmoType(data);
+				if (draw != 15 || ammo == SlingshotBlock.AmmoType.Empty)
+					ReloadSlingshotInstantly();
+			}
 			else if (activeBlock is FlameThrowerBlock)
 			{
 				int loadCount = FlameThrowerBlock.GetLoadCount(activeValue);
@@ -1176,6 +1193,24 @@ namespace Game
 					return;
 				}
 			}
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int slotValue = m_inventory.GetSlotValue(i);
+				if (m_inventory.GetSlotCount(i) > 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is BowBlock)
+				{
+					m_inventory.ActiveSlotIndex = i;
+					return;
+				}
+			}
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int slotValue = m_inventory.GetSlotValue(i);
+				if (m_inventory.GetSlotCount(i) > 0 && Terrain.ExtractContents(slotValue) == SlingshotBlock.Index)
+				{
+					m_inventory.ActiveSlotIndex = i;
+					return;
+				}
+			}
 		}
 
 		private bool TryEquipBestMeleeWeapon()
@@ -1189,7 +1224,8 @@ namespace Game
 				int blockIndex = Terrain.ExtractContents(slotValue);
 				Block block = BlocksManager.Blocks[blockIndex];
 				if (block is MusketBlock || block is CrossbowBlock || block is RepeatCrossbowBlock || block is BowBlock ||
-					block is FlameThrowerBlock || block is DoubleMusketBlock || block is CannonBlock || IsThrowableBlock(blockIndex) || m_firearmConfigs.ContainsKey(blockIndex))
+	block is FlameThrowerBlock || block is DoubleMusketBlock || block is CannonBlock ||
+	blockIndex == SlingshotBlock.Index || IsThrowableBlock(blockIndex) || m_firearmConfigs.ContainsKey(blockIndex))
 					continue;
 				float power = block.GetMeleePower(slotValue);
 				if (power > bestPower)
@@ -1654,6 +1690,28 @@ namespace Game
 				m_subsystemProjectiles.ProjectileAdded -= OnProjectileAdded;
 			}
 			base.Dispose();
+		}
+
+		private void ReloadSlingshotInstantly()
+		{
+			int activeSlot = m_inventory.ActiveSlotIndex;
+			int currentValue = m_inventory.GetSlotValue(activeSlot);
+			if (Terrain.ExtractContents(currentValue) != SlingshotBlock.Index)
+				return;
+
+			SlingshotBlock.AmmoType[] ammoTypes = new SlingshotBlock.AmmoType[]
+			{
+				SlingshotBlock.AmmoType.Stone,
+				SlingshotBlock.AmmoType.Snowball,
+				SlingshotBlock.AmmoType.BuckshotBall
+			};
+			SlingshotBlock.AmmoType randomAmmo = ammoTypes[m_random.Int(0, ammoTypes.Length - 1)];
+
+			m_inventory.RemoveSlotItems(activeSlot, 1);
+			int data = 0;
+			data = SlingshotBlock.SetAmmoType(data, randomAmmo);
+			data = SlingshotBlock.SetDraw(data, 15);
+			m_inventory.AddSlotItems(activeSlot, Terrain.MakeBlockValue(SlingshotBlock.Index, 0, data), 1);
 		}
 	}
 }
