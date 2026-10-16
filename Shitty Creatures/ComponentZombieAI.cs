@@ -298,6 +298,11 @@ namespace Game
 				{
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 				}
+				// SOLO ROCA! NO OTRAS MUNICIONES!
+				else if (block is StoneChunkBlock)
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
 			}
 		}
 
