@@ -26,6 +26,8 @@ namespace Game
 		public float CrossbowCooldown = 0.01f;
 		public float RepeatCrossbowAimTime = 1.5f;
 		public float RepeatCrossbowCooldown = 0.01f;
+		public float SlingshotAimTime = 1.5f;
+		public float SlingshotCooldown = 0.01f;
 		public float ThrowableAimTime = 1.55f;
 		public float ThrowableCooldown = 0.01f;
 
@@ -803,6 +805,7 @@ namespace Game
 			int bowSlot = FindBowSlot(inventory);
 			int crossbowSlot = FindCrossbowSlot(inventory);
 			int repeatCrossbowSlot = FindRepeatCrossbowSlot(inventory);
+			int slingshotSlot = FindSlingshotSlot(inventory);
 			int meleeSlot = FindMeleeSlot(inventory);
 
 			if (distance > EngagementRange.Y)
@@ -814,6 +817,7 @@ namespace Game
 				else if (flameThrowerSlot >= 0) EquipSlot(inventory, flameThrowerSlot);
 				else if (cannonSlot >= 0) EquipSlot(inventory, cannonSlot);
 				else if (bowSlot >= 0) EquipSlot(inventory, bowSlot);
+				else if (slingshotSlot >= 0) EquipSlot(inventory, slingshotSlot);
 				else if (crossbowSlot >= 0) EquipSlot(inventory, crossbowSlot);
 				else if (repeatCrossbowSlot >= 0) EquipSlot(inventory, repeatCrossbowSlot);
 				else if (meleeSlot >= 0) EquipSlot(inventory, meleeSlot);
@@ -832,6 +836,7 @@ namespace Game
 				else if (flameThrowerSlot >= 0) EquipSlot(inventory, flameThrowerSlot);
 				else if (cannonSlot >= 0) EquipSlot(inventory, cannonSlot);
 				else if (bowSlot >= 0) EquipSlot(inventory, bowSlot);
+				else if (slingshotSlot >= 0) EquipSlot(inventory, slingshotSlot);
 				else if (crossbowSlot >= 0) EquipSlot(inventory, crossbowSlot);
 				else if (repeatCrossbowSlot >= 0) EquipSlot(inventory, repeatCrossbowSlot);
 			}
@@ -844,6 +849,7 @@ namespace Game
 				else if (flameThrowerSlot >= 0) EquipSlot(inventory, flameThrowerSlot);
 				else if (cannonSlot >= 0) EquipSlot(inventory, cannonSlot);
 				else if (bowSlot >= 0) EquipSlot(inventory, bowSlot);
+				else if (slingshotSlot >= 0) EquipSlot(inventory, slingshotSlot);
 				else if (crossbowSlot >= 0) EquipSlot(inventory, crossbowSlot);
 				else if (repeatCrossbowSlot >= 0) EquipSlot(inventory, repeatCrossbowSlot);
 				else if (meleeSlot >= 0) EquipSlot(inventory, meleeSlot);
@@ -965,6 +971,27 @@ namespace Game
 						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
 						m_isAiming = false;
 						m_cooldownTimer = BowCooldown;
+					}
+					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
+				}
+			}
+			// SLINGSHOT - SIN VERIFICACIÓN DE VISIBILIDAD
+			else if (activeContents == SlingshotBlock.Index)
+			{
+				EnsureSlingshotLoaded(inventory);
+				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
+				if (!m_isAiming && m_cooldownTimer <= 0f) { m_isAiming = true; m_aimTimer = 0f; }
+				if (m_isAiming)
+				{
+					m_aimTimer += dt;
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
+					if (m_aimTimer >= SlingshotAimTime)
+					{
+						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
+						m_isAiming = false;
+						m_cooldownTimer = SlingshotCooldown;
+						EnsureSlingshotLoaded(inventory);
 					}
 					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
@@ -1236,7 +1263,7 @@ namespace Game
 			{
 				int slotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents == MusketBlock.Index || contents == DoubleMusketBlock.Index || contents == FlameThrowerBlock.Index || contents == CannonBlock.Index || contents == BowBlock.Index || contents == CrossbowBlock.Index || contents == RepeatCrossbowBlock.Index || IsThrowable(contents))
+				if (contents == MusketBlock.Index || contents == DoubleMusketBlock.Index || contents == FlameThrowerBlock.Index || contents == CannonBlock.Index || contents == BowBlock.Index || contents == CrossbowBlock.Index || contents == RepeatCrossbowBlock.Index || contents == SlingshotBlock.Index || IsThrowable(contents))
 				{
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
@@ -1503,7 +1530,7 @@ namespace Game
 			{
 				int slotValue = inventory.GetSlotValue(i);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents != 0 && contents != MusketBlock.Index && contents != DoubleMusketBlock.Index && contents != FlameThrowerBlock.Index && contents != CannonBlock.Index && contents != BowBlock.Index && contents != CrossbowBlock.Index && contents != RepeatCrossbowBlock.Index && contents != BulletBlock.Index && !IsThrowable(contents) && !m_firearmConfigs.ContainsKey(contents) && inventory.GetSlotCount(i) > 0)
+				if (contents != 0 && contents != MusketBlock.Index && contents != DoubleMusketBlock.Index && contents != FlameThrowerBlock.Index && contents != CannonBlock.Index && contents != BowBlock.Index && contents != CrossbowBlock.Index && contents != RepeatCrossbowBlock.Index && contents != SlingshotBlock.Index && contents != BulletBlock.Index && !IsThrowable(contents) && !m_firearmConfigs.ContainsKey(contents) && inventory.GetSlotCount(i) > 0)
 					return i;
 			}
 			return -1;
@@ -1659,6 +1686,41 @@ namespace Game
 				}
 				catch (Exception) { }
 			}
+		}
+
+		int FindSlingshotSlot(IInventory inventory)
+		{
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				int slotValue = inventory.GetSlotValue(i);
+				if (Terrain.ExtractContents(slotValue) == SlingshotBlock.Index && inventory.GetSlotCount(i) > 0) return i;
+			}
+			return -1;
+		}
+
+		void EnsureSlingshotLoaded(IInventory inventory)
+		{
+			int slotIndex = inventory.ActiveSlotIndex;
+			int slotValue = inventory.GetSlotValue(slotIndex);
+			if (slotValue == 0 || Terrain.ExtractContents(slotValue) != SlingshotBlock.Index) return;
+			int data = Terrain.ExtractData(slotValue);
+			SlingshotBlock.AmmoType currentAmmo = SlingshotBlock.GetAmmoType(data);
+			int currentDraw = SlingshotBlock.GetDraw(data);
+			if (currentAmmo != SlingshotBlock.AmmoType.Empty && currentDraw == 15) return;
+
+			SlingshotBlock.AmmoType[] ammoTypes = new SlingshotBlock.AmmoType[]
+			{
+				SlingshotBlock.AmmoType.Stone,
+				SlingshotBlock.AmmoType.Snowball,
+				SlingshotBlock.AmmoType.BuckshotBall
+			};
+			SlingshotBlock.AmmoType randomAmmo = ammoTypes[m_random.Int(0, ammoTypes.Length - 1)];
+
+			data = SlingshotBlock.SetAmmoType(data, randomAmmo);
+			data = SlingshotBlock.SetDraw(data, 15);
+			int newValue = Terrain.MakeBlockValue(SlingshotBlock.Index, 0, data);
+			inventory.RemoveSlotItems(slotIndex, 1);
+			inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
 	}
 }
