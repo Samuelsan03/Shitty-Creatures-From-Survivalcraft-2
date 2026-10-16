@@ -28,11 +28,6 @@ namespace Game
 		// Añadir campo para almacenar los botones creados (opcional, solo para referencia)
 		private Dictionary<ComponentPlayer, ButtonWidget> m_achievementButtons = new Dictionary<ComponentPlayer, ButtonWidget>();
 
-		// Diccionarios para controlar el ritmo de golpes
-		private Dictionary<ComponentPlayer, double> m_lastHitGameTime = new Dictionary<ComponentPlayer, double>();
-		private Dictionary<ComponentPlayer, ComponentBody> m_lastHitTarget = new Dictionary<ComponentPlayer, ComponentBody>();
-		private Dictionary<ComponentPlayer, bool> m_fastHitMode = new Dictionary<ComponentPlayer, bool>();
-
 		private static Dictionary<string, (float AttackPower, float WalkSpeed, float FlySpeed)> m_baseStatsCache = new Dictionary<string, (float, float, float)>();
 
 		// Campos para celebración de logros
@@ -1160,17 +1155,6 @@ namespace Game
 				btn.ParentWidget?.Children.Remove(btn);  // opcional: eliminar visualmente
 				m_achievementButtons.Remove(deadPlayer);
 			}
-
-			// Limpiar seguimiento de golpes rápidos
-			foreach (var hitKvp in m_lastHitGameTime.ToArray())
-			{
-				if (hitKvp.Key.PlayerData == playerData)
-				{
-					m_lastHitGameTime.Remove(hitKvp.Key);
-					m_lastHitTarget.Remove(hitKvp.Key);
-					m_fastHitMode.Remove(hitKvp.Key);
-				}
-			}
 		}
 
 		// ---------------------------------------------------------------------------------
@@ -2193,17 +2177,6 @@ ref int priorityPlace)
 			}
 		}
 
-		public override void SetHitInterval(ComponentMiner miner, ref double hitInterval)
-		{
-			if (miner.ComponentPlayer == null) return;
-
-			if (ShittyCreaturesSettingsManager.FastMeleeEnabled &&
-				m_fastHitMode.TryGetValue(miner.ComponentPlayer, out bool fastMode) && fastMode)
-			{
-				hitInterval = 0.1;
-			}
-		}
-
 		// Método para que todas las criaturas reaccionen al cambio de dificultad
 		public static void NotifyDifficultyChanged(SubsystemGreenNightSky greenNightSky)
 		{
@@ -2899,37 +2872,6 @@ ref int priorityPlace)
 					}
 				};
 				targetCreature.ComponentHealth.Injured += handler;
-			}
-
-			// Lógica de golpes rápidos (FastMeleeEnabled)
-			if (ShittyCreaturesSettingsManager.FastMeleeEnabled)
-			{
-				double currentGameTime = player.Project.FindSubsystem<SubsystemTime>(true).GameTime;
-				bool isFastHit = false;
-
-				if (m_lastHitTarget.TryGetValue(player, out ComponentBody lastBody) &&
-					lastBody == hitBody &&
-					(currentGameTime - m_lastHitGameTime.GetValueOrDefault(player)) < 0.3)
-				{
-					isFastHit = true;
-				}
-
-				m_lastHitGameTime[player] = currentGameTime;
-				m_lastHitTarget[player] = hitBody;
-				m_fastHitMode[player] = isFastHit;
-
-				if (isFastHit)
-				{
-					timeIntervalHit = 0.1;
-				}
-				else
-				{
-					m_fastHitMode[player] = false;
-				}
-			}
-			else
-			{
-				m_fastHitMode[player] = false;
 			}
 
 			// Finalmente, ejecutar el golpe
