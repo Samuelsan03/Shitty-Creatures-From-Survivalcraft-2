@@ -128,7 +128,7 @@ namespace Game
             "LavaShovelBlock", "LavaRakeBlock", "LavaPickaxeBlock", "LavaHammerBlock", "LavaAxeBlock",
 			"WoodAxeBlock", "WoodPickaxeBlock", "WoodShovelBlock",
 			"StoneShovelBlock", "StoneAxeOriginalBlock", "StoneRakeBlock", "StonePickaxeBlock",
-			"CopperThinHammerBlock", "IronThinHammerBlock", "DiamondThinHammerBlock", "LavaThinHammerBlock",
+			"CopperThinHammerBlock", "IronThinHammerBlock", "DiamondThinHammerBlock", "LavaThinHammerBlock", "SlingshotBlock",
 
             // ===================== Weapons (vanilla) =====================
             "WoodenClubBlock", "StoneClubBlock", "WoodenSpearBlock", "StoneSpearBlock",
