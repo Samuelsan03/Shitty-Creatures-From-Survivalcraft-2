@@ -148,7 +148,6 @@ namespace Game
 			ModsManager.RegisterHook("ChangeVisualEffectOnInjury", this);
 			ModsManager.RegisterHook("OnProjectileRaycastBody", this);
 			ModsManager.RegisterHook("OnProjectileHitBody", this);
-			ModsManager.RegisterHook("SetHitInterval", this);
 			ModsManager.RegisterHook("OnChaseBehaviorAttacked", this);  // Prioridad alta para cancelar
 
 			// Bloquear montura zombi para jugadores
