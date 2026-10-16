@@ -455,7 +455,6 @@
     "HealthBarDescription": "Mostrar barras de salud en las criaturas",
     "SkeletonSpawnDescription": "Permite la aparición de esqueletos en noches normales.",
     "SpiderSpawnDescription": "Permite la aparición de arañas infectadas en noches normales (incluye cuevas).",
-    "FastMeleeDescription": "Permitir ataques cuerpo a cuerpo rápidos consecutivos al hacer clic/tocar rápidamente en el mismo objetivo",
     "DeathMusicDescription": "Activar/desactivar la música que se reproduce al morir"
   },
   "SpecialThanksScreen": {
