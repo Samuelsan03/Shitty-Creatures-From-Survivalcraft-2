@@ -443,19 +443,71 @@
 },
   "ShittyCreaturesSettings": {
     "ScreenTitle": "Shitty Creatures 设置",
-    "GhostDescription": "启用/禁用幽灵追逐你时的音乐",
-    "TankDescription": "启用/禁用 Tanks 追逐你时的音乐",
-    "SpawnDescription": "启用/禁用在死亡时生成NPC",
-    "ThirstDescription": "启用/禁用口渴模拟",
-    "CoordinateDisplay": "显示坐标",
-    "PunchCommandDescription": "无论使用哪种攻击方式，只要你攻击NPC，盟友都会攻击并追击该目标",
-    "CreativeDefenseDescription": "在创造模式中，当生物攻击玩家时，盟友会攻击该攻击者",
-    "FreeCameraDescription": "启用/禁用自由相机模式（仅在非创造模式下）",
-    "BleedingDescription": "开启/关闭受伤生物的流血效果",
-    "HealthBarDescription": "在生物上显示生命值条",
-    "SkeletonSpawnDescription": "允许骷髅在普通夜晚生成。",
-    "SpiderSpawnDescription": "允许感染蜘蛛在普通夜晚生成（包括洞穴）。",
-    "DeathMusicDescription": "启用/禁用死亡时播放的音乐"
+    "GhostMusic": {
+        "Description": "幽灵追赶你时播放的音乐",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "TankMusic": {
+        "Description": "Tank 追赶你时播放的音乐",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "DeathSpawn": {
+        "Description": "角色死亡时生成 NPC",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "Thirst": {
+        "Description": "口渴模拟",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "CoordinateDisplay": {
+        "Description": "在屏幕上显示坐标",
+        "EnabledText": "显示",
+        "DisabledText": "隐藏"
+    },
+    "PunchCommand": {
+        "Description": "无论攻击方式如何，盟友都会攻击并追赶你击中的任何 NPC",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "CreativeDefense": {
+        "Description": "在创造模式下，盟友会攻击击中玩家的生物",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "FreeCamera": {
+        "Description": "自由视角模式（仅限非创造模式）",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "Bleeding": {
+        "Description": "受伤生物的流血效果",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "HealthBar": {
+        "Description": "显示生物的生命值条",
+        "EnabledText": "显示",
+        "DisabledText": "隐藏"
+    },
+    "SkeletonSpawn": {
+        "Description": "普通夜晚生成骷髅",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "SpiderSpawn": {
+        "Description": "普通夜晚生成感染蜘蛛（包括洞穴）",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    },
+    "DeathMusic": {
+        "Description": "玩家死亡时播放的音乐",
+        "EnabledText": "已启用",
+        "DisabledText": "已禁用"
+    }
   },
   "SpecialThanksScreen": {
   "0": "特别鸣谢",
