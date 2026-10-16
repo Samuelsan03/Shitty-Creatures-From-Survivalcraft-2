@@ -47,6 +47,8 @@ namespace Game
 		// Tiempos para el mosquete de doble cañón
 		private float DoubleMusketAimTime = 1.5f;
 		private float DoubleMusketCooldown = 0.02f;
+		private float SlingshotAimTime = 1.5f;
+		private float SlingshotCooldown = 0.01f;
 
 		// Tiempos para lanzables
 		private float ThrowableAimTime = 1.55f;
@@ -137,7 +139,8 @@ namespace Game
 	{ CannonBlock.Index, new Vector3(-1.7f, 0f, 0f) },
 	{ RepeatCrossbowBlock.Index, new Vector3(-1.55f, 0f, 0f) },
 	{ FlameThrowerBlock.Index, new Vector3(-1.7f, 0f, 0f) },
-	{ DoubleMusketBlock.Index, new Vector3(-1.7f, 0f, 0f) }
+	{ DoubleMusketBlock.Index, new Vector3(-1.7f, 0f, 0f) },
+	{ SlingshotBlock.Index, new Vector3(0f, -0.2f, 0f) }
 };
 
 		// ========== CONFIGURACIÓN INTERNA DE ARMAS DE FUEGO ==========
@@ -1020,6 +1023,10 @@ namespace Game
 						else
 							EnsureCrossbowEquipped();
 					}
+					else if (m_customWeaponContents == SlingshotBlock.Index)
+					{
+						EnsureSlingshotEquipped();
+					}
 					else if (m_customWeaponContents == MusketBlock.Index)
 					{
 						EnsureMusketEquipped();
@@ -1035,6 +1042,10 @@ namespace Game
 					else if (m_customWeaponContents == DoubleMusketBlock.Index)
 					{
 						EnsureDoubleMusketEquipped();
+					}
+					else if (m_customWeaponContents == CannonBlock.Index)
+					{
+						EnsureCannonEquipped();
 					}
 
 					ResetModelRotation();
@@ -1052,14 +1063,15 @@ namespace Game
 
 				// Verificar que sea un arma a distancia válida (mosquete, ballesta, arco, lanzallamas, etc.)
 				bool isValidRangedWeapon = (currentContents == MusketBlock.Index ||
-							currentContents == CrossbowBlock.Index ||
-							currentContents == BowBlock.Index ||
-							currentContents == CannonBlock.Index ||
-							currentContents == RepeatCrossbowBlock.Index ||
-							currentContents == FlameThrowerBlock.Index ||
-							currentContents == DoubleMusketBlock.Index ||
-							FirearmDefensiveConfigs.ContainsKey(currentContents) ||
-							IsThrowable(currentContents));
+			currentContents == CrossbowBlock.Index ||
+			currentContents == BowBlock.Index ||
+			currentContents == SlingshotBlock.Index ||
+			currentContents == CannonBlock.Index ||
+			currentContents == RepeatCrossbowBlock.Index ||
+			currentContents == FlameThrowerBlock.Index ||
+			currentContents == DoubleMusketBlock.Index ||
+			FirearmDefensiveConfigs.ContainsKey(currentContents) ||
+			IsThrowable(currentContents));
 
 				if (!isValidRangedWeapon)
 				{
@@ -1242,6 +1254,10 @@ namespace Game
 						else
 							EnsureCrossbowEquipped();
 					}
+					else if (activeContents == SlingshotBlock.Index)
+					{
+						EnsureSlingshotEquipped();
+					}
 					else if (activeContents == MusketBlock.Index)
 					{
 						EnsureMusketEquipped();
@@ -1374,7 +1390,6 @@ namespace Game
 				// Para criaturas especiales: ballesta, arco, mosquete doble, mosquete con apuntado personalizado
 				if (IsSpecialNoRaiseCreature())
 				{
-					// Ballesta y arco normales (sin verificación de visibilidad)
 					if (HasCrossbowInInventory() && EnsureCrossbowEquipped())
 					{
 						StartCustomAiming(CrossbowBlock.Index);
@@ -1383,6 +1398,11 @@ namespace Game
 					if (HasBowInInventory() && EnsureBowEquipped())
 					{
 						StartCustomAiming(BowBlock.Index);
+						return;
+					}
+					if (HasSlingshotInInventory() && EnsureSlingshotEquipped())
+					{
+						StartCustomAiming(SlingshotBlock.Index);
 						return;
 					}
 					if (HasDoubleMusketInInventory() && EnsureDoubleMusketEquipped())
@@ -1398,7 +1418,6 @@ namespace Game
 				}
 				else
 				{
-					// Comportamiento normal para otras criaturas (respeta distancia mínima) - SIN VERIFICACIÓN DE VISIBILIDAD
 					if (HasCrossbowInInventory())
 					{
 						if (EnsureCrossbowEquipped())
@@ -1418,6 +1437,13 @@ namespace Game
 							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
 							return;
 						}
+					}
+					if (HasSlingshotInInventory() && EnsureSlingshotEquipped())
+					{
+						m_isAiming = true;
+						m_aimTimer = 0f;
+						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+						return;
 					}
 					if (HasDoubleMusketInInventory() && EnsureDoubleMusketEquipped())
 					{
@@ -1513,6 +1539,7 @@ namespace Game
 			}
 		}
 
+
 		private void UpdateWeaponRotation(Ray3 aimRay)
 		{
 			ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
@@ -1537,13 +1564,24 @@ namespace Game
 			}
 			else
 			{
-				// Para las otras armas en apuntado personalizado (solo criaturas especiales)
+				// Para las otras armas en apuntado personalizado
 				model.AimHandAngleOrder = 0f; // Nunca levantan el brazo
 
 				// Rotación y offset según el tipo de arma
 				if (BaseWeaponRotations.TryGetValue(m_customWeaponContents, out Vector3 baseRot))
 				{
 					model.InHandItemRotationOrder = baseRot;
+
+					// Arco y Slingshot: offset centrado
+					if (m_customWeaponContents == BowBlock.Index ||
+						m_customWeaponContents == SlingshotBlock.Index)
+					{
+						model.InHandItemOffsetOrder = Vector3.Zero;
+					}
+					else
+					{
+						model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
+					}
 				}
 				else if (FirearmDefensiveConfigs.ContainsKey(m_customWeaponContents))
 				{
@@ -1558,6 +1596,7 @@ namespace Game
 					{
 						// Criaturas normales: levantan el brazo
 						var config = FirearmDefensiveConfigs[m_customWeaponContents];
+
 						if (config.IsSniper)
 						{
 							model.AimHandAngleOrder = 1.2f;
@@ -1571,8 +1610,6 @@ namespace Game
 							model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 						}
 					}
-					if (m_componentChase != null && m_componentChase.Target != null)
-						model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
 				}
 			}
 
@@ -1590,6 +1627,7 @@ namespace Game
 				return FirearmDefensiveConfigs[contents].IsSniper ? 1.0f : 0.5f;
 			if (contents == CrossbowBlock.Index) return CrossbowAimTime;
 			if (contents == BowBlock.Index) return BowAimTime;
+			if (contents == SlingshotBlock.Index) return SlingshotAimTime;
 			if (IsThrowable(contents)) return ThrowableAimTime;
 			if (contents == CannonBlock.Index) return CannonAimTime;
 			if (contents == RepeatCrossbowBlock.Index) return RepeatCrossbowAimTime;
@@ -1604,6 +1642,7 @@ namespace Game
 				return FirearmDefensiveConfigs[contents].FireRate;
 			if (contents == CrossbowBlock.Index) return CrossbowCooldown;
 			if (contents == BowBlock.Index) return BowCooldown;
+			if (contents == SlingshotBlock.Index) return SlingshotCooldown;
 			if (IsThrowable(contents)) return ThrowableCooldown;
 			if (contents == CannonBlock.Index) return CannonCooldown;
 			if (contents == RepeatCrossbowBlock.Index) return RepeatCrossbowCooldown;
@@ -1674,15 +1713,16 @@ namespace Game
 				int slotValue = inventory.GetSlotValue(i);
 				int contents = Terrain.ExtractContents(slotValue);
 				if (slotValue != 0 &&
-					contents != MusketBlock.Index &&
-					contents != CrossbowBlock.Index &&
-					contents != BowBlock.Index &&
-					contents != CannonBlock.Index &&
-					contents != RepeatCrossbowBlock.Index &&
-					contents != FlameThrowerBlock.Index &&
-					contents != DoubleMusketBlock.Index &&
-					!IsThrowable(contents) &&
-					!FirearmDefensiveConfigs.ContainsKey(contents))
+	contents != MusketBlock.Index &&
+	contents != CrossbowBlock.Index &&
+	contents != BowBlock.Index &&
+	contents != CannonBlock.Index &&
+	contents != RepeatCrossbowBlock.Index &&
+	contents != FlameThrowerBlock.Index &&
+	contents != DoubleMusketBlock.Index &&
+	contents != SlingshotBlock.Index &&
+	!IsThrowable(contents) &&
+	!FirearmDefensiveConfigs.ContainsKey(contents))
 				{
 					inventory.ActiveSlotIndex = i;
 					return true;
@@ -2414,6 +2454,58 @@ namespace Game
 				inventory.RemoveSlotItems(slotIndex, 1);
 				inventory.AddSlotItems(slotIndex, newValue, 1);
 			}
+		}
+
+		// ========== SLINGSHOT ==========
+		private bool HasSlingshotInInventory()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+			for (int i = 0; i < inventory.SlotsCount; i++)
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == SlingshotBlock.Index) return true;
+			return false;
+		}
+
+		private bool EnsureSlingshotEquipped()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+
+			int activeSlot = inventory.ActiveSlotIndex;
+			int activeValue = inventory.GetSlotValue(activeSlot);
+			int slingshotIndex = SlingshotBlock.Index;
+
+			if (Terrain.ExtractContents(activeValue) == slingshotIndex)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				if (SlingshotBlock.GetDraw(data) != 15 || SlingshotBlock.GetAmmoType(data) == SlingshotBlock.AmmoType.Empty)
+				{
+					SlingshotBlock.AmmoType[] ammoTypes = new SlingshotBlock.AmmoType[]
+					{
+						SlingshotBlock.AmmoType.Stone,
+						SlingshotBlock.AmmoType.Snowball,
+						SlingshotBlock.AmmoType.BuckshotBall
+					};
+					SlingshotBlock.AmmoType randomAmmo = ammoTypes[m_random.Int(0, ammoTypes.Length - 1)];
+
+					data = SlingshotBlock.SetAmmoType(data, randomAmmo);
+					data = SlingshotBlock.SetDraw(data, 15);
+					int newValue = Terrain.MakeBlockValue(slingshotIndex, 0, data);
+					inventory.RemoveSlotItems(activeSlot, 1);
+					inventory.AddSlotItems(activeSlot, newValue, 1);
+				}
+				return true;
+			}
+
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == slingshotIndex)
+				{
+					inventory.ActiveSlotIndex = i;
+					return EnsureSlingshotEquipped();
+				}
+			}
+			return false;
 		}
 	}
 }
