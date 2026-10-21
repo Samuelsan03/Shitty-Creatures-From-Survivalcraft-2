@@ -488,11 +488,6 @@
         "EnabledText": "已启用",
         "DisabledText": "已禁用"
     },
-    "HealthBar": {
-        "Description": "显示生物的生命值条",
-        "EnabledText": "显示",
-        "DisabledText": "隐藏"
-    },
     "SkeletonSpawn": {
         "Description": "普通夜晚生成骷髅",
         "EnabledText": "已启用",
@@ -537,9 +532,6 @@
   "BossAppeared": "{0} 出现了！",
   "CombinedWave": "准备迎接联合入侵！"
 },
-  "HealthBar": {
-    "HP": "生命值"
-  },
   "GreenNightSky": {
     "GreenMoonBegins": "绿夜已经开始！",
     "GreenMoonEnds": "绿夜已经结束。"
