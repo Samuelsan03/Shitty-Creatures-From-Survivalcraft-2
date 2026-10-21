@@ -724,7 +724,7 @@ namespace Game
 			RectangleWidget logo = mainMenuScreen.Children.Find<RectangleWidget>("Logo", true);
 			if (logo != null)
 			{
-				logo.Size = new Vector2(336f, 128f);
+				logo.Size = new Vector2(395f, 197f);
 				logo.Subtexture = ContentManager.Get<Subtexture>("Textures/Gui/Logo");
 				logo.HorizontalAlignment = WidgetAlignment.Center;
 				logo.TextureLinearFilter = true;
