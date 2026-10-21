@@ -67,10 +67,6 @@ namespace Game
 			this.Children.Find<LabelWidget>("BleedingDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "Bleeding", "Description");
 			m_bleedingButton.Text = GetBleedingButtonText();
 
-			m_healthBarButton = this.Children.Find<BevelledButtonWidget>("HealthBarButton", true);
-			this.Children.Find<LabelWidget>("HealthBarDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "HealthBar", "Description");
-			m_healthBarButton.Text = GetHealthBarButtonText();
-
 			m_skeletonSpawnButton = this.Children.Find<BevelledButtonWidget>("SkeletonSpawnButton", true);
 			this.Children.Find<LabelWidget>("SkeletonSpawnDescriptionLabel", true).Text = LanguageControl.Get("ShittyCreaturesSettings", "SkeletonSpawn", "Description");
 			m_skeletonSpawnButton.Text = GetSkeletonSpawnButtonText();
@@ -128,11 +124,6 @@ namespace Game
 			ShittyCreaturesSettingsManager.BleedingEnabled
 				? LanguageControl.Get("ShittyCreaturesSettings", "Bleeding", "EnabledText")
 				: LanguageControl.Get("ShittyCreaturesSettings", "Bleeding", "DisabledText");
-
-		private string GetHealthBarButtonText() =>
-			ShittyCreaturesSettingsManager.HealthBarEnabled
-				? LanguageControl.Get("ShittyCreaturesSettings", "HealthBar", "EnabledText")
-				: LanguageControl.Get("ShittyCreaturesSettings", "HealthBar", "DisabledText");
 
 		private string GetSkeletonSpawnButtonText() =>
 			ShittyCreaturesSettingsManager.SkeletonSpawnEnabled
@@ -209,11 +200,6 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.BleedingEnabled = !ShittyCreaturesSettingsManager.BleedingEnabled;
 				m_bleedingButton.Text = GetBleedingButtonText();
-			}
-			if (m_healthBarButton != null && m_healthBarButton.IsClicked)
-			{
-				ShittyCreaturesSettingsManager.HealthBarEnabled = !ShittyCreaturesSettingsManager.HealthBarEnabled;
-				m_healthBarButton.Text = GetHealthBarButtonText();
 			}
 			if (m_skeletonSpawnButton != null && m_skeletonSpawnButton.IsClicked)
 			{
