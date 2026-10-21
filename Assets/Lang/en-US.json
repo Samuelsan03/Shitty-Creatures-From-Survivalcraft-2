@@ -488,11 +488,6 @@
         "EnabledText": "Enabled",
         "DisabledText": "Disabled"
     },
-    "HealthBar": {
-        "Description": "Health bars on creatures",
-        "EnabledText": "Visible",
-        "DisabledText": "Hidden"
-    },
     "SkeletonSpawn": {
         "Description": "Skeletons spawning during normal nights",
         "EnabledText": "Enabled",
@@ -537,9 +532,6 @@
   "BossAppeared": "{0} has appeared!",
   "CombinedWave": "Get ready for the combined invasion!"
 },
-  "HealthBar": {
-    "HP": "HP"
-  },
   "GreenNightSky": {
     "GreenMoonBegins": "The Green Night has begun!",
     "GreenMoonEnds": "The Green Night has ended."
