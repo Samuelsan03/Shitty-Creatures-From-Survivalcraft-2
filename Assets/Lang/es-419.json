@@ -488,11 +488,6 @@
         "EnabledText": "Activado",
         "DisabledText": "Desactivado"
     },
-    "HealthBar": {
-        "Description": "Barras de salud de las criaturas",
-        "EnabledText": "Visible",
-        "DisabledText": "Oculto"
-    },
     "SkeletonSpawn": {
         "Description": "Aparición de esqueletos durante las noches normales",
         "EnabledText": "Activado",
@@ -537,9 +532,6 @@
   "BossAppeared": "¡Ha aparecido {0}!",
   "CombinedWave": "¡Prepárate para la invasión combinada!"
 },
-  "HealthBar": {
-    "HP": "PV"
-  },
   "GreenNightSky": {
     "GreenMoonBegins": "¡La Noche Verde ha comenzado!",
     "GreenMoonEnds": "¡La Noche Verde ha terminado!"
