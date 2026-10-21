@@ -597,9 +597,6 @@
     <MemberSubsystemTemplate Name="CreatureBleeding" Guid="bb8ccb86-fe3d-49ab-ac45-ad68e75c6bd2" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
           <Parameter Name="Class" Guid="952e6a4a-decf-4b40-ac0e-e534cca3205d" Value="Game.SubsystemCreatureBleeding" Type="string" />
         </MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="CreatureHealthBar" Guid="4773f331-7304-46a2-9cb0-16ea607c01ce" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
-          <Parameter Name="Class" Guid="49c07223-74e0-41f4-9c03-6d15fc11b295" Value="Game.SubsystemCreatureHealthBar" Type="string" />
-        </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="AttractNoise" Guid="d4b726bf-66d9-42b4-8bb6-ed1736c67e1d" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
           <Parameter Name="Class" Guid="3b95bed2-944c-44e7-9606-849939622477" Value="Game.SubsystemAttractNoise" Type="string" />
         </MemberSubsystemTemplate>
