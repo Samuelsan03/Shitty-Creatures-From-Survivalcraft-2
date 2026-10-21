@@ -1586,26 +1586,26 @@
     "Description": "A cool t-shirt featuring Digimon designs. Perfect for fans of the series who want to show off their love for these digital monsters.",
     "CRDescription:0": "A cool t-shirt featuring Digimon designs. Perfect for fans of the series who want to show off their love for these digital monsters."
   },
-    "ClothingBlock:40": {
-      "DisplayName": "Lava Armor Helmet",
-      "Description": "A helmet forged from molten rock. Provides great protection and warmth, shielding the head from both attacks and cold.",
-      "CRDescription:0": "A helmet forged from molten rock. Provides great protection and warmth, shielding the head from both attacks and cold."
-    },
-    "ClothingBlock:41": {
-      "DisplayName": "Lava Armor Chestplate",
-      "Description": "A chestplate imbued with volcanic energy. Offers durable defense and insulation, keeping the torso warm in extreme climates.",
-      "CRDescription:0": "A chestplate imbued with volcanic energy. Offers durable defense and insulation, keeping the torso warm in extreme climates."
-    },
-    "ClothingBlock:42": {
-      "DisplayName": "Lava Armor Leggings",
-      "Description": "Leggings forged from volcanic stone. Reinforce the legs with the strength of lava and provide warmth against the cold.",
-      "CRDescription:0": "Leggings forged from volcanic stone. Reinforce the legs with the strength of lava and provide warmth against the cold."
-    },
-    "ClothingBlock:43": {
-      "DisplayName": "Lava Armor Boots",
-      "Description": "Boots crafted from hardened lava. Improve endurance and speed while keeping the feet warm in freezing conditions.",
-      "CRDescription:0": "Boots crafted from hardened lava. Improve endurance and speed while keeping the feet warm in freezing conditions."
-    },
+  "ClothingBlock:40": {
+    "DisplayName": "Lava Armor Helmet",
+    "Description": "A helmet forged from solidified magma. Provides heavy protection and exceptional heat insulation. Grants immunity to fire, lava, explosions, and suffocation when worn as a full set.",
+    "CRDescription:0": "Craft a magma-infused helmet using a bucket of lava and string"
+  },
+  "ClothingBlock:41": {
+    "DisplayName": "Lava Armor Chestplate",
+    "Description": "A chestplate tempered in molten rock. Offers robust defense against thermal and physical damage. Part of the Lava Armor set, granting complete elemental immunity.",
+    "CRDescription:0": "Forge a magma-resistant chestplate using a bucket of lava and string"
+  },
+  "ClothingBlock:42": {
+    "DisplayName": "Lava Armor Leggings",
+    "Description": "Heavy leg guards cooled from magma. Significantly increases density and provides strong protection. Essential for walking through lava without taking damage or suffocating.",
+    "CRDescription:0": "Shape magma-hardened leggings using a bucket of lava and string"
+  },
+  "ClothingBlock:43": {
+    "DisplayName": "Lava Armor Boots",
+    "Description": "Boots capable of stepping directly into magma. They provide heat resistance and protect against fire damage. Complete the set to become immune to environmental heat and explosions.",
+    "CRDescription:0": "Reinforce boots with magma using a bucket of lava and string"
+  },
     "ClothingBlock:44": {
       "DisplayName": "Bulletproof Helmet",
       "Description": "Tired of diamond armor failing against gunfire? This bulletproof metal helmet is built with lightweight materials, providing strong protection against armed NPCs and bandits without reducing mobility.",
