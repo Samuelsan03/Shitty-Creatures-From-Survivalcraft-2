@@ -1592,24 +1592,24 @@
       "CRDescription:0": "Una camiseta ligera inspirada en Digimon. Brinda protección mínima pero simboliza la lealtad al Mundo Digital. Cómoda para uso diario y puede teñirse para adaptarse a tu estilo."
   },
   "ClothingBlock:40": {
-    "DisplayName": "Casco de Armadura de Lava",
-    "Description": "Un casco forjado con roca fundida. Brinda gran protección y abrigo, protegiendo la cabeza tanto de ataques como del frío.",
-    "CRDescription:0": "Un casco forjado con roca fundida. Brinda gran protección y abrigo, protegiendo la cabeza tanto de ataques como del frío."
+    "DisplayName": "Casco de armadura de lava",
+    "Description": "Un casco forjado a partir de magma solidificado. Proporciona una protección robusta y un aislamiento térmico excepcional. Otorga inmunidad al fuego, la lava, las explosiones y la asfixia al llevar puesto el conjunto completo.",
+    "CRDescription:0": "Fabrica un casco imbuido de magma usando un cubo de lava y cuerda"
   },
   "ClothingBlock:41": {
-    "DisplayName": "Peto de Armadura de Lava",
-    "Description": "Un peto imbuido con energía volcánica. Ofrece defensa duradera y aislamiento, manteniendo el torso abrigado en climas extremos.",
-    "CRDescription:0": "Un peto imbuido con energía volcánica. Ofrece defensa duradera y aislamiento, manteniendo el torso abrigado en climas extremos."
+    "DisplayName": "Pechera de armadura de lava",
+    "Description": "Una pechera templada en roca fundida. Ofrece una defensa sólida contra el daño térmico y físico. Forma parte del conjunto de armadura de lava, que otorga inmunidad elemental completa.",
+    "CRDescription:0": "Forja una pechera resistente al magma usando un cubo de lava y cuerda"
   },
   "ClothingBlock:42": {
-    "DisplayName": "Grebas de Armadura de Lava",
-    "Description": "Grebas forjadas con piedra volcánica. Refuerzan las piernas con la fuerza de la lava y ofrecen abrigo contra el frío.",
-    "CRDescription:0": "Grebas forjadas con piedra volcánica. Refuerzan las piernas con la fuerza de la lava y ofrecen abrigo contra el frío."
+    "DisplayName": "Pantalones de armadura de lava",
+    "Description": "Pesadas protecciones para las piernas enfriadas a partir de magma. Aumentan considerablemente la densidad y proporcionan una gran protección. Son esenciales para caminar sobre la lava sin sufrir daño ni asfixiarse.",
+    "CRDescription:0": "Moldea unos pantalones endurecidos con magma usando un cubo de lava y cuerda"
   },
   "ClothingBlock:43": {
-    "DisplayName": "Botas de Armadura de Lava",
-    "Description": "Botas elaboradas con lava endurecida. Mejoran la resistencia y la velocidad, manteniendo los pies abrigados en condiciones heladas.",
-    "CRDescription:0": "Botas elaboradas con lava endurecida. Mejoran la resistencia y la velocidad, manteniendo los pies abrigados en condiciones heladas."
+    "DisplayName": "Botas de armadura de lava",
+    "Description": "Botas que permiten pisar directamente el magma. Proporcionan resistencia al calor y protección contra el daño por fuego. Completa el conjunto para obtener inmunidad al calor ambiental y a las explosiones.",
+    "CRDescription:0": "Refuerza unas botas con magma usando un cubo de lava y cuerda"
   },
   "ClothingBlock:44": {
       "DisplayName": "Casco Antibalas",
