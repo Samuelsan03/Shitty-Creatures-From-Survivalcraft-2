@@ -20,7 +20,6 @@ namespace Game
 		public static bool FreeCameraEnabled { get; set; } = true;
 		public static bool CreativeDefenseEnabled { get; set; } = true;
 		public static bool BleedingEnabled { get; set; } = true;
-		public static bool HealthBarEnabled { get; set; } = true;
 		public static bool SkeletonSpawnEnabled { get; set; } = true;
 		public static bool SpiderSpawnEnabled { get; set; } = true;
 		public static bool DeathMusicEnabled { get; set; } = true;
@@ -72,9 +71,6 @@ namespace Game
 								break;
 							case "BleedingEnabled":
 								BleedingEnabled = value;
-								break;
-							case "HealthBarEnabled":
-								HealthBarEnabled = value;
 								break;
 							case "SkeletonSpawnEnabled":
 								SkeletonSpawnEnabled = value;
@@ -150,11 +146,6 @@ namespace Game
 						new XAttribute("Name", "BleedingEnabled"),
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", BleedingEnabled)));
-
-					root.Add(new XElement("Value",
-						new XAttribute("Name", "HealthBarEnabled"),
-						new XAttribute("Type", "bool"),
-						new XAttribute("Value", HealthBarEnabled)));
 
 					root.Add(new XElement("Value",
 						new XAttribute("Name", "SkeletonSpawnEnabled"),
