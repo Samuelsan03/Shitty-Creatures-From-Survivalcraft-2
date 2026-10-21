@@ -39,12 +39,16 @@ namespace Game
 		private static readonly float[] s_expProbabilities = { 0.60f, 0.25f, 0.10f, 0.05f };
 
 		// =====================================================================
-		//  NUEVO: Plan de probabilidad para el STACKING (cantidad de items por regalo)
+		//  Plan de probabilidad para el STACKING (cantidad de items por regalo)
 		//  Se sortea para CADA regalo individualmente.
-		//  El stack lleno respeta el MaxStacking del CSV (40, 100000, etc.)
+		//  IMPORTANTE: Ya no existen las opciones -1 (Stack lleno) ni 40.
+		//  Los items se sueltan SEPARADOS: en vez de un solo pickable con count=X,
+		//  se generan X pickables individuales (count=1 c/u).
+		//  ADEMÁS: si el bloque NO es apilable (MaxStacking <= 1, ej. armas, herramientas,
+		//  ropa, balas, buckets), se fuerza stackCount = 1 para no soltar copias duplicadas.
 		// =====================================================================
-		private static readonly int[] s_stackAmounts = { 1, 4, 12, 40, -1 }; // -1 = Stack lleno (MaxStacking)
-		private static readonly float[] s_stackProbabilities = { 0.35f, 0.25f, 0.20f, 0.15f, 0.05f };
+		private static readonly int[] s_stackAmounts = { 1, 4, 12 };
+		private static readonly float[] s_stackProbabilities = { 0.45f, 0.30f, 0.25f };
 
 		private static readonly int[] s_clothingIndices =
 		{
@@ -228,12 +232,19 @@ namespace Game
 						if (expBlock != null)
 						{
 							int expValue = Terrain.MakeBlockValue(expBlock.BlockIndex, 0, 0);
-							Vector3 expVelocity = new Vector3(
-								m_random.Float(-1.5f, 1.5f),
-								m_random.Float(2f, 4f),
-								m_random.Float(-1.5f, 1.5f)
-							);
-							m_subsystemPickables.AddPickable(expValue, expCount, worldItem.Position, expVelocity, null);
+							// ★ SEPARACIÓN DE ÓRBITAS: En vez de un solo pickable con count=expCount,
+							//   soltamos expCount pickables individuales (count=1 c/u). Cada órbita
+							//   recibe su propia velocidad aleatoria para que se dispersen de forma
+							//   natural al caer, igual que los regalos.
+							for (int k = 0; k < expCount; k++)
+							{
+								Vector3 expVelocity = new Vector3(
+									m_random.Float(-1.5f, 1.5f),
+									m_random.Float(2f, 4f),
+									m_random.Float(-1.5f, 1.5f)
+								);
+								m_subsystemPickables.AddPickable(expValue, 1, worldItem.Position, expVelocity, null);
+							}
 						}
 					}
 
@@ -255,17 +266,38 @@ namespace Game
 							// ★ Obtener el valor del bloque con variante aleatoria (flechas, balas, ropa, etc.)
 							int blockValue = GetRandomGiftBlockValue(blockIndex);
 
-							// ★ NUEVO: Sortear la cantidad de items de este regalo
-							// Basado en el plan de stacking. Si sale "Stack lleno", lee el MaxStacking del bloque.
+							// ★ Sortear la cantidad de items de este regalo (1, 4 o 12).
+							// Ya no existen las opciones -1 (Stack lleno) ni 40.
 							int stackCount = RollStackCount(blockValue);
 
-							Vector3 velocity = new Vector3(
-								m_random.Float(-2.5f, 2.5f),
-								m_random.Float(2f, 4.5f),
-								m_random.Float(-2.5f, 2.5f)
-							);
+							// ★ VERIFICACIÓN DE APILABILIDAD:
+							//   Si el bloque NO es apilable (MaxStacking <= 1), por ejemplo armas,
+							//   herramientas, ropa, balas, buckets, etc., forzamos stackCount = 1.
+							//   Esto evita soltar múltiples copias idénticas de un item que no se apila.
+							int contentsIdx = Terrain.ExtractContents(blockValue);
+							if (contentsIdx >= 0 && contentsIdx < BlocksManager.Blocks.Length)
+							{
+								Block giftBlock = BlocksManager.Blocks[contentsIdx];
+								int maxStack = giftBlock.GetMaxStacking(blockValue);
+								if (maxStack <= 1)
+								{
+									stackCount = 1;
+								}
+							}
 
-							m_subsystemPickables.AddPickable(blockValue, stackCount, worldItem.Position, velocity, null);
+							// ★ SEPARACIÓN: En vez de poner todos los items en un solo pickable
+							//   con count=stackCount, soltamos stackCount pickables separados,
+							//   cada uno con count=1. Cada pickable recibe su propia velocidad
+							//   aleatoria para que se dispersen de forma natural al caer.
+							for (int j = 0; j < stackCount; j++)
+							{
+								Vector3 itemVelocity = new Vector3(
+									m_random.Float(-2.5f, 2.5f),
+									m_random.Float(2f, 4.5f),
+									m_random.Float(-2.5f, 2.5f)
+								);
+								m_subsystemPickables.AddPickable(blockValue, 1, worldItem.Position, itemVelocity, null);
+							}
 						}
 					}
 				}
@@ -300,11 +332,14 @@ namespace Game
 
 		/// <summary>
 		/// Sortea cuántos objetos del mismo tipo se soltarán en un regalo.
-		/// 35% -> 1 objeto
-		/// 25% -> 4 objetos
-		/// 20% -> 12 objetos
-		/// 15% -> 40 objetos
-		/// 5%  -> Stack lleno (según MaxStacking del bloque)
+		/// 45% -> 1 objeto
+		/// 30% -> 4 objetos
+		/// 25% -> 12 objetos
+		/// Ya no existen las opciones -1 (Stack lleno) ni 40.
+		/// Los objetos se sueltan SEPARADOS (cada uno en su propio pickable, count=1).
+		/// IMPORTANTE: Si el bloque NO es apilable (MaxStacking <= 1), el llamador
+		/// forzará stackCount = 1 después de este sorteo, para evitar duplicados de
+		/// armas/herramientas/ropa/balas/etc.
 		/// </summary>
 		private int RollStackCount(int blockValue)
 		{
@@ -315,21 +350,7 @@ namespace Game
 				cumulative += s_stackProbabilities[i];
 				if (roll <= cumulative)
 				{
-					int amount = s_stackAmounts[i];
-					// Si el sorteo es -1 (Stack lleno), obtenemos el verdadero MaxStacking del bloque
-					if (amount == -1)
-					{
-						int blockIndex = Terrain.ExtractContents(blockValue);
-						if (blockIndex >= 0 && blockIndex < BlocksManager.Blocks.Length)
-						{
-							Block block = BlocksManager.Blocks[blockIndex];
-							int maxStack = block.GetMaxStacking(blockValue);
-							// Si el bloque no es apilable (maxStack <= 0), se entrega 1 para no perder el item
-							return maxStack > 0 ? maxStack : 1;
-						}
-						return 1;
-					}
-					return amount;
+					return s_stackAmounts[i];
 				}
 			}
 			return 1;
