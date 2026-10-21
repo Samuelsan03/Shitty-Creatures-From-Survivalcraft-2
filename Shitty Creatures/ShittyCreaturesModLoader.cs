@@ -16,7 +16,10 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		// Campos estáticos (heredados de los distintos ModLoaders originales)
 		// ---------------------------------------------------------------------------------
-
+		// ===== ARMADURA DE LAVA =====
+		private static readonly HashSet<int> m_lavaArmorIndices = new HashSet<int> { 40, 41, 42, 43 };
+		private Dictionary<ComponentHealth, (float explosion, float magma, float fire, float air)> m_savedLavaArmorResistances
+			= new Dictionary<ComponentHealth, (float, float, float, float)>();
 		private double m_lastCombatStatsUpdateTime;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 
@@ -2546,14 +2549,10 @@ ref int priorityPlace)
 
 		public override void OnProjectDisposed()
 		{
-			// Desuscribirse de eventos de celebración
 			AchievementsManager.OnCelebrationStarted -= OnCelebrationStarted;
 			AchievementsManager.OnCelebrationEnded -= OnCelebrationEnded;
-
-			// Limpiar caché al descargar el mundo
 			m_baseStatsCache.Clear();
-
-			// Restaurar comportamiento de criaturas
+			m_savedLavaArmorResistances.Clear();   // ← AÑADIR
 			RestoreCreaturesBehavior();
 		}
 
@@ -3436,7 +3435,18 @@ ref int priorityPlace)
 	ref float gameTimeDelta,
 	ref bool skipVanilla)
 		{
-			// Solo aplicar en modos de supervivencia
+			// ===== PROTECCIÓN DE ARMADURA DE LAVA (todos los modos, incluso creativo) =====
+			ComponentPlayer lavaArmorPlayer = vitalStats.m_componentPlayer;
+			if (lavaArmorPlayer != null && lavaArmorPlayer.ComponentBody != null)
+			{
+				if (IsWearingFullLavaArmor(lavaArmorPlayer))
+					ApplyLavaArmorProtection(lavaArmorPlayer);
+				else
+					RemoveLavaArmorProtection(lavaArmorPlayer);
+			}
+			// ===== FIN PROTECCIÓN =====
+
+			// Solo aplicar temperatura en modos de supervivencia
 			var gameInfo = vitalStats.Project.FindSubsystem<SubsystemGameInfo>(true);
 			if (gameInfo.WorldSettings.GameMode == GameMode.Creative)
 				return;
@@ -3450,11 +3460,9 @@ ref int priorityPlace)
 
 			if (range > 0)
 			{
-				// Calentar al jugador (rango 0-15 → 12°C a 24°C)
-				float heatFactor = range / 15f; // 0.0 a 1.0
+				float heatFactor = range / 15f;
 				float targetTemp = 12f + heatFactor * 12f;
-
-				float speed = 2.0f; // grados por segundo
+				float speed = 2.0f;
 				float diff = targetTemp - temperature;
 				float maxChange = speed * gameTimeDelta;
 
@@ -3463,13 +3471,9 @@ ref int priorityPlace)
 				else
 					temperature += Math.Sign(diff) * maxChange;
 
-				// ★ ASIGNAR DIRECTAMENTE AL COMPONENTE PARA QUE PERSISTA ★
 				vitalStats.Temperature = temperature;
-
-				// Anular la lógica vanilla para que no sobrescriba
 				skipVanilla = true;
 			}
-			// Si no hay cobertura, no intervenimos (dejamos que el juego maneje la temperatura)
 		}
 
 		public override void UpdatePlayerInputAim(ComponentPlayer player, bool isAiming, ref bool flag, ref float timeIntervalAim, bool skippedByMods, out bool skip)
@@ -3479,6 +3483,92 @@ ref int priorityPlace)
 			{
 				// Forzar aim rápido en todos los modos
 				timeIntervalAim = 0.1f;
+			}
+		}
+
+		/// <summary>
+		/// Comprueba si el jugador lleva el conjunto completo de armadura de lava (índices 40, 41, 42, 43).
+		/// </summary>
+		private bool IsWearingFullLavaArmor(ComponentPlayer player)
+		{
+			if (player == null) return false;
+			var clothing = player.ComponentClothing;
+			if (clothing == null) return false;
+
+			bool hasHead = false, hasTorso = false, hasLegs = false, hasFeet = false;
+
+			foreach (var slot in ClothingSlot.ClothingSlots.Values)
+			{
+				var clothes = clothing.GetClothes(slot);
+				foreach (int value in clothes)
+				{
+					var data = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetClothingData(value);
+					if (data != null && m_lavaArmorIndices.Contains(data.Index))
+					{
+						if (slot == ClothingSlot.Head) hasHead = true;
+						else if (slot == ClothingSlot.Torso) hasTorso = true;
+						else if (slot == ClothingSlot.Legs) hasLegs = true;
+						else if (slot == ClothingSlot.Feet) hasFeet = true;
+					}
+				}
+			}
+			return hasHead && hasTorso && hasLegs && hasFeet;
+		}
+
+		/// <summary>
+		/// Aplica inmunidad total (explosiones, lava/magma, fuego, asfixia).
+		/// NO apaga el fuego: el jugador puede seguir ardiendo visualmente,
+		/// pero el daño por fuego se anula gracias a FireResilience.
+		/// Guarda los valores originales para poder restaurarlos.
+		/// </summary>
+		private void ApplyLavaArmorProtection(ComponentPlayer player)
+		{
+			if (player?.ComponentHealth == null) return;
+			var health = player.ComponentHealth;
+
+			// Guardar valores originales la primera vez
+			if (!m_savedLavaArmorResistances.ContainsKey(health))
+			{
+				m_savedLavaArmorResistances[health] = (
+					health.ExplosionResilience,
+					health.MagmaResilience,
+					health.FireResilience,
+					health.AirLackResilience
+				);
+			}
+
+			// Valor muy alto (evita daño sin usar infinity para no romper operaciones)
+			const float HIGH = 1e15f;
+			health.ExplosionResilience = HIGH;
+			health.MagmaResilience = HIGH;
+			health.FireResilience = HIGH;
+			health.AirLackResilience = HIGH;
+
+			// Si está dentro de lava, mantener el aire lleno (evita asfixia)
+			if (player.ComponentBody != null && player.ComponentBody.ImmersionFluidBlock is MagmaBlock)
+			{
+				health.Air = 1f;
+			}
+
+			// NOTA: NO se llama a Extinguish(). El fuego sigue activo visualmente,
+			// pero FireResilience = 1e15f anula el daño por fuego en ComponentHealth.Update.
+		}
+
+		/// <summary>
+		/// Restaura los valores originales cuando el jugador se quita la armadura.
+		/// </summary>
+		private void RemoveLavaArmorProtection(ComponentPlayer player)
+		{
+			if (player?.ComponentHealth == null) return;
+			var health = player.ComponentHealth;
+
+			if (m_savedLavaArmorResistances.TryGetValue(health, out var original))
+			{
+				health.ExplosionResilience = original.explosion;
+				health.MagmaResilience = original.magma;
+				health.FireResilience = original.fire;
+				health.AirLackResilience = original.air;
+				m_savedLavaArmorResistances.Remove(health);
 			}
 		}
 
