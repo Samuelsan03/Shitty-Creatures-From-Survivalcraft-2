@@ -16,6 +16,20 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		// Campos estáticos (heredados de los distintos ModLoaders originales)
 		// ---------------------------------------------------------------------------------
+
+		// ===== CASCO ANTIBALAS: RESISTENCIA AL AGUA (índice 44 del XML) =====
+		// Solo con el casco puesto (slot Head, índice 44) el jugador es inmune a la asfixia.
+		private static readonly HashSet<int> m_bulletproofHelmetIndices = new HashSet<int> { 44 };
+		private Dictionary<ComponentHealth, float> m_savedHelmetWaterResistance
+			= new Dictionary<ComponentHealth, float>();
+
+		// ===== ARMADURA ANTIBALAS DEL JUGADOR (índices 44,45,46,47 del XML) =====
+		// Protección SOLO contra: explosiones, magma, fuego (por inmersión en lava), chuzos y balas NuevaBala*.
+		// NO modifica asfixia.
+		private static readonly HashSet<int> m_bulletproofArmorIndices = new HashSet<int> { 44, 45, 46, 47 };
+		private Dictionary<ComponentHealth, (float explosion, float magma, float fire, float spike)> m_savedBulletproofArmorResistances
+			= new Dictionary<ComponentHealth, (float, float, float, float)>();
+
 		// ===== ARMADURA DE LAVA =====
 		private static readonly HashSet<int> m_lavaArmorIndices = new HashSet<int> { 40, 41, 42, 43 };
 		private Dictionary<ComponentHealth, (float explosion, float magma, float fire, float air)> m_savedLavaArmorResistances
@@ -2116,6 +2130,22 @@ ref int priorityPlace)
 				attackment.StunTimeSet = 0f;
 			}
 
+			// ─── NUEVO: Protección antibalas contra NuevaBala* si el jugador lleva el set completo ───
+			if (blockName == "NuevaBala" ||
+				blockName == "NuevaBala2" ||
+				blockName == "NuevaBala3" ||
+				blockName == "NuevaBala4" ||
+				blockName == "NuevaBala5" ||
+				blockName == "NuevaBala6")
+			{
+				ComponentPlayer targetBulletproofPlayer = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentPlayer>();
+				if (targetBulletproofPlayer != null && IsWearingFullBulletproofArmor(targetBulletproofPlayer))
+				{
+					// Anula SOLO el daño de la bala. No toca rocas grandes ni otros proyectiles.
+					attackment.AttackPower = 0f;
+				}
+			}
+
 			// ─── NUEVO: Protección contra rocas grandes si hay armadura ───
 			// Verificamos nuevamente si es una roca grande (usando blockIndex)
 			if (blockIndex == BigStoneChunkBlock.Index ||
@@ -2552,7 +2582,9 @@ ref int priorityPlace)
 			AchievementsManager.OnCelebrationStarted -= OnCelebrationStarted;
 			AchievementsManager.OnCelebrationEnded -= OnCelebrationEnded;
 			m_baseStatsCache.Clear();
-			m_savedLavaArmorResistances.Clear();   // ← AÑADIR
+			m_savedLavaArmorResistances.Clear();
+			m_savedBulletproofArmorResistances.Clear();
+			m_savedHelmetWaterResistance.Clear();
 			RestoreCreaturesBehavior();
 		}
 
@@ -3430,10 +3462,10 @@ ref int priorityPlace)
 		}
 
 		public override void OnVitalStatsUpdateTemperature(
-	ComponentVitalStats vitalStats,
-	ref float temperature,
-	ref float gameTimeDelta,
-	ref bool skipVanilla)
+ComponentVitalStats vitalStats,
+ref float temperature,
+ref float gameTimeDelta,
+ref bool skipVanilla)
 		{
 			// ===== PROTECCIÓN DE ARMADURA DE LAVA (todos los modos, incluso creativo) =====
 			ComponentPlayer lavaArmorPlayer = vitalStats.m_componentPlayer;
@@ -3443,6 +3475,31 @@ ref int priorityPlace)
 					ApplyLavaArmorProtection(lavaArmorPlayer);
 				else
 					RemoveLavaArmorProtection(lavaArmorPlayer);
+			}
+			// ===== FIN PROTECCIÓN =====
+
+			// ===== PROTECCIÓN DE ARMADURA ANTIBALAS (todos los modos, incluso creativo) =====
+			// Solo se aplica si el jugador lleva el conjunto completo 44/45/46/47.
+			// No afecta asfixia general; solo explosiones, magma, fuego y chuzos.
+			// La protección contra balas NuevaBala* se aplica en OnProjectileHitBody.
+			if (lavaArmorPlayer != null && lavaArmorPlayer.ComponentBody != null)
+			{
+				if (IsWearingFullBulletproofArmor(lavaArmorPlayer))
+					ApplyBulletproofArmorProtection(lavaArmorPlayer);
+				else
+					RemoveBulletproofArmorProtection(lavaArmorPlayer);
+			}
+			// ===== FIN PROTECCIÓN =====
+
+			// ===== RESISTENCIA AL AGUA DEL CASCO ANTIBALAS (todos los modos, incluso creativo) =====
+			// Basta con llevar el casco antibalas (índice 44) en el slot Head.
+			// Independiente del conjunto completo: si también lleva 45/46/47, ambas protecciones se suman.
+			if (lavaArmorPlayer != null && lavaArmorPlayer.ComponentBody != null)
+			{
+				if (IsWearingBulletproofHelmet(lavaArmorPlayer))
+					ApplyHelmetWaterResistance(lavaArmorPlayer);
+				else
+					RemoveHelmetWaterResistance(lavaArmorPlayer);
 			}
 			// ===== FIN PROTECCIÓN =====
 
@@ -3572,6 +3629,147 @@ ref int priorityPlace)
 			}
 		}
 
+		/// <summary>
+		/// Comprueba si el jugador lleva el conjunto completo de armadura antibalas (índices 44, 45, 46, 47).
+		/// </summary>
+		private bool IsWearingFullBulletproofArmor(ComponentPlayer player)
+		{
+			if (player == null) return false;
+			var clothing = player.ComponentClothing;
+			if (clothing == null) return false;
+
+			bool hasHead = false, hasTorso = false, hasLegs = false, hasFeet = false;
+
+			foreach (var slot in ClothingSlot.ClothingSlots.Values)
+			{
+				var clothes = clothing.GetClothes(slot);
+				foreach (int value in clothes)
+				{
+					var data = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetClothingData(value);
+					if (data != null && m_bulletproofArmorIndices.Contains(data.Index))
+					{
+						if (slot == ClothingSlot.Head) hasHead = true;
+						else if (slot == ClothingSlot.Torso) hasTorso = true;
+						else if (slot == ClothingSlot.Legs) hasLegs = true;
+						else if (slot == ClothingSlot.Feet) hasFeet = true;
+					}
+				}
+			}
+			return hasHead && hasTorso && hasLegs && hasFeet;
+		}
+
+		/// <summary>
+		/// Aplica inmunidad SOLO contra explosiones, magma, fuego (por inmersión en lava) y chuzos.
+		/// NO toca asfixia general ni daño por caída/melee.
+		/// Guarda los valores originales para poder restaurarlos.
+		/// </summary>
+		private void ApplyBulletproofArmorProtection(ComponentPlayer player)
+		{
+			if (player?.ComponentHealth == null) return;
+			var health = player.ComponentHealth;
+
+			if (!m_savedBulletproofArmorResistances.ContainsKey(health))
+			{
+				m_savedBulletproofArmorResistances[health] = (
+					health.ExplosionResilience,
+					health.MagmaResilience,
+					health.FireResilience,
+					health.SpikeResilience
+				);
+			}
+
+			const float HIGH = 1e15f;
+			health.ExplosionResilience = HIGH;
+			health.MagmaResilience = HIGH;
+			health.FireResilience = HIGH;
+			health.SpikeResilience = HIGH;
+
+			// Si está dentro de magma, mantener el aire lleno (evita asfixia mientras arde)
+			if (player.ComponentBody != null && player.ComponentBody.ImmersionFluidBlock is MagmaBlock)
+			{
+				health.Air = 1f;
+			}
+
+			// NOTA: NO se llama a Extinguish(). El fuego sigue activo visualmente,
+			// pero FireResilience = 1e15f anula el daño por fuego en ComponentHealth.Update.
+		}
+
+		/// <summary>
+		/// Restaura los valores originales cuando el jugador se quita la armadura antibalas.
+		/// </summary>
+		private void RemoveBulletproofArmorProtection(ComponentPlayer player)
+		{
+			if (player?.ComponentHealth == null) return;
+			var health = player.ComponentHealth;
+
+			if (m_savedBulletproofArmorResistances.TryGetValue(health, out var original))
+			{
+				health.ExplosionResilience = original.explosion;
+				health.MagmaResilience = original.magma;
+				health.FireResilience = original.fire;
+				health.SpikeResilience = original.spike;
+				m_savedBulletproofArmorResistances.Remove(health);
+			}
+		}
+
+		/// <summary>
+		/// Comprueba si el jugador lleva el casco antibalas (índice 44) en el slot Head.
+		/// </summary>
+		private bool IsWearingBulletproofHelmet(ComponentPlayer player)
+		{
+			if (player == null) return false;
+			var clothing = player.ComponentClothing;
+			if (clothing == null) return false;
+
+			var headClothes = clothing.GetClothes(ClothingSlot.Head);
+			foreach (int value in headClothes)
+			{
+				var data = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetClothingData(value);
+				if (data != null && m_bulletproofHelmetIndices.Contains(data.Index))
+					return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Aplica inmunidad al agua (asfixia) solo con el casco antibalas.
+		/// NO toca otras resistencias (explosión, magma, fuego, chuzos, caída, melee).
+		/// Guarda el AirLackResilience original para poder restaurarlo.
+		/// </summary>
+		private void ApplyHelmetWaterResistance(ComponentPlayer player)
+		{
+			if (player?.ComponentHealth == null) return;
+			var health = player.ComponentHealth;
+
+			if (!m_savedHelmetWaterResistance.ContainsKey(health))
+			{
+				m_savedHelmetWaterResistance[health] = health.AirLackResilience;
+			}
+
+			const float HIGH = 1e15f;
+			health.AirLackResilience = HIGH;
+
+			// Mantener el aire lleno mientras esté sumergido para evitar la barra de asfixia
+			if (player.ComponentBody != null && player.ComponentBody.ImmersionFactor > 0.25f)
+			{
+				health.Air = 1f;
+			}
+		}
+
+		/// <summary>
+		/// Restaura AirLackResilience cuando el jugador se quita el casco antibalas.
+		/// </summary>
+		private void RemoveHelmetWaterResistance(ComponentPlayer player)
+		{
+			if (player?.ComponentHealth == null) return;
+			var health = player.ComponentHealth;
+
+			if (m_savedHelmetWaterResistance.TryGetValue(health, out float original))
+			{
+				health.AirLackResilience = original;
+				m_savedHelmetWaterResistance.Remove(health);
+			}
+		}
 
 		// ---------------------------------------------------------------------------------
 		// SaveSettings / LoadSettings (heredados de ChaseMusicModLoader, vacíos)
