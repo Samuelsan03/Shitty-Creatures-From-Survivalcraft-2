@@ -1588,10 +1588,10 @@
       "CRDescription:0": "M249 SAW 的 5.56×45mm NATO 弹药，提供 100 发弹链供弹。"
     },
     "ClothingBlock:39": {
-      "DisplayName": "数码宝贝T恤",
-      "Description": "一件轻便的数码宝贝主题T恤。提供极少的防护，但象征着对数码世界的忠诚。适合日常穿着，并可染色以符合你的风格。",
-      "CRDescription:0": "一件数码宝贝主题的T恤，提供极少的防护，但象征着对数码世界的忠诚。适合日常穿着，并可染色以符合你的风格。"
-    },
+  "DisplayName": "数码宝贝T恤",
+  "Description": "一件印有数码宝贝图案的休闲T恤。轻便舒适，适合日常穿着。",
+  "CRDescription:0": "使用帆布和绳子制作数码宝贝T恤"
+},
     "ClothingBlock:40": {
     "DisplayName": "熔岩盔甲头盔",
     "Description": "由凝固的岩浆锻造而成的头盔。提供强大的防护能力和卓越的隔热性能。穿戴整套装备时，可免疫火焰、熔岩、爆炸和窒息效果。",
@@ -1613,40 +1613,40 @@
     "CRDescription:0": "使用一桶熔岩和绳子为靴子注入岩浆并强化"
   },
     "ClothingBlock:44": {
-      "DisplayName": "防弹头盔",
-      "Description": "厌倦了钻石护甲无法抵挡枪械吗？这款金属防弹头盔采用轻量化结构，在不影响机动性的情况下，为你提供对抗持枪NPC和强盗的可靠防护。",
-      "CRDescription:0": "厌倦了钻石护甲无法抵挡枪械吗？这款金属防弹头盔采用轻量化结构，在不影响机动性的情况下，为你提供对抗持枪NPC和强盗的可靠防护。"
-    },
-    "ClothingBlock:45": {
-      "DisplayName": "防弹胸甲",
-      "Description": "虽然由金属制成，但这件防弹胸甲采用轻量化设计，不会影响移动速度。当钻石护甲无法防弹时，这是最佳解决方案。",
-      "CRDescription:0": "虽然由金属制成，但这件防弹胸甲采用轻量化设计，不会影响移动速度。当钻石护甲无法防弹时，这是最佳解决方案。"
-    },
-    "ClothingBlock:46": {
-      "DisplayName": "防弹护腿",
-      "Description": "这些金属防弹护腿在设计上非常轻便，能够抵御枪械冲击，同时保持良好的行动能力，弥补钻石护甲的缺陷。",
-      "CRDescription:0": "这些金属防弹护腿在设计上非常轻便，能够抵御枪械冲击，同时保持良好的行动能力，弥补钻石护甲的缺陷。"
-    },
-    "ClothingBlock:47": {
-      "DisplayName": "防弹靴",
-      "Description": "轻量化金属防弹靴，在提供全面防护的同时不牺牲速度，是对抗持枪强盗的理想选择。",
-      "CRDescription:0": "轻量化金属防弹靴，在提供全面防护的同时不牺牲速度，是对抗持枪强盗的理想选择。"
-    },
+  "DisplayName": "防弹头盔",
+  "Description": "带有钢板的头盔。可以染色。提供出色的护甲防护和隔热效果。整套装备可抵御爆炸、岩浆、火焰、尖刺和子弹。仅佩戴头盔即可在水下呼吸。",
+  "CRDescription:0": "使用铁锭、帆布和线锻造一顶防弹头盔"
+},
+"ClothingBlock:45": {
+  "DisplayName": "防弹背心",
+  "Description": "带有钢板的胸部护甲。可以染色。提供出色的护甲防护和隔热效果。整套装备可抵御爆炸、岩浆、火焰、尖刺和子弹。",
+  "CRDescription:0": "使用铁锭、帆布和线缝制一件防弹背心"
+},
+"ClothingBlock:46": {
+  "DisplayName": "防弹护腿",
+  "Description": "带有钢板的腿部护甲。可以染色。提供出色的护甲防护和隔热效果。整套装备可抵御爆炸、岩浆、火焰、尖刺和子弹。",
+  "CRDescription:0": "使用铁锭、帆布和线缝制一条防弹护腿"
+},
+"ClothingBlock:47": {
+  "DisplayName": "防弹靴",
+  "Description": "带有钢板的靴子。可以染色。提供出色的护甲防护和隔热效果。整套装备可抵御爆炸、岩浆、火焰、尖刺和子弹。",
+  "CRDescription:0": "使用铁锭、帆布和线锻造一双防弹靴"
+},
     "ClothingBlock:48": {
-      "DisplayName": "高速靴",
-      "Description": "灵感来源于 Survivalcraft 2 的经典速度。这些靴子让你高速移动，非常适合探索、逃生，或重温原版游戏的感觉。",
-      "CRDescription:0": "灵感来源于 Survivalcraft 2 的经典速度。这些靴子让你高速移动，非常适合探索、逃生，或重温原版游戏的感觉。"
-    },
-    "ClothingBlock:49": {
-      "DisplayName": "超高速靴",
-      "Description": "将速度推向极限，纯正 Survivalcraft 2 风格。穿上它，你可以以夸张的速度穿越世界，适合娱乐、极限探索或纯粹的混乱。",
-      "CRDescription:0": "将速度推向极限，纯正 Survivalcraft 2 风格。穿上它，你可以以夸张的速度穿越世界，适合娱乐、极限探索或纯粹的混乱。"
-    },
+  "DisplayName": "半速鞋",
+  "Description": "轻便的鞋子，可以大幅提高移动速度。",
+  "CRDescription:0": "使用帆布、绳子和羽毛制作半速鞋"
+},
+"ClothingBlock:49": {
+  "DisplayName": "彩虹靴",
+  "Description": "色彩缤纷的彩虹靴，可以大幅提升移动速度。",
+  "CRDescription:0": "使用铁锭、帆布和绳子制作彩虹靴"
+},
     "ClothingBlock:50": {
-      "DisplayName": "普通牛仔裤",
-      "Description": "简单又舒适的裤子。没有特殊加成，但足以应付日常生存需求。",
-      "CRDescription:0": "简单又舒适的裤子。没有特殊加成，但足以应付日常生存需求。"
-    },
+  "DisplayName": "基础牛仔裤",
+  "Description": "一条简单的牛仔风格长裤。穿着舒适，适合日常使用。",
+  "CRDescription:0": "使用帆布和绳子制作基础牛仔裤"
+},
     "ClothingBlock:51": {
   "DisplayName": "防弹军用头盔",
   "Description": "先进的军用防弹头盔。无法制作，只能通过击败土匪女首领（La Bandida）获得。"
