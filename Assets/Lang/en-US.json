@@ -1582,10 +1582,10 @@
     "CRDescription:0": "5.56×45mm NATO rounds optimized for bullpup design"
   },
   "ClothingBlock:39": {
-    "DisplayName": "T-Shirt Digimon",
-    "Description": "A cool t-shirt featuring Digimon designs. Perfect for fans of the series who want to show off their love for these digital monsters.",
-    "CRDescription:0": "A cool t-shirt featuring Digimon designs. Perfect for fans of the series who want to show off their love for these digital monsters."
-  },
+  "DisplayName": "Digimon T-Shirt",
+  "Description": "A casual T-shirt featuring a Digimon design. Lightweight and comfortable for everyday wear.",
+  "CRDescription:0": "Craft a Digimon T-shirt using canvas and string"
+},
   "ClothingBlock:40": {
     "DisplayName": "Lava Armor Helmet",
     "Description": "A helmet forged from solidified magma. Provides heavy protection and exceptional heat insulation. Grants immunity to fire, lava, explosions, and suffocation when worn as a full set.",
@@ -1607,40 +1607,40 @@
     "CRDescription:0": "Reinforce boots with magma using a bucket of lava and string"
   },
     "ClothingBlock:44": {
-      "DisplayName": "Bulletproof Helmet",
-      "Description": "Tired of diamond armor failing against gunfire? This bulletproof metal helmet is built with lightweight materials, providing strong protection against armed NPCs and bandits without reducing mobility.",
-      "CRDescription:0": "Tired of diamond armor failing against gunfire? This bulletproof metal helmet is built with lightweight materials, providing strong protection against armed NPCs and bandits without reducing mobility."
-    },
-    "ClothingBlock:45": {
-      "DisplayName": "Bulletproof Vest",
-      "Description": "Despite being made of metal, this bulletproof vest uses a lightweight structure that does not hinder movement. The ultimate solution when diamond armor fails against firearms.",
-      "CRDescription:0": "Despite being made of metal, this bulletproof vest uses a lightweight structure that does not hinder movement. The ultimate solution when diamond armor fails against firearms."
-    },
-    "ClothingBlock:46": {
-      "DisplayName": "Bulletproof Leggings",
-      "Description": "Metal bulletproof leggings designed to be surprisingly lightweight. They withstand firearm impacts without slowing you down, solving the weakness of diamond armor against bullets.",
-      "CRDescription:0": "Metal bulletproof leggings designed to be surprisingly lightweight. They withstand firearm impacts without slowing you down, solving the weakness of diamond armor against bullets."
-    },
-    "ClothingBlock:47": {
-      "DisplayName": "Bulletproof Boots",
-      "Description": "Lightweight metal bulletproof boots that offer full protection without sacrificing speed. They complete the ideal set for facing armed bandits.",
-      "CRDescription:0": "Lightweight metal bulletproof boots that offer full protection without sacrificing speed. They complete the ideal set for facing armed bandits."
-    },
+  "DisplayName": "Bulletproof Helmet",
+  "Description": "Steel-plated helmet. Can be dyed. Excellent armor protection and insulation. Full set resists explosions, magma, fire, spikes and bullets. Helmet alone grants water breathing.",
+  "CRDescription:0": "Forge a bulletproof helmet from iron ingots, canvas and string"
+},
+"ClothingBlock:45": {
+  "DisplayName": "Bulletproof Vest",
+  "Description": "Steel-plated chest armor. Can be dyed. Excellent armor protection and insulation. Full set resists explosions, magma, fire, spikes and bullets.",
+  "CRDescription:0": "Sew a bulletproof vest from iron ingots, canvas and string"
+},
+"ClothingBlock:46": {
+  "DisplayName": "Bulletproof Leggings",
+  "Description": "Steel-plated leg armor. Can be dyed. Excellent armor protection and insulation. Full set resists explosions, magma, fire, spikes and bullets.",
+  "CRDescription:0": "Sew bulletproof leggings from iron ingots, canvas and string"
+},
+"ClothingBlock:47": {
+  "DisplayName": "Bulletproof Boots",
+  "Description": "Steel-plated boots. Can be dyed. Excellent armor protection and insulation. Full set resists explosions, magma, fire, spikes and bullets.",
+  "CRDescription:0": "Forge bulletproof boots from iron ingots, canvas and string"
+},
     "ClothingBlock:48": {
-      "DisplayName": "Speed Boots",
-      "Description": "Inspired by the classic speed of Survivalcraft 2. These boots let you move incredibly fast, perfect for exploration, escaping danger, or reliving the original gameplay feel.",
-      "CRDescription:0": "Inspired by the classic speed of Survivalcraft 2. These boots let you move incredibly fast, perfect for exploration, escaping danger, or reliving the original gameplay feel."
-    },
-    "ClothingBlock:49": {
-      "DisplayName": "Super Speed Boots",
-      "Description": "Speed taken to the extreme, Survivalcraft 2 style. With these boots, you’ll cross the world at absurd speeds, ideal for fun, extreme exploration, or pure chaos.",
-      "CRDescription:0": "Speed taken to the extreme, Survivalcraft 2 style. With these boots, you’ll cross the world at absurd speeds, ideal for fun, extreme exploration, or pure chaos."
-    },
+  "DisplayName": "Semi-Speed Shoes",
+  "Description": "Lightweight shoes that greatly increase movement speed.",
+  "CRDescription:0": "Craft semi-speed shoes using canvas, string and feathers"
+},
+"ClothingBlock:49": {
+  "DisplayName": "Rainbow Boots",
+  "Description": "Colorful rainbow boots that provide an incredible boost to movement speed.",
+  "CRDescription:0": "Craft rainbow boots using iron ingots, canvas and string"
+},
     "ClothingBlock:50": {
-      "DisplayName": "Normal Jeans",
-      "Description": "Simple and comfortable pants. They don’t offer special advantages, but they get the job done for everyday survival.",
-      "CRDescription:0": "Simple and comfortable pants. They don’t offer special advantages, but they get the job done for everyday survival."
-    },
+  "DisplayName": "Basic Jeans",
+  "Description": "A simple pair of denim-style pants. Comfortable and suitable for everyday use.",
+  "CRDescription:0": "Craft basic jeans using canvas and string"
+},
     "AntiTanksBulletBlock:0": {
     "DisplayName": "Anti-Tanks Bullet",
     "Description": "A special ammunition that will help us later. Use it wisely and only in emergencies if musket or shotgun bullets are ineffective in applying the necessary damage.",
