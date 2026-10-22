@@ -1587,10 +1587,10 @@
     "CRDescription:0": "Balas de la OTAN de 5.56×45 mm optimizadas para diseño bullpup."
   },
   "ClothingBlock:39": {
-    "DisplayName": "Camiseta Digimon",
-    "Description": "Una camiseta ligera inspirada en Digimon. Brinda protección mínima pero simboliza la lealtad al Mundo Digital. Cómoda para uso diario y puede teñirse para adaptarse a tu estilo.",
-      "CRDescription:0": "Una camiseta ligera inspirada en Digimon. Brinda protección mínima pero simboliza la lealtad al Mundo Digital. Cómoda para uso diario y puede teñirse para adaptarse a tu estilo."
-  },
+  "DisplayName": "Camiseta de Digimon",
+  "Description": "Una camiseta informal con un diseño de Digimon. Ligera y cómoda para el uso diario.",
+  "CRDescription:0": "Fabrica una camiseta de Digimon usando tela y cuerda"
+},
   "ClothingBlock:40": {
     "DisplayName": "Casco de armadura de lava",
     "Description": "Un casco forjado a partir de magma solidificado. Proporciona una protección robusta y un aislamiento térmico excepcional. Otorga inmunidad al fuego, la lava, las explosiones y la asfixia al llevar puesto el conjunto completo.",
@@ -1612,40 +1612,40 @@
     "CRDescription:0": "Refuerza unas botas con magma usando un cubo de lava y cuerda"
   },
   "ClothingBlock:44": {
-      "DisplayName": "Casco Antibalas",
-      "Description": "¿Cansado de que la armadura de diamante no sirva contra disparos? Este casco metálico antibalas está fabricado con materiales livianos, ofreciendo gran protección contra armas de fuego usadas por NPCs y bandidos sin penalizar la movilidad.",
-      "CRDescription:0": "¿Cansado de que la armadura de diamante no sirva contra disparos? Este casco metálico antibalas está fabricado con materiales livianos, ofreciendo gran protección contra armas de fuego usadas por NPCs y bandidos sin penalizar la movilidad."
-    },
-    "ClothingBlock:45": {
-      "DisplayName": "Peto Antibalas",
-      "Description": "Aunque está hecho de metal, este peto antibalas utiliza una estructura liviana que no reduce la movilidad. Es la solución definitiva para sobrevivir a disparos de NPCs armados cuando la armadura de diamante falla.",
-      "CRDescription:0": "Aunque está hecho de metal, este peto antibalas utiliza una estructura liviana que no reduce la movilidad. Es la solución definitiva para sobrevivir a disparos de NPCs armados cuando la armadura de diamante falla."
-    },
-    "ClothingBlock:46": {
-      "DisplayName": "Pantalones Antibalas",
-      "Description": "Grebas metálicas antibalas diseñadas para ser sorprendentemente livianas. Resisten impactos de armas de fuego sin afectar el movimiento, eliminando el problema de una armadura de diamante inútil contra balas.",
-      "CRDescription:0": "Grebas metálicas antibalas diseñadas para ser sorprendentemente livianas. Resisten impactos de armas de fuego sin afectar el movimiento, eliminando el problema de una armadura de diamante inútil contra balas."
-    },
-    "ClothingBlock:47": {
-      "DisplayName": "Botas Antibalas",
-      "Description": "Botas antibalas de metal liviano que ofrecen protección total sin sacrificar velocidad. Completan el set ideal contra bandidos armados, donde la armadura de diamante no es suficiente.",
-      "CRDescription:0": "Botas antibalas de metal liviano que ofrecen protección total sin sacrificar velocidad. Completan el set ideal contra bandidos armados, donde la armadura de diamante no es suficiente."
-    },
+  "DisplayName": "Casco antibalas",
+  "Description": "Casco con placas de acero. Se puede teñir. Excelente protección contra el daño y aislamiento térmico. El conjunto completo resiste explosiones, magma, fuego, pinchos y balas. El casco por sí solo permite respirar bajo el agua.",
+  "CRDescription:0": "Forja un casco antibalas con lingotes de hierro, lona e hilo"
+},
+"ClothingBlock:45": {
+  "DisplayName": "Chaleco antibalas",
+  "Description": "Armadura de pecho con placas de acero. Se puede teñir. Excelente protección contra el daño y aislamiento térmico. El conjunto completo resiste explosiones, magma, fuego, pinchos y balas.",
+  "CRDescription:0": "Cose un chaleco antibalas con lingotes de hierro, lona e hilo"
+},
+"ClothingBlock:46": {
+  "DisplayName": "Pantalones antibalas",
+  "Description": "Armadura para las piernas con placas de acero. Se puede teñir. Excelente protección contra el daño y aislamiento térmico. El conjunto completo resiste explosiones, magma, fuego, pinchos y balas.",
+  "CRDescription:0": "Cose unos pantalones antibalas con lingotes de hierro, lona e hilo"
+},
+"ClothingBlock:47": {
+  "DisplayName": "Botas antibalas",
+  "Description": "Botas con placas de acero. Se pueden teñir. Excelente protección contra el daño y aislamiento térmico. El conjunto completo resiste explosiones, magma, fuego, pinchos y balas.",
+  "CRDescription:0": "Forja unas botas antibalas con lingotes de hierro, lona e hilo"
+},
     "ClothingBlock:48": {
-      "DisplayName": "Botas Veloces",
-      "Description": "Inspiradas en la velocidad clásica de Survivalcraft 2. Estas botas te permiten moverte a gran velocidad, perfectas para explorar, escapar o simplemente sentir la libertad de correr como en el juego original.",
-      "CRDescription:0": "Inspiradas en la velocidad clásica de Survivalcraft 2. Estas botas te permiten moverte a gran velocidad, perfectas para explorar, escapar o simplemente sentir la libertad de correr como en el juego original."
-    },
-    "ClothingBlock:49": {
-      "DisplayName": "Botas Súper Veloces",
-      "Description": "La velocidad llevada al extremo, al estilo Survivalcraft 2. Con estas botas recorrerás el mundo a una rapidez absurda, ideales para diversión, exploración extrema o puro caos.",
-      "CRDescription:0": "La velocidad llevada al extremo, al estilo Survivalcraft 2. Con estas botas recorrerás el mundo a una rapidez absurda, ideales para diversión, exploración extrema o puro caos."
-    },
+  "DisplayName": "Zapatos Semiveloces",
+  "Description": "Zapatos ligeros que aumentan considerablemente la velocidad de movimiento.",
+  "CRDescription:0": "Fabrica zapatos semiveloces usando tela, cuerda y plumas"
+},
+"ClothingBlock:49": {
+  "DisplayName": "Botas Arcoíris",
+  "Description": "Botas de colores arcoíris que proporcionan un increíble aumento de la velocidad de movimiento.",
+  "CRDescription:0": "Fabrica botas arcoíris usando lingotes de hierro, tela y cuerda"
+},
     "ClothingBlock:50": {
-      "DisplayName": "Jean Normal",
-      "Description": "Un pantalón simple y cómodo. No ofrece grandes ventajas, pero cumple su función básica para la supervivencia diaria.",
-      "CRDescription:0": "Un pantalón simple y cómodo. No ofrece grandes ventajas, pero cumple su función básica para la supervivencia diaria."
-    },
+  "DisplayName": "Jeans Básicos",
+  "Description": "Un pantalón sencillo de estilo vaquero. Cómodo y adecuado para el uso diario.",
+  "CRDescription:0": "Fabrica unos jeans básicos usando tela y cuerda"
+},
     "ClothingBlock:51": {
   "DisplayName": "Casco Militar Antibalas",
   "Description": "Casco balístico de última generación. No se puede fabricar; solo puede obtenerse derrotando a La Bandida."
