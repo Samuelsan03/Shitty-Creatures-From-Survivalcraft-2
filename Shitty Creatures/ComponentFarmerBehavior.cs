@@ -30,14 +30,9 @@ namespace Game
 		public int FarmAreaId = -1;
 
 		private const float BASE_IMPORTANCE_MIN = 5f;
-private const float BASE_IMPORTANCE_MAX = 10f;
-private const float TASK_IMPORTANCE_MIN = 15f;   // antes 10f
-private const float TASK_IMPORTANCE_MAX = 20f;   // antes 15f
-
-// NUEVO: importancia mientras el farmer ejecuta una tarea.
-// Debe ser estrictamente mayor que el máximo de ComponentEatPickableBehavior
-// (Float(5f, 10f)) para que la comida no lo interrumpa a media tarea.
-private const float ACTIVE_TASK_IMPORTANCE = 20f;
+		private const float BASE_IMPORTANCE_MAX = 10f;
+		private const float TASK_IMPORTANCE_MIN = 10f;
+		private const float TASK_IMPORTANCE_MAX = 15f;
 
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemTime m_subsystemTime;
@@ -96,6 +91,10 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 		private int m_lastSeedItemValue = -1;
 		private double m_lastToolCheckTime;
 		private const double TOOL_CHECK_INTERVAL = 0.5;
+
+		// Tiempo desde que no se encontró trabajo (para periodo de gracia en Inactive)
+		private double m_noWorkFoundTime = -1;
+		private const double NO_WORK_TIMEOUT = 3.0;
 
 		public override float ImportanceLevel => m_importanceLevel;
 
@@ -209,6 +208,7 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 
 					m_importanceLevel = 0f;
 					m_stateEnterTime = m_subsystemTime.GameTime;
+					m_noWorkFoundTime = -1;
 				},
 				update: () =>
 				{
@@ -251,7 +251,7 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 
 					if (IsTooFarFromArea())
 					{
-						m_importanceLevel = 10f;
+						m_importanceLevel = TASK_IMPORTANCE_MAX;
 						m_stateMachine.TransitionTo("ReturnToArea");
 						return;
 					}
@@ -263,17 +263,30 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 						{
 							m_targetCellFace = target;
 							m_targetPosition = new Vector3(target.X + 0.5f, target.Y + 0.5f, target.Z + 0.5f);
-							m_importanceLevel = m_random.Float(TASK_IMPORTANCE_MIN, TASK_IMPORTANCE_MAX);
+							m_importanceLevel = TASK_IMPORTANCE_MAX;
 
 							if (!m_hasFarmAreaCenter)
 								UpdateFarmAreaCenter();
 
+							m_noWorkFoundTime = -1;
 							m_stateMachine.TransitionTo("MoveToTarget");
 							return;
 						}
+						// No había tarea: empezar a contar el periodo de gracia
+						if (m_noWorkFoundTime < 0)
+							m_noWorkFoundTime = m_subsystemTime.GameTime;
 					}
 
-					m_importanceLevel = 0f;
+					// Durante la ventana de gracia la criatura NO debe distraerse
+					if (m_noWorkFoundTime >= 0 &&
+						m_subsystemTime.GameTime - m_noWorkFoundTime > NO_WORK_TIMEOUT)
+					{
+						m_importanceLevel = 0f;
+					}
+					else
+					{
+						m_importanceLevel = TASK_IMPORTANCE_MIN + 1f;
+					}
 				},
 				leave: null
 			);
@@ -283,7 +296,7 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
 					m_blockedCount = 0;
-					m_importanceLevel = 10f;
+					m_importanceLevel = TASK_IMPORTANCE_MAX;
 
 					EnsureFarmingToolEquipped();
 
@@ -359,7 +372,7 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
 					m_blockedCount = 0;
-					m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
+					m_importanceLevel = TASK_IMPORTANCE_MAX;
 					if (m_componentPathfinding != null && m_initialized)
 					{
 						m_componentPathfinding.IsStuck = false;
@@ -474,12 +487,12 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 			);
 
 			m_stateMachine.AddState("RakeTrampled",
-	enter: () =>
-	{
-		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
-		m_stateEnterTime = m_subsystemTime.GameTime;
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
+					m_importanceLevel = TASK_IMPORTANCE_MAX;
 
-		if (m_targetCellFace == null)
+					if (m_targetCellFace == null)
 					{
 						m_stateMachine.TransitionTo("Inactive");
 						return;
@@ -526,12 +539,12 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 			);
 
 			m_stateMachine.AddState("Rake",
-	enter: () =>
-	{
-		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
-		m_stateEnterTime = m_subsystemTime.GameTime;
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
+					m_importanceLevel = TASK_IMPORTANCE_MAX;
 
-		if (!SwitchToTool(typeof(RakeBlock)))
+					if (!SwitchToTool(typeof(RakeBlock)))
 					{
 						m_stateMachine.TransitionTo("Inactive");
 						return;
@@ -591,11 +604,11 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 			);
 
 			m_stateMachine.AddState("Fertilize",
-	enter: () =>
-	{
-		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
-		m_stateEnterTime = m_subsystemTime.GameTime;
-	},
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
+					m_importanceLevel = TASK_IMPORTANCE_MAX;
+				},
 				update: () =>
 				{
 					if (m_subsystemTime.GameTime - m_stateEnterTime < TIME_TO_FERTILIZE)
@@ -627,11 +640,11 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 			);
 
 			m_stateMachine.AddState("Plant",
-	enter: () =>
-	{
-		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
-		m_stateEnterTime = m_subsystemTime.GameTime;
-	},
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
+					m_importanceLevel = TASK_IMPORTANCE_MAX;
+				},
 				update: () =>
 				{
 					if (m_subsystemTime.GameTime - m_stateEnterTime < TIME_TO_PLANT_SEED)
@@ -675,12 +688,12 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 			);
 
 			m_stateMachine.AddState("Harvest",
-	enter: () =>
-	{
-		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
-		m_stateEnterTime = m_subsystemTime.GameTime;
+				enter: () =>
+				{
+					m_stateEnterTime = m_subsystemTime.GameTime;
+					m_importanceLevel = TASK_IMPORTANCE_MAX;
 
-		if (m_targetCellFace == null)
+					if (m_targetCellFace == null)
 					{
 						m_stateMachine.TransitionTo("Inactive");
 						return;
@@ -813,8 +826,9 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 			ApplyFarmAreaBounds(a, b);
 
 			m_nextScanTime = 0;
-			m_lastSeedSlotIndex = -1;        // ← NUEVO
-			m_lastSeedItemValue = -1;        // ← NUEVO
+			m_lastSeedSlotIndex = -1;
+			m_lastSeedItemValue = -1;
+			m_noWorkFoundTime = -1;
 
 			if (m_importanceLevel < BASE_IMPORTANCE_MIN)
 				m_importanceLevel = BASE_IMPORTANCE_MIN;
@@ -1466,6 +1480,7 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 			m_hasFarmAreaCenter = true;
 
 			m_nextScanTime = 0;
+			m_noWorkFoundTime = -1;
 
 			if (m_importanceLevel < BASE_IMPORTANCE_MIN)
 				m_importanceLevel = BASE_IMPORTANCE_MIN;
@@ -1494,8 +1509,9 @@ private const float ACTIVE_TASK_IMPORTANCE = 20f;
 			m_targetCellFace = null;
 			m_importanceLevel = 0f;
 
-			m_lastSeedSlotIndex = -1;        // ← NUEVO
-			m_lastSeedItemValue = -1;        // ← NUEVO
+			m_lastSeedSlotIndex = -1;
+			m_lastSeedItemValue = -1;
+			m_noWorkFoundTime = -1;
 
 			if (m_componentPathfinding != null && m_initialized)
 			{
