@@ -1,6 +1,7 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
     <!-- Ajustes de las criaturas vanilla/originales-->
     <EntityTemplate Name="Player" Guid="4be6c1c5-d65d-4537-8a8b-a391969e6dc2">
+    <MemberComponentTemplate Name="ShittyChristmasBehavior" Guid="1725a8b3-0203-4126-83b0-66f5b03ee68f" InheritanceParent="fcb73b47-c2f1-44e0-8d39-cb412f927ab6"/>
     <MemberComponentTemplate Name="Sleep" Guid="e7b98f0e-317f-4589-8033-ca605f92ee15" InheritanceParent="585d2fc1-f523-459a-9cb3-8fafa9fbadbd">
     <Parameter Name="SleepStartTime" Guid="431d037d-2feb-4eb7-9a6f-2b4cba10cee0" Value="0" Type="double"/>
           <Parameter Name="Class" Guid="5ea12b99-9031-4415-99d0-0098d02042a1" Value="Game.ComponentNewSleep" Type="string"/>
@@ -32,6 +33,18 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="7ab1e8c3-ecec-4a1b-849b-791c9781abfa"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="efdf607d-a533-4f5f-85df-b00c8fce6e7c"/>
     </MemberComponentTemplate>
+    </EntityTemplate>
+
+    <EntityTemplate Name="FemalePlayer" Guid="7b37876b-5f60-46fc-9e95-f78c7aea02a3" InheritanceParent="4be6c1c5-d65d-4537-8a8b-a391969e6dc2">
+    <MemberComponentTemplate Name="Clothing" Guid="f4fd1dab-318a-4e61-ac48-cd02b2d1da40" InheritanceParent="0a5f19fe-9d3e-47f4-9327-06f38fbaa208">
+              <ParameterSet Name="Clothes" Guid="379e6b28-4337-446f-a6a3-2bfff4499af9" />
+            </MemberComponentTemplate>
+    </EntityTemplate>
+
+    <EntityTemplate Name="MalePlayer" Guid="bef1b918-6418-41c9-a598-95e8ffd39ab3" InheritanceParent="4be6c1c5-d65d-4537-8a8b-a391969e6dc2">
+    <MemberComponentTemplate Name="Clothing" Guid="dbb5188e-1f90-4f64-a865-f9f67d92589e" InheritanceParent="0a5f19fe-9d3e-47f4-9327-06f38fbaa208">
+              <ParameterSet Name="Clothes" Guid="4f7fc9bc-c372-42d7-a453-91ea81578eaf" />
+            </MemberComponentTemplate>
     </EntityTemplate>
 
     <EntityTemplate Name="Rhino" Guid="4d02fd7e-3054-4121-b2a5-787db985df5f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
