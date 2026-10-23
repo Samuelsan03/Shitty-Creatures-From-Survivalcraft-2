@@ -18,6 +18,18 @@
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
 
+    <ComponentTemplate Name="Clothing" Description="[DescriptionAttribute:253]" Guid="0a5f19fe-9d3e-47f4-9327-06f38fbaa208" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+          <ParameterSet Name="Clothes" Description="[DescriptionAttribute:254]" Guid="2f84a764-1a4c-47a2-853c-147274fc1a05">
+            <Parameter Name="Legs" Description="[DescriptionAttribute:255]" Guid="aca1e99c-4dc9-45a6-bc57-b0a2e6483227" Value="" Type="string" />
+            <Parameter Name="Feet" Description="[DescriptionAttribute:256]" Guid="5eca40bf-a87c-4e9b-8bc8-d9310254fc45" Value="" Type="string" />
+            <Parameter Name="Torso" Description="[DescriptionAttribute:257]" Guid="c6a79900-13c1-41a4-b928-072d4f1e07d4" Value="" Type="string" />
+            <Parameter Name="Head" Description="[DescriptionAttribute:258]" Guid="caedf65a-de99-4b52-b7ed-10ede61dbd2f" Value="" Type="string" />
+          </ParameterSet>
+          <Parameter Name="ShowClothedTexture" Guid="53a9708a-4713-4e34-be18-bb0a0d21f118" Value="True" Type="bool" />
+          <Parameter Name="DrawClothedTexture" Guid="21946b3d-ca60-4a98-8dac-123743ec7d77" Value="True" Type="bool" />
+          <Parameter Name="Class" Guid="cca5ee21-c99b-4150-bc93-38ec5e7aa8e1" Value="Extra.ComponentClothingHD" Type="string" />
+        </ComponentTemplate>
+
     <ComponentTemplate Name="ShittyChristmasBehavior" Guid="fcb73b47-c2f1-44e0-8d39-cb412f927ab6" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
           <Parameter Name="Class" Guid="b3962f44-540c-4b4b-bafd-d352ed1970f5" Value="Game.ComponentShittyChristmasBehavior" Type="string" />
         </ComponentTemplate>
