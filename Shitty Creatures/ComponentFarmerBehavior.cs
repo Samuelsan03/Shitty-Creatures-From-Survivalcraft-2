@@ -30,9 +30,14 @@ namespace Game
 		public int FarmAreaId = -1;
 
 		private const float BASE_IMPORTANCE_MIN = 5f;
-		private const float BASE_IMPORTANCE_MAX = 10f;
-		private const float TASK_IMPORTANCE_MIN = 10f;
-		private const float TASK_IMPORTANCE_MAX = 15f;
+private const float BASE_IMPORTANCE_MAX = 10f;
+private const float TASK_IMPORTANCE_MIN = 15f;   // antes 10f
+private const float TASK_IMPORTANCE_MAX = 20f;   // antes 15f
+
+// NUEVO: importancia mientras el farmer ejecuta una tarea.
+// Debe ser estrictamente mayor que el máximo de ComponentEatPickableBehavior
+// (Float(5f, 10f)) para que la comida no lo interrumpa a media tarea.
+private const float ACTIVE_TASK_IMPORTANCE = 20f;
 
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemTime m_subsystemTime;
@@ -354,7 +359,7 @@ namespace Game
 				{
 					m_stateEnterTime = m_subsystemTime.GameTime;
 					m_blockedCount = 0;
-					m_importanceLevel = 10f;
+					m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
 					if (m_componentPathfinding != null && m_initialized)
 					{
 						m_componentPathfinding.IsStuck = false;
@@ -469,11 +474,12 @@ namespace Game
 			);
 
 			m_stateMachine.AddState("RakeTrampled",
-				enter: () =>
-				{
-					m_stateEnterTime = m_subsystemTime.GameTime;
+	enter: () =>
+	{
+		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
+		m_stateEnterTime = m_subsystemTime.GameTime;
 
-					if (m_targetCellFace == null)
+		if (m_targetCellFace == null)
 					{
 						m_stateMachine.TransitionTo("Inactive");
 						return;
@@ -520,11 +526,12 @@ namespace Game
 			);
 
 			m_stateMachine.AddState("Rake",
-				enter: () =>
-				{
-					m_stateEnterTime = m_subsystemTime.GameTime;
+	enter: () =>
+	{
+		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
+		m_stateEnterTime = m_subsystemTime.GameTime;
 
-					if (!SwitchToTool(typeof(RakeBlock)))
+		if (!SwitchToTool(typeof(RakeBlock)))
 					{
 						m_stateMachine.TransitionTo("Inactive");
 						return;
@@ -584,10 +591,11 @@ namespace Game
 			);
 
 			m_stateMachine.AddState("Fertilize",
-				enter: () =>
-				{
-					m_stateEnterTime = m_subsystemTime.GameTime;
-				},
+	enter: () =>
+	{
+		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
+		m_stateEnterTime = m_subsystemTime.GameTime;
+	},
 				update: () =>
 				{
 					if (m_subsystemTime.GameTime - m_stateEnterTime < TIME_TO_FERTILIZE)
@@ -619,10 +627,11 @@ namespace Game
 			);
 
 			m_stateMachine.AddState("Plant",
-				enter: () =>
-				{
-					m_stateEnterTime = m_subsystemTime.GameTime;
-				},
+	enter: () =>
+	{
+		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
+		m_stateEnterTime = m_subsystemTime.GameTime;
+	},
 				update: () =>
 				{
 					if (m_subsystemTime.GameTime - m_stateEnterTime < TIME_TO_PLANT_SEED)
@@ -666,11 +675,12 @@ namespace Game
 			);
 
 			m_stateMachine.AddState("Harvest",
-				enter: () =>
-				{
-					m_stateEnterTime = m_subsystemTime.GameTime;
+	enter: () =>
+	{
+		m_importanceLevel = ACTIVE_TASK_IMPORTANCE;   // ← nuevo
+		m_stateEnterTime = m_subsystemTime.GameTime;
 
-					if (m_targetCellFace == null)
+		if (m_targetCellFace == null)
 					{
 						m_stateMachine.TransitionTo("Inactive");
 						return;
