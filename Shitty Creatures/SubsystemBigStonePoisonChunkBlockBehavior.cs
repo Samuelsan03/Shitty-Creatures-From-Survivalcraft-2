@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Engine;
 using Game;
 using GameEntitySystem;
@@ -28,6 +29,13 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private bool m_initialized;
 
+		// Para cada proyectil rastreado guardamos su posición y velocidad del frame anterior,
+		// de modo que al detectar el impacto podamos hacer un raycast PRECISO desde la
+		// posición previa en la dirección de viaje y detectar ÚNICAMENTE el cuerpo golpeado.
+		private Dictionary<Projectile, Vector3> m_prevPositions = new Dictionary<Projectile, Vector3>();
+		private Dictionary<Projectile, Vector3> m_prevVelocities = new Dictionary<Projectile, Vector3>();
+		private HashSet<Projectile> m_processedProjectiles = new HashSet<Projectile>();
+
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
@@ -43,6 +51,10 @@ namespace Game
 			// Aumentamos la cantidad de partículas a 40 para que no se vea vacío al ser tan grande
 			m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new PukeTrailParticleSystem(40, 4.5f, float.MaxValue, Color.White));
 			projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+			// Inicializamos el seguimiento de posición/velocidad para este proyectil
+			m_prevPositions[projectile] = projectile.Position;
+			m_prevVelocities[projectile] = projectile.Velocity;
 		}
 
 		public void Update(float dt)
@@ -50,44 +62,93 @@ namespace Game
 			if (!m_initialized)
 				return;
 
-			// Revisar todos los proyectiles activos
 			foreach (Projectile projectile in m_subsystemProjectiles.Projectiles)
 			{
-				if (Terrain.ExtractContents(projectile.Value) == BigStonePoisonChunkBlock.Index)
+				if (Terrain.ExtractContents(projectile.Value) != BigStonePoisonChunkBlock.Index)
+					continue;
+
+				Vector3 prevPos;
+				Vector3 prevVel;
+				if (!m_prevPositions.TryGetValue(projectile, out prevPos))
 				{
-					// Verificar si este proyectil impactó en este frame
-					if (projectile.ToRemove && !m_processedProjectiles.Contains(projectile))
-					{
-						// Este proyectil impactó y está marcado para remover
-						TryApplyPoisonEffect(projectile);
-						m_processedProjectiles.Add(projectile);
-					}
+					// Proyectil recién aparecido (cargado de save, no disparado via OnFiredAsProjectile)
+					m_prevPositions[projectile] = projectile.Position;
+					m_prevVelocities[projectile] = projectile.Velocity;
+					continue;
+				}
+				m_prevVelocities.TryGetValue(projectile, out prevVel);
+
+				if (projectile.ToRemove && !m_processedProjectiles.Contains(projectile))
+				{
+					// El proyectil acaba de impactar y está marcado para remover.
+					// Hacemos un raycast PRECISO desde la posición previa hasta la actual
+					// (extendido hacia delante por si la posición no avanzó al colisionar)
+					// para detectar ÚNICAMENTE el cuerpo golpeado.
+					TryApplyPoisonToHitBody(projectile, prevPos, prevVel);
+					m_processedProjectiles.Add(projectile);
+				}
+				else
+				{
+					m_prevPositions[projectile] = projectile.Position;
+					m_prevVelocities[projectile] = projectile.Velocity;
 				}
 			}
 
-			// Limpiar proyectiles ya procesados
+			// Limpieza de entradas obsoletas
+			List<Projectile> dead = new List<Projectile>();
+			foreach (KeyValuePair<Projectile, Vector3> kvp in m_prevPositions)
+			{
+				if (!m_subsystemProjectiles.Projectiles.Contains(kvp.Key))
+					dead.Add(kvp.Key);
+			}
+			foreach (Projectile p in dead)
+			{
+				m_prevPositions.Remove(p);
+				m_prevVelocities.Remove(p);
+			}
 			m_processedProjectiles.RemoveWhere(p => !m_subsystemProjectiles.Projectiles.Contains(p));
 		}
 
-		private void TryApplyPoisonEffect(Projectile projectile)
+		private void TryApplyPoisonToHitBody(Projectile projectile, Vector3 prevPos, Vector3 prevVel)
 		{
 			if (projectile == null)
 				return;
 
-			// Buscar cuerpos cercanos al punto de impacto
-			Vector3 impactPos = projectile.Position;
-			Vector2 corner1 = new Vector2(impactPos.X - 2f, impactPos.Z - 2f);
-			Vector2 corner2 = new Vector2(impactPos.X + 2f, impactPos.Z + 2f);
+			Vector3 currPos = projectile.Position;
 
-			DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
-			m_subsystemBodies.FindBodiesInArea(corner1, corner2, bodies);
-
-			for (int i = 0; i < bodies.Count; i++)
+			// Dirección de viaje del proyectil. Preferimos (currPos - prevPos); si la longitud
+			// es casi cero (la colisión no avanzó la posición), usamos la velocidad previa.
+			Vector3 dir = currPos - prevPos;
+			float len = dir.Length();
+			if (len < 0.001f)
 			{
-				ComponentBody body = bodies.Array[i];
-				if (body != null && body.Entity != null)
+				dir = prevVel;
+				len = dir.Length();
+				if (len < 0.001f)
+					return; // No podemos determinar dirección, abortamos sin envenenar a nadie
+			}
+			Vector3 rayDir = dir / len;
+
+			// Extendemos el raycast un poco por delante de la posición actual, por si la
+			// colisión frenó el proyectil antes de alcanzar exactamente el cuerpo.
+			float extend = MathUtils.Max(len, 2f);
+			Vector3 rayStart = prevPos;
+			Vector3 rayEnd = currPos + rayDir * extend;
+
+			// Raycast contra cuerpos. Solo se aplica veneno al cuerpo REALMENTE golpeado.
+			// Si el raycast no impacta ningún cuerpo (null), el proyectil golpeó el terreno
+			// y no se envenena a ninguna criatura (comportamiento correcto, sin "ola").
+			BodyRaycastResult? result = m_subsystemBodies.Raycast(
+				rayStart, rayEnd, 0.2f,
+				(ComponentBody body, float distance) => true
+			);
+
+			if (result.HasValue)
+			{
+				ComponentBody hitBody = result.Value.ComponentBody;
+				if (hitBody != null && hitBody.Entity != null)
 				{
-					ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+					ComponentCreature creature = hitBody.Entity.FindComponent<ComponentCreature>();
 					if (creature != null)
 					{
 						ApplyPoisonToCreature(creature);
@@ -122,7 +183,5 @@ namespace Game
 				componentPoisonInfected.StartInfect(15f);
 			}
 		}
-
-		private HashSet<Projectile> m_processedProjectiles = new HashSet<Projectile>();
 	}
 }
