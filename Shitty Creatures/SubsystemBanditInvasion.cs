@@ -16,6 +16,12 @@ namespace Game
 		private SubsystemPlayers m_subsystemPlayers;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 		private SubsystemZombiesSpawn m_subsystemZombiesSpawn;
+		// Referencia al loader de criaturas (SubsystemCreatureSpawn).
+		// Se usa para que el spawn de los narcos de la invasión pase por el loader
+		// (ProcessSpawnPoint / TestSpawnPoint / CalculateSpawnSuitability / SpawnCreatures)
+		// y así se mantenga integrado con el sistema de SpawnChunks del SubsystemSpawn
+		// (guardado/carga/despawn/respawn).
+		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
 		private Random m_random = new Random();
 
 		public event Action InvasionCompleted;
@@ -41,18 +47,19 @@ namespace Game
 
 		private bool m_bossSpawnedThisWar;
 
-		// Spawn activo de invasión
+		// Spawn activo de invasión (intervalo y límite se mantienen,
+		// pero ahora el spawn se enruta a través del loader).
 		private const float InvasionSpawnInterval = 2.5f;
 		private float m_invasionSpawnTimer;
 		private const int MaxInvasionBandits = 15;
 
 		private static readonly HashSet<string> m_banditNames = new HashSet<string>
-		{
-			"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
-			"Bandit6", "Bandit7", "Bandit8", "Bandit9", "Bandit10",
-			"Bandit11", "Bandit12", "Bandit13", "Bandit14", "Bandit15",
-			"Bandit16", "Bandit17", "FirearmsDealer"
-		};
+				{
+						"Bandit1", "Bandit2", "Bandit3", "Bandit4", "Bandit5",
+						"Bandit6", "Bandit7", "Bandit8", "Bandit9", "Bandit10",
+						"Bandit11", "Bandit12", "Bandit13", "Bandit14", "Bandit15",
+						"Bandit16", "Bandit17", "FirearmsDealer"
+				};
 
 		public bool IsWarAccepted => m_acceptedWar;
 		public bool IsWarRejected => m_wasRejected;
@@ -156,6 +163,9 @@ namespace Game
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(false);
 			m_subsystemZombiesSpawn = Project.FindSubsystem<SubsystemZombiesSpawn>(true);
+			// Obtenemos la referencia al loader de criaturas para enrutar el spawn
+			// de la invasión a través de SpawnCreatures() (manteniendo el loader del spawn).
+			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
 
 			LoadBanditsFromXml();
 
@@ -323,9 +333,35 @@ namespace Game
 			return count;
 		}
 
+		// ============================================================
+		// SPAWN DE NARCOS DE LA INVASIÓN A TRAVÉS DEL LOADER
+		// ------------------------------------------------------------
+		// Antes este método llamaba directamente a DatabaseManager.CreateEntity
+		// + Project.AddEntity, lo cual BYPASSABA el loader del spawn
+		// (SubsystemCreatureSpawn) y los CreatureType registrados en
+		// GenerationShittyCreaturesLoader.cs. Eso hacía que los narcos
+		// no se integraran correctamente con el sistema de SpawnChunks del
+		// SubsystemSpawn (guardado/carga/despawn/respawn).
+		//
+		// Ahora el spawn se enruta a través de SubsystemCreatureSpawn.SpawnCreatures,
+		// que internamente:
+		//   1. Llama a ProcessSpawnPoint -> TestSpawnPoint (valida iluminación,
+		//      bloques colisionables, agua, etc.).
+		//   2. Llama a CalculateSpawnSuitability -> SpawnSuitabilityFunction del
+		//      CreatureType registrado (que valida IsInvasionActive + isValidGround
+		//      y respeta la probabilidad del XML).
+		//   3. Llama a SpawnCreature -> DatabaseManager.CreateEntity + Project.AddEntity
+		//      (sigue siendo trackeado por SubsystemSpawn.OnEntityAdded, por lo que
+		//      el despawn/respawn del loader funciona normalmente).
+		//   4. Aplica el límite de población (CountCreatures > 8 => *0.25).
+		//
+		// Se mantiene el IsDrugTraffickerMode=true después del spawn (igual que
+		// hace spawnBanditWithMode en GenerationShittyCreaturesLoader.cs).
+		// ============================================================
 		private void SpawnInvasionBandit()
 		{
 			if (m_bandits.Count == 0) return;
+			if (m_subsystemCreatureSpawn == null) return;
 
 			ComponentPlayer targetPlayer = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
 			if (targetPlayer == null) return;
@@ -351,10 +387,26 @@ namespace Game
 			}
 			if (selectedName == null) return;
 
+			// Buscar el CreatureType registrado en el loader (GenerationShittyCreaturesLoader.cs)
+			// que corresponde al bandido seleccionado. Esto asegura que el spawn use el
+			// SpawnSuitabilityFunction y SpawnFunction correctos del loader.
+			SubsystemCreatureSpawn.CreatureType creatureType = null;
+			foreach (var ct in m_subsystemCreatureSpawn.m_creatureTypes)
+			{
+				if (ct.Name == selectedName)
+				{
+					creatureType = ct;
+					break;
+				}
+			}
+			if (creatureType == null) return;
+
 			Vector3 playerPos = targetPlayer.ComponentBody.Position;
 			SubsystemTerrain terrain = Project.FindSubsystem<SubsystemTerrain>(true);
 
-			// Intentar encontrar punto de spawn válido
+			// Intentar encontrar punto de spawn válido.
+			// El spawn final lo decide el loader vía SpawnCreatures -> ProcessSpawnPoint +
+			// CalculateSpawnSuitability, así que aquí sólo proveemos puntos candidatos.
 			for (int attempt = 0; attempt < 5; attempt++)
 			{
 				float angle = m_random.Float(0f, 2f * MathF.PI);
@@ -367,46 +419,30 @@ namespace Game
 					continue;
 
 				int topY = terrain.Terrain.GetTopHeight(targetX, targetZ);
+				if (topY <= 3 || topY >= 253)
+					continue;
 
-				if (topY > 3 && topY < 253)
+				// Punto candidato en la superficie. SpawnCreatures internamente
+				// hará ProcessSpawnPoint (busca Y válido cerca) y validará la
+				// idoneidad con la SpawnSuitabilityFunction del CreatureType.
+				Point3 spawnPoint = new Point3(targetX, topY, targetZ);
+
+				List<Entity> entities = m_subsystemCreatureSpawn.SpawnCreatures(
+						creatureType, selectedName, spawnPoint, 1);
+
+				if (entities.Count > 0)
 				{
-					int below = terrain.Terrain.GetCellValueFast(targetX, topY - 1, targetZ);
-					int current = terrain.Terrain.GetCellValueFast(targetX, topY, targetZ);
-					int above = terrain.Terrain.GetCellValueFast(targetX, topY + 1, targetZ);
-
-					Block blockBelow = BlocksManager.Blocks[Terrain.ExtractContents(below)];
-					Block blockCurrent = BlocksManager.Blocks[Terrain.ExtractContents(current)];
-					Block blockAbove = BlocksManager.Blocks[Terrain.ExtractContents(above)];
-
-					bool validGround = blockBelow is GrassBlock || blockBelow is DirtBlock || blockBelow is SandBlock || blockBelow is GravelBlock;
-					bool currentEmpty = !blockCurrent.IsCollidable_(current) && !(blockCurrent is WaterBlock);
-					bool aboveEmpty = !blockAbove.IsCollidable_(above) && !(blockAbove is WaterBlock);
-
-					if (validGround && currentEmpty && aboveEmpty)
+					// El loader creó la entidad vía SpawnCreature (que ya hace
+					// Project.AddEntity, por lo que SubsystemSpawn la trackea
+					// automáticamente para despawn/respawn). Ahora aplicamos
+					// el modo narco igual que hace spawnBanditWithMode.
+					Entity entity = entities[0];
+					var banditChase = entity.FindComponent<ComponentBanditChaseBehavior>();
+					if (banditChase != null)
 					{
-						try
-						{
-							Entity entity = DatabaseManager.CreateEntity(Project, selectedName, true);
-							var body = entity.FindComponent<ComponentBody>(true);
-							body.Position = new Vector3(targetX + 0.5f, topY + 1.1f, targetZ + 0.5f);
-							body.Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, m_random.Float(0f, 2f * MathF.PI));
-							var creature = entity.FindComponent<ComponentCreature>(true);
-							creature.ConstantSpawn = false;
-
-							var banditChase = entity.FindComponent<ComponentBanditChaseBehavior>();
-							if (banditChase != null)
-							{
-								banditChase.IsDrugTraffickerMode = true;
-							}
-
-							Project.AddEntity(entity);
-						}
-						catch (Exception ex)
-						{
-							Log.Error($"Error spawning invasion bandit {selectedName}: {ex.Message}");
-						}
-						return;
+						banditChase.IsDrugTraffickerMode = true;
 					}
+					return; // Spawn exitoso, salimos.
 				}
 			}
 		}
@@ -480,7 +516,14 @@ namespace Game
 			if (!m_invasionActive)
 				return;
 
-			// SPAWN ACTIVO DE INVASIÓN
+			// ================================================================
+			// SPAWN ACTIVO DE INVASIÓN (manteniendo el loader del spawn)
+			// ----------------------------------------------------------------
+			// Se mantiene el intervalo (2.5s) y el límite (15 narcos simultáneos),
+			// pero ahora SpawnInvasionBandit enruta el spawn a través de
+			// SubsystemCreatureSpawn.SpawnCreatures() en lugar de llamar directo
+			// a DatabaseManager.CreateEntity + Project.AddEntity.
+			// ================================================================
 			m_invasionSpawnTimer += dt;
 			if (m_invasionSpawnTimer >= InvasionSpawnInterval)
 			{
@@ -502,8 +545,8 @@ namespace Game
 					m_bossDelayTimer = 0f;
 
 					bool isGreenNightActive = m_subsystemGreenNightSky != null &&
-											   m_subsystemGreenNightSky.GreenNightEnabled &&
-											   m_subsystemGreenNightSky.IsGreenNightActive;
+																	   m_subsystemGreenNightSky.GreenNightEnabled &&
+																	   m_subsystemGreenNightSky.IsGreenNightActive;
 
 					if (isGreenNightActive)
 					{
