@@ -56,7 +56,7 @@ namespace Game
 		{
 			m_versions = new List<ModVersionInfo>
 			{
-				new ModVersionInfo { Version = "1.0.6", DisplayName = "1.0.6", ReleaseDate = "" },
+				new ModVersionInfo { Version = "1.0.6", DisplayName = "1.0.6", ReleaseDate = "2026-10-31" },
 				new ModVersionInfo { Version = "1.0.5", DisplayName = "1.0.5", ReleaseDate = "2026-01-08" },
 				new ModVersionInfo { Version = "1.0.4", DisplayName = "1.0.4", ReleaseDate = "2025-11-15" },
 				new ModVersionInfo { Version = "1.0.3", DisplayName = "1.0.3", ReleaseDate = "2025-11-07" },
