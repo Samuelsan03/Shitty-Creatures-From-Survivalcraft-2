@@ -263,18 +263,24 @@ namespace Game
 			{
 				loadState = FlameThrowerBlock.LoadState.Loaded;
 			}
-			processedCount = count - processCount;
+
+			// FIX: el framework ya consume processCount de la munición,
+			// no hay que devolver nada (igual que Musket/Crossbow originales).
+			processedValue = 0;
+			processedCount = 0;
+
 			if (loadCount != 0)
 			{
 				processCount += loadCount;
 			}
-			processedValue = value;
-			if (processedCount == 0)
-			{
-				processedValue = 0;
-			}
+
 			inventory.RemoveSlotItems(slotIndex, 1);
-			int value2 = Terrain.MakeBlockValue(this.m_FlameThrowerBlockIndex, processCount, FlameThrowerBlock.SetLoadState(FlameThrowerBlock.SetBulletType(data, new FlameBulletBlock.FlameBulletType?(bulletType)), loadState));
+			int value2 = Terrain.MakeBlockValue(
+				this.m_FlameThrowerBlockIndex,
+				processCount,
+				FlameThrowerBlock.SetLoadState(
+					FlameThrowerBlock.SetBulletType(data, new FlameBulletBlock.FlameBulletType?(bulletType)),
+					loadState));
 			inventory.AddSlotItems(slotIndex, value2, 1);
 		}
 
