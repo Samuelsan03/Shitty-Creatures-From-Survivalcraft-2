@@ -218,18 +218,21 @@ namespace Game
 			int slotValue = inventory.GetSlotValue(slotIndex);
 			int data = Terrain.ExtractData(slotValue);
 			int loadCount = RepeatCrossbowBlock.GetLoadCount(slotValue);
-			processedCount = count - processCount;
+
+			// FIX: mismo patrón que Musket/Crossbow originales.
+			processedValue = 0;
+			processedCount = 0;
+
 			if (loadCount != 0)
 			{
 				processCount += loadCount;
 			}
-			processedValue = value;
-			if (processedCount == 0)
-			{
-				processedValue = 0;
-			}
+
 			inventory.RemoveSlotItems(slotIndex, 1);
-			int value2 = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, processCount, RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(arrowType)));
+			int value2 = Terrain.MakeBlockValue(
+				RepeatCrossbowBlock.Index,
+				processCount,
+				RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(arrowType)));
 			inventory.AddSlotItems(slotIndex, value2, 1);
 		}
 
